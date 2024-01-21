@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GNU       :: Update - 2024/01/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GNU       :: Update - 2024/01/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -29,14 +29,14 @@
 \******************************************************************************/
 
 /******************************************************************************\
-|*                                 SIDE NOTES                                 *|
+|*                                 HOW TO USE                                 *|
 |******************************************************************************|
 |*                                                                            *|
-|*                                 IMPORTANT                                  *|
+|* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
 |* YOU MUST USE BOTH __STD_PACK__ AND PRAGMA_PACK_... ON A STRUCT IF YOU WANT *|
-|* TO PACK IT.                                                                *|
+|* TO PACK IT. IF YOU WANNA USE FULL SYNTAX SUPPORT OF THIS FEATURE.          *|
 |*                                                                            *|
-|*                                 HOW TO USE                                 *|
+|* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
@@ -51,12 +51,63 @@
 |*    : {                                                                     *|
 |*    :     . . .                                                             *|
 |*    : } __STD_PACK__ t_test;                                                *|
+|*    : PRAGMA_PACK_POP                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
-/******************************************************************************\
-|*                               WTF THAT DOES?                               *|
-|******************************************************************************|
+/*############################################################################*\
+|*#                              WTF THAT DOES?                              #*|
+|*############################################################################*|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|* [PACK] IS PACKING OR REMOVING PADDING BYTES FROM YOUR STURCT.              *|
+|* I WOULD PREFER NOT TO USE THIS MODULE UNLESS YOU HAVE A VERY BIG STRUCT.   *|
+|*                                                                            *|
+|* BECAUSE REMOVING PADDINGS FROM YOUR STURCT WILL CAUSE SOME PERFORMANCE     *|
+|* ISSUES.                                                                    *|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::::::: HOW? :::::::::::::::::::::::::::::::::: *|
+|* WHILE CPU READING YOUR STRUCT, IT IS READING AND DECIDING TO USE IT VIA    *|
+|* IT'S ALING. ALING WORKS AS 1 - 2 - 4 - 8 - 16 - 32 - 64... SO PADDING      *|
+|*                                                                            *|
+|* O - EXAMPLES                                                               *|
+|* :                                                                          *|
+|* ;.., struct test                                                           *|
+|* :  : {                                                                     *|
+|* :  :     int a;                                                            *|
+|* :  : };                                                                    *|
+|* :  ;... THIS STRUCT'S SIZEOF GOING TO BE [4] BYTES!                        *|
+|* :                                                                          *|
+|* ;.., struct test                                                           *|
+|* :  : {                                                                     *|
+|* :  :     int a;                                                            *|
+|* :  :     char b;                                                           *|
+|* :  : };                                                                    *|
+|* :  ;.., THIS STRUCT'S SIZEOF GOING TO BE [8] BYTES!                        *|
+|* :     :                                                                    *|
+|* :     ;.., WHERE IS 3 BYTES SINCE WE USED 5 BYTES IN THE STURCT?           *|
+|* :        : ANSER: WE CALLING THEM PADDING. THESE EXTRA SPACES ARE FOR MAKE *|
+|* :        : THE CPU READ THE STURCT FASTER FROM THE MEMORY.                 *|
+|* :                                                                          *|
+|* ;.., SO, IF WE DO:                                                         *|
+|*    :                                                                       *|
+|*    ;.., PRAGMA_PACK_PUSH                                                   *|
+|*    :  : struct test                                                        *|
+|*    :  : {                                                                  *|
+|*    :  :     int a;                                                         *|
+|*    :  :     char b;                                                        *|
+|*    :  : } __STD_PACK__;                                                    *|
+|*    :  : PRAGMA_PACK_POP                                                    *|
+|*    :                                                                       *|
+|*    ;... THIS STRUCT'S SIZEOF GOING TO BE [5] BYTES NOW!                    *|
+|*                                                                            *|
+|* SO, PADDING IN STURCUT WORKS LIKE FILLING THE AREA WITH EXTRA BYTES TO     *|
+|* REACH THESE NUMBERS. OTHERWISE, IT WILL CAUSE AN OVERFLOW (OVERREAD).      *|
+|* OR COMPILER JUST DECIDES THE ALING OF THE STRUCT BY 1 OR 2 TO PREVENT IT   *|
+|* FROM HAPPENING.                                                            *|
+|*                                                                            *|
+|* AND YOU MUST AWARE, THIS IS GOING TO CAUSE SOME PERFORMANCE ISSUES WHILE   *|
+|* SHARING YOUR STRUCT BETWEEN FUNCTIONS.                                     *|
 |*                                                                            *|
 \******************************************************************************/
 
