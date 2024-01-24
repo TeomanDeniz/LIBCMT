@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GNU       :: Update - 2024/01/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -28,21 +28,22 @@ void __UNUSED_FUNCTION__	function(int variable)
 
 */
 
-/******************************************************************************\
-|*                               WTF THAT DOES?                               *|
-|******************************************************************************|
+/*############################################################################*\
+|*#                              WTF THAT DOES?                              #*|
+|*############################################################################*|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|* IDK                                                                        *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401
+#define LIBRARY_VERSION 202401 /* VERSION */
 #ifdef UNUSED_H
 #	if (UNUSED_H < LIBRARY_VERSION)
-#		undef UNUSED_H
-#	else
-#		undef LIBRARY_VERSION
-#	endif
-#endif
+#		undef UNUSED_H /* OLD VERSION DETECTED */
+#	endif /* UNUSED_H < LIBRARY_VERSION */
+#endif /* UNUSED_H */
 #undef LIBRARY_VERSION
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
@@ -76,7 +77,18 @@ void __UNUSED_FUNCTION__	function(int variable)
 #		define __UNUSED_FUNCTION__ [[maybe_unused]]
 #		define __UNUSED_VARIABLE__ [[maybe_unused]]
 #		else
-#			if ((defined(__GNUC__) || defined(__clang__)) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)))
+#			if (\
+				(\
+					defined(__GNUC__) || /* IF GCC */\
+					defined(__clang__) /* IF CLANG */\
+				) && (\
+					(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+					(\
+						__GNUC__ == 4 && /* IF EQ 4.X.X */\
+						__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
+					)\
+				)\
+			) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
 #				define __UNUSED_FUNCTION__ __attribute__((unused))
 #				define __UNUSED_VARIABLE__ (void)
 #			else /* DJGPP || TCC || K&R */

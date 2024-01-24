@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GNU       :: Update - 2024/01/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -29,19 +29,22 @@ int NORETURN	function(void)
 
 */
 
-/******************************************************************************\
-|*                               WTF THAT DOES?                               *|
-|******************************************************************************|
+/*############################################################################*\
+|*#                              WTF THAT DOES?                              #*|
+|*############################################################################*|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|* IDK                                                                        *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401
+#define LIBRARY_VERSION 202401 /* VERSION */
 #ifdef NORETURN_H
 #	if (NORETURN_H < LIBRARY_VERSION)
-#		undef NORETURN_H
-#	endif
-#endif
+#		undef NORETURN_H /* OLD VERSION DETECTED */
+#	endif /* NORETURN_H < LIBRARY_VERSION */
+#endif /* NORETURN_H */
 #undef LIBRARY_VERSION
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
@@ -63,31 +66,44 @@ int NORETURN	function(void)
 #	define NORETURN_H 202401
 
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef noreturn
-#	undef NORETURN
+#	undef STD_NORETURN
 #	undef __noreturn_is_defined
 #	undef __NORETURN_IS_DEFINED
 /* ****************************** [^] RESET [^] ***************************** */
 
 #	ifndef __STDNORETURN_H
-#		define __STDNORETURN_H
+#		define __STDNORETURN_H /* <stdnoreturn.h> */
 #	endif /* __STDNORETURN_H */
 
-#	if (defined(__clang__) && (__clang_major__ >= 3 && __clang_minor__ >= 3))
-#		define noreturn _Noreturn
-#		define NORETURN _Noreturn
+#	if (\
+		defined(__clang__) && /* IF CLANG */\
+		(\
+			__clang_major__ >= 3 && /* IF GEQ 3.X */\
+			__clang_minor__ >= 3 /* IF GEQ X.3 */\
+		)\
+	) /* IS CLANG VERSION 3.3 OR GREATHER (MAXIMUM C99) */
+#		define STD_NORETURN _Noreturn
 #		define __noreturn_is_defined 1
 #		define __NORETURN_IS_DEFINED 1
 #	else
-#		if (defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))) /* GCC */
-#			define noreturn __attribute__((noreturn))
-#			define NORETURN __attribute__((noreturn))
+#		if (\
+			(\
+				defined(__GNUC__) || /* IF GCC */\
+				defined(__clang__) /* IF CLANG */\
+			) && (\
+				(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+				(\
+					__GNUC__ == 4 && /* IF EQ 4.X.X */\
+					__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
+				)\
+			)\
+		) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
+#			define STD_NORETURN __attribute__((noreturn))
 #			define _Noreturn __attribute__((noreturn))
 #			define __noreturn_is_defined 1
 #			define __NORETURN_IS_DEFINED 1
 #		else /* DJGPP || TCC || K&R */
-#			define noreturn /* EMPTY */
-#			define NORETURN /* EMPTY */
+#			define STD_NORETURN /* EMPTY */
 #			define _Noreturn /* EMPTY */
 #			define __noreturn_is_defined 0
 #			define __NORETURN_IS_DEFINED 0

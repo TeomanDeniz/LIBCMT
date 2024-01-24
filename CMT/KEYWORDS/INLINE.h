@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GNU       :: Update - 2024/01/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -27,21 +27,31 @@ __STATIC_INLINE__ void	function(void);
 
 */
 
-/******************************************************************************\
-|*                               WTF THAT DOES?                               *|
-|******************************************************************************|
+/*############################################################################*\
+|*#                              WTF THAT DOES?                              #*|
+|*############################################################################*|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|* IDK                                                                        *|
+|*                                                                            *|
+\******************************************************************************/
+
+/*############################################################################*\
+|*#                                SIDE NOTES                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* [[clang::always_inline]] THAT ASSHOLE NOT WORKING IN CLANG. BULLSHIT!      *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401
+#define LIBRARY_VERSION 202401 /* VERSION */
 #ifdef INLINE_H
 #	if (INLINE_H < LIBRARY_VERSION)
-#		undef INLINE_H
-#	else
-#		undef LIBRARY_VERSION
-#	endif
-#endif
+#		undef INLINE_H /* OLD VERSION DETECTED */
+#	endif /* INLINE_H < LIBRARY_VERSION */
+#endif /* INLINE_H */
+#undef LIBRARY_VERSION
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef INLINE_H
@@ -62,7 +72,6 @@ __STATIC_INLINE__ void	function(void);
 #	define INLINE_H 202401
 
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef LIBRARY_VERSION /* VERSION */
 #	undef __STD_INLINE__
 #	undef __STATIC_INLINE__
 /* ****************************** [^] RESET [^] ***************************** */
@@ -80,16 +89,32 @@ __STATIC_INLINE__ void	function(void);
 #				define __STATIC_INLINE__ static __STD_INLINE__
 #			else
 #				ifdef __clang__ /* CLANG */
-#					define __STD_INLINE__ __inline__ // [[clang::always_inline]] ASSHOLE NOT WORKING
+#					define __STD_INLINE__ __inline__
 #					define __STATIC_INLINE__ static __STD_INLINE__
 #				else
 #					ifdef __GNUC__
-#						if ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#						if (\
+							(\
+								defined(__GNUC__) || /* IF GCC */\
+								defined(__clang__) /* IF CLANG */\
+							) && (\
+								(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+								(\
+									__GNUC__ == 4 && /* IF EQ 4.X.X */\
+									__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
+								)\
+							)\
+						) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
 #							ifdef __DJGPP__
-#								define __STD_INLINE__ __inline__ __attribute__((__gnu_inline__))
+#								define __STD_INLINE__ __inline__ \
+								__attribute__((__gnu_inline__))
 #								define __STATIC_INLINE__ static __inline__
 #							else
-#								define __STD_INLINE__ __inline__ __attribute__((__gnu_inline__, always_inline))
+#								define __STD_INLINE__ __inline__ \
+									__attribute__((\
+										__gnu_inline__, \
+										always_inline\
+									))
 #								define __STATIC_INLINE__ static __inline__
 #							endif /* DJGPP */
 #						else /* __attribute__ DOESN'T SUPPORTED */
