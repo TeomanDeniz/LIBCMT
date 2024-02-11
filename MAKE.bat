@@ -9,7 +9,7 @@ GOTO :MAKE_START
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2022/12/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/01/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/01/27 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 :MAKE_START
@@ -62,7 +62,11 @@ GOTO :EOF
 		FOR /R %%# IN (!SRC!) DO (
 			IF NOT "%%~XN#"=="!MAIN!" (
 				CALL :PROGRESS_BAR !PROGRESS! !SRC_FILE_NUM! "%%~N#.c"
-				IF NOT EXIST "%%~N#.o" IF NOT EXIST "!NAME!" !CC! -c %%# !CFLAGS! -o %%~n#.o||GOTO :ERROR
+				IF NOT EXIST "%%~N#.o" (
+					IF NOT EXIST "!NAME!" (
+						!CC! -c %%# !CFLAGS! -o %%~n#.o||GOTO :ERROR
+					)
+				)
 				SET /A PROGRESS+=1
 			)
 		)
@@ -110,7 +114,9 @@ GOTO :ALL
 :CLEAN
 	ECHO.
 	FOR /R %%# IN (*.o) DO (
-		IF EXIST "%%~DP#%%~N#.o" DEL "%%~DP#%%~N#.o" & ECHO  %%~DP#%%~N#.o Deleted.
+		IF EXIST "%%~DP#%%~N#.o" (
+			DEL "%%~DP#%%~N#.o" & ECHO  %%~DP#%%~N#.o Deleted.
+		)
 	)
 GOTO :EOF
 
@@ -120,9 +126,13 @@ GOTO :EOF
 	CALL :CLEAN
 	ECHO.
 	FOR /R %%# IN (*.a) DO (
-		IF EXIST "%%~DP#%%~N#.a" DEL "%%~DP#%%~N#.a" & ECHO  %%~DP#%%~N#.a Deleted.
+		IF EXIST "%%~DP#%%~N#.a" (
+			DEL "%%~DP#%%~N#.a" & ECHO  %%~DP#%%~N#.a Deleted.
+		)
 	)
-	IF EXIST "!MAIN_NAME!.exe" DEL "!MAIN_NAME!.exe" & ECHO  !MAIN_NAME!.exe Deleted.
+	IF EXIST "!MAIN_NAME!.exe" (
+		DEL "!MAIN_NAME!.exe" & ECHO  !MAIN_NAME!.exe Deleted.
+	)
 GOTO :EOF
 
 :Makefile
@@ -142,7 +152,13 @@ GOTO :EOF
 
 	SET /A SRC_FILE_NUM=0
 	SET /A PROGRESS=0
-	IF NOT "!SRC!" == "" FOR /R %%# IN (!SRC!) DO (IF NOT "%%~XN#"=="!MAIN!" SET /A SRC_FILE_NUM+=1)
+	IF NOT "!SRC!" == "" (
+		FOR /R %%# IN (!SRC!) DO (
+			IF NOT "%%~XN#"=="!MAIN!" (
+				SET /A SRC_FILE_NUM+=1
+			)
+		)
+	)
 
 	FOR %%# IN (!MAIN!) DO SET "MAIN_NAME=%%~N#"
 	IF NOT "%~1"=="" (

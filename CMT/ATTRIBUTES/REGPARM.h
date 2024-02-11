@@ -8,47 +8,79 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-/* LIST
+/*############################################################################*\
+|*#                                 CONTENTS                                 #*|
+|*############################################################################*|
+|*............................................................................*|
+|*       NAME      :    TYPE    :                DESCRIPTION                  *|
+|*.................:............:.............................................*|
+|* __STD_REGPARM__ : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND THE *|
+|*                 :            : ARIABLES TO FUNCTION VIA PURE REGISTERS.    *|
+|*.................:............:.............................................*|
+\******************************************************************************/
 
-	WARNING: USE IT ONLY FOR (INTEGER) OR (FLOAT-POINT) VARIABLES
-
-	__STD_REGPARM__(VALUE)
-
-*/
-
-/* USAGE
-
-	void __STD_REGPARM__(1) function(int b)	{
-		...
-	}
-
-	void __STD_REGPARM__(2) function(int a, int b)
-	{
-		...
-	}
-
-	void __STD_REGPARM__(4) function(int a, int b, int c, int d)
-	{
-		...
-	}
-
-*/
+/*############################################################################*\
+|*#                                HOW TO USE                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
+|* THIS FEATURE WILL NOT WORK ON POINTERS. (REFERENCE FROM C++)               *|
+|*                                                                            *|
+|* MAKE SURE ALL THE ARGUMENTS ARE NORMAL VARIABLES INSTEAD OF POINTERS!      *|
+|*                                                                            *|
+|* FOR MORE EFFECTIVE OPTIMISATION, USE "register" KEYWORD ON YOUR ARGUMENTS. *|
+|*                                                                            *|
+|* YOU MUST ENTER THE NUMBER OF VARIABLES THAT PASS TO FUNCTION VIA REGISTERS *|
+|* IN THE INPUT ARGUMENT. "__STD_REGPARM__(NUMBER OF REGISTERS)"              *|
+|*                                                                            *|
+|* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
+|* O - EXAMPLES                                                               *|
+|* :                                                                          *|
+|* ;.., void __STD_REGPARM__(1) function(int b)	{                             *|
+|* :  :     . . .                                                             *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., void __STD_REGPARM__(2) function(int a, int b)                        *|
+|* :  : {                                                                     *|
+|* :  :     . . .                                                             *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., void __STD_REGPARM__(4) function(int a, float b, long c, char d)      *|
+|* :  : {                                                                     *|
+|* :  :     . . .                                                             *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., void __STD_REGPARM__(2) function(register int a, register float b)    *|
+|*    : {                                                                     *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+\******************************************************************************/
 
 /*############################################################################*\
 |*#                              WTF THAT DOES?                              #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* IDK                                                                        *|
+|* WITH THAT KEYWORD IN YOUR FUNCTION, YOU CAN DIRECTLY HOLD A VALUE IN THE   *|
+|* REGISTER AND CAN ABLE TO USE IT. LIKE IN C++ (REFERENCE) BUT WITHOUT       *|
+|* POINTERS.                                                                  *|
+|*                                                                            *|
+|* WHICH MEANS, WHEN THE PROCESS REACH TO THIS FUNCTION (LAYER), THE CPU      *|
+|* GOING TO USE THE EXISTING REGISTER VALUE DIRECTLY INSTEAD OF GETTING THE   *|
+|* VALUE FROM MEMORY (RAM) OR STACKING THE REGISTERS DURING PROCESS.          *|
+|*                                                                            *|
+|* WHICH MEANS, WITH THAT PROGRAM GOING TO AVOID DOING EXTRA COMMANDS DURING  *|
+|* PROCESS TO GET THE VALUE.                                                  *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401 /* VERSION */
+#define LIBRARY_VERSION 202402 /* VERSION */
 #ifdef REGPARM_H
 #	if (REGPARM_H < LIBRARY_VERSION)
 #		undef REGPARM_H /* OLD VERSION DETECTED */
@@ -72,7 +104,7 @@
 		extern "C" {
 #	endif /* __cplusplus */
 
-#	define REGPARM_H 202401
+#	define REGPARM_H 202402
 
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef __STD_REGPARM__
@@ -87,11 +119,11 @@
 				__attribute__((fastcall))
 #		else
 #			if (\
-				defined(__GNUC__) && /* IF GCC */ \
+				defined(__GNUC__) && /* IF GCC */\
 				(\
-					(__GNUC__ >= 2) || /* IF GEQ 2.X.X */ \
+					(__GNUC__ >= 2) || /* IF GEQ 2.X.X */\
 					(\
-						(__GNUC_MINOR__ >= 7) || /* IF GEQ X.7.X */ \
+						(__GNUC_MINOR__ >= 7) || /* IF GEQ X.7.X */\
 						(\
 							(__GNUC_PATCHLEVEL__ >= 1) /* IF GEQ X.X.1 */\
 						)\
@@ -103,7 +135,7 @@
 						__attribute__((\
 						regparm(__REGPARM_NUMBER_OF_VARIABLES__)))
 #				else
-#					ifdef __DJGPP__
+#					ifdef __DJGPP__ /* MS-DOS */
 #						define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__)
 #					else
 #						define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__)\

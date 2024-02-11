@@ -78,8 +78,8 @@ int NORETURN	function(void)
 #	if (\
 		defined(__clang__) && /* IF CLANG */\
 		(\
-			__clang_major__ >= 3 && /* IF GEQ 3.X */\
-			__clang_minor__ >= 3 /* IF GEQ X.3 */\
+			(__clang_major__ >= 3) && /* IF GEQ 3.X */\
+			(__clang_minor__ >= 3) /* IF GEQ X.3 */\
 		)\
 	) /* IS CLANG VERSION 3.3 OR GREATHER (MAXIMUM C99) */
 #		define STD_NORETURN _Noreturn
@@ -87,14 +87,15 @@ int NORETURN	function(void)
 #		define __NORETURN_IS_DEFINED 1
 #	else
 #		if (\
+			defined(__clang__) || /* IF CLANG */\
 			(\
-				defined(__GNUC__) || /* IF GCC */\
-				defined(__clang__) /* IF CLANG */\
-			) && (\
-				(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+				defined(__GNUC__) && /* IF GCC */\
 				(\
-					__GNUC__ == 4 && /* IF EQ 4.X.X */\
-					__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
+					(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+					(\
+						(__GNUC__ == 4) && /* IF EQ 4.X.X */\
+						(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+					)\
 				)\
 			)\
 		) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
