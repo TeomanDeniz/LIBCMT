@@ -1,5 +1,5 @@
 /******************************************************************************\
-# H - PACK                                       #       Maximum Tension       #
+# H - INLINE                                     #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -8,31 +8,132 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/15 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-/* LIST
-#	Standard function inlinening processor
+/*############################################################################*\
+|*#                                 CONTENTS                                 #*|
+|*############################################################################*|
+|*............................................................................*|
+|*  NAME  :  TYPE   :                      DESCRIPTION                        *|
+|*........:.........:.........................................................*|
+|* INLINE : #define : THE FUNCTION IS NOW AN INLINE PASTE LIKE #INCLUDE.      *|
+|*........:.........:.........................................................*|
+\******************************************************************************/
 
-	__STD_INLINE__
-	__STATIC_INLINE__
-*/
+/*############################################################################*\
+|*#                                HOW TO USE                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* ::::::::::::::::::::::::::::::::: INLINE ::::::::::::::::::::::::::::::::: *|
+|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION. EZ LOL                 *|
+|*                                                                            *|
+|* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., INLINE void function(void)                                            *|
+|*    : {                                                                     *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+\******************************************************************************/
 
-/* USAGE
-
-__STD_INLINE__ void	function(void);
-
-__STATIC_INLINE__ void	function(void);
-
-*/
+/*############################################################################*\
+|*#                            HOW NOT TO USE IT                             #*|
+|*############################################################################*|
+|*                                                                            *|
+|* (1) DO NOT USE "STATIC" (STATIC INLINE) WHEN YOU DECIDE TO USE THIS        *|
+|* KEYWORD IN A FUNCTION! IT WILL CALCEL THIS KEYWORD'S USE!                  *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // THIS MAKES YOUR FUNCTION JUST A STATIC FUNCTION:                   *|
+|*    : static INLINE int test(void)                                          *|
+|*    : {                                                                     *|
+|*    :     return (15 + 42);                                                 *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* (2) DO NOT USE "GOTO" KEYWORD INSIDE INLINE LIBRARY!                       *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // THIS IS WRONG:                                                     *|
+|*    : static INLINE int test(void)                                          *|
+|*    : {                                                                     *|
+|*    :     LAYER:                                                            *|
+|*    :     . . .                                                             *|
+|*    :     GOTO LAYER;                                                       *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* (3) YOU CAN'T USE STATIC VARIABLES INSIDE OF INLINE FUNCTION!              *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // WHAT DA DOG DOING?                                                 *|
+|*    : static INLINE void test(void)                                         *|
+|*    : {                                                                     *|
+|*    :     static int dog;                                                   *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* (4) YOU CAN'T CALL ITSELF INSIDE OF INLINE. (YOU CAN'T DO RECURSIVE)       *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // YOU CAN'T CALL SOMETHING THAT DOESN'T EXIST IN THE BINNARY.        *|
+|*    : static INLINE void inline_test(int a)                                 *|
+|*    : {                                                                     *|
+|*    :     inline_test(a + 1);                                               *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* (5) YOU CAN'T USE VA_LIST, VA_ARG (SIMPLY ...) KEYWORD ON INLINE FUNCTION! *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // NO SHIT                                                            *|
+|*    : static INLINE void inline_test(int a, ...)                            *|
+|*    : {                                                                     *|
+|*    :     va_list list;                                                     *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+\******************************************************************************/
 
 /*############################################################################*\
 |*#                              WTF THAT DOES?                              #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* IDK                                                                        *|
+|* IT PUTS THE COMMANDS YOU WRITE IN THE INLINE FUNCTION DIRECTLY TO THE      *|
+|* PLACE WHERE YOU USED YOUR INLINE FUNCTION.                                 *|
+|*                                                                            *|
+|* O - EXAMPLE                                                                *|
+|* :                                                                          *|
+|* ;.., // LET'S IMAGINE WE HAVE AN INLINE FUNCTION:                          *|
+|* :  : INLINE int test(void)                                                 *|
+|* :  : {                                                                     *|
+|* :  :     return (15 + 42);                                                 *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., // LET'S IMAGINE IT IS USED IN OUR MAIN FUNCTION:                     *|
+|* :  : int main(void)                                                        *|
+|* :  : {                                                                     *|
+|* :  :     printf("%d", test());                                             *|
+|* :  :     return (0);                                                       *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., // AND THAT MAKES THE MAIN FUNCTION DURING COMPILING PROCESS:         *|
+|*    : int main(void)                                                        *|
+|*    : {                                                                     *|
+|*    :     printf("%d", (15 + 42));                                          *|
+|*    :     return (0);                                                       *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* IT WAS JUST AN EXAMPLE, YOU'RE FEEL FREE TO FILL YOUR FUNCTION AS MUCH AS  *|
+|* YOU CAN. BUT PLEASE BE AWARE WHAT TO NOT DO INSIDE OF AN INLINE FUNCTION   *|
+|* BY READIN THE "HOW NOT TO USE IT" LIST AT THE TOP!                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -40,12 +141,12 @@ __STATIC_INLINE__ void	function(void);
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* [[clang::always_inline]] THAT ASSHOLE NOT WORKING IN CLANG. BULLSHIT!      *|
+|* [[clang::always_inline]] NOT WORKING IN CLANG. TOO BAD!                    *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401 /* VERSION */
+#define LIBRARY_VERSION 202402 /* VERSION */
 #ifdef INLINE_H
 #	if (INLINE_H < LIBRARY_VERSION)
 #		undef INLINE_H /* OLD VERSION DETECTED */
@@ -69,66 +170,55 @@ __STATIC_INLINE__ void	function(void);
 		extern "C" {
 #	endif /* __cplusplus */
 
-#	define INLINE_H 202401
+#	define INLINE_H 202402
 
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef __STD_INLINE__
-#	undef __STATIC_INLINE__
+#	undef INLINE
 /* ****************************** [^] RESET [^] ***************************** */
 
 #	ifdef _MSC_VER /* MICROSOFT C++ */
-#		define __STD_INLINE__ __inline__ __forceinline
-#		define __STATIC_INLINE__ static __STD_INLINE__
+#		define INLINE __inline__ __forceinline
 #	else
-#		ifdef __cplusplus
-#			define __STD_INLINE__ inline
-#			define __STATIC_INLINE__ static __STD_INLINE__
+#		ifdef __cplusplus /* C++ */
+#			define INLINE inline
 #		else
 #			ifdef __TINYC__ /* TCC (TINY C COMPILER) */
-#				define __STD_INLINE__ __inline__
-#				define __STATIC_INLINE__ static __STD_INLINE__
+#				define INLINE __inline__
 #			else
-#				ifdef __clang__ /* CLANG */
-#					define __STD_INLINE__ __inline__
-#					define __STATIC_INLINE__ static __STD_INLINE__
+#				ifdef __clang__ /* CLANG / LLVM */
+#					define INLINE __inline__
 #				else
-#					ifdef __GNUC__
+#					if (\
+						defined(__GNUC__) && /* IF GCC */\
+						(\
+							(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
+							(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+						)\
+					) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
+#						ifdef __DJGPP__
+#							define INLINE __inline__ \
+							__attribute__((__gnu_inline__))
+#						else
+#							define INLINE __inline__ \
+								__attribute__((\
+									__gnu_inline__, \
+									always_inline\
+								))
+#						endif /* DJGPP */
+#					else /* __attribute__ DOESN'T SUPPORTED */
 #						if (\
-							(\
-								defined(__GNUC__) || /* IF GCC */\
-								defined(__clang__) /* IF CLANG */\
-							) && (\
-								(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
-								(\
-									__GNUC__ == 4 && /* IF EQ 4.X.X */\
-									__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
-								)\
-							)\
-						) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
-#							ifdef __DJGPP__
-#								define __STD_INLINE__ __inline__ \
-								__attribute__((__gnu_inline__))
-#								define __STATIC_INLINE__ static __inline__
-#							else
-#								define __STD_INLINE__ __inline__ \
-									__attribute__((\
-										__gnu_inline__, \
-										always_inline\
-									))
-#								define __STATIC_INLINE__ static __inline__
-#							endif /* DJGPP */
-#						else /* __attribute__ DOESN'T SUPPORTED */
-#							define __STD_INLINE__ __inline__
-#							define __STATIC_INLINE__ static
-#						endif /* GNUC VERSION */
-#					else /* K&R, ETC... */
-#						define __STD_INLINE__ /* NULL */
-#						define __STATIC_INLINE__ static
-#					endif /* GNU GCC C */
-#				endif /* CLANG */
-#			endif /* TCC (TINY C COMPILER) */
+							(__GNUC__ >= 2) && /* IF GRE 2.X.X */\
+							(__GNUC_MINOR__ >= 7) && /* IF GEQ X.7.X */\
+						) /* GCC VERSION 2.7.X OR GREATHER (MAXIMUM C89) */
+#							define INLINE __inline__
+#						else /* GCC DOESN'T SUPPORT INLINE */
+#							define INLINE /* NULL */
+#						endif /* GNUC VERSION 2.7.1 */
+#					endif /* GNUC VERSION 4.2.X */
+#				endif /* __clang__ */
+#			endif /* __TINYC__ */
 #		endif /* __cplusplus */
-#	endif /* MICROSOFT C++ */
+#	endif /* _MSC_VER */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */

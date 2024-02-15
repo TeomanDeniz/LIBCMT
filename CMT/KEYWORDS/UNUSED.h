@@ -1,5 +1,5 @@
 /******************************************************************************\
-# H - PACK                                       #       Maximum Tension       #
+# H - UNUSED                                     #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -8,37 +8,69 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/01/24 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/01/15 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-/* LIST
-#	Function or Variable is not used
+/*############################################################################*\
+|*#                                 CONTENTS                                 #*|
+|*############################################################################*|
+|*............................................................................*|
+|*  NAME  :  TYPE   :                      DESCRIPTION                        *|
+|*........:.........:.........................................................*|
+|* UNUSED : #define : TELLIG TO THE COMPILER THE FUNCTION MAY UNUSED          *|
+|* unused :         :                                                         *|
+|*........:.........:.........................................................*|
+|* NOPE   : #define : TELLIG TO THE COMPILER THE VARIABLE MAY NOT USED        *|
+|* nope   :         :                                                         *|
+|*........:.........:.........................................................*|
+\******************************************************************************/
 
-	__UNUSED_FUNCTION__
-	__UNUSED_VARIABLE__
-*/
-
-/* USAGE
-
-void __UNUSED_FUNCTION__	function(int variable)
-{
-	__UNUSED_VARIABLE__ variable;
-}
-
-*/
+/*############################################################################*\
+|*#                                HOW TO USE                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* ::::::::::::::::::::::::::::::::: UNUSED ::::::::::::::::::::::::::::::::: *|
+|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION. EZ LOL                 *|
+|*                                                                            *|
+|* O - EXAMPLES                                                               *|
+|* :                                                                          *|
+|* ;.., UNUSED void function(void)                                            *|
+|* :  : {                                                                     *|
+|* :  :     . . .                                                             *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., unused void function(void)                                            *|
+|*    : {                                                                     *|
+|*    :     . . .                                                             *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* :::::::::::::::::::::::::::::::::: NOPE :::::::::::::::::::::::::::::::::: *|
+|* JUST PUT THIS TAG ON THE BEGINNING OF THE VARIABLE. EZ LOL                 *|
+|*                                                                            *|
+|* O - EXAMPLES                                                               *|
+|* :                                                                          *|
+|* ;.., NOPE void *test;                                                      *|
+|* :                                                                          *|
+|* ;.., nope int i;                                                           *|
+|*                                                                            *|
+\******************************************************************************/
 
 /*############################################################################*\
 |*#                              WTF THAT DOES?                              #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* IDK                                                                        *|
+|* THIS KEYWORD TELLS TO THE COMPILER THE FUNCTION IS MAY NOT USED IN THE     *|
+|* PROGRAM.                                                                   *|
+|*                                                                            *|
+|* IF NOT USED, IGNORE THIS FUNCTION DIRECTLY AND THEN CONTINUE TO COMPILE    *|
+|* THIS PROGRAM WITHOUT GIVING ANY WARNING.                                   *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202401 /* VERSION */
+#define LIBRARY_VERSION 202402 /* VERSION */
 #ifdef UNUSED_H
 #	if (UNUSED_H < LIBRARY_VERSION)
 #		undef UNUSED_H /* OLD VERSION DETECTED */
@@ -62,41 +94,47 @@ void __UNUSED_FUNCTION__	function(int variable)
 		extern "C" {
 #	endif /* __cplusplus */
 
-#	define UNUSED_H 202401
+#	define UNUSED_H 202402
 
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef __UNUSED_FUNCTION__
-#	undef __UNUSED_VARIABLE__
+#	undef UNUSED
+#	undef NOPE
+#	undef unused
+#	undef nope
 /* ****************************** [^] RESET [^] ***************************** */
 
 #	ifdef _MSC_VER
-#		define __UNUSED_FUNCTION__ __pragma(warning(suppress:4505))
-#		define __UNUSED_VARIABLE__ __pragma(warning(suppress:4100))
+#		define UNUSED __pragma(warning(suppress:4505))
+#		define NOPE __pragma(warning(suppress:4100))
 #	else
 #		ifdef __cplusplus
-#		define __UNUSED_FUNCTION__ [[maybe_unused]]
-#		define __UNUSED_VARIABLE__ [[maybe_unused]]
+#			define UNUSED [[maybe_unused]]
+#			define NOPE [[maybe_unused]]
 #		else
 #			if (\
+				defined(__clang__) || /* IF CLANG */\
 				(\
-					defined(__GNUC__) || /* IF GCC */\
-					defined(__clang__) /* IF CLANG */\
-				) && (\
-					(__GNUC__ > 4) || /* IF GEQ 4.X.X */\
+					defined(__GNUC__) && /* IF GCC */\
 					(\
-						__GNUC__ == 4 && /* IF EQ 4.X.X */\
-						__GNUC_MINOR__ >= 2 /* IF GEQ X.2.X */\
+						(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
+						(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
 					)\
 				)\
 			) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
-#				define __UNUSED_FUNCTION__ __attribute__((unused))
-#				define __UNUSED_VARIABLE__ (void)
+#				define UNUSED __attribute__((unused))
+#				define NOPE (void)
 #			else /* DJGPP || TCC || K&R */
-#				define __UNUSED_FUNCTION__ /* EMPTY */
-#				define __UNUSED_VARIABLE__ (void)
+#				define UNUSED /* EMPTY */
+#				define NOPE (void)
 #			endif /* __GNUC__ */
 #		endif /* __cplusplus */
 #	endif /* MICROSOFT C++ */
+
+/* **************************** [v] LOWERCASE [v] *************************** */
+#	define unused UNUSED
+#	define nope NOPE
+/* **************************** [^] LOWERCASE [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
