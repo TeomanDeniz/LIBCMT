@@ -44,7 +44,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* (1) DO NOT USE "STATIC" (STATIC INLINE) WHEN YOU DECIDE TO USE THIS        *|
-|* KEYWORD IN A FUNCTION! IT WILL CALCEL THIS KEYWORD'S USE!                  *|
+|* KEYWORD ON A FUNCTION! "STATIC" IS GOING TO CANCEL "INLINE"!               *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
