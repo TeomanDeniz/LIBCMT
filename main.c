@@ -1,12 +1,14 @@
 #include "GRAPHICS.h"
 
-#define W 320
-#define H 240
+#include <stdbool.h>
+
+#define W 500
+#define H 500
 
 
 
 void
-	GRAPHIC_FPS(struct GRAPHIC *WINDOW, unsigned int FPS);
+	GRAPHIC_FPS(struct GRAPHIC *WINDOW, unsigned int FPS)
 {
 	unsigned long long (time);
 
@@ -16,8 +18,6 @@ void
 	WINDOW->FPS_START_TIME = time;
 }
 
-
-
 void graphic_rect(struct GRAPHIC *WINDOW, int x, int y, int w, int h,
 												 uint32_t c) {
 	int row;
@@ -25,12 +25,13 @@ void graphic_rect(struct GRAPHIC *WINDOW, int x, int y, int w, int h,
 
 	for (row = 0; row < h; row++) {
 		for (col = 0; col < w; col++) {
-			graphic_pixel(WINDOW, x + col, y + row, c);
+			GRAPHIC_PIXEL(WINDOW, x + col, y + row, c);
 		}
 	}
 }
 
 // clang-format off
+
 static unsigned short font5x3[95] = {
 	0X0000, 0X2092, 0X002d, 0X5f7d, 0X279e,
 	0X52a5, 0X7ad6, 0X0012, 0X4494, 0X1491,
@@ -61,7 +62,7 @@ static void graphic_text(struct GRAPHIC *WINDOW, int x, int y, char *s, int scal
 	while (*s) {
 		char chr = *s++;
 		if (chr > 32) {
-			uint16_t bmp = font5x3[chr];
+			uint16_t bmp = font5x3[(int)chr];
 			for (dy = 0; dy < 5; dy++) {
 				for (dx = 0; dx < 3; dx++) {
 					if (bmp >> (dy * 3 + dx) & 1) {
@@ -85,23 +86,18 @@ static void graphic_text(struct GRAPHIC *WINDOW, int x, int y, char *s, int scal
  * ============================================================ */
 
 
-#ifdef _WIN32
-int WINAPI
-	WinMain(void)
-#else
 int
 	main(void)
-#endif
 {
 	bool           (has_keys);
 	int            (i);
 	unsigned int   (buffer)[W * H];
 	struct GRAPHIC (WINDOW);
 
-	WINDOW.title = "Press any key...";
-	WINDOW.width = W;
-	WINDOW.height = H;
-	WINDOW.buffer = buffer;
+	WINDOW.TITLE = "Press any key...";
+	WINDOW.WIDTH = W;
+	WINDOW.HEIGHT = H;
+	WINDOW.BUFFER = buffer;
 	WINDOW_OPEN(&WINDOW);
 
 	while (!GRAPHIC_LOOP(&WINDOW))
@@ -112,7 +108,7 @@ int
 		i = -1;
 		while (++i, i < 128)
 		{
-			if (WINDOW.keys[i])
+			if (WINDOW.KEYS[i])
 			{
 				has_keys = true;
 				*p++ = i;
@@ -122,21 +118,21 @@ int
 		graphic_rect(&WINDOW, 0, 0, W, H, 0);
 
 		/* draw mouse "pointer" */
-		if (WINDOW.x > 5 && WINDOW.y > 5 && WINDOW.x < WINDOW.width - 5 && \
-			WINDOW.y < WINDOW.height - 5)
-			graphic_rect(&WINDOW, WINDOW.X - 3, WINDOW.Y - 3, 6, 6, WINDOW.mouse ? 0xffffff : 0xff0000);
+		if (WINDOW.X > 5 && WINDOW.Y > 5 && WINDOW.X < WINDOW.WIDTH - 5 && \
+			WINDOW.Y < WINDOW.HEIGHT - 5)
+			graphic_rect(&WINDOW, WINDOW.X - 3, WINDOW.Y - 3, 6, 6, WINDOW.MOUSE ? 0xffffff : 0xff0000);
 
 		graphic_text(&WINDOW, 8, 8, s, 4, 0xffffff);
 		if (has_keys)
 		{
-			if (WINDOW.key_mode & 1)
+			if (WINDOW.KEY_MODE & 1)
 				graphic_text(&WINDOW, 8, 40, "Ctrl", 4, 0xffffff);
 
-			if (WINDOW.key_mode & 2)
+			if (WINDOW.KEY_MODE & 2)
 				graphic_text(&WINDOW, 8, 80, "Shift", 4, 0xffffff);
 		}
 
-		if (WINDOW.keys[27])
+		if (WINDOW.KEYS[27])
 			break;
 
 		GRAPHIC_FPS(&WINDOW, 60);

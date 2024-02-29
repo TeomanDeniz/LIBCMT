@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -16,11 +16,12 @@
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
 |*............................................................................*|
-|*       NAME      :    TYPE    :                DESCRIPTION                  *|
-|*.................:............:.............................................*|
-|* __STD_REGPARM__ : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND THE *|
-|*                 :            : ARIABLES TO FUNCTION VIA PURE REGISTERS.    *|
-|*.................:............:.............................................*|
+|*   NAME  :    TYPE    :                    DESCRIPTION                      *|
+|*.........:............:.....................................................*|
+|* REGPARM : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND THE         *|
+|* regparm :            : VARIABLES TO FUNCTION VIA USING PURE REGISTERS      *|
+|*         :            : USING MEMORY.                                       *|
+|*.........:............:.....................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -35,26 +36,27 @@
 |* FOR MORE EFFECTIVE OPTIMISATION, USE "register" KEYWORD ON YOUR ARGUMENTS. *|
 |*                                                                            *|
 |* YOU MUST ENTER THE NUMBER OF VARIABLES THAT PASS TO FUNCTION VIA REGISTERS *|
-|* IN THE INPUT ARGUMENT. "__STD_REGPARM__(NUMBER OF REGISTERS)"              *|
+|* IN THE INPUT ARGUMENT. "REGPARM(NUMBER OF REGISTERS)"                      *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
-|* ;.., void __STD_REGPARM__(1) function(int b)	{                             *|
+|* ;.., void REGPARM(1) function(int b)	{                                     *|
 |* :  :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., void __STD_REGPARM__(2) function(int a, int b)                        *|
+|* ;.., void REGPARM(2) function(int a, int b)                                *|
 |* :  : {                                                                     *|
 |* :  :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., void __STD_REGPARM__(4) function(int a, float b, long c, char d)      *|
+|* ;.., void regparm(4) function(int a, float b, long c, char d)              *|
 |* :  : {                                                                     *|
 |* :  :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., void __STD_REGPARM__(2) function(register int a, register float b)    *|
+|* ;.., FOR THE MOST EFFECTIVE:                                               *|
+|*    , void regparm(2) function(register int a, register float b)            *|
 |*    : {                                                                     *|
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
@@ -90,7 +92,6 @@
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef REGPARM_H
-
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -99,23 +100,20 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define REGPARM_H 202402
-
+#	define REGPARM_H 202402 /* VERSION */
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef __STD_REGPARM__
+#	undef REGPARM
+#	undef regparm
 /* ****************************** [^] RESET [^] ***************************** */
-
 #	ifdef _MSC_VER
-#		define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__) \
+#		define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 			__attribute__((fastcall))
 #	else
 #		ifdef __cplusplus
-#			define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__) \
+#			define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 				__attribute__((fastcall))
 #		else
 #			if (\
@@ -127,24 +125,24 @@
 				)\
 			) /* IS GCC VERSION 2.7.1 OR GREATHER (MAXIMUM C90) */
 #				ifdef __clang__
-#					define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__) \
+#					define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 						__attribute__((\
 						regparm(__REGPARM_NUMBER_OF_VARIABLES__)))
 #				else
 #					ifdef __DJGPP__ /* MS-DOS */
-#						define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__)
+#						define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)
 #					else
-#						define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__)\
+#						define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)\
 							__attribute__((\
 							regparm(__REGPARM_NUMBER_OF_VARIABLES__)))
 #					endif /* DJGPP */
 #				endif /* __clang__ */
 #			else
-#				define __STD_REGPARM__(__REGPARM_NUMBER_OF_VARIABLES__)
+#				define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)
 #			endif /* GNUC */
 #		endif /* C++ */
 #	endif /* MICROSOFT C++ */
-
+#	define regparm REGPARM
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -16,34 +16,33 @@
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
 |*............................................................................*|
-|*        NAME       :    TYPE    :               DESCRIPTION                 *|
-|*...................:............:...........................................*|
-|* __STD_ALIGN__     : #define () : SETS THE ALIGNMENT OF OBJECTS IN MEMORY   *|
-|*                   :            : TO TAKE MAXIMUM ADVANTAGE OF THE HARDWARE *|
-|*                   :            : ARCHITECTURE.                             *|
-|*...................:............:...........................................*|
-|* __STD_MAX_ALIGN__ : #define    : RETURNS THE MAX SET VALUE OF ALIGNMENT.   *|
-|*...................:............:...........................................*|
+|*   NAME    :    TYPE    :                   DESCRIPTION                     *|
+|*...........:............:...................................................*|
+|* ALIGN     : #define () : ???                                               *|
+|* align     :            :                                                   *|
+|*...........:............:...................................................*|
+|* MAX_ALIGN : #define    : RETURNS THE MAX SET VALUE OF ALIGNMENT.           *|
+|*...........:............:...................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* ::::::::::::::::::::::::::: __STD_MAX_ALIGN__ :::::::::::::::::::::::::::: *|
+|* ::::::::::::::::::::::::::::::: MAX_ALIGN :::::::::::::::::::::::::::::::: *|
 |* IT RETURNS A VALUE OF THE MAX ALING NUMBER YOUR COMPILER CAN ACCEPT.       *|
 |*                                                                            *|
-|* :::::::::::::::::: "__STD_ALIGN__(ALIGN_VALUE, OBJECT)" :::::::::::::::::: *|
+|* :::::::::::::::::::::: "ALIGN(ALIGN_VALUE, OBJECT)" :::::::::::::::::::::: *|
 |* O - EXAMPLE 1 (VARIABLES)                                                  *|
 |* :                                                                          *|
-|* ;.., __STD_ALIGN__(16, int var);                                           *|
-|* :  : __STD_ALIGN__(16, int var) = 42;                                      *|
+|* ;.., ALIGN(16, int var);                                                   *|
+|* :  : align(16, int var) = 42;                                              *|
 |* :                                                                          *|
 |* ;... AN EXAMPLE OF CREATING AN INTEGER AND SETTING VARIABLE'S ALIGN AS 16. *|
 |*                                                                            *|
 |* O - EXAMPLE 2 (STRUCTS)                                                    *|
 |* :                                                                          *|
-|* ;.., __STD_ALIGN__(__STD_MAX_ALIGN__, struct s_struct                      *|
+|* ;.., ALIGN(MAX_ALIGN, struct s_struct                                      *|
 |* :  : {                                                                     *|
 |* :  :     . . .                                                             *|
 |* :  : });                                                                   *|
@@ -56,7 +55,8 @@
 |*                                                                            *|
 |* O - EXAMPLE 3 (FUNCTIONS)                                                  *|
 |* :                                                                          *|
-|* ;.., __STD_ALIGN__(16, void) function(void)                                *|
+|* ;.., YES. ALIGNING FUNCTIONS. WTF                                          *|
+|*    : align(16, void) function(void)                                        *|
 |*    : {                                                                     *|
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
@@ -83,7 +83,6 @@
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef ALIGN_H
-
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -92,30 +91,23 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define ALIGN_H 202402
-
+#	define ALIGN_H 202402 /* VERSION */
 /* ****************************** [v] RESET [v] ***************************** */
-#	undef __STD_ALIGN__
-#	undef __STD_MAX_ALIGN__
+#	undef ALIGN
+#	undef MAX_ALIGN
 /* ****************************** [^] RESET [^] ***************************** */
-
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include	"../ENVIRONMENTS/CACHE.h" /*
-#	 define L1_CACHE_BYTES;
+#	 define L1_CACHE_BYTES
 #	*/
 /* **************************** [^] INCLUDES [^] **************************** */
-
-#	define __STD_MAX_ALIGN__ L1_CACHE_BYTES
+#	define MAX_ALIGN L1_CACHE_BYTES
 #	ifdef _MSC_VER /* MICROSOFT C++ */
-#		define __STD_ALIGN__(__ALIGN_VARIABLE__, ...) \
-			__declspec(align(__ALIGN_VARIABLE__ <= \
-			__STD_MAX_ALIGN__ ? __ALIGN_VARIABLE__ : \
-			__STD_MAX_ALIGN__)) __VA_ARGS__
+#		define ALIGN(__ALIGN_VARIABLE__, ...) \
+			__declspec(align(__ALIGN_VARIABLE__)) __VA_ARGS__
 #	else
 #		if (\
 			defined(__GNUC__) && /* IF GCC */\
@@ -125,13 +117,13 @@
 				(__GNUC_PATCHLEVEL__ >= 1) /* IF GEQ X.X.1 */\
 			)\
 		) /* IS GCC VERSION 2.7.1 OR GREATHER (MAXIMUM C90) */
-#			define __STD_ALIGN__(__ALIGN_VARIABLE__, ...) \
-				__VA_ARGS__ __attribute__((aligned(__ALIGN_VARIABLE__ <= \
-				__STD_MAX_ALIGN__ ? __ALIGN_VARIABLE__ : __STD_MAX_ALIGN__)))
+#			define ALIGN(__ALIGN_VARIABLE__, ...) \
+				__VA_ARGS__ __attribute__((aligned(__ALIGN_VARIABLE__)))
 #		else
-#			define __STD_ALIGN__(__ALIGN_VARIABLE__, ...) __VA_ARGS__
+#			define ALIGN(__ALIGN_VARIABLE__, ...) __VA_ARGS__
 #		endif /* __GNUC__ */
 #	endif /* _MSC_VER */
+#	define align ALIGN
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */

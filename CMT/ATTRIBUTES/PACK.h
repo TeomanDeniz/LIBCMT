@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -24,7 +24,7 @@
 |* PRAGMA_PACK_POP   : #define : END OF THE PACKING EFFECTION [WORKS LIKE     *|
 |*                   :         : #pragma pack(pop)].                          *|
 |*...................:.........:..............................................*|
-|* __STD_PACK__      : #define : PACK THE SPECIFICALLY SELECTED STRUCT.       *|
+|* PACK              : #define : PACK THE SPECIFICALLY SELECTED STRUCT.       *|
 |*...................:.........:..............................................*|
 \******************************************************************************/
 
@@ -33,8 +33,8 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
-|* YOU MUST USE BOTH __STD_PACK__ AND PRAGMA_PACK_... ON A STRUCT IF YOU WANT *|
-|* TO PACK IT. IF YOU WANNA USE FULL SYNTAX SUPPORT OF THIS FEATURE.          *|
+|* YOU MUST USE BOTH "PACK" AND "PRAGMA_PACK_..." ON A STRUCT IF YOU WANT TO  *|
+|* PACK IT. IF YOU WANNA USE FULL SYNTAX SUPPORT OF THIS FEATURE.             *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
@@ -43,14 +43,14 @@
 |* :  : struct test                                                           *|
 |* :  : {                                                                     *|
 |* :  :     . . .                                                             *|
-|* :  : } __STD_PACK__;                                                       *|
+|* :  : } PACK;                                                               *|
 |* :  : PRAGMA_PACK_POP                                                       *|
 |* :                                                                          *|
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
 |*    : typedef struct test                                                   *|
 |*    : {                                                                     *|
 |*    :     . . .                                                             *|
-|*    : } __STD_PACK__ t_test;                                                *|
+|*    : } PACK t_test;                                                        *|
 |*    : PRAGMA_PACK_POP                                                       *|
 |*                                                                            *|
 \******************************************************************************/
@@ -96,7 +96,7 @@
 |*    :  : {                                                                  *|
 |*    :  :     int a;                                                         *|
 |*    :  :     char b;                                                        *|
-|*    :  : } __STD_PACK__;                                                    *|
+|*    :  : } PACK;                                                            *|
 |*    :  : PRAGMA_PACK_POP                                                    *|
 |*    :                                                                       *|
 |*    ;... THIS STRUCT'S SIZEOF GOING TO BE [5] BYTES NOW!                    *|
@@ -122,7 +122,6 @@
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef PACK_H
-
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -131,24 +130,20 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define PACK_H 202402
-
+#	define PACK_H 202402 /* VERSION */
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef PRAGMA_PACK_PUSH
 #	undef PRAGMA_PACK_POP
-#	undef __STD_PACK__
+#	undef PACK
 /* ****************************** [^] RESET [^] ***************************** */
-
 #	ifdef _MSC_VER /* MICROSOFT C++ */
 #		define PRAGMA_PACK_PUSH(PRAGMA_PACK_PUSH_MSC_VER) \
 			__pragma(pack(push, PRAGMA_PACK_PUSH_MSC_VER));
 #		define PRAGMA_PACK_POP __pragma(pack(pop));
-#		define __STD_PACK__ /* EMPTY */
+#		define PACK /* EMPTY */
 #	else
 #		if (\
 			defined(__GNUC__) && /* IF GCC */\
@@ -158,22 +153,21 @@
 				(__GNUC_PATCHLEVEL__ >= 1) /* IF GEQ X.X.1 */\
 			)\
 		) /* IS GCC VERSION 2.7.1 OR GREATHER (MAXIMUM C90) */
-#			ifndef __TINYC__ /* TCC */
-#				define PRAGMA_PACK_PUSH _Pragma("pack(push, 1)")
-#				define PRAGMA_PACK_POP _Pragma("pack(pop)");
-#				define __STD_PACK__ __attribute__((packed))
-#			else
+#			ifdef __TINYC__ /* TCC */
 #				define PRAGMA_PACK_PUSH /* EMPTY */
 #				define PRAGMA_PACK_POP /* EMPTY */
-#				define __STD_PACK__ __attribute__((packed))
+#				define PACK __attribute__((packed))
+#			else
+#				define PRAGMA_PACK_PUSH _Pragma("pack(push, 1)")
+#				define PRAGMA_PACK_POP _Pragma("pack(pop)");
+#				define PACK __attribute__((packed))
 #			endif /* __TINYC__ */
 #		else
 #			define PRAGMA_PACK_PUSH /* EMPTY */
 #			define PRAGMA_PACK_POP /* EMPTY */
-#			define __STD_PACK__ /* EMPTY */
+#			define PACK /* EMPTY */
 #		endif /* GNUC */
 #	endif /* _MSC_VER */
-
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */

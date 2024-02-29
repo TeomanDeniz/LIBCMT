@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/01/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -80,7 +80,6 @@
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef UNUSED_H
-
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -89,20 +88,16 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define UNUSED_H 202402
-
+#	define UNUSED_H 202402 /* VERSION */
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef UNUSED
 #	undef NOPE
 #	undef unused
 #	undef nope
 /* ****************************** [^] RESET [^] ***************************** */
-
 #	ifdef _MSC_VER
 #		define UNUSED __pragma(warning(suppress:4505))
 #		define NOPE __pragma(warning(suppress:4100))
@@ -129,12 +124,10 @@
 #			endif /* __GNUC__ */
 #		endif /* __cplusplus */
 #	endif /* MICROSOFT C++ */
-
 /* **************************** [v] LOWERCASE [v] *************************** */
 #	define unused UNUSED
 #	define nope NOPE
 /* **************************** [^] LOWERCASE [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */

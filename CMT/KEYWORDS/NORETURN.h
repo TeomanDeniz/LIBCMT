@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -68,7 +68,6 @@
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef NORETURN_H
-
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -77,23 +76,18 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define NORETURN_H 202402
-
+#	define NORETURN_H 202402 /* VERSION */
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef STD_NORETURN
 #	undef __noreturn_is_defined
 #	undef __NORETURN_IS_DEFINED
 /* ****************************** [^] RESET [^] ***************************** */
-
 #	ifndef __STDNORETURN_H
 #		define __STDNORETURN_H /* <stdnoreturn.h> */
 #	endif /* __STDNORETURN_H */
-
 #	if (\
 		defined(__clang__) && /* IF CLANG */\
 		(\
