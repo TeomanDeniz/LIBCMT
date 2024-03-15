@@ -14,7 +14,7 @@
 # +.....................++.....................+ #                             #
 # : C - Maximum Tension :: Create - 2023/05/25 : #                             #
 # :---------------------::---------------------: #                             #
-# : License - AGPL-3.0  :: Update - 2024/01/24 : #                             #
+# : License - AGPL-3.0  :: Update - 2024/03/15 : #                             #
 # +.....................++.....................+ #                             #
 \******************************************************************************/
 
@@ -84,7 +84,7 @@ Modifier keys:
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define GRAPHICS_H 202402 /* VERSION */
+#	define GRAPHICS_H 202403 /* VERSION */
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include	"CMT/KEYWORDS/INLINE.h" /*
 #	 define	INLINE
