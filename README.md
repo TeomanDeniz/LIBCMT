@@ -12,7 +12,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/regparm.png) **[REGPARM](https://github.com/TeomanDeniz/LIBCMT/blob/main/CMT/ATTRIBUTES/REGPARM.h)** - Pass arguments to a function via using CPU registers.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/environments.png) **Environments**
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif) **[CACHE](https://github.com/TeomanDeniz/LIBCMT/blob/main/CMT/ENVIRONMENTS/CACHE.h)** - You can get informatig about CPU architecture.
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif) **[CACHE](https://github.com/TeomanDeniz/LIBCMT/blob/main/CMT/ENVIRONMENTS/CACHE.h)** - You can get information about your CPU architecture.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/functions.png) **Functions**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/dll.png) **[DLL](https://github.com/TeomanDeniz/LIBCMT/blob/main/CMT/FUNCTIONS/DLL.h)** - Cross platform dynamic link library functions.
