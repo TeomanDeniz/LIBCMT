@@ -127,6 +127,7 @@
 				defined(_TMS320C5X) || /* TI-CGT C5000 SERIES */\
 				defined(_TMS320C5XX) || /* TI-CGT C54X SERIES */\
 				defined(TMS320C55X) || /* TI-CGT C55X SERIES */\
+				defined(_M_I86) || /* INTEL 16BIT CPU */\
 				(\
 					defined(__XC16__) || /* PIC XC COMPILER */\
 					defined(__C30__) || /* dsPIC30/dsPIC33 SERIES */\
@@ -140,7 +141,8 @@
 #				define SMP_CACHE_SHIFT 4 /* SAMPLE */
 #				define __CACHE_BYTES__ 2 /* BYTES */
 #			else /* 32 BIT */
-#				if ( \
+#				if (\
+					defined(_M_IX86) || /* INTEL 32BIT CPU */\
 					defined(__ESP8266__) || /* ESPRESSIF ESP8266 */\
 					defined(__DJGPP__) || /* DJGPP DOS C COMPILER */\
 					defined(__BORLANDC__) || /* BORLAND C COMPILER (BCC32) */\
@@ -198,15 +200,27 @@
 						defined(__sun) || /* SUN STUDIO */\
 						defined(__DMC__) || /* DIGITAL MARS (DMD) */\
 						defined(__aarch64__) || /* ARM V8 */\
+						defined(__ppc64__) || /* POWER PC 64 */\
+						defined(__PPC64__) || /* POWER PC 64 */\
+						defined(__powerpc64__) || /* POWER PC 64 */\
 						defined(__x86_64__) || /* X86 / INTEL */\
 						(\
 							(\
 								defined(__GNUC__) || /* GCC */\
 								defined(__clang__) /* LLVM */\
-							) && (\
-								defined(__i386__) || /* INTEL CPU */\
-								defined(__i486__) || /* INTEL CPU */\
-								defined(__i586__) || /* INTEL CPU */\
+							) && ( /* INTEL 64 BIT CPU DEFINES */\
+								defined(i386) || /* GNU C */\
+								defined(__i386) || /* SUN STUDIO */\
+								defined(__IA32__) || /* VOS C */\
+								defined(__X86__) || /* WATCOM C/C++ */\
+								defined(_X86_) || /* MINGW32 */\
+								defined(__THW_INTEL__) || /* XL C/C++ */\
+								defined(__I86__) || /* DIGITAL MARS */\
+								defined(__INTEL__) || /* CODE WARRIOR */\
+								defined(__386) || /* DIAB */\
+								defined(__i386__) || /* GNU C */\
+								defined(__i486__) || /* GNU C */\
+								defined(__i586__) || /* GNU C */\
 								defined(__i686__) /* INTEL CPU */\
 							)\
 						) || (\
@@ -264,6 +278,7 @@
 #					endif /* 64 BIT */
 #				endif /* 32 BIT */
 #			endif /* 16 BIT */
+#		endif /* 8 BIT */
 #	endif /* ARC CACHE AUTOMATIC */
 #	ifdef __cplusplus /* C++ */
 		}
