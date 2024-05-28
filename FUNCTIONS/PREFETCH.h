@@ -102,17 +102,17 @@
 #	ifdef _MSC_VER
 #		include	<xmmintrin.h> /*
 #		   void	_mm_prefetch(const void *__P, enum _mm_hint __I);
-#*/
+#		        */
 #	endif /* MICROSOFT C++ */
 #	include	"../KEYWORDS/INLINE.h" /*
 #	 define INLINE
-#*/
-#	include	"../KEYWORDS/UNUSED.h" /*
-#	 define NOPE
-#*/
+#		        */
+#	include	"../KEYWORDS/IGNORE.h" /*
+#	 define IGNORE
+#		        */
 #	include	"../ENVIRONMENTS/CACHE.h" /*
 #	 define L1_CACHE_BYTES
-#*/
+#		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 /* **************************** [v] PREFETCH [v] **************************** */
 #	ifndef PREFETCH_STRIDE
@@ -258,8 +258,8 @@ extern INLINE void
 		!defined(ARCH_HAS_PREFETCH) && \
 		!defined(PREFETCH)\
 	)
-	NOPE VARIABLE;
-	NOPE LENGHT;
+	IGNORE VARIABLE;
+	IGNORE LENGHT;
 #	else
 	char *(CACHE);
 	char   *(END);

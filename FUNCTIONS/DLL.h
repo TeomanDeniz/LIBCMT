@@ -110,17 +110,17 @@
 #		   void *dlopen(char *, int);
 #		   void *dlsym(void *, char *);
 #		    int dlclose(void *);
-#		*/
+#		        */
 #	endif /* UNIX */
 #	ifdef _WIN32
 #		include <windef.h> /*
 #		typedef HINSTANCE;
-#		*/
+#		        */
 #		include <winbase.h> /*
 #		 define LoadLibrary
 #		FARPROC GetProcAddress(HINSTANCE, LPCSTR);
 #		   BOOL FreeLibrary(HMODULE);
-#		*/
+#		        */
 #	endif
 /* **************************** [^] INCLUDES [^] **************************** */
 #	if (\
