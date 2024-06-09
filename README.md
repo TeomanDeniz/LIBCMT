@@ -29,3 +29,6 @@ LIBCMT
 
 Graphics
 ---
+
+* © These icons are inspired by the style of Windows 2000 icons. They are original creations and are not affiliated with or endorsed by Microsoft.
+
