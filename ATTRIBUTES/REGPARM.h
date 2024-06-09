@@ -18,9 +18,9 @@
 |*............................................................................*|
 |*   NAME  :    TYPE    :                    DESCRIPTION                      *|
 |*.........:............:.....................................................*|
-|* REGPARM : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND THE         *|
+|* REGPARM : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND             *|
 |* regparm :            : VARIABLES TO FUNCTION VIA USING PURE REGISTERS      *|
-|*         :            : USING MEMORY.                                       *|
+|*         :            : INSTEAD OF USING MEMORY.                            *|
 |*.........:............:.....................................................*|
 \******************************************************************************/
 
