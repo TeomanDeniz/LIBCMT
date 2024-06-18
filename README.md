@@ -11,8 +11,11 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/pack.png) **[PACK](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)** - Packs and removes the padding bytes from your struct.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/regparm.png) **[REGPARM](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)** - Pass arguments to a function via using CPU registers.
 
-+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm.gif) **ASM**
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.png) **[PUSH & POP](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)** - Add the value to CPU stack (Only for register variables)
++ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm2.gif) **ASM**
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif) **[PUSH & POP](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)** - Add the value to CPU stack (Only for register variables)
+
++ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/plaltform_corssing.gif) **Platform Crossing**
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/va_args.gif) **[VA_ARGS](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)** - Make va_args function work on older compilers (For before C89)
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/environments.png) **Environments**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif) **[CACHE](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CACHE.h)** - You can get information about your CPU architecture.
