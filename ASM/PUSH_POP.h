@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/02/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -57,13 +57,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
-#ifdef PUSH_POP_H
-#	if (PUSH_POP_H < LIBRARY_VERSION)
-#		undef PUSH_POP_H /* OLD VERSION DETECTED */
-#	endif /* PUSH_POP_H < LIBRARY_VERSION */
-#endif /* PUSH_POP_H */
-#undef LIBRARY_VERSION
+#if (defined(PUSH_POP_H) && PUSH_POP_H < 202503)
+#	undef PUSH_POP_H /* OLD VERSION DETECTED */
+#endif /* PUSH_POP_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef PUSH_POP_H
@@ -75,12 +71,15 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define PUSH_POP_H 202402 /* VERSION */
+
+#	define PUSH_POP_H 202503 /* VERSION */
 #	define push(PUSH_VAR) \
 		__asm__ __volatile__("push %0" : : "rm"((long)PUSH_VAR))
+
 #	if (\
 		defined(_WIN32) || /* WINDOWS */\
 		defined(__DJGPP__) /* MS-DOS */\
@@ -88,15 +87,18 @@
 #		define pop(POP_VAR) \
 		__asm__ __volatile__("pop %0" : "=rm"((long)POP_VAR))
 #	else
-#		define pop(POP_VAR) {\
-			register long	POP_RAX_##POP_VAR;\
-			__asm__ __volatile__("pop %0" : "=rm"(POP_RAX_##POP_VAR));\
-			POP_VAR = POP_RAX_##POP_VAR;\
+#		define pop(POP_VAR) \
+			{\
+				register long	POP_RAX_##POP_VAR;\
+				__asm__ __volatile__("pop %0" : "=rm"(POP_RAX_##POP_VAR));\
+				POP_VAR = POP_RAX_##POP_VAR;\
 			}
 #	endif /* MICROSOFT */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

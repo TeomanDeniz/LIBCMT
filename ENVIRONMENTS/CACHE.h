@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,31 +18,31 @@
 |*............................................................................*|
 |*       NAME      :   TYPE  :                   DESCRIPTION                  *|
 |*.................:.........:................................................*|
-|* __CACHE_BYTES__ : #define : TELLS HOW MANY BYTES OF ARCHITECTURE THE       *|
-|*                 :         : DEVICE OR COMPILER HAS.                        *|
+|* __CACHE_BYTES__ : #define : INDICATES HOW MANY BYTES THE ARCHITECTURE      *|
+|*                 :         : OF THE DEVICE OR COMPILER USES.                *|
 |*.................:.........:................................................*|
-|* L1_CACHE_BYTES  : #define : TELLS HOW MANY BITS OF ARCHITECTURE THE DEVICE *|
-|*                 :         : OR COMPILER HAS.                               *|
+|* L1_CACHE_BYTES  : #define : INDICATES HOW MANY BITS THE ARCHITECTURE OF    *|
+|*                 :         : THE DEVICE OR COMPILER USES.                   *|
 |*.................:.........:................................................*|
-|* L1_CACHE_SHIFT  : #define : TELLS HOW MANY BIT SHIFTS OF ARCHITECTURE THE  *|
-|*                 :         : DEVICE OR COMPILER HAS.                        *|
+|* L1_CACHE_SHIFT  : #define : INDICATES THE NUMBER OF BIT SHIFTS IN THE      *|
+|*                 :         : ARCHITECTURE OF THE DEVICE OR COMPILER.        *|
 |*.................:.........:................................................*|
 |* CACHE_LINE_MASK : #define : NEGATIVE VERSION OF (L1_CACHE_BYTES).          *|
 |*.................:.........:................................................*|
-|* SMP_CACHE_BYTES : #define : SYMMETRIC MULTIPROCESSING SYSTEM (SMP), BUT    *|
+|* SMP_CACHE_BYTES : #define : FOR SYMMETRIC MULTIPROCESSING SYSTEMS (SMP),   *|
 |*                 :         : SAME AS (L1_CACHE_BYTES).                      *|
 |*.................:.........:................................................*|
-|* SMP_CACHE_SHIFT : #define : SYMMETRIC MULTIPROCESSING SYSTEM (SMP), BUT    *|
+|* SMP_CACHE_SHIFT : #define : FOR SYMMETRIC MULTIPROCESSING SYSTEMS (SMP),   *|
 |*                 :         : SAME AS (L1_CACHE_SHIFT).                      *|
 |*.................:.........:................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                              WTF DOES THAT DO?                           #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* THESE DEFINES ARE SHOWS YOU HOW MANY BITS THE ARCHITECTURE IS.             *|
+|* THESE DEFINES SHOW YOU HOW MANY BITS THE ARCHITECTURE USES.                *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -50,22 +50,21 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* FOR THE LINUX CACHE.H LIBRARY, I NEEDED TO PREFER THE OLD VERSION          *|
-|* [__read_mostly] DEFINE. I AM USING v2.6.27-rc2 -> v4.7.10 FOR MAKE IT WORK *|
-|* ON OLD VERSIONS TOO.                                                       *|
+|* FOR THE LINUX CACHE.H LIBRARY, I PREFER USING THE OLD VERSION OF THE       *|
+|* [__read_mostly] DEFINE. I AM USING v2.6.27-rc2 -> v4.7.10 TO MAKE IT WORK  *|
+|* ON OLDER VERSIONS AS WELL.                                                 *|
 |*                                                                            *|
-|* ADDED THE [__ro_after_init] DEFINATION THAT REMOVED ON NEWEST VERSIONS.    *|
+|* ADDED THE [__ro_after_init] DEFINITION, WHICH WAS REMOVED IN NEWER         *|
+|* VERSIONS.                                                                  *|
 |*                                                                            *|
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
 #ifdef CACHE_H
-#	if (CACHE_H < LIBRARY_VERSION)
+#	if (CACHE_H < 202503)
 #		undef CACHE_H /* OLD VERSION DETECTED */
-#	endif /* CACHE_H < LIBRARY_VERSION */
+#	endif /* CACHE_H < {LIBRARY_VERSION} */
 #endif /* CACHE_H */
-#undef LIBRARY_VERSION
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef CACHE_H
@@ -75,10 +74,13 @@
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define CACHE_H 202402 /* VERSION */
+
+#	define CACHE_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef __CACHE_BYTES__
 #	undef CACHE_LINE_MASK
@@ -86,6 +88,7 @@
 #	undef L1_CACHE_SHIFT
 #	undef SMP_CACHE_BYTES
 /* ****************************** [^] RESET [^] ***************************** */
+
 #	if (defined(CONFIG_ARC_CACHE_LINE_SHIFT) || defined(CONFIG_L1_CACHE_SHIFT))
 #		ifdef CONFIG_ARC_CACHE_LINE_SHIFT
 #			define L1_CACHE_SHIFT CONFIG_ARC_CACHE_LINE_SHIFT /* ARC STANDARD */
@@ -97,7 +100,7 @@
 #		define CACHE_LINE_MASK (~(L1_CACHE_BYTES - 1)) /* - MASK (AUTOMATIC) */
 #		define SMP_CACHE_BYTES L1_CACHE_BYTES /* SAMPLE (AUTOMATIC) */
 #		define SMP_CACHE_SHIFT L1_CACHE_SHIFT /* SAMPLE */
-#	else /* 8 BIT */ // HOLY SHIT
+#	else /* 8 BIT */ // SORRY BUT WHY?
 #		if (\
 			defined(__SCCZ80) || /* SMALL DEVICE C COMPILER ZILOG Z80 */\
 			defined(__STM8__) || /* EXPERIMENTAL SUPPORT IN SDCC */\
@@ -117,7 +120,7 @@
 #			define CACHE_LINE_MASK -8 /* - MASK */
 #			define SMP_CACHE_BYTES 8 /* SAMPLE */
 #			define SMP_CACHE_SHIFT 3 /* SAMPLE */
-#			define __CACHE_BYTES__ 1 /* BYTE */ // (PROBABLY)
+#			define __CACHE_BYTES__ 1 /* BYTE */ // (PROBABLY???)
 #		else /* 16 BIT */
 #			if (\
 				defined(__RL78__) || /* RENESAS RL78 */\
@@ -132,6 +135,9 @@
 					defined(__XC16__) || /* PIC XC COMPILER */\
 					defined(__C30__) || /* dsPIC30/dsPIC33 SERIES */\
 					defined(__XC16) /* PIC XC COMPILER */\
+				) || (\
+					defined(__DMC__) && /* DIGITAL MARS (DMC) */\
+					(__INTSIZE == 2) /* 16 BIT */\
 				)\
 			)
 #				define L1_CACHE_SHIFT 4 /* 2^4 16 BIT */
@@ -178,6 +184,9 @@
 					) || (\
 						defined(__ARM_ARCH) && /* ARM CPU */ \
 						!defined(__ARM_ARCH_8A__) /* ARM CPU */\
+					) || (\
+						defined(__DMC__) && /* DIGITAL MARS (DMC) */\
+						(__INTSIZE == 4) /* 32 BIT */\
 					)\
 				)
 #					define L1_CACHE_SHIFT 5 /* 2^5 32 BIT */
@@ -198,7 +207,6 @@
 						defined(__WATCOMC__) || /* OPEN WATCOM */\
 						defined(__SUNPRO_C) || /* SUN STUDIO */\
 						defined(__sun) || /* SUN STUDIO */\
-						defined(__DMC__) || /* DIGITAL MARS (DMD) */\
 						defined(__aarch64__) || /* ARM V8 */\
 						defined(__ppc64__) || /* POWER PC 64 */\
 						defined(__PPC64__) || /* POWER PC 64 */\
@@ -280,9 +288,11 @@
 #			endif /* 16 BIT */
 #		endif /* 8 BIT */
 #	endif /* ARC CACHE AUTOMATIC */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

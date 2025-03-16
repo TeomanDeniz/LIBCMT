@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -94,14 +94,17 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define PREFETCH_H 202402 /* VERSION */
+
+#	define PREFETCH_H 202503 /* VERSION */
+
 /* **************************** [v] INCLUDES [v] **************************** */
 #	ifdef _MSC_VER
 #		include	<xmmintrin.h> /*
-#		   void	_mm_prefetch(const void *__P, enum _mm_hint __I);
+#		   void	_mm_prefetch(void *, enum _mm_hint);
 #		        */
 #	endif /* MICROSOFT C++ */
 #	include	"../KEYWORDS/INLINE.h" /*
@@ -114,6 +117,7 @@
 #	 define L1_CACHE_BYTES
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
 /* **************************** [v] PREFETCH [v] **************************** */
 #	ifndef PREFETCH_STRIDE
 #		define PREFETCH_STRIDE (4 * L1_CACHE_BYTES)
@@ -145,6 +149,7 @@
 #		endif /* MICROSOFT C++ */
 #	endif /* __TUNYC__ && __DJGPP__ && TRS80 && ARCH_HAS */
 /* **************************** [^] PREFETCH [^] **************************** */
+
 /* *************************** [v] PREFETCHW [v] **************************** */
 #	if (\
 		defined(__TINYC__) || /* TINY C COMPILER */\
@@ -176,6 +181,7 @@
 #		endif /* MICROSOFT C++ */
 #	endif /* __TUNYC__ && __DJGPP__ && TRS80 && ARCH_HAS */
 /* *************************** [^] PREFETCHW [^] **************************** */
+
 /* **************************** [v] prefetch [v] **************************** */
 #	ifndef ARCH_HAS_PREFETCH
 #		ifdef __LINUX_ARM_ARCH__
@@ -200,20 +206,21 @@
 			prefetch(__PREFETCH_VARIABLE__)
 #	endif /* !ARCH_HAS_PREFETCH */
 /* **************************** [^] prefetch [^] **************************** */
+
 /* *************************** [v] prefetchw [v] **************************** */
 #	ifndef ARCH_HAS_PREFETCHW
 #		ifdef __LINUX_ARM_ARCH__
 #			ifndef __ALT_SMP_ASM
 #				ifdef CONFIG_SMP
-#					define __ALT_SMP_ASM(smp, up)\
-						"9998:	" smp "\n"\
+#					define __ALT_SMP_ASM(SMP, UP)\
+						"9998:	" SMP "\n"\
 						"	.pushsection \".alt.smp.init\", \"a\"\n"\
 						"	.align	2\n"\
 						"	.long	9998b - .\n"\
-						"	" up "\n"\
+						"	" UP "\n"\
 						"	.popsection\n"
 #				else
-#					define __ALT_SMP_ASM(smp, up)	up
+#					define __ALT_SMP_ASM(SMP, UP) UP
 #				endif /* CONFIG_SMP */
 #			endif /* !__ALT_SMP_ASM */
 #			if (__LINUX_ARM_ARCH__ >= 7)
@@ -242,6 +249,7 @@
 			prefetchw(__PREFETCHW_VARIABLE__)
 #	endif /* !ARCH_HAS_PREFETCHW */
 /* *************************** [^] prefetchw [^] **************************** */
+
 /* ************************* [v] PREFETCH_RANGE [v] ************************* */
 #	ifdef __STDC__ /* STANDARD C */
 extern INLINE void
@@ -249,9 +257,8 @@ extern INLINE void
 #	else /* K&R */
 extern INLINE void
 	PREFETCH_RANGE(VARIABLE, LENGHT)
-
-	void               *(VARIABLE);
-	register unsigned int (LENGHT);
+	void					*VARIABLE;
+	register unsigned int	LENGHT;
 #	endif /* __STDC__ */
 {
 #	if (\
@@ -261,8 +268,8 @@ extern INLINE void
 	IGNORE VARIABLE;
 	IGNORE LENGHT;
 #	else
-	char *(CACHE);
-	char   *(END);
+	char	*CACHE;
+	char	*END;
 
 	CACHE = (char *) VARIABLE;
 	END = (char *) VARIABLE + LENGHT;
@@ -284,15 +291,15 @@ extern INLINE void
 #		else /* K&R */
 extern INLINE void
 	prefetch_range(variable, lenght)
-
-	void               *(variable);
-	register unsigned int (lenght);
+	void					*variable;
+	register unsigned int	lenght;
 #		endif /* __STDC__ */
 {
 	PREFETCH_RANGE(variable, lenght);
 }
 #	endif /* _LINUX_PREFETCH_H */
 /* ************************* [^] prefetch_range [^] ************************* */
+
 /* *********************** [v] spin_lock_prefetch [v] *********************** */
 #	ifndef ARCH_HAS_SPINLOCK_PREFETCH
 #		ifndef spin_lock_prefetch
@@ -301,6 +308,7 @@ extern INLINE void
 #		endif /* !spin_lock_prefetch */
 #	endif /* !ARCH_HAS_SPINLOCK_PREFETCH */
 /* *********************** [^] spin_lock_prefetch [^] *********************** */
+
 /* *********************** [v] SPIN_LOCK_PREFETCH [v] *********************** */
 #	ifndef ARCH_HAS_SPINLOCK_PREFETCH
 #		define SPIN_LOCK_PREFETCH(__SPIN_LOCK_PREFETCH_VARIABLE__) \
@@ -312,9 +320,11 @@ extern INLINE void
 #		endif /* SPIN_LOCK_PREFETCH */
 #	endif /* !ARCH_HAS_SPINLOCK_PREFETCH */
 /* *********************** [^] SPIN_LOCK_PREFETCH [^] *********************** */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

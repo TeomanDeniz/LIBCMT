@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/17 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -58,13 +58,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402	 /* VERSION */
-#ifdef NORETURN_H
-#	if (NORETURN_H < LIBRARY_VERSION)
-#		undef NORETURN_H /* OLD VERSION DETECTED */
-#	endif /* NORETURN_H < LIBRARY_VERSION */
-#endif /* NORETURN_H */
-#undef LIBRARY_VERSION
+#if (defined(NORETURN_H) && NORETURN_H < 202503)
+#	undef NORETURN_H /* OLD VERSION DETECTED */
+#endif /* INLINE_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef NORETURN_H
@@ -76,18 +72,23 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define NORETURN_H 202402 /* VERSION */
+
+#	define NORETURN_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef STD_NORETURN
 #	undef __noreturn_is_defined
 #	undef __NORETURN_IS_DEFINED
 /* ****************************** [^] RESET [^] ***************************** */
+
 #	ifndef __STDNORETURN_H
 #		define __STDNORETURN_H /* <stdnoreturn.h> */
 #	endif /* __STDNORETURN_H */
+
 #	if (\
 		defined(__clang__) && /* IF CLANG */\
 		(\
@@ -120,9 +121,11 @@
 #			define __NORETURN_IS_DEFINED 0
 #		endif /* __GNUC__ */
 #	endif /* __clang__ */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

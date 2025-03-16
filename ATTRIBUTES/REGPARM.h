@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -82,13 +82,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
-#ifdef REGPARM_H
-#	if (REGPARM_H < LIBRARY_VERSION)
-#		undef REGPARM_H /* OLD VERSION DETECTED */
-#	endif /* REGPARM_H < LIBRARY_VERSION */
-#endif /* REGPARM_H */
-#undef LIBRARY_VERSION
+#if (defined(REGPARM_H) && REGPARM_H < 202503)
+#	undef REGPARM_H /* OLD VERSION DETECTED */
+#endif /* REGPARM_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef REGPARM_H
@@ -100,14 +96,18 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define REGPARM_H 202402 /* VERSION */
+
+#	define REGPARM_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef REGPARM
 #	undef regparm
 /* ****************************** [^] RESET [^] ***************************** */
+
 #	ifdef _MSC_VER
 #		define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 			__attribute__((fastcall))
@@ -142,10 +142,13 @@
 #			endif /* GNUC */
 #		endif /* C++ */
 #	endif /* MICROSOFT C++ */
+
 #	define regparm REGPARM
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

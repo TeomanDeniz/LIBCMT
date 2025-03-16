@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/03/15 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -90,65 +90,72 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define DLL_H 202403 /* VERSION */
+
+#	define DLL_H 202503 /* VERSION */
+
 /* **************************** [v] INCLUDES [v] **************************** */
 #	if (\
-			defined(__APPLE__) || /* MACOS / IOS */\
-			defined(__linux__) || /* LINUX */\
-			defined(__gnu_linux__) || /* LINUX (GNU) */\
-			defined(__FreeBSD__) || /* FREE BSD OS */\
-			defined(__NetBSD__) || /* NET BSD OS */\
-			defined(__OpenBSD__) || /* OPEN BSD OS */\
-			defined(__DragonFly__) || /* DRAGONFLY BSD */\
-			defined(__sun) /* SUN STUDIO */\
-		) /* UNIX */
+		defined(__APPLE__) || /* MACOS / IOS */\
+		defined(__linux__) || /* LINUX */\
+		defined(__gnu_linux__) || /* LINUX (GNU) */\
+		defined(__FreeBSD__) || /* FREE BSD OS */\
+		defined(__NetBSD__) || /* NET BSD OS */\
+		defined(__OpenBSD__) || /* OPEN BSD OS */\
+		defined(__DragonFly__) || /* DRAGONFLY BSD */\
+		defined(__sun) /* SUN STUDIO */\
+	) /* UNIX */
 #		include	<dlfcn.h> /*
 #		 define RTLD_LAZY
 #		   void *dlopen(char *, int);
 #		   void *dlsym(void *, char *);
 #		    int dlclose(void *);
 #		        */
+#	else /* NOT UNIX */
+#		ifdef _WIN32 /* WINDOWS */
+#			include <windef.h> /*
+#			typedef HINSTANCE;
+#			        */
+#			include <winbase.h> /*
+#			 define LoadLibrary
+#			FARPROC GetProcAddress(HINSTANCE, LPCSTR);
+#			   BOOL FreeLibrary(HMODULE);
+#			        */
+#		endif /* WINDOWS */
 #	endif /* UNIX */
-#	ifdef _WIN32
-#		include <windef.h> /*
-#		typedef HINSTANCE;
-#		        */
-#		include <winbase.h> /*
-#		 define LoadLibrary
-#		FARPROC GetProcAddress(HINSTANCE, LPCSTR);
-#		   BOOL FreeLibrary(HMODULE);
-#		        */
-#	endif
 /* **************************** [^] INCLUDES [^] **************************** */
+
 #	if (\
-			defined(__APPLE__) || /* MACOS / IOS */\
-			defined(__linux__) || /* LINUX */\
-			defined(__gnu_linux__) || /* LINUX (GNU) */\
-			defined(__FreeBSD__) || /* FREE BSD OS */\
-			defined(__NetBSD__) || /* NET BSD OS */\
-			defined(__OpenBSD__) || /* OPEN BSD OS */\
-			defined(__DragonFly__) || /* DRAGONFLY BSD */\
-			defined(__sun) /* SUN STUDIO */\
-		) /* UNIX */
-typedef void *DLL;
+		defined(__APPLE__) || /* MACOS / IOS */\
+		defined(__linux__) || /* LINUX */\
+		defined(__gnu_linux__) || /* LINUX (GNU) */\
+		defined(__FreeBSD__) || /* FREE BSD OS */\
+		defined(__NetBSD__) || /* NET BSD OS */\
+		defined(__OpenBSD__) || /* OPEN BSD OS */\
+		defined(__DragonFly__) || /* DRAGONFLY BSD */\
+		defined(__sun) /* SUN STUDIO */\
+	) /* UNIX */
+typedef void		*DLL;
 #			define OPEN_DLL(DLL_FILE) (void *)dlopen(DLL_FILE, RTLD_LAZY)
 #			define READ_DLL(THE_DLL, FUNCTION_NAME) \
 				dlsym(THE_DLL, FUNCTION_NAME)
 #			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) dlclose(DLL_FILE_FOR_CLOSE)
 #		ifdef _WIN32 /* WINDOWS */
-typedef HINSTANCE DLL;
+typedef HINSTANCE	DLL;
 #			define OPEN_DLL(DLL_FILE) LoadLibrary(DLL_FILE)
 #			define READ_DLL(THE_DLL, FUNCTION_NAME) \
 				GetProcAddress(THE_DLL, FUNCTION_NAME)
 #			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) FreeLibrary(DLL_FILE_FOR_CLOSE)
 #		endif /* _WIN32 */
 #	endif /* UNIX */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

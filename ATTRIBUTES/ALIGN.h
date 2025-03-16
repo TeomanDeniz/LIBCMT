@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/02/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -73,13 +73,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
-#ifdef ALIGN_H
-#	if (ALIGN_H < LIBRARY_VERSION)
-#		undef ALIGN_H /* OLD VERSION DETECTED */
-#	endif /* ALIGN_H < LIBRARY_VERSION */
-#endif /* ALIGN_H */
-#undef LIBRARY_VERSION
+#if (defined(ALIGN_H) && ALIGN_H < 202503)
+#	undef ALIGN_H /* OLD VERSION DETECTED */
+#endif /* ALIGN_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef ALIGN_H
@@ -91,20 +87,26 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define ALIGN_H 202402 /* VERSION */
+
+#	define ALIGN_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef ALIGN
 #	undef MAX_ALIGN
 /* ****************************** [^] RESET [^] ***************************** */
+
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include	"../ENVIRONMENTS/CACHE.h" /*
 #	 define L1_CACHE_BYTES
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
 #	define MAX_ALIGN L1_CACHE_BYTES
+
 #	ifdef _MSC_VER /* MICROSOFT C++ */
 #		define ALIGN(__ALIGN_VARIABLE__, ...) \
 			__declspec(align(__ALIGN_VARIABLE__)) __VA_ARGS__
@@ -123,10 +125,13 @@
 #			define ALIGN(__ALIGN_VARIABLE__, ...) __VA_ARGS__
 #		endif /* __GNUC__ */
 #	endif /* _MSC_VER */
+
 #	define align ALIGN
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

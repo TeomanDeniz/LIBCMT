@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/12 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -146,13 +146,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
-#ifdef INLINE_H
-#	if (INLINE_H < LIBRARY_VERSION)
-#		undef INLINE_H /* OLD VERSION DETECTED */
-#	endif /* INLINE_H < LIBRARY_VERSION */
-#endif /* INLINE_H */
-#undef LIBRARY_VERSION
+#if (defined(INLINE_H) && INLINE_H < 202503)
+#	undef INLINE_H /* OLD VERSION DETECTED */
+#endif /* INLINE_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef INLINE_H
@@ -163,14 +159,19 @@
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
+
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define INLINE_H 202402 /* VERSION */
+
+#	define INLINE_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef INLINE
 /* ****************************** [^] RESET [^] ***************************** */
+
 #	ifdef _MSC_VER /* MICROSOFT C++ */
 #		define INLINE __inline__ __forceinline
 #	else
@@ -214,9 +215,11 @@
 #			endif /* __TINYC__ */
 #		endif /* __cplusplus */
 #	endif /* _MSC_VER */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */

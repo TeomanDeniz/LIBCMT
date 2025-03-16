@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2024/05/28 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/17 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -58,13 +58,9 @@
 \******************************************************************************/
 
 /* ************************* [v] VERSION CONTROL [v] ************************ */
-#define LIBRARY_VERSION 202402 /* VERSION */
-#ifdef UNUSED_H
-#	if (UNUSED_H < LIBRARY_VERSION)
-#		undef UNUSED_H /* OLD VERSION DETECTED */
-#	endif /* UNUSED_H < LIBRARY_VERSION */
-#endif /* UNUSED_H */
-#undef LIBRARY_VERSION
+#if (defined(UNUSED_H) && UNUSED_H < 202503)
+#	undef UNUSED_H /* OLD VERSION DETECTED */
+#endif /* INLINE_H < LIBRARY_VERSION */
 /* ************************* [^] VERSION CONTROL [^] ************************ */
 
 #ifndef UNUSED_H
@@ -76,14 +72,18 @@
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *************************** [^] TI CGT CCS [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-#	define UNUSED_H 202402 /* VERSION */
+
+#	define UNUSED_H 202503 /* VERSION */
+
 /* ****************************** [v] RESET [v] ***************************** */
 #	undef UNUSED
 #	undef unused
 /* ****************************** [^] RESET [^] ***************************** */
+
 #	ifdef _MSC_VER
 #		define UNUSED __pragma(warning(suppress:4505))
 #	else
@@ -106,12 +106,15 @@
 #			endif /* __GNUC__ */
 #		endif /* __cplusplus */
 #	endif /* MICROSOFT C++ */
+
 /* **************************** [v] LOWERCASE [v] *************************** */
 #	define unused UNUSED
 /* **************************** [^] LOWERCASE [^] *************************** */
+
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
