@@ -10,7 +10,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/align.png) **[ALIGN](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/ALIGN.h)** - ???
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/pack.png) **[PACK](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)** - Packs and removes the padding bytes from your struct.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/regparm.png) **[REGPARM](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)** - Pass arguments to a function via using CPU registers.
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif) **FAR** - If program compiles on 16bit and you have a chunk of memoty bigger than 64kb, you need this. (WIP)
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif) **FAR** - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this. (WIP)
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm2.gif) **ASM**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif) **[PUSH & POP](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)** - Add the value to CPU stack (Only for register variables)
