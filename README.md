@@ -20,6 +20,7 @@ LIBCMT
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/environments.png) **Environments**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif) **[CACHE](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CACHE.h)** - You can get information about your CPU architecture.
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/is_stdc.gif) **IS_OLD_C** - Creates a macro that determines whether the compiler uses the STD ANSI C standard or the K&R substandard 1989. (WIP)
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/functions.png) **Functions**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/dll.png) **[DLL](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)** - Cross platform dynamic link library functions.
