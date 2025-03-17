@@ -143,6 +143,10 @@
 	)
 #		define VA_ARG_H 202503 /* SKIP, BECAUSE IT'S ALREADY DEFINED */
 
+#		ifndef va_add
+#			define va_add(A, B) (A)B
+#		endif /* VA_ADD */
+
 #		ifndef VA_ADD
 #			define VA_ADD va_add
 #		endif /* VA_ADD */
@@ -155,9 +159,17 @@
 #			define VA_COPY va_copy
 #		endif /* VA_COPY */
 
+#		ifndef va_push
+#			define va_push
+#		endif /* VA_PUSH */
+
 #		ifndef VA_PUSH
 #			define VA_PUSH va_push
 #		endif /* VA_PUSH */
+
+#		ifndef va_pop
+#			define va_pop 0
+#		endif /* VA_POP */
 
 #		ifndef VA_POP
 #			define VA_POP va_pop
@@ -166,6 +178,10 @@
 #		ifndef VA_START
 #			define VA_START va_start
 #		endif /* VA_START */
+
+#		ifndef va_args
+#			define va_args ...
+#		endif /* VA_ARGS */
 
 #		ifndef VA_ARGS
 #			define VA_ARGS va_args
