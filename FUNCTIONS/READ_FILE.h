@@ -112,15 +112,16 @@
 	   void rewind(FILE *);
 	  size_t fread(void *, size_t, size_t, FILE *);
 #	        */
-#	ifdef __STDC__ /* STANDARD C */
+#	ifndef KNR_STYLE /* K&R */
 #		include <stdlib.h> /*
 		   void *malloc(size_t);
 		   void free(void *);
 #		        */
-#	else /* K&R */
+#	else /* STANDARD C */
+// <stdlib.h> MAY NOT EXIST
 extern void	*malloc();
 extern void	free();
-#	endif /* __STDC__ */
+#	endif /* KNR_STYLE */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ***************************** [v] STRUCT [v] ***************************** */
