@@ -82,20 +82,22 @@
 \******************************************************************************/
 
 #ifndef DLL_H
-/* *************************** [v] TI CGT CCS [v] *************************** */
+#	define DLL_H 202503 /* VERSION */
+
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
-/* *************************** [^] TI CGT CCS [^] *************************** */
+/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define DLL_H 202503 /* VERSION */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* **************************** [v] INCLUDES [v] **************************** */
 #	if (\
@@ -152,11 +154,16 @@ typedef HINSTANCE	DLL;
 #		endif /* _WIN32 */
 #	endif /* UNIX */
 
+/* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* DLL_H */

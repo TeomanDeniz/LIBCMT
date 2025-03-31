@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/05/28 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -58,32 +58,23 @@
 |*                                                                            *|
 \******************************************************************************/
 
-/* ************************* [v] VERSION CONTROL [v] ************************ */
-#if (defined(IGNORE_H) && IGNORE_H < 202503)
-#	undef IGNORE_H /* OLD VERSION DETECTED */
-#endif /* IGNORE_H < LIBRARY_VERSION */
-/* ************************* [^] VERSION CONTROL [^] ************************ */
-
 #ifndef IGNORE_H
-/* *************************** [v] TI CGT CCS [v] *************************** */
+#	define IGNORE_H 202503 /* VERSION */
+
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
-/* *************************** [^] TI CGT CCS [^] *************************** */
+/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define IGNORE_H 202503 /* VERSION */
-
-/* ****************************** [v] RESET [v] ***************************** */
-#	undef IGNORE
-#	undef ignore
-/* ****************************** [^] RESET [^] ***************************** */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifdef _MSC_VER
 #		define IGNORE __pragma(warning(suppress:4100))
@@ -99,11 +90,16 @@
 #	define ignore IGNORE
 /* **************************** [^] LOWERCASE [^] *************************** */
 
+/* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* IGNORE_H */

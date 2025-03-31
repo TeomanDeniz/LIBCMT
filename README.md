@@ -10,7 +10,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/align.png) **[ALIGN](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/ALIGN.h)** - ???
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/pack.png) **[PACK](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)** - Packs and removes the padding bytes from your struct.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/regparm.png) **[REGPARM](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)** - Pass arguments to a function via using CPU registers.
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif) **FAR** - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this. (WIP)
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif) **[FAR](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)** - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm2.gif) **ASM**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif) **[PUSH & POP](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)** - Add the value to CPU stack (Only for register variables)
@@ -20,11 +20,12 @@ LIBCMT
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/environments.png) **Environments**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif) **[CACHE](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CACHE.h)** - You can get information about your CPU architecture.
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/is_stdc.gif) **IS_OLD_C** - Creates a macro that determines whether the compiler uses the STD ANSI C standard or the K&R substandard 1989. (WIP)
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/is_stdc.gif) **[KNR_STYLE](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)** - Creates a macro that determines whether the compiler uses the STD ANSI C standard or the K&R substandard 1989.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/functions.png) **Functions**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/dll.png) **[DLL](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)** - Cross platform dynamic link library functions.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/prefetch.png) **[PREFETCH](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)** - Reduces the cache-miss latency of memory accesses.
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/READ_FILE.png) **[READ_FILE](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)** - Reads a file and returns it's content to you.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/keywords.png) **Keywords**
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ignore.gif) **[IGNORE](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE.h)** - Tag the variables that may not used in the project. (For ignore warnings)

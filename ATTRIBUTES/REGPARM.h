@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -81,32 +81,23 @@
 |*                                                                            *|
 \******************************************************************************/
 
-/* ************************* [v] VERSION CONTROL [v] ************************ */
-#if (defined(REGPARM_H) && REGPARM_H < 202503)
-#	undef REGPARM_H /* OLD VERSION DETECTED */
-#endif /* REGPARM_H < LIBRARY_VERSION */
-/* ************************* [^] VERSION CONTROL [^] ************************ */
-
 #ifndef REGPARM_H
-/* *************************** [v] TI CGT CCS [v] *************************** */
+#	define REGPARM_H 202503 /* VERSION */
+
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
-/* *************************** [^] TI CGT CCS [^] *************************** */
+/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define REGPARM_H 202503 /* VERSION */
-
-/* ****************************** [v] RESET [v] ***************************** */
-#	undef REGPARM
-#	undef regparm
-/* ****************************** [^] RESET [^] ***************************** */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifdef _MSC_VER
 #		define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
@@ -145,11 +136,16 @@
 
 #	define regparm REGPARM
 
+/* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* REGPARM_H */

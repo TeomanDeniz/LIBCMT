@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -128,110 +128,23 @@
 |*                                                                            *|
 \******************************************************************************/
 
-/* ************************* [v] VERSION CONTROL [v] ************************ */
-#if (defined(VA_ARG_H) && VA_ARG_H < 202503)
-#	undef VA_ARG_H /* OLD VERSION DETECTED */
-#endif /* INLINE_H < LIBRARY_VERSION */
-/* ************************* [^] VERSION CONTROL [^] ************************ */
-
-/* *************** [v] CHECK IF STANDARD LIBRARY INCLUDED [v] *************** */
 #ifndef VA_ARG_H
-#	if (\
-		defined(__dj_include_stdarg_h_) || /* DJGPP */ \
-		defined(_STDARG_H) || /* TINY C COMPILER */ \
-		defined(_VA_LIST_DEFINED) /* TINY C COMPILER */\
-	)
-#		define VA_ARG_H 202503 /* SKIP, BECAUSE IT'S ALREADY DEFINED */
+#	define VA_ARG_H 202503 /* VERSION */
 
-#		ifndef va_add
-#			define va_add(A, B) (A)B
-#		endif /* VA_ADD */
-
-#		ifndef VA_ADD
-#			define VA_ADD va_add
-#		endif /* VA_ADD */
-
-#		ifndef VA_ARG
-#			define VA_ARG va_arg
-#		endif /* VA_ARG */
-
-#		ifndef VA_COPY
-#			define VA_COPY va_copy
-#		endif /* VA_COPY */
-
-#		ifndef va_push
-#			define va_push
-#		endif /* VA_PUSH */
-
-#		ifndef VA_PUSH
-#			define VA_PUSH va_push
-#		endif /* VA_PUSH */
-
-#		ifndef va_pop
-#			define va_pop 0
-#		endif /* VA_POP */
-
-#		ifndef VA_POP
-#			define VA_POP va_pop
-#		endif /* VA_POP */
-
-#		ifndef VA_START
-#			define VA_START va_start
-#		endif /* VA_START */
-
-#		ifndef va_args
-#			define va_args ...
-#		endif /* VA_ARGS */
-
-#		ifndef VA_ARGS
-#			define VA_ARGS va_args
-#		endif /* VA_ARGS */
-
-#		ifndef VA_END
-#			define VA_END va_end
-#		endif /* VA_END */
-
-#	endif
-#endif
-/* *************** [v] CHECK IF STANDARD LIBRARY INCLUDED [v] *************** */
-
-#ifndef VA_ARG_H
-/* *************************** [v] TI CGT CCS [v] *************************** */
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
 #		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
 #		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
 #	endif /* __TI_COMPILER_VERSION__ */
-/* *************************** [^] TI CGT CCS [^] *************************** */
+/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define VA_ARG_H 202503 /* VERSION */
-
-/* ****************************** [v] RESET [v] ***************************** */
-#	undef va_add
-#	undef va_arg
-#	undef va_copy
-#	undef va_push
-#	undef va_pop
-#	undef va_start
-#	undef va_args
-#	undef va_end
-#	undef VA_ADD
-#	undef VA_ARG
-#	undef VA_COPY
-#	undef VA_PUSH
-#	undef VA_POP
-#	undef VA_START
-#	undef VA_ARGS
-#	undef VA_END
-#	undef __dj_include_stdarg_h_
-#	undef _STDARG_H
-#	undef _VA_LIST_DEFINED
-/* ****************************** [^] RESET [^] ***************************** */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	if (\
 		(\
@@ -270,9 +183,9 @@ typedef char	**va_list;
 			__VA_ARGS__GLOBAL_[++__VA_ARGS__GLOBAL_INDEX]=((char *)&(A){B}),
 #		define va_arg(A, B) (*A && ++A, (B)*((B *)*(A - 1)))
 #		define va_copy(A, B) A = B
-//#		define va_push (char *[]){ // COMPOUND LITERALS
+//#		define va_push (char *[]){ /* COMPOUND LITERALS */
 #		define va_push (
-//#		define va_pop ((char *)0)} // COMPOUND LITERALS
+//#		define va_pop ((char *)0)} /* COMPOUND LITERALS */
 #		define va_pop __VA_ARGS__GLOBAL_INDEX = -1, __VA_ARGS__GLOBAL_)
 #		define va_start(A, B) A = __VA_ARGS___
 #		define va_args char **__VA_ARGS___
@@ -300,11 +213,16 @@ char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
 int		__VA_ARGS__GLOBAL_INDEX = -1;
 #	endif /* VA_ARG_GLOBALS_DEFINED */
 
+/* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* VA_ARG_H */

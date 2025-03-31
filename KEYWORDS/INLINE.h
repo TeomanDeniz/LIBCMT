@@ -145,13 +145,9 @@
 |*                                                                            *|
 \******************************************************************************/
 
-/* ************************* [v] VERSION CONTROL [v] ************************ */
-#if (defined(INLINE_H) && INLINE_H < 202503)
-#	undef INLINE_H /* OLD VERSION DETECTED */
-#endif /* INLINE_H < LIBRARY_VERSION */
-/* ************************* [^] VERSION CONTROL [^] ************************ */
-
 #ifndef INLINE_H
+#	define INLINE_H 202503 /* VERSION */
+
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
@@ -162,15 +158,11 @@
 
 /* *************************** [^] TI CGT CCS [^] *************************** */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 		extern "C" {
 #	endif /* __cplusplus */
-
-#	define INLINE_H 202503 /* VERSION */
-
-/* ****************************** [v] RESET [v] ***************************** */
-#	undef INLINE
-/* ****************************** [^] RESET [^] ***************************** */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifdef _MSC_VER /* MICROSOFT C++ */
 #		define INLINE __inline__ __forceinline
@@ -216,11 +208,16 @@
 #		endif /* __cplusplus */
 #	endif /* _MSC_VER */
 
+/* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 		}
 #	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* INLINE_H */
