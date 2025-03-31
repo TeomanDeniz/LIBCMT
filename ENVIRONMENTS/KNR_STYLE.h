@@ -41,6 +41,22 @@
 
 #ifndef KNR_STYLE_H
 #	define KNR_STYLE_H 202503
+
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
+#	ifdef __TI_COMPILER_VERSION__
+#		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
+#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("-19.3") /* THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED
+#		BY EITHER A <FILENAME> OR "FILENAME" SEQUENCE */
+#	endif /* __TI_COMPILER_VERSION__ */
+/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
+
+/* *************************** [v] C++ (PUSH) [v] *************************** */
+#	ifdef __cplusplus /* C++ */
+		extern "C" {
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
+
 #	ifdef __NOPROTO__
 #		define KNR_STYLE
 #	endif /* __NOPROTO__ */
@@ -57,4 +73,17 @@
 #			endif /* __STDC_VERSION__ */
 #		endif /* __STDC__ */
 #	endif /* KNR_STYLE */
+
+/* *************************** [v] C++ (POP) [v] **************************** */
+#	ifdef __cplusplus /* C++ */
+		}
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
+
+/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
+#	ifdef __TI_COMPILER_VERSION__
+#		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
+#	endif /* __TI_COMPILER_VERSION__ */
+/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+
 #endif /* KNR_STYLE_H */
