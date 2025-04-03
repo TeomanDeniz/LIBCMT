@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/04/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -88,7 +88,7 @@
 \******************************************************************************/
 
 #ifndef REGPARM_H
-#	define REGPARM_H 202503 /* VERSION */
+#	define REGPARM_H 202504 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -101,15 +101,15 @@
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
-		extern "C" {
+extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
-#	ifdef _MSC_VER
+#	ifdef _MSC_VER /* MICROSOFT C++ */
 #		define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 			__attribute__((fastcall))
 #	else
-#		ifdef __cplusplus
+#		ifdef __cplusplus /* C++ */
 #			define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__) \
 				__attribute__((fastcall))
 #		else
@@ -132,19 +132,19 @@
 #						define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)\
 							__attribute__((\
 							regparm(__REGPARM_NUMBER_OF_VARIABLES__)))
-#					endif /* DJGPP */
+#					endif /* __DJGPP__ */
 #				endif /* __clang__ */
 #			else
 #				define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)
-#			endif /* GNUC */
-#		endif /* C++ */
-#	endif /* MICROSOFT C++ */
+#			endif /* __GNUC__ 2.7.1 */
+#		endif /* __cplusplus */
+#	endif /* _MSC_VER */
 
 #	define regparm REGPARM
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
-		}
+}
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
 

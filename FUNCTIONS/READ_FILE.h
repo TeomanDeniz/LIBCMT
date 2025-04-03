@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/04/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -66,7 +66,7 @@
 \******************************************************************************/
 
 #ifndef READ_FILE_H
-#	define READ_FILE_H 202503 /* VERSION */
+#	define READ_FILE_H 202504 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -88,7 +88,7 @@
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
-		extern "C" {
+extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
@@ -151,7 +151,7 @@ extern INLINE int
 	READ_FILE(FILE, THIS)
 	char				*FILE;
 	FAR struct S_FILE	*THIS;
-#	endif /* KNR_STYLE */
+#	endif /* !KNR_STYLE */
 {
 	FILE	*FILE_POINTER;
 
@@ -208,14 +208,14 @@ extern INLINE int
 	read_file(file, this)
 	char				*file;
 	FAR struct s_file	*this;
-#	endif /* KNR_STYLE */
+#	endif /* !KNR_STYLE */
 {
 	return (READ_FILE(file, (FAR struct S_FILE *)this));
 }
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
-		}
+}
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
 

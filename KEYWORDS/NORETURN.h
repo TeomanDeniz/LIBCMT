@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/04/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -58,7 +58,7 @@
 \******************************************************************************/
 
 #ifndef NORETURN_H
-#	define NORETURN_H 202503 /* VERSION */
+#	define NORETURN_H 202504 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -71,7 +71,7 @@
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
-		extern "C" {
+extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
@@ -104,17 +104,17 @@
 #			define _Noreturn __attribute__((noreturn))
 #			define __noreturn_is_defined 1
 #			define __NORETURN_IS_DEFINED 1
-#		else /* DJGPP || TCC || K&R */
+#		else /* DJGPP || TCC || K&R || ... */
 #			define STD_NORETURN /* EMPTY */
 #			define _Noreturn /* EMPTY */
 #			define __noreturn_is_defined 0
 #			define __NORETURN_IS_DEFINED 0
-#		endif /* __GNUC__ */
-#	endif /* __clang__ */
+#		endif /* __clang__ || __GNUC__ 4.2.X */
+#	endif /* __clang__ 3.3 */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
-		}
+}
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
 

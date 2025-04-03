@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/03/31 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/04/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -86,7 +86,7 @@
 \******************************************************************************/
 
 #ifndef PREFETCH_H
-#	define PREFETCH_H 202503 /* VERSION */
+#	define PREFETCH_H 202504 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -107,16 +107,16 @@
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
-		extern "C" {
+extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	ifdef _MSC_VER
+#	ifdef _MSC_VER /* MICROSOFT C++ */
 #		include	<xmmintrin.h> /*
 #		   void	_mm_prefetch(void *, enum _mm_hint);
 #		        */
-#	endif /* MICROSOFT C++ */
+#	endif /* _MSC_VER */
 #	include	"../KEYWORDS/INLINE.h" /*
 #	 define INLINE
 #	        */
@@ -134,7 +134,7 @@
 /* **************************** [v] PREFETCH [v] **************************** */
 #	ifndef PREFETCH_STRIDE
 #		define PREFETCH_STRIDE (4 * L1_CACHE_BYTES)
-#	endif
+#	endif /* !PREFETCH_STRIDE */
 #	if (\
 		defined(__TINYC__) || /* TINY C COMPILER */\
 		defined(__DJGPP__) || /* DJGPP DOS C COMPILER */\
@@ -158,9 +158,9 @@
 					__builtin_prefetch(&__PREFETCH_VARIABLE__))
 #			else
 #				define PREFETCH(X) /* NULL */
-#			endif /* GCC || CLANG */
-#		endif /* MICROSOFT C++ */
-#	endif /* __TUNYC__ && __DJGPP__ && TRS80 && ARCH_HAS */
+#			endif /* __GNUC__ || __clang__ */
+#		endif /* _MSC_VER */
+#	endif /* __TINYC__ || __DJGPP__ || __SDCC || __SCCZ80 || ARCH_HAS */
 /* **************************** [^] PREFETCH [^] **************************** */
 
 /* *************************** [v] PREFETCHW [v] **************************** */
@@ -173,7 +173,7 @@
 	)
 #		ifndef ARCH_HAS_PREFETCHW
 #			define PREFETCHW(__PREFETCHW_VARIABLE__) /* NOTHING */
-#		endif /* ARCH_HAS_PREFETCHW */
+#		endif /* !ARCH_HAS_PREFETCHW */
 #	else
 #		ifdef _MSC_VER /* MICROSOFT C++ */
 #			define PREFETCHW(__PREFETCHW_VARIABLE__) (\
@@ -190,9 +190,9 @@
 				)
 #			else
 #				define PREFETCHW(X) /* NULL */
-#			endif /* GCC || CLANG */
-#		endif /* MICROSOFT C++ */
-#	endif /* __TUNYC__ && __DJGPP__ && TRS80 && ARCH_HAS */
+#			endif /* __GNUC__ || __clang__ */
+#		endif /* _MSC_VER */
+#	endif /* __TINYC__ || __DJGPP__ || __SDCC || __SCCZ80 || ARCH_HAS */
 /* *************************** [^] PREFETCHW [^] **************************** */
 
 /* **************************** [v] prefetch [v] **************************** */
@@ -272,7 +272,7 @@ extern INLINE void
 	PREFETCH_RANGE(VARIABLE, LENGHT)
 	void					*VARIABLE;
 	register unsigned int	LENGHT;
-#	endif /* KNR_STYLE */
+#	endif /* !KNR_STYLE */
 {
 #	if (\
 		!defined(ARCH_HAS_PREFETCH) && \
@@ -292,7 +292,7 @@ extern INLINE void
 		PREFETCH(CACHE);
 		CACHE += PREFETCH_STRIDE;
 	}
-#	endif
+#	endif /* !ARCH_HAS_PREFETCH && !PREFETCH */
 }
 /* ************************* [^] PREFETCH_RANGE [^] ************************* */
 /* ************************* [v] prefetch_range [v] ************************* */
@@ -306,7 +306,7 @@ extern INLINE void
 	prefetch_range(variable, lenght)
 	void					*variable;
 	register unsigned int	lenght;
-#		endif /* KNR_STYLE */
+#		endif /* !KNR_STYLE */
 {
 	PREFETCH_RANGE(variable, lenght);
 }
@@ -336,7 +336,7 @@ extern INLINE void
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
-		}
+}
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
 
