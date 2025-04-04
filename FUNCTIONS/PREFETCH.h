@@ -100,7 +100,7 @@
 /* *************************** [v] MVS LINKER [v] *************************** */
 /* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
 // NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#ifdef (__MVS__)
+#ifdef __MVS__
 #	pragma map(PREFETCH_RANGE, "PRFRANGE")
 #endif /* __MVS__ */
 /* *************************** [^] MVS LINKER [^] *************************** */
@@ -120,8 +120,8 @@ extern "C" {
 #	include	"../KEYWORDS/INLINE.h" /*
 #	 define INLINE
 #	        */
-#	include	"../KEYWORDS/IGNORE.h" /*
-#	 define IGNORE
+#	include	"../KEYWORDS/IGNORE_VAR.h" /*
+#	 define IGNORE_VAR
 #	        */
 #	include	"../ENVIRONMENTS/CACHE.h" /*
 #	 define L1_CACHE_BYTES
@@ -278,8 +278,8 @@ extern INLINE void
 		!defined(ARCH_HAS_PREFETCH) && \
 		!defined(PREFETCH)\
 	)
-	IGNORE VARIABLE;
-	IGNORE LENGHT;
+	IGNORE_VAR VARIABLE;
+	IGNORE_VAR LENGHT;
 #	else
 	char	*CACHE;
 	char	*END;

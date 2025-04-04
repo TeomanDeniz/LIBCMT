@@ -28,7 +28,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/READ_FILE.gif) **[READ_FILE](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)** - Reads a file and returns it's content to you.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/keywords.png) **Keywords**
-	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ignore.gif) **[IGNORE](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE.h)** - Tag the variables that may not used in the project. (For ignore warnings)
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ignore.gif) **[IGNORE_VAR](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)** - Tag the variables that may not used in the project. (For ignore warnings)
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/inline.png) **[INLINE](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)** - Inlines your function on specific compilers.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/no_return.png) **[NORETURN](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)** - Optimizes your function if there is a direct exit in it.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/unused.gif) **[UNUSED](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)** - Tag the functions that may not used in the project. (For ignore warnings)

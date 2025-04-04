@@ -80,7 +80,7 @@
 /* *************************** [v] MVS LINKER [v] *************************** */
 /* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
 // NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#ifdef (__MVS__)
+#ifdef __MVS__
 #	pragma map(READ_FILE, "RD_FILE0")
 #	pragma map(read_file, "rd_file1")
 #endif /* __MVS__ */
