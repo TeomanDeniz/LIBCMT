@@ -50,6 +50,25 @@
 |* :  :     printf("ERROR: %d\n", err);                                       *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
+|* ;.., FOR TCC (TINY C COMPILER) LIKE COMPILERS, YOU HAVE TO CREATE YOUR     *|
+|* :  : "int err" VARIABLE OUTSIDE OF THE "catch()" SCOPE.                    *|
+|* :  :                                                                       *|
+|* :  : IT'S BECAUSE OF YOU CAN'T CREATE VARIABLES INSIDE CONTROL CLAUSES IN  *|
+|* :  : TINY C COMPILER. LIKE YOU CAN'T DO SOMETHING LIKE: "for (int a;...)". *|
+|* :  :                                                                       *|
+|* :  : FOR EAXMPLE:                                                          *|
+|* :  ;..,                                                                    *|
+|* :     : int err;                                                           *|
+|* :     :                                                                    *|
+|* :     : try                                                                *|
+|* :     : {                                                                  *|
+|* :     :     if (1) throw(99);                                              *|
+|* :     : }                                                                  *|
+|* :     : catch(err)                                                         *|
+|* :     : {                                                                  *|
+|* :     :     printf("ERROR: %d\n", err);                                    *|
+|* :     : }                                                                  *|
+|* :                                                                          *|
 |* ;.., void test(void)                                                       *|
 |*    : {                                                                     *|
 |*    :     throw(42);                                                        *|
