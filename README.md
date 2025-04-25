@@ -32,6 +32,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/inline.png) **[INLINE](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)** - Inlines your function on specific compilers.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/no_return.png) **[NORETURN](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)** - Optimizes your function if there is a direct exit in it.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/unused.gif) **[UNUSED](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)** - Tag the functions that may not used in the project. (For ignore warnings)
+	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/try_catch.gif) **[TRY_CATCH](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)** - Use original `try`, `catch`, and `throw` keywords in C Language like from C++.
 
 Graphics
 ---
