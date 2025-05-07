@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/31 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/07 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -53,34 +53,24 @@
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
-
-#	ifdef __NOPROTO__
-#		define KNR_STYLE
-#	endif /* __NOPROTO__ */
-#	ifndef KNR_STYLE
-#		ifndef __STDC__
+#	ifndef __cplusplus /* C++ */
+#		ifdef __NOPROTO__
 #			define KNR_STYLE
-#		else
-#			ifdef __STDC_VERSION__
-#				if (__STDC_VERSION__ < 199409L) /* ... < C89 */
-#					define KNR_STYLE
-#				endif /* __STDC_VERSION__ < 199409L */
-#			else
+#		endif /* __NOPROTO__ */
+#		ifndef KNR_STYLE
+#			ifndef __STDC__
 #				define KNR_STYLE
-#			endif /* __STDC_VERSION__ */
-#		endif /* !__STDC__ */
-#	endif /* !KNR_STYLE */
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
+#			else
+#				ifdef __STDC_VERSION__
+#					if (__STDC_VERSION__ < 199409L) /* ... < C89 */
+#						define KNR_STYLE
+#					endif /* __STDC_VERSION__ < 199409L */
+#				else
+#					define KNR_STYLE
+#				endif /* __STDC_VERSION__ */
+#			endif /* !__STDC__ */
+#		endif /* !KNR_STYLE */
+#	endif /* !__cplusplus */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
