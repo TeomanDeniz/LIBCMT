@@ -88,7 +88,6 @@
 #endif /* __MVS__ */
 /* *************************** [^] MVS LINKER [^] *************************** */
 
-
 #	ifdef __cplusplus /* C++ */
 /* **************************** [v] INCLUDES [v] **************************** */
 #		include	"../KEYWORDS/INLINE.h" /*
@@ -300,7 +299,7 @@ extern INLINE int
 {
 	return (READ_FILE(file_path, (FAR struct S_FILE *)file_struct));
 }
-#		endif /* __cplusplus */
+#	endif /* __cplusplus */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
