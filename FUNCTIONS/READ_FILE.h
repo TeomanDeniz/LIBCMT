@@ -58,7 +58,7 @@
 |* :...:....................................................................: *|
 |* : 1 : FILE DOES NOT EXIST!                                               : *|
 |* :...:....................................................................: *|
-|* : 2 : FAILED TO ALLOCATE NECESSARY MEMORY FROM RAM FRO STRCUT'S DATA.    : *|
+|* : 2 : FAILED TO ALLOCATE NECESSARY MEMORY FROM RAM FOR STRCUT'S DATA.    : *|
 |* :...:....................................................................: *|
 |* : 3 : PERMISSION DENIED WHILE TRYING TO READ THE FILE.                   : *|
 |* :...:....................................................................: *|
@@ -88,45 +88,121 @@
 #endif /* __MVS__ */
 /* *************************** [^] MVS LINKER [^] *************************** */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
 
+#	ifdef __cplusplus /* C++ */
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include	"../KEYWORDS/INLINE.h" /*
-#	 define INLINE
-#	        */
-#	include	"../ATTRIBUTES/FAR.h" /*
-#	 define FAR
-#	        */
-#	include	"../ENVIRONMENTS/KNR_STYLE.h" /*
-#	 define KNR_STYLE
-#	        */
-#	include <stddef.h> /*
-#	typedef size_t;
-#	        */
-#	include <stdio.h> /*
-#	 define SEEK_END
-	typedef FILE;
-	   FILE *fopen(char *, char *);
-	    int fseek(FILE *, long, int);
-	    int fclose(FILE *);
-	   long ftell(FILE *);
-	   void rewind(FILE *);
-	 size_t fread(void *, size_t, size_t, FILE *);
-#	        */
-#	ifndef KNR_STYLE /* K&R */
-#		include <stdlib.h> /*
-		   void *malloc(size_t);
-		   void free(void *);
+#		include	"../KEYWORDS/INLINE.h" /*
+#		 define INLINE
 #		        */
-#	else /* STANDARD C */
+#		include <iostream> /*
+#		nmspace std;
+#		  class std::streamsize;
+#		        */
+#		include <ios> /*
+#		  class std::ios;
+#		        */
+#		include <new> /*
+#		>>>>>>> std::nothrow_t
+#		^^^^^^^ nothrow;
+#		        */
+#		include <cstddef> /*
+#		typedef size_t;
+#		        */
+#		include <string> /*
+#		  class std::string;
+#		        */
+#		include <fstream> /*
+#		  class std::ifstream;
+#		        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
+/* ***************************** [v] STRUCT [v] ***************************** */
+struct S_FILE
+{
+	size_t	SIZE = 0;
+	char	*DATA = (char *)0;
+};
+
+struct s_file
+{
+	size_t	size = 0;
+	char	*data = (char *)0;
+};
+/* ***************************** [^] STRUCT [^] ***************************** */
+
+extern INLINE int
+	READ_FILE(const std::string &FILE_PATH, struct S_FILE *const FILE_STRUCT)
+{
+	if (FILE_PATH.empty())
+		return (1);
+
+	std::ifstream	INPUT(FILE_PATH, std::ios::binary | std::ios::ate);
+
+	if (!INPUT)
+		return (1);
+
+	std::streamsize	FILE_SIZE = INPUT.tellg();
+
+	if (FILE_SIZE <= 0)
+		return (1);
+
+	INPUT.seekg(0, std::ios::beg);
+
+	FILE_STRUCT->DATA = new(std::nothrow) char[FILE_SIZE];
+
+	if (!FILE_STRUCT->DATA)
+		return (2);
+
+	if (!INPUT.read(FILE_STRUCT->DATA, FILE_SIZE))
+	{
+		delete[] FILE_STRUCT->DATA;
+		FILE_STRUCT->DATA = (char *)0;
+		return (3);
+	}
+
+	FILE_STRUCT->SIZE = static_cast<size_t>(FILE_SIZE);
+	return (0);
+}
+
+extern INLINE int
+	read_file(const std::string &file_path, struct s_file *const file_struct)
+{
+	return (READ_FILE(file_path, (struct S_FILE *)file_struct));
+}
+#	else /* C */
+/* **************************** [v] INCLUDES [v] **************************** */
+#		include	"../KEYWORDS/INLINE.h" /*
+#		 define INLINE
+#		        */
+#		include	"../ATTRIBUTES/FAR.h" /*
+#		 define FAR
+#		        */
+#		include	"../ENVIRONMENTS/KNR_STYLE.h" /*
+#		 define KNR_STYLE
+#		        */
+#		include <stddef.h> /*
+#		typedef size_t;
+#		        */
+#		include <stdio.h> /*
+#		 define SEEK_END
+		typedef FILE;
+		   FILE *fopen(char *, char *);
+		    int fseek(FILE *, long, int);
+		    int fclose(FILE *);
+		   long ftell(FILE *);
+		   void rewind(FILE *);
+		 size_t fread(void *, size_t, size_t, FILE *);
+#		        */
+#		ifndef KNR_STYLE /* K&R */
+#			include <stdlib.h> /*
+			   void *malloc(size_t);
+			   void free(void *);
+#			        */
+#		else /* STANDARD C */
 // <stdlib.h> MAY NOT EXIST
 extern void	*malloc();
 extern void	free();
-#	endif /* KNR_STYLE */
+#		endif /* KNR_STYLE */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ***************************** [v] STRUCT [v] ***************************** */
@@ -148,24 +224,24 @@ typedef struct S_FILE	T_FILE;
 typedef struct s_file	t_file;
 /* **************************** [^] TYPEDEFS [^] **************************** */
 
-#	ifndef KNR_STYLE /* K&R */
+#		ifndef KNR_STYLE /* K&R */
 extern INLINE int
-	READ_FILE(const char *FILE, FAR struct S_FILE *const THIS)
-#	else /* STANDARD C */
+	READ_FILE(const char *FILE_PATH, FAR struct S_FILE *const FILE_STRUCT)
+#		else /* STANDARD C */
 extern INLINE int
-	READ_FILE(FILE, THIS)
-	char				*FILE;
-	FAR struct S_FILE	*THIS;
-#	endif /* !KNR_STYLE */
+	READ_FILE(FILE, FILE_STRUCT)
+	char				*FILE_PATH;
+	FAR struct S_FILE	*FILE_STRUCT;
+#		endif /* !KNR_STYLE */
 {
 	FILE	*FILE_POINTER;
 
-	if (!FILE || !THIS)
+	if (!FILE_PATH || !FILE_STRUCT)
 		return (1);
 
-	THIS->DATA = (void *)0;
-	THIS->SIZE = (size_t)0;
-	FILE_POINTER = fopen(FILE, "rb");
+	FILE_STRUCT->DATA = (char *)0;
+	FILE_STRUCT->SIZE = (size_t)0;
+	FILE_POINTER = fopen(FILE_PATH, "rb");
 
 	if (!FILE_POINTER)
 		return (1);
@@ -176,27 +252,34 @@ extern INLINE int
 		return (1);
 	}
 
-	THIS->SIZE = ftell(FILE_POINTER);
+	FILE_STRUCT->SIZE = ftell(FILE_POINTER);
 
-	if (THIS->SIZE <= 0)
+	if (FILE_STRUCT->SIZE <= 0)
 	{
 		fclose(FILE_POINTER);
 		return (1);
 	}
 
 	rewind(FILE_POINTER);
-	THIS->DATA = (FAR char *)malloc(THIS->SIZE);
+	FILE_STRUCT->DATA = (FAR char *)malloc(FILE_STRUCT->SIZE);
 
-	if (!THIS->DATA)
+	if (!FILE_STRUCT->DATA)
 	{
 		fclose(FILE_POINTER);
 		return (2);
 	}
 
-	if (fread(THIS->DATA, 1, THIS->SIZE, FILE_POINTER) != THIS->SIZE)
+	if (
+		fread(
+			FILE_STRUCT->DATA,
+			1,
+			FILE_STRUCT->SIZE,
+			FILE_POINTER
+		) != FILE_STRUCT->SIZE
+	)
 	{
-		free(THIS->DATA);
-		THIS->DATA = (void *)0;
+		free(FILE_STRUCT->DATA);
+		FILE_STRUCT->DATA = (char *)0;
 		fclose(FILE_POINTER);
 		return (3);
 	}
@@ -205,24 +288,19 @@ extern INLINE int
 	return (0);
 }
 
-#	ifndef KNR_STYLE /* K&R */
+#		ifndef KNR_STYLE /* K&R */
 extern INLINE int
-	read_file(const char *file, FAR struct s_file *const this)
-#	else /* STANDARD C */
+	read_file(const char *file_path, FAR struct s_file *const file_struct)
+#		else /* STANDARD C */
 extern INLINE int
-	read_file(file, this)
-	char				*file;
-	FAR struct s_file	*this;
-#	endif /* !KNR_STYLE */
+	read_file(file_path, file_struct)
+	char				*file_path;
+	FAR struct s_file	*file_struct;
+#		endif /* !KNR_STYLE */
 {
-	return (READ_FILE(file, (FAR struct S_FILE *)this));
+	return (READ_FILE(file_path, (FAR struct S_FILE *)file_struct));
 }
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
+#		endif /* __cplusplus */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
