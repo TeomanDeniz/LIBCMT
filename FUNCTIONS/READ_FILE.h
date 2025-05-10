@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -104,6 +104,9 @@ extern "C" {
 #	include	"../ENVIRONMENTS/KNR_STYLE.h" /*
 #	 define KNR_STYLE
 #	        */
+#	include <stddef.h> /*
+#	typedef size_t;
+#	        */
 #	include <stdio.h> /*
 #	 define SEEK_END
 	typedef FILE;
@@ -112,7 +115,7 @@ extern "C" {
 	    int fclose(FILE *);
 	   long ftell(FILE *);
 	   void rewind(FILE *);
-	  size_t fread(void *, size_t, size_t, FILE *);
+	 size_t fread(void *, size_t, size_t, FILE *);
 #	        */
 #	ifndef KNR_STYLE /* K&R */
 #		include <stdlib.h> /*
@@ -129,13 +132,13 @@ extern void	free();
 /* ***************************** [v] STRUCT [v] ***************************** */
 struct S_FILE
 {
-	long		SIZE;
+	size_t		SIZE;
 	FAR char	*DATA;
 };
 
 struct s_file
 {
-	long		size;
+	size_t		size;
 	FAR char	*data;
 };
 /* ***************************** [^] STRUCT [^] ***************************** */
@@ -161,7 +164,7 @@ extern INLINE int
 		return (1);
 
 	THIS->DATA = (void *)0;
-	THIS->SIZE = (long)0;
+	THIS->SIZE = (size_t)0;
 	FILE_POINTER = fopen(FILE, "rb");
 
 	if (!FILE_POINTER)
