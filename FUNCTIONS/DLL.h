@@ -30,7 +30,7 @@
 |* CLOSE_DLL : #define () : CLOSE DLL FILE                                    *|
 |* close_dll :            :                                                   *|
 |*...........:............:...................................................*|
-|* DYNAMIC   : #define    : SET FUNCTION/VARIABLE CAN DYNAMICALLY LINKABLE    *|
+|* DYNAMIC   : #define    : SET FUNCTION/VARIABLE AS DYNAMICALLY LINKABLE     *|
 |* dynamic   :            :                                                   *|
 |*...........:............:...................................................*|
 \******************************************************************************/
@@ -191,7 +191,8 @@ typedef HINSTANCE	DLL;
 #			define OPEN_DLL(DLL_FILE) LoadLibrary(DLL_FILE)
 #			define READ_DLL(THE_DLL, FUNCTION_NAME) \
 				GetProcAddress(THE_DLL, FUNCTION_NAME)
-#			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) FreeLibrary(DLL_FILE_FOR_CLOSE)
+#			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) \
+				(int)FreeLibrary(DLL_FILE_FOR_CLOSE)
 #			ifdef __GNUC__
 #				define DYNAMIC __attribute__((visibility("default")))
 #			else
