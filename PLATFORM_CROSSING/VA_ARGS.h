@@ -92,11 +92,11 @@
 |* THIS LIBRARY'S PURPOSE IS USING VA_ARG FEATURE ON OLDER COMPILERS. FOR     *|
 |* EXAMPLE, BEFORE C89 VERSIONS.                                              *|
 |*                                                                            *|
-|* IT'S EXACTLY WORKS SAME AS ORIGINAL STD VA_ARG BUT YOU NEED ADDITIONAL     *|
-|* STUFF TO MAKE IT WORK.                                                     *|
+|* IT'S (ALMOST) WORKS SAME LIKE ORIGINAL STD VA_ARG FUNCTION BUT YOU ALSO    *|
+|* NEED TO ADD SOME ADDITIONAL STUFF TO MAKE IT WORK.                         *|
 |*                                                                            *|
-|* BEFORE SENDING MORE ARGUMENTS TO FUNCTION, YOU MUST NEED OPEN A VA_ARG     *|
-|* LIST VIA USING [VA_PUSH] AND LOSE THE ARGUMENT LIST USING [VA_POP].        *|
+|* BEFORE SENDING MORE ARGUMENTS TO FUNCTION, YOU MUST NEED TO OPEN A VA_ARG  *|
+|* LIST VIA USING [VA_PUSH] AND CLOSE THE ARGUMENT LIST USING [VA_POP].       *|
 |*                                                                            *|
 |* AND INSIDE OF THE [VA_PUSH] AND [VA_POP] YOU NEED TO PASS ARGUMENTS USING  *|
 |* VA_ADD FUNCTION.                                                           *|
@@ -104,8 +104,8 @@
 |* EXAMPLE:                                                                   *|
 |*     printf("%d %d", va_push va_add(int, 42) va_add(char, 'a') va_pop);     *|
 |*                                                                            *|
-|* AND LASTLY, YOU MUST USE 'VA_ARGS' OR 'va_args' INSTEAD OF '...' FOR       *|
-|* THIS FEATURE TO USE IN FUNCTIONS.                                          *|
+|* AND LASTLY, YOU MUST USE 'VA_ARGS' OR 'va_args' INSTEAD OF '...' FOR USE   *|
+|* THIS FEATURE IN FUNCTIONS.                                                 *|
 |*                                                                            *|
 |* FOR EXAMPLE:                                                               *|
 |*     printf(const char *, ...);                                             *|
@@ -123,7 +123,7 @@
 |* I DID NOT ADD THIS FEATURE BECAUSE THIS IS DUMB AS FUCK AND JUST ANNOYING. *|
 |*                                                                            *|
 |* I NEEDED TO USE GLOBAL VARIABLES TO PASS ARGUMENTS BECAUSE BEFORE C99,     *|
-|* COMPOUND LITERALS (AKA: int *test = (int []){1, 2, 3, ...};) IS NOT EXIST! *|
+|* COMPOUND LITERALS (AKA: int *test = (int []){1, 2, 3, ...};) ARE NOT EXIST *|
 |*                                     ^^^^^^^^                               *|
 |*                                                                            *|
 \******************************************************************************/
