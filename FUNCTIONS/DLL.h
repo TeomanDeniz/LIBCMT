@@ -80,7 +80,7 @@
 |*    : if (!my_write) // DO SOMETHING IF FUNCTION DOESN'T EXIST FROM DLL     *|
 |*    :     exit(1);                                                          *|
 |*    :                                                                       *|
-|*    : my_write(1, "test\n", 5);                                             *|
+|*    : my_write();                                                           *|
 |*    : close_dll(dll_file);                                                  *|
 |*    :                                                                       *|
 |*    ;.., DO NOT CLOSE THE DLL FILE BEFORE USING A FUNCTION FROM IT!!!       *|
@@ -93,7 +93,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: DLL ::::::::::::::::::::::::::::::::::: *|
-|* DYNAMIC LINK LIBRARIES ARE SEPERATED FILES FROM EXECUTABLES THAT NEEDS     *|
+|* DYNAMIC LINK LIBRARIES ARE SEPARATED FILES FROM EXECUTABLES THAT NEEDS     *|
 |* FUNCTIONS/VARIABLES FROM THAT FILE.                                        *|
 |*                                                                            *|
 |* WHY COMPILE THE WHOLE PRINTF FUNCTION FOR PER EXE FILE? JUST MAKE PRINTF   *|
