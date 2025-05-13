@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/11 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -66,7 +66,7 @@
 \******************************************************************************/
 
 #ifndef READ_FILE_H
-#	define READ_FILE_H 202504 /* VERSION */
+#	define READ_FILE_H 202505 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -82,10 +82,10 @@
 /* *************************** [v] MVS LINKER [v] *************************** */
 /* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
 // NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#ifdef __MVS__
-#	pragma map(READ_FILE, "RD_FILE0")
-#	pragma map(read_file, "rd_file1")
-#endif /* __MVS__ */
+#	ifdef __MVS__
+#		pragma map(READ_FILE, "RD_FILE0")
+#		pragma map(read_file, "rd_file1")
+#	endif /* __MVS__ */
 /* *************************** [^] MVS LINKER [^] *************************** */
 
 #	ifdef __cplusplus /* C++ */
@@ -163,12 +163,16 @@ extern INLINE int
 	return (0);
 }
 
+/* *************************** [v] LOWER CASE [v] *************************** */
 extern INLINE int
 	read_file(const std::string &file_path, struct s_file *const file_struct)
 {
 	return (READ_FILE(file_path, (struct S_FILE *)file_struct));
 }
+/* *************************** [^] LOWER CASE [^] *************************** */
+
 #	else /* C */
+
 /* **************************** [v] INCLUDES [v] **************************** */
 #		include	"../KEYWORDS/INLINE.h" /*
 #		 define INLINE
@@ -287,6 +291,7 @@ extern INLINE int
 	return (0);
 }
 
+/* *************************** [v] LOWER CASE [v] *************************** */
 #		ifndef KNR_STYLE /* K&R */
 extern INLINE int
 	read_file(const char *file_path, FAR struct s_file *const file_struct)
@@ -299,6 +304,8 @@ extern INLINE int
 {
 	return (READ_FILE(file_path, (FAR struct S_FILE *)file_struct));
 }
+/* *************************** [^] LOWER CASE [^] *************************** */
+
 #	endif /* __cplusplus */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
@@ -307,4 +314,4 @@ extern INLINE int
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* READ_FILE_H */
+#endif /* !READ_FILE_H */

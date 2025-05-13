@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -74,7 +74,7 @@
 \******************************************************************************/
 
 #ifndef CACHE_H
-#	define CACHE_H 202504 /* VERSION */
+#	define CACHE_H 202505 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -779,6 +779,11 @@ extern "C" {
 #	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
 /* ***************************** [^] 8-BITS [^] ***************************** */
 
+/* ************************* [v] SEALING SYSTEM [v] ************************* *\
+|* *   SEALING SYSTEM IS FOR AVOID USING "#IF" PRE-PROCESSING COMMANDS TO   * *|
+|* * MAKE THE LIBRARY CAN ABLE TO WORK AND COMPILE WITHOUT ANY WARNINGS AND * *|
+|* *         ERRORS IN EVERY C COMPILER AND C COMPILER VERSIONS!!!          * *|
+\* ************************************************************************** */
 #	ifdef LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY
 #		ifdef CONFIG_ARC_CACHE_LINE_SHIFT
 #			define L1_CACHE_SHIFT CONFIG_ARC_CACHE_LINE_SHIFT /* ARC STANDARD */
@@ -880,7 +885,8 @@ extern "C" {
 #				endif /* __SYSTEM_32_BIT__ */
 #			endif /* __SYSTEM_16_BIT__ */
 #		endif /* __SYSTEM_8_BIT__ */
-#	endif /* ARC CACHE AUTOMATIC */
+#	endif /* LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY */
+/* ************************* [^] SEALING SYSTEM [^] ************************* */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
@@ -894,4 +900,4 @@ extern "C" {
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* CACHE_H */
+#endif /* !CACHE_H */

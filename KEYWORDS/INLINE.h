@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -44,34 +44,38 @@
 |*############################################################################*|
 |*                                                                            *|
 |* (1) DO NOT USE "STATIC" (STATIC INLINE) WHEN YOU DECIDE TO USE THIS        *|
-|* KEYWORD ON A FUNCTION! "STATIC" IS GOING TO CANCEL "INLINE"!               *|
+|* KEYWORD ON A FUNCTION! "STATIC" IS GOING TO CANCEL "INLINE"! OR IT LIMITS  *|
+|* VISIBILITY. IF THE FUNCTION IS ONLY CALLED ONCE OR TWICE, IT MAY NEVER BE  *|
+|* INLINED. IF IT'S UNUSED, IT MAY STILL OCCUPY A SYMBOL. BUT STILL, NOT      *|
+|* WORTH RISKING IT LOL.                                                      *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // THIS MAKES YOUR FUNCTION JUST A STATIC FUNCTION:                   *|
+|* ;.., // THIS MAKES YOUR FUNCTION JUST A STATIC:                            *|
 |*    : static INLINE int test(void)                                          *|
 |*    : {                                                                     *|
 |*    :     return (15 + 42);                                                 *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* (2) DO NOT USE "GOTO" KEYWORD INSIDE INLINE LIBRARY!                       *|
+|* (2) DO NOT USE "GOTO" KEYWORD INSIDE INLINE LIBRARY! IT'S TECHNICALLY      *|
+|* ALLOWED BUT MAY CAUSE SOME SERIOUS OPTIMISATION PROBLEMS!                  *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // THIS IS WRONG:                                                     *|
-|*    : static INLINE int test(void)                                          *|
+|* ;.., // THIS IS WRONG... THIS FEELS SO WRONG:                              *|
+|*    : INLINE int test(void)                                                 *|
 |*    : {                                                                     *|
 |*    :     LAYER:                                                            *|
 |*    :     . . .                                                             *|
 |*    :     GOTO LAYER;                                                       *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* (3) YOU CAN'T USE STATIC VARIABLES INSIDE OF INLINE FUNCTION!              *|
+|* (3) YOU CAN'T USE STATIC VARIABLES INSIDE INLINE FUNCTIONS!                *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
 |* ;.., // WHAT DA DOG DOING?                                                 *|
-|*    : static INLINE void test(void)                                         *|
+|*    : INLINE void test(void)                                                *|
 |*    : {                                                                     *|
 |*    :     static int dog;                                                   *|
 |*    :     . . .                                                             *|
@@ -81,8 +85,8 @@
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // YOU CAN'T CALL SOMETHING THAT DOESN'T EXIST IN THE BINNARY.        *|
-|*    : static INLINE void inline_test(int a)                                 *|
+|* ;.., // YOU CAN'T CALL SOMETHING THAT DOESN'T EXIST IN THE BINARY.         *|
+|*    : INLINE void inline_test(int a)                                        *|
 |*    : {                                                                     *|
 |*    :     inline_test(a + 1);                                               *|
 |*    :     . . .                                                             *|
@@ -92,8 +96,8 @@
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // NO SHIT                                                            *|
-|*    : static INLINE void inline_test(int a, ...)                            *|
+|* ;.., // NO LOL                                                             *|
+|*    : INLINE void inline_test(int a, ...)                                   *|
 |*    : {                                                                     *|
 |*    :     va_list list;                                                     *|
 |*    :     . . .                                                             *|
@@ -141,12 +145,12 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* [[clang::always_inline]] NOT WORKING IN CLANG. TOO BAD!                    *|
+|* [[clang::always_inline]] NOT WORKING IN CLANG. TOO BAD! AHEM, BELIEVE ME.  *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef INLINE_H
-#	define INLINE_H 202504 /* VERSION */
+#	define INLINE_H 202505 /* VERSION */
 
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
@@ -222,4 +226,4 @@ extern "C" {
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* INLINE_H */
+#endif /* !INLINE_H */

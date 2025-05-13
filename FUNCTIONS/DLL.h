@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -19,12 +19,19 @@
 |*   NAME    :    TYPE    :                   DESCRIPTION                     *|
 |*...........:............:...................................................*|
 |* DLL       : typedef    : A VARIABLE TYPE FOR HANDLE THE OPENED DLL         *|
+|* dll       :            :                                                   *|
 |*...........:............:...................................................*|
 |* OPEN_DLL  : #define () : OPEN A DLL FILE                                   *|
+|* open_dll  :            :                                                   *|
 |*...........:............:...................................................*|
 |* READ_DLL  : #define () : CALL A FUNCTION POINTER FROM THE DLL FILE         *|
+|* read_dll  :            :                                                   *|
 |*...........:............:...................................................*|
 |* CLOSE_DLL : #define () : CLOSE DLL FILE                                    *|
+|* close_dll :            :                                                   *|
+|*...........:............:...................................................*|
+|* DYNAMIC   : #define    : SET FUNCTION/VARIABLE CAN DYNAMICALLY LINKABLE    *|
+|* dynamic   :            :                                                   *|
 |*...........:............:...................................................*|
 \******************************************************************************/
 
@@ -34,22 +41,42 @@
 |*                                                                            *|
 |* :::::::::::::::::::::::::: CREATING A DLL FILE ::::::::::::::::::::::::::: *|
 |* FOR CREATING DYNAMIC LINK LIBRARIES, YOU MUST COMPILE YOUR .c FILE WITH    *|
-|* [-shared] FLAG.                                                            *|
+|* [-c] FLAG FIRST TO COMPILE IT AS A STATIC LINK LIBRARY. THEN COMPILE YOUR  *|
+|* .o FILE WITH [-shared] FLAG.                                               *|
+|*                                                                            *|
+|* O - my_dll.c                                                               *|
+|* :                                                                          *|
+|* ;.., void dynamic my_write(void)                                           *|
+|*    : {                                                                     *|
+|*    :     printf("TEST\n");                                                 *|
+|*    : }                                                                     *|
+|*                                                                            *|
+|* .........................................................................  *|
+|* : CMD                                                            _ [] X :  *|
+|* :.......................................................................:  *|
+|* :                                                                       :  *|
+|* : $> gcc -c my_dll.c -o my_sll.o                                        :  *|
+|* : ...                                                                   :  *|
+|* :                                                                       :  *|
+|* : $> gcc -shared  my_sll.o -o my_dll.dll                                :  *|
+|* :                                                                       :  *|
+|* :.......................................................................:  *|
 |*                                                                            *|
 |* THEN CONGRATS! YOU NOW CREATED A DYNAMIC LINK LIBRARY!                     *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: CONNECT DLL ::::::::::::::::::::::::::::::: *|
-|* O - EXAMPLE                                                                *|
+|* O - use_dll.c                                                              *|
 |* :                                                                          *|
-|* ;.., int variable[9471];                                                   *|
+|* ;.., dll dll_file;                                                         *|
 |*    :                                                                       *|
-|*    : DLL dll_file;                                                         *|
-|*    : dll_file = open_dll("test.bin");                                      *|
+|*    : dll_file = open_dll("my_dll.dll");                                    *|
+|*    :                                                                       *|
 |*    : if (!dll_file) // DO SOMETHING IF DLL FILE COULD'T OPEN               *|
 |*    :     exit(1);                                                          *|
 |*    :                                                                       *|
-|*    : int (*my_write)(int, void *, int); // FUNCTION POINTER                *|
-|*    : my_write = (int (*)(int, void *, int)) read_dll(dll_file, "write");   *|
+|*    : void (*my_write)(); // FUNCTION POINTER                               *|
+|*    : my_write = ((*)()) read_dll(dll_file, "my_write");                    *|
+|*    :                                                                       *|
 |*    : if (!my_write) // DO SOMETHING IF FUNCTION DOESN'T EXIST FROM DLL     *|
 |*    :     exit(1);                                                          *|
 |*    :                                                                       *|
@@ -82,9 +109,12 @@
 \******************************************************************************/
 
 #ifndef DLL_H
-#	define DLL_H 202504 /* VERSION */
+#	define DLL_H 202505 /* VERSION */
 
-/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
+/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
+|* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|
+|* *                      DEALING WITH DYNAMIC LINKING                      * *|
+\* ************************************************************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
@@ -147,12 +177,30 @@ typedef void		*DLL;
 #			define READ_DLL(THE_DLL, FUNCTION_NAME) \
 				dlsym(THE_DLL, FUNCTION_NAME)
 #			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) dlclose(DLL_FILE_FOR_CLOSE)
+#			ifdef __GNUC__
+#				define DYNAMIC __attribute__((visibility("default")))
+#			else
+#				ifdef __clang__
+#					define DYNAMIC __attribute__((visibility("default")))
+#				else // DEFAULT FOR OTHER COMPILERS, LET'S PRAY IT WORKS
+#					define DYNAMIC __declspec(dllexport) __cdecl
+#				endif /* __clang__ */
+#			endif /* __GNUC__ */
 #		ifdef _WIN32 /* WINDOWS */
 typedef HINSTANCE	DLL;
 #			define OPEN_DLL(DLL_FILE) LoadLibrary(DLL_FILE)
 #			define READ_DLL(THE_DLL, FUNCTION_NAME) \
 				GetProcAddress(THE_DLL, FUNCTION_NAME)
 #			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) FreeLibrary(DLL_FILE_FOR_CLOSE)
+#			ifdef __GNUC__
+#				define DYNAMIC __attribute__((visibility("default")))
+#			else
+#				ifdef __clang__
+#					define DYNAMIC __attribute__((visibility("default")))
+#				else // FOR MSVC OR SIMILAR WINDOWS COMPILERS
+#					define DYNAMIC __declspec(dllexport) __stdcall
+#				endif /* __clang__ */
+#			endif /* __GNUC__ */
 #		endif /* _WIN32 */
 #	endif /* UNIX */
 
@@ -162,10 +210,17 @@ typedef HINSTANCE	DLL;
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
 
+/* *************************** [v] LOWER CASE [v] *************************** */
+#	define dll DLL
+#	define open_dll OPEN_DLL
+#	define CLOSE_DLL close_dll
+#	define dynamic DYNAMIC
+/* *************************** [^] LOWER CASE [^] *************************** */
+
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* DLL_H */
+#endif /* !DLL_H */

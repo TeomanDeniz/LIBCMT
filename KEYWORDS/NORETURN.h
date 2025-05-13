@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -28,18 +28,24 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: NORETURN :::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION. EZ LOL                 *|
+|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
 |* ;.., NORETURN void function(void)                                          *|
 |* :  : {                                                                     *|
-|* :  :     . . .                                                             *|
+|*    :     . . .                                                             *|
+|*    :     if (. . .)                                                        *|
+|*    :         exit(0);                                                      *|
+|*    :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
 |* ;.., noreturn void function(void)                                          *|
 |*    : {                                                                     *|
+|*    :     . . .                                                             *|
+|*    :     if (. . .)                                                        *|
+|*    :         exit(0);                                                      *|
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
 |*                                                                            *|
@@ -50,15 +56,16 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* IT WARNS THE COMPILER THAT THE FUNCTION WITH "NORETURN" KEYWORD WILL BE    *|
-|* EXIT FROM THE PROGRAM WITHOUT REACHING THE "return" FROM main() FUNCTION.  *|
+|* IT WARNS THE COMPILER THAT THE FUNCTION MAY EXIT THE WHOLE PROGRAM WITHOUT *|
+|* REACHING BACK TO main() FUNCTION. THEN ONLY WAY TO DO THAT IS USING exit() *|
+|* FUNCTION.                                                                  *|
 |*                                                                            *|
-|* WHICH MEANS FOR SOME OPTIMISATION PURPOSES.                                *|
+|* FOR... OPTIMISATION PURPOSES.                                              *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef NORETURN_H
-#	define NORETURN_H 202504 /* VERSION */
+#	define NORETURN_H 202505 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -71,54 +78,66 @@
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
-
 #	ifndef __STDNORETURN_H
 #		define __STDNORETURN_H /* <stdnoreturn.h> */
-#	endif /* __STDNORETURN_H */
 
-#	if (\
-		defined(__clang__) && /* IF CLANG */\
-		(\
-			(__clang_major__ >= 3) && /* IF GEQ 3.X */\
-			(__clang_minor__ >= 3) /* IF GEQ X.3 */\
-		)\
-	) /* IS CLANG VERSION 3.3 OR GREATHER (MAXIMUM C99) */
-#		define STD_NORETURN _Noreturn
-#		define __noreturn_is_defined 1
-#		define __NORETURN_IS_DEFINED 1
+#		ifdef __noreturn_is_defined
+#			define NORETURN noreturn
+#		else
+#			ifdef __cplusplus
+#				define NORETURN [[noreturn]]
+#				define __noreturn_is_defined 1
+#			else
+#				ifdef __GNUC__
+#					ifdef __clang__
+#						if (\
+							(__clang_major__ >= 3) && /* IF GEQ 3.X */\
+							(__clang_minor__ >= 3) /* IF GEQ X.3 */\
+						) /* IS CLANG VERSION 3.3 OR GREATHER (C99) */
+#							define NORETURN _Noreturn
+#							define __noreturn_is_defined 1
+						else
+#							if (\
+								(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
+								(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+							) /* IS GCC VERSION 4.2.X OR GREATHER (C99) */
+#								define NORETURN __attribute__((noreturn))
+#								define __noreturn_is_defined 1
+#							else
+#								define NORETURN /* EMPTY */
+#							endif /* GNUC-4.2.X */
+#						endif /* CLANG-3.3 */
+#					else
+#						if (\
+							(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
+							(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+						) /* IS GCC VERSION 4.2.X OR GREATHER (C99) */
+#							define NORETURN __attribute__((noreturn))
+#							define __noreturn_is_defined 1
+#						else
+#							define NORETURN /* EMPTY */
+#						endif /* GNUC-4.2.X */
+#					endif /* __clang__ */
+#				else
+#					ifdef __clang__
+#						if (\
+							(__clang_major__ >= 3) && /* IF GEQ 3.X */\
+							(__clang_minor__ >= 3) /* IF GEQ X.3 */\
+						) /* IS CLANG VERSION 3.3 OR GREATHER (C99) */
+#							define NORETURN _Noreturn
+#							define __noreturn_is_defined 1
+						else
+#							define NORETURN /* EMPTY */
+#						endif /* CLANG-3.3 */
+#					else
+#						define NORETURN /* EMPTY */
+#					endif /* __clang__ */
+#				endif /* __GNUC__ */
+#			endif /* __cplusplus */
+#		endif /* __noreturn_is_defined */
 #	else
-#		if (\
-			defined(__clang__) || /* IF CLANG */\
-			(\
-				defined(__GNUC__) && /* IF GCC */\
-				(\
-					(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
-					(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
-				)\
-			)\
-		) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
-#			define STD_NORETURN __attribute__((noreturn))
-#			define _Noreturn __attribute__((noreturn))
-#			define __noreturn_is_defined 1
-#			define __NORETURN_IS_DEFINED 1
-#		else /* DJGPP || TCC || K&R || ... */
-#			define STD_NORETURN /* EMPTY */
-#			define _Noreturn /* EMPTY */
-#			define __noreturn_is_defined 0
-#			define __NORETURN_IS_DEFINED 0
-#		endif /* __clang__ || __GNUC__ 4.2.X */
-#	endif /* __clang__ 3.3 */
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
+#		define NORETURN noreturn
+#	endif /* !__STDNORETURN_H */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -126,4 +145,4 @@ extern "C" {
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* NORETURN_H */
+#endif /* !NORETURN_H */

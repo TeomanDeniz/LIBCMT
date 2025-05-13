@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -86,7 +86,7 @@
 \******************************************************************************/
 
 #ifndef PREFETCH_H
-#	define PREFETCH_H 202504 /* VERSION */
+#	define PREFETCH_H 202505 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -102,9 +102,9 @@
 /* *************************** [v] MVS LINKER [v] *************************** */
 /* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
 // NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#ifdef __MVS__
-#	pragma map(PREFETCH_RANGE, "PRFRANGE")
-#endif /* __MVS__ */
+#	ifdef __MVS__
+#		pragma map(PREFETCH_RANGE, "PRFRANGE")
+#	endif /* __MVS__ */
 /* *************************** [^] MVS LINKER [^] *************************** */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
@@ -348,4 +348,4 @@ extern INLINE void
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* PREFETCH_H */
+#endif /* !PREFETCH_H */

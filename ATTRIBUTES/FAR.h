@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/04/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -112,7 +112,7 @@
 \******************************************************************************/
 
 #ifndef FAR_H
-#	define FAR_H 202504 /* VERSION */
+#	define FAR_H 202505 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -125,98 +125,92 @@
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
-
+#	ifndef __cplusplus /* C++ */
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include	"../ENVIRONMENTS/CACHE.h" /*
-#	 define __SYSTEM_8_BIT__
-#	 define __SYSTEM_16_BIT__
-#	        */
+#		include	"../ENVIRONMENTS/CACHE.h" /*
+#		 define __SYSTEM_8_BIT__
+#		 define __SYSTEM_16_BIT__
+#		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
-/* ************************* [v] IS FAR NEEDED? [v] ************************* */
-#	ifdef M_I86SM
-#		define LOCALMACRO__FAR_MODE_IS_TRUE
-#	else
-#		ifdef M_I86MM
+/* ************************* [v] SEALING SYSTEM [v] ************************* *\
+|* *   SEALING SYSTEM IS FOR AVOID USING "#IF" PRE-PROCESSING COMMANDS TO   * *|
+|* * MAKE THE LIBRARY CAN ABLE TO WORK AND COMPILE WITHOUT ANY WARNINGS AND * *|
+|* *         ERRORS IN EVERY C COMPILER AND C COMPILER VERSIONS!!!          * *|
+\* ************************************************************************** */
+#		ifdef M_I86SM
 #			define LOCALMACRO__FAR_MODE_IS_TRUE
 #		else
-#			ifdef __SMALL__
+#			ifdef M_I86MM
 #				define LOCALMACRO__FAR_MODE_IS_TRUE
 #			else
-#				ifdef __MEDIUM__
+#				ifdef __SMALL__
 #					define LOCALMACRO__FAR_MODE_IS_TRUE
 #				else
-#					ifdef __MSDOS__
+#					ifdef __MEDIUM__
 #						define LOCALMACRO__FAR_MODE_IS_TRUE
 #					else
-#						ifdef _DOS
+#						ifdef __MSDOS__
 #							define LOCALMACRO__FAR_MODE_IS_TRUE
 #						else
-#							ifdef __SYSTEM_16_BIT__
+#							ifdef _DOS
 #								define LOCALMACRO__FAR_MODE_IS_TRUE
 #							else
-#								ifdef __SYSTEM_8_BIT__
+#								ifdef __SYSTEM_16_BIT__
 #									define LOCALMACRO__FAR_MODE_IS_TRUE
-#								endif /* __SYSTEM_8_BIT__ */
-#							endif /* __SYSTEM_16_BIT__ */
-#						endif /* _DOS */
-#					endif /* __MSDOS__ */
-#				endif /* __MEDIUM__ */
-#			endif /* __SMALL__ */
-#		endif /* M_I86MM */
-#	endif /* M_I86SM */
-/* ************************* [^] IS FAR NEEDED? [^] ************************* */
+#								else
+#									ifdef __SYSTEM_8_BIT__
+#										define LOCALMACRO__FAR_MODE_IS_TRUE
+#									endif /* __SYSTEM_8_BIT__ */
+#								endif /* __SYSTEM_16_BIT__ */
+#							endif /* _DOS */
+#						endif /* __MSDOS__ */
+#					endif /* __MEDIUM__ */
+#				endif /* __SMALL__ */
+#			endif /* M_I86MM */
+#		endif /* M_I86SM */
+/* ************************* [^] SEALING SYSTEM [^] ************************* */
 
 /* *************************** [v] DEFINE FAR [v] *************************** */
-#	ifdef LOCALMACRO__FAR_MODE_IS_TRUE
-#		ifndef FAR
-#			ifdef _MSC_VER
-#				define FAR _far
-#			endif /* _MSC_VER */
-#		endif /* FAR */
-#		ifndef FAR
-#			ifdef __TURBOC__
-#				define FAR _far
-#			endif /* __TURBOC__ */
-#		endif /* FAR */
-#		ifndef FAR
-#			ifdef __BORLANDC__
-#				define FAR _far
-#			endif /* __BORLANDC__ */
-#		endif /* FAR */
-#		ifndef FAR
-#			ifdef __WATCOMC__
-#				define FAR __far
-#			endif /* __WATCOMC__ */
-#		endif /* FAR */
-#		ifndef FAR
-#			ifdef __GNUC__
-#				define FAR __attribute__((far))
-#			endif /* __GNUC__ */
-#		endif /* FAR */
-#		ifndef FAR
-#			define FAR far
-#		endif /* FAR */
-#	else
-#		define FAR
-#	endif /* LOCALMACRO__FAR_MODE_IS_TRUE */
+#		ifdef LOCALMACRO__FAR_MODE_IS_TRUE
+#			ifndef FAR
+#				ifdef _MSC_VER
+#					define FAR _far
+#				endif /* _MSC_VER */
+#			endif /* FAR */
+#			ifndef FAR
+#				ifdef __TURBOC__
+#					define FAR _far
+#				endif /* __TURBOC__ */
+#			endif /* FAR */
+#			ifndef FAR
+#				ifdef __BORLANDC__
+#					define FAR _far
+#				endif /* __BORLANDC__ */
+#			endif /* FAR */
+#			ifndef FAR
+#				ifdef __WATCOMC__
+#					define FAR __far
+#				endif /* __WATCOMC__ */
+#			endif /* FAR */
+#			ifndef FAR
+#				ifdef __GNUC__
+#					define FAR __attribute__((far))
+#				endif /* __GNUC__ */
+#			endif /* FAR */
+#			ifndef FAR
+#				define FAR far
+#			endif /* FAR */
+#		else
+#			define FAR
+#		endif /* LOCALMACRO__FAR_MODE_IS_TRUE */
 /* *************************** [^] DEFINE FAR [^] *************************** */
+#	endif /* !__cplusplus */
 
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
-
-/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
+/* ************************ [v] TI CGT CCS (POP) [v] *******************#***** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* FAR_H */
+#endif /* !FAR_H */
