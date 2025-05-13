@@ -12,6 +12,14 @@
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
+// TODO: _Thread_local or __thread
+
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
+@@                                                                            @@
+@@                     READ THE FUCKING MANUAL BEFORE USE                     @@
+@@                     ^    ^   ^       ^                                     @@
+\*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
 /*############################################################################*\
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
@@ -31,13 +39,27 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: TRY ::::::::::::::::::::::::::::::::::: *|
-|* WRAPS A BLOCK OF CODE THAT MAY CALL `throw(...)` INSIDE IT.               *|
+|* WRAPS A BLOCK OF CODE THAT MAY CALL "throw(...)" INSIDE IT.                *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: CATCH :::::::::::::::::::::::::::::::::: *|
-|* PLACED RIGHT AFTER `try`, CAPTURES THE ERROR CODE PASSED FROM `throw(...)`*|
+|* PLACED RIGHT AFTER "try", CAPTURES THE ERROR CODE PASSED FROM "throw(...)" *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: THROW :::::::::::::::::::::::::::::::::: *|
-|* THROWS AN ERROR CODE AND JUMPS TO THE NEAREST `catch` BLOCK.              *|
+|* THROWS AN ERROR CODE AND JUMPS TO THE NEAREST "catch" BLOCK.               *|
+|*                                                                            *|
+|* O - SETUP                                                                  *|
+|* :                                                                          *|
+|* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME                  *|
+|* : "SETUP_TRY_CATCH" AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!            *|
+|* :                                                                          *|
+|* : AFTER THAT, YOU DON'T NEED TO SET THAT MACRO ANYWHERE ELSE.              *|
+|* :                                                                          *|
+|* ;.., #define SETUP_TRY_CATCH                                               *|
+|*    : #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
+|*    :                                                                       *|
+|*    : int main() {                                                          *|
+|*    : ...                                                                   *|
+|*    : }                                                                     *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
@@ -69,18 +91,39 @@
 |* :     :     printf("ERROR: %d\n", err);                                    *|
 |* :     : }                                                                  *|
 |* :                                                                          *|
-|* ;.., void test(void)                                                       *|
-|*    : {                                                                     *|
-|*    :     throw(42);                                                        *|
-|*    : }                                                                     *|
+|* ;.., TRY/CATCH VIA USING INSIDE A FUNCION WE CALLED:                       *|
+|* :  :                                                                       *|
+|* :  : void test(void)                                                       *|
+|* :  : {                                                                     *|
+|* :  :     throw(42);                                                        *|
+|* :  : }                                                                     *|
+|* :  :                                                                       *|
+|* :  : try                                                                   *|
+|* :  : {                                                                     *|
+|* :  :     test();                                                           *|
+|* :  : }                                                                     *|
+|* :  : catch(int err)                                                        *|
+|* :  : {                                                                     *|
+|* :  :     printf("ERROR: %d\n", err);                                       *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., TRY/CATCH VIA USING NESTED STATEMEMNT:                                *|
 |*    :                                                                       *|
 |*    : try                                                                   *|
 |*    : {                                                                     *|
-|*    :     test();                                                           *|
+|*    :     try                                                               *|
+|*    :     {                                                                 *|
+|*    :         throw(42);                                                    *|
+|*    :     }                                                                 *|
+|*    :     catch (int error)                                                 *|
+|*    :     {                                                                 *|
+|*    :         printf("err_1: %d\n", error);                                 *|
+|*    :         throw(32);                                                    *|
+|*    :     }                                                                 *|
 |*    : }                                                                     *|
-|*    : catch(int err)                                                        *|
+|*    : catch (int error)                                                     *|
 |*    : {                                                                     *|
-|*    :     printf("ERROR: %d\n", err);                                       *|
+|*    :     printf("err_2: %d\n", error);                                     *|
 |*    : }                                                                     *|
 |*                                                                            *|
 \******************************************************************************/
@@ -90,21 +133,18 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* THIS CUSTOM ERROR HANDLING SYSTEM USES `setjmp` AND `longjmp` TO           *|
+|* THIS CUSTOM ERROR HANDLING SYSTEM USES "setjmp" AND "longjmp" TO           *|
 |* MIMIC A BASIC FORM OF EXCEPTION HANDLING IN C.                             *|
 |*                                                                            *|
-|* - `try` sets a jump point for where the program should return if an error  *|
-|*   occurs.                                                                  *|
+|* - "try" SETS A JUMP POINT FOR WHERE THE PROGRAM SHOULD RETURN IF AN ERROR  *|
+|*   OCCURS.                                                                  *|
 |*                                                                            *|
-|* - `throw(err)` stores the error value and jumps back to that point.        *|
+|* - "throw(err)" STORES THE ERROR VALUE AND JUMPS BACK TO THAT POINT.        *|
 |*                                                                            *|
-|* - `catch(variable)` allows you to access the error code thrown.            *|
+|* - "catch(variable)" ALLOWS YOU TO ACCESS THE ERROR CODE THROWN.            *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: NOTES :::::::::::::::::::::::::::::::::: *|
-|*     * THIS SYSTEM IS GLOBAL — ONLY ONE ERROR CONTEXT AT A TIME!            *|
-|*       DO NOT NEST `try/catch` OR USE CONCURRENTLY IN THREADS!              *|
-|*                                                                            *|
-|*     * ONLY throw() AND catch() int TYPES!                                  *|
+|*     * ONLY throw() AND catch() WITH int TYPE!                              *|
 |*                                                                            *|
 |*     * IF THIS LIBRARY IS ATTEMPTED TO BE COMPILED IN A C++ COMPILER,       *|
 |*       THE LIBRARY WILL NOT DEFINE "try", "catch", AND "throw" KEYWORDS!    *|
@@ -136,12 +176,13 @@
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
-/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-static jmp_buf	__JMP_ERROR_BUFFER__;
-static int		__JMP_ERROR_VALUE__ = 0;
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
+#		ifndef __JMP_ERROR_BUFFER_SIZE__
+#			define __JMP_ERROR_BUFFER_SIZE__ 32 // <- INCREASE IT IF YOU NEED
+#		endif /* !__JMP_ERROR_BUFFER_SIZE__ */
+/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#		define try if (!setjmp(__JMP_ERROR_BUFFER__))
+#		define try if (!setjmp(__JMP_ERROR_BUFFER__[__JMP_ERROR_INDEX__++]))
 #		define catch(VARIABLE_NAME) \
 			else \
 				for (\
@@ -151,7 +192,19 @@ static int		__JMP_ERROR_VALUE__ = 0;
 				)
 #		define throw(ERROR_NO) \
 			__JMP_ERROR_VALUE__ = (int)ERROR_NO;\
-			longjmp(__JMP_ERROR_BUFFER__, (int)ERROR_NO)
+			longjmp(__JMP_ERROR_BUFFER__[--__JMP_ERROR_INDEX__], (int)ERROR_NO)
+
+/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
+#		ifdef SETUP_TRY_CATCH
+jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
+char		__JMP_ERROR_INDEX__ = 0;
+int		__JMP_ERROR_VALUE__ = 0;
+#		else
+extern jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
+extern char		__JMP_ERROR_INDEX__;
+extern int		__JMP_ERROR_VALUE__;
+#		endif /* SETUP_TRY_CATCH */
+/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #		ifdef __TI_COMPILER_VERSION__

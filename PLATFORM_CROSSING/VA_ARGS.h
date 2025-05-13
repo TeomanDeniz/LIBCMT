@@ -12,6 +12,12 @@
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
+@@                                                                            @@
+@@                     READ THE FUCKING MANUAL BEFORE USE                     @@
+@@                     ^    ^   ^       ^                                     @@
+\*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
 /*############################################################################*\
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
@@ -50,6 +56,20 @@
 /*############################################################################*\
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
+|*                                                                            *|
+|* O - SETUP                                                                  *|
+|* :                                                                          *|
+|* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME "SETUP_VA_ARGS"  *|
+|* : AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!                              *|
+|* :                                                                          *|
+|* : AFTER THAT, YOU DON'T NEED TO SET THAT MACRO ANYWHERE ELSE.              *|
+|* :                                                                          *|
+|* ;.., #define SETUP_VA_ARHS                                                 *|
+|*    : #include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"                         *|
+|*    :                                                                       *|
+|*    : int main() {                                                          *|
+|*    : ...                                                                   *|
+|*    : }                                                                     *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
@@ -130,101 +150,102 @@
 
 #ifndef VA_ARG_H
 #	define VA_ARG_H 202505 /* VERSION */
+#	ifndef __cplusplus /* C++ */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
-#	ifdef __TI_COMPILER_VERSION__
-#		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
-#			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
-#			"FILENAME" SEQUENCE
-#		*/
-#	endif /* __TI_COMPILER_VERSION__ */
+#		ifdef __TI_COMPILER_VERSION__
+#			pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
+#			pragma CHECK_MISRA("-5.4") /*
+				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
+			*/
+#			pragma CHECK_MISRA("-19.3") /*
+#				THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME>
+#				OR "FILENAME" SEQUENCE
+#			*/
+#		endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
+/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
+#		ifndef VA_ARGS_MAX_BYTE_LIMIT
+#			define VA_ARGS_MAX_BYTE_LIMIT 2048 // <- INCREASE IT IF YOU NEED
+#		endif /* !VA_ARGS_MAX_BYTE_LIMIT */
+/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#	if (\
-		(\
-			defined(__GNUC__) && \
-			defined(__GNUC_MINOR__) && \
-			defined(__GNUC_PATCHLEVEL__)\
-		) || \
-		defined(__clang__) || \
-		defined(__INTEL_COMPILER) || \
-		defined(__SUNPRO_C) || \
-		defined(__IBMC__) || \
-		defined(__IBMCPP__) || \
-		defined(__HP_cc) || \
-		defined(__PGI) || \
-		defined(__TI_COMPILER_VERSION__) || \
-		defined(__TINYC__) || \
-		defined(__COMPCERT__) || \
-		defined(__PCC__) || \
-		defined(__TenDRA__)\
-	)
-#		include <stdarg.h> /*
-#		??????? va_list;
-#		    <T> va_arg(va_list, <T>);
-#		   void va_copy(va_list, va_list);
-#		   void va_start(va_list, {parmN});
-#		   void va_end(va_list);
-#		         */
-#		define va_args ...
-#		define va_add(A, B) (A)B,
-#		define va_push
-#		define va_pop 0
-#	else /* COMPILER DOES NOT SUPPORTS VA_ARG */
+#		if (\
+			(\
+				defined(__GNUC__) && \
+				defined(__GNUC_MINOR__) && \
+				defined(__GNUC_PATCHLEVEL__)\
+			) || \
+			defined(__clang__) || \
+			defined(__INTEL_COMPILER) || \
+			defined(__SUNPRO_C) || \
+			defined(__IBMC__) || \
+			defined(__IBMCPP__) || \
+			defined(__HP_cc) || \
+			defined(__PGI) || \
+			defined(__TI_COMPILER_VERSION__) || \
+			defined(__TINYC__) || \
+			defined(__COMPCERT__) || \
+			defined(__PCC__) || \
+			defined(__TenDRA__)\
+		)
+#			include <stdarg.h> /*
+#			??????? va_list;
+#			    <T> va_arg(va_list, <T>);
+#			   void va_copy(va_list, va_list);
+#			   void va_start(va_list, {parmN});
+#			   void va_end(va_list);
+#			        */
+#			define va_args ...
+#			define va_add(A, B) (A)B,
+#			define va_push
+#			define va_pop 0
+#		else /* COMPILER DOES NOT SUPPORTS VA_ARG */
 typedef char	**va_list;
-//#		define va_add(A, B) ((char *)&(A){B}), // COMPOUND LITERALS
-#		define va_add(A, B) \
-			__VA_ARGS__GLOBAL_[++__VA_ARGS__GLOBAL_INDEX]=((char *)&(A){B}),
-#		define va_arg(A, B) (*A && ++A, (B)*((B *)*(A - 1)))
-#		define va_copy(A, B) A = B
-//#		define va_push (char *[]){ /* COMPOUND LITERALS */
-#		define va_push (
-//#		define va_pop ((char *)0)} /* COMPOUND LITERALS */
-#		define va_pop __VA_ARGS__GLOBAL_INDEX = -1, __VA_ARGS__GLOBAL_)
-#		define va_start(A, B) A = __VA_ARGS___
-#		define va_args char **__VA_ARGS___
-#		define va_end(A) A = ((char **)0)
-#		define __dj_include_stdarg_h_
-#		define _STDARG_H
-#		define _VA_LIST_DEFINED
-#	endif /* IF COMPILER SUPPORTS VA_ARG */
+//#			define va_add(A, B) ((char *)&(A){B}), // COMPOUND LITERALS
+#			define va_add(A, B) \
+				__VA_ARGS__GLOBAL_[++__VA_ARGS__GLOBAL_INDEX]=((char *)&(A){B}),
+#			define va_arg(A, B) (*A && ++A, (B)*((B *)*(A - 1)))
+#			define va_copy(A, B) A = B
+//#			define va_push (char *[]){ /* COMPOUND LITERALS */
+#			define va_push (
+//#			define va_pop ((char *)0)} /* COMPOUND LITERALS */
+#			define va_pop __VA_ARGS__GLOBAL_INDEX = -1, __VA_ARGS__GLOBAL_)
+#			define va_start(A, B) A = __VA_ARGS___
+#			define va_args char **__VA_ARGS___
+#			define va_end(A) A = ((char **)0)
+#			define __dj_include_stdarg_h_
+#			define _STDARG_H
+#			define _VA_LIST_DEFINED
+#		endif /* IF COMPILER SUPPORTS VA_ARG */
 
 /* **************************** [v] UPPERCASE [v] *************************** */
-#	define VA_ADD va_add
-#	define VA_ARG va_arg
-#	define VA_COPY va_copy
-#	define VA_PUSH va_push
-#	define VA_POP va_pop
-#	define VA_START va_start
-#	define VA_ARGS va_args
-#	define VA_END va_end
+#		define VA_ADD va_add
+#		define VA_ARG va_arg
+#		define VA_COPY va_copy
+#		define VA_PUSH va_push
+#		define VA_POP va_pop
+#		define VA_START va_start
+#		define VA_ARGS va_args
+#		define VA_END va_end
 /* **************************** [^] UPPERCASE [^] *************************** */
 
-#	ifndef VA_ARGS_GLOBALS_DEFINED
-#		define VA_ARGS_GLOBALS_DEFINED
-#		define VA_ARGS_MAX_BYTE_LIMIT 2048
+/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
+#		ifdef SETUP_VA_ARGS
 char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
 int		__VA_ARGS__GLOBAL_INDEX = -1;
-#	endif /* VA_ARG_GLOBALS_DEFINED */
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
+#		else
+extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+extern int	__VA_ARGS__GLOBAL_INDEX;
+#		endif /* SETUP_VA_ARGS */
+/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
-#	ifdef __TI_COMPILER_VERSION__
-#		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
-#	endif /* __TI_COMPILER_VERSION__ */
+#		ifdef __TI_COMPILER_VERSION__
+#			pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
+#		endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
+#	endif /* !__cplusplus */
 #endif /* !VA_ARG_H */
