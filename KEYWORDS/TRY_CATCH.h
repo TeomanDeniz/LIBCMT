@@ -8,11 +8,9 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
-
-// TODO: _Thread_local or __thread
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*\
 @@                                                                            @@
@@ -169,6 +167,9 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
+#		include "LOCAL.h" /*
+#		 define LOCAL
+#		        */
 #		include <setjmp.h> /*
 #		 define jmp_buf
 #		 define setjmp(jmp_buf env)
@@ -196,9 +197,9 @@
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_TRY_CATCH
-jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
-char		__JMP_ERROR_INDEX__ = 0;
-int		__JMP_ERROR_VALUE__ = 0;
+LOCAL jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
+LOCAL char		__JMP_ERROR_INDEX__ = 0;
+LOCAL int		__JMP_ERROR_VALUE__ = 0;
 #		else
 extern jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
 extern char		__JMP_ERROR_INDEX__;

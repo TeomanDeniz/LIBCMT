@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -59,17 +59,29 @@
 |*                                                                            *|
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
-|* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME "SETUP_VA_ARGS"  *|
-|* : AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!                              *|
+|* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_VA_ARGS"     *|
+|* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
 |* :                                                                          *|
-|* : AFTER THAT, YOU DON'T NEED TO SET THAT MACRO ANYWHERE ELSE.              *|
+|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE **PROPERLY DEFINED**.  *|
 |* :                                                                          *|
-|* ;.., #define SETUP_VA_ARHS                                                 *|
-|*    : #include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"                         *|
+|* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
+|* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
+|* :                                                                          *|
+|* : EXAMPLE USAGE:                                                           *|
+|* ;.., [main.c]                                                              *|
+|* :  :                                                                       *|
+|* :  : #define SETUP_VA_ARGS // ENABLE GLOBAL DEFINITIONS                    *|
+|* :  : #include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"                         *|
+|* :  :                                                                       *|
+|* :  : int main(void) {                                                      *|
+|* :  :     ...                                                               *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* ;.., [static_link.c]                                                       *|
 |*    :                                                                       *|
-|*    : int main() {                                                          *|
-|*    : ...                                                                   *|
-|*    : }                                                                     *|
+|*    : #include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"                         *|
+|*    : // DO NOT define SETUP_VA_ARGS here - only include the header         *|
+|*    : . . .                                                                 *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
@@ -156,14 +168,20 @@
 #		ifdef __TI_COMPILER_VERSION__
 #			pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
 #			pragma CHECK_MISRA("-5.4") /*
-				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
-			*/
+#				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
+#			*/
 #			pragma CHECK_MISRA("-19.3") /*
 #				THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME>
 #				OR "FILENAME" SEQUENCE
 #			*/
 #		endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
+
+/* **************************** [v] INCLUDES [v] **************************** */
+#		include "../KEYWORDS/LOCAL.h" /*
+#		 define LOCAL
+#		        */
+/* **************************** [^] INCLUDES [^] **************************** */
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
 #		ifndef VA_ARGS_MAX_BYTE_LIMIT
@@ -233,8 +251,8 @@ typedef char	**va_list;
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_VA_ARGS
-char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-int		__VA_ARGS__GLOBAL_INDEX = -1;
+LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
 #		else
 extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
 extern int	__VA_ARGS__GLOBAL_INDEX;
