@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -266,10 +266,10 @@ extern "C" {
 /* *************************** [^] prefetchw [^] **************************** */
 
 /* ************************* [v] PREFETCH_RANGE [v] ************************* */
-#	ifndef KNR_STYLE /* K&R */
+#	ifndef KNR_STYLE /* STANDARD C */
 extern INLINE void
 	PREFETCH_RANGE(void *VARIABLE, register unsigned int LENGHT)
-#	else /* STANDARD C */
+#	else /* K&R */
 extern INLINE void
 	PREFETCH_RANGE(VARIABLE, LENGHT)
 	void					*VARIABLE;
@@ -300,10 +300,10 @@ extern INLINE void
 /* ************************* [v] prefetch_range [v] ************************* */
 #	ifndef _LINUX_PREFETCH_H
 #		define _LINUX_PREFETCH_H
-#		ifndef KNR_STYLE /* K&R */
+#		ifndef KNR_STYLE /* STANDARD C */
 extern INLINE void
 	prefetch_range(void *variable, register unsigned int lenght)
-#		else /* STANDARD C */
+#		else /* K&R */
 extern INLINE void
 	prefetch_range(variable, lenght)
 	void					*variable;

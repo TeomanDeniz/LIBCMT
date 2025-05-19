@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -245,10 +245,10 @@ typedef struct S_FILE	T_FILE;
 typedef struct s_file	t_file;
 /* **************************** [^] TYPEDEFS [^] **************************** */
 
-#		ifndef KNR_STYLE /* K&R */
+#		ifndef KNR_STYLE /* STANDARD C */
 extern INLINE int
 	READ_FILE(const char *FILE_PATH, FAR struct S_FILE *const FILE_STRUCT)
-#		else /* STANDARD C */
+#		else /* K&R */
 extern INLINE int
 	READ_FILE(FILE, FILE_STRUCT)
 	char				*FILE_PATH;
