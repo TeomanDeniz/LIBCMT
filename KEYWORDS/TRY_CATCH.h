@@ -56,7 +56,7 @@
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF!!!                                                              *|
+|* : YOURSELF WITH LIKE "#define main ..."                                    *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME                  *|
 |* : "SETUP_TRY_CATCH" AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!            *|

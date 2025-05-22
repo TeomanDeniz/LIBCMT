@@ -68,7 +68,7 @@
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF!!!                                                              *|
+|* : YOURSELF WITH LIKE "#define main ..."                                    *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_VA_ARGS"     *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
