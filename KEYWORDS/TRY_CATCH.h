@@ -209,8 +209,9 @@
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_TRY_CATCH
-LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
+LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
+LOCAL char		__TRY_CATCH_INDEX__ = 0;
+LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
 #			ifdef main
 #				undef main
