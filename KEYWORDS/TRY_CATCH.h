@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/18 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -54,6 +54,9 @@
 |* THROWS AN ERROR CODE AND JUMPS TO THE NEAREST "catch" BLOCK.               *|
 |*                                                                            *|
 |* O - SETUP                                                                  *|
+|* :                                                                          *|
+|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
+|* : YOURSELF!!!                                                              *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME                  *|
 |* : "SETUP_TRY_CATCH" AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!            *|
@@ -186,33 +189,58 @@
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#		ifndef __JMP_ERROR_BUFFER_SIZE__
-#			define __JMP_ERROR_BUFFER_SIZE__ 32 // <- INCREASE IT IF YOU NEED
-#		endif /* !__JMP_ERROR_BUFFER_SIZE__ */
+#		ifndef __TRY_CATCH_BUFFER_SIZE__
+#			define __TRY_CATCH_BUFFER_SIZE__ 32 // <- INCREASE IT IF YOU NEED
+#		endif /* !__TRY_CATCH_BUFFER_SIZE__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#		define try if (!setjmp(__JMP_ERROR_BUFFER__[__JMP_ERROR_INDEX__++]))
+#		define try if (!setjmp(__TRY_CATCH_BUFFER__[__TRY_CATCH_INDEX__++]))
 #		define catch(VARIABLE_NAME) \
 			else \
 				for (\
-					VARIABLE_NAME = __JMP_ERROR_VALUE__; \
-					__JMP_ERROR_VALUE__; \
-					__JMP_ERROR_VALUE__ = 0\
+					VARIABLE_NAME = __TRY_CATCH_VALUE__; \
+					__TRY_CATCH_VALUE__; \
+					__TRY_CATCH_VALUE__ = 0\
 				)
 #		define throw(ERROR_NO) \
-			__JMP_ERROR_VALUE__ = (int)ERROR_NO;\
-			longjmp(__JMP_ERROR_BUFFER__[--__JMP_ERROR_INDEX__], (int)ERROR_NO)
+			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
+			longjmp(__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], (int)ERROR_NO)
+
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_TRY_CATCH
-LOCAL jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
-LOCAL char		__JMP_ERROR_INDEX__ = 0;
-LOCAL int		__JMP_ERROR_VALUE__ = 0;
-#		else
-extern jmp_buf	__JMP_ERROR_BUFFER__[__JMP_ERROR_BUFFER_SIZE__];
-extern char		__JMP_ERROR_INDEX__;
-extern int		__JMP_ERROR_VALUE__;
+LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
+#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#			ifdef main
+#				undef main
+#			endif /* main */
+#			ifdef WinMain
+#				undef WinMain
+#			endif /* main */
+#			ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#			endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#			define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
+				LOCAL jmp_buf	__TRY_CATCH_BUFFER__[\
+					__TRY_CATCH_BUFFER_SIZE__\
+				];\
+				LOCAL char		__TRY_CATCH_INDEX__ = 0;\
+				LOCAL int		__TRY_CATCH_VALUE__ = 0;
+#			define main \
+				__IDLE__TRY_CATCH;\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				int main
+#			define WinMain \
+				__IDLE__TRY_CATCH;\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				int WINAPI WinMain
 #		endif /* SETUP_TRY_CATCH */
+LOCAL extern jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
+LOCAL extern char		__TRY_CATCH_INDEX__;
+LOCAL extern int		__TRY_CATCH_VALUE__;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */

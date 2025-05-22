@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/18 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -66,6 +66,9 @@
 |*############################################################################*|
 |*                                                                            *|
 |* O - SETUP                                                                  *|
+|* :                                                                          *|
+|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
+|* : YOURSELF!!!                                                              *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_VA_ARGS"     *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
@@ -261,10 +264,32 @@ typedef char	**va_list;
 #		ifdef SETUP_VA_ARGS
 LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
 LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
-#		else
-extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-extern int	__VA_ARGS__GLOBAL_INDEX;
+#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#			ifdef main
+#				undef main
+#			endif /* main */
+#			ifdef WinMain
+#				undef WinMain
+#			endif /* main */
+#			ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#				define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#			endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
+				LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
+				LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
+#			define main \
+				__IDLE__VA_ARGS;\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				int main
+#			define WinMain \
+				__IDLE__VA_ARGS;\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				int WINAPI WinMain
 #		endif /* SETUP_VA_ARGS */
+LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */

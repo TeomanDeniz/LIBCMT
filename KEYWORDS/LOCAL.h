@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/14 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -60,12 +60,13 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* YOU DON'T HAVE TO SET "LOCAL" KEYWORD ON PROTYPES OF GLOBAL VARIABLES.     *|
+|* YES, YOU DO HAVE TO SET "LOCAL" KEYWORD ON YOUR PROTOTYPES OF GLOBAL       *|
+|* VARIABLES TOO.                                                             *|
 |*                                                                            *|
 |* extern local int g_variable;                                               *|
 |*        ^^^^^                                                               *|
-|*        NO, DON'T DO THAT ON PROTOTYPES!!!                                  *|
-|*        USE IT ONLY WHILE YOU'RE CREATING YOUR GLOBAL VARIABLE!             *|
+|*        ADD THAT IF YOU'RE TRYING TO GET YOUR GLOBAL VARIABLE VIA USING     *|
+|*        "extern" KEYWORD. (THANKS MrNorkum TO INFORM THIS BUG TO ME)        *|
 |*                                                                            *|
 \******************************************************************************/
 
