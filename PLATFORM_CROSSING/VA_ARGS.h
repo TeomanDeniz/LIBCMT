@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/25 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -68,12 +68,12 @@
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF WITH LIKE "#define main ..."                                    *|
+|* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_VA_ARGS"     *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
 |* :                                                                          *|
-|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE **PROPERLY DEFINED**.  *|
+|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE PROPERLY DEFINED.      *|
 |* :                                                                          *|
 |* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
 |* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
@@ -188,18 +188,6 @@
 #		endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* **************************** [v] INCLUDES [v] **************************** */
-#		include "../KEYWORDS/LOCAL.h" /*
-#		 define LOCAL
-#		        */
-/* **************************** [^] INCLUDES [^] **************************** */
-
-/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#		ifndef VA_ARGS_MAX_BYTE_LIMIT
-#			define VA_ARGS_MAX_BYTE_LIMIT 2048 // <- INCREASE IT IF YOU NEED
-#		endif /* !VA_ARGS_MAX_BYTE_LIMIT */
-/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
-
 #		if (\
 			(\
 				defined(__GNUC__) && \
@@ -219,6 +207,7 @@
 			defined(__PCC__) || \
 			defined(__TenDRA__)\
 		)
+/* **************************** [v] INCLUDES [v] **************************** */
 #			include <stdarg.h> /*
 #			??????? va_list;
 #			    <T> va_arg(va_list, <T>);
@@ -226,15 +215,33 @@
 #			   void va_start(va_list, {parmN});
 #			   void va_end(va_list);
 #			        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
 #			define va_args ...
 #			define va_add(A, B) (A)B,
 #			define va_push
 #			define va_pop 0
 #		else /* COMPILER DOES NOT SUPPORTS VA_ARG */
+/* **************************** [v] INCLUDES [v] **************************** */
+#		include "../KEYWORDS/LOCAL.h" /*
+#		 define LOCAL
+#		        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
+/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
+#		ifndef VA_ARGS_MAX_BYTE_LIMIT
+#			define VA_ARGS_MAX_BYTE_LIMIT 2048 // <- INCREASE IF NEEDED
+#		endif /* !VA_ARGS_MAX_BYTE_LIMIT */
+/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
+
+/* **************************** [v] TYPEDEFS [v] **************************** */
 typedef char	**va_list;
+/* **************************** [^] TYPEDEFS [^] **************************** */
+
 //#			define va_add(A, B) ((char *)&(A){B}), // COMPOUND LITERALS
 #			define va_add(A, B) \
-				__VA_ARGS__GLOBAL_[++__VA_ARGS__GLOBAL_INDEX]=((char *)&(A){B}),
+				__VA_ARGS__GLOBAL_[++__VA_ARGS__GLOBAL_INDEX] = \
+				((char *)&(A){B}),
 #			define va_arg(A, B) (*A && ++A, (B)*((B *)*(A - 1)))
 #			define va_copy(A, B) A = B
 //#			define va_push (char *[]){ /* COMPOUND LITERALS */
@@ -247,6 +254,43 @@ typedef char	**va_list;
 #			define __dj_include_stdarg_h_
 #			define _STDARG_H
 #			define _VA_LIST_DEFINED
+
+/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
+#		ifdef SETUP_VA_ARGS
+LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL int	__VA_ARGS__GLOBAL_INDEX = -1;
+#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#			ifdef main
+#				undef main
+#			endif /* main */
+#			ifdef WinMain
+#				undef WinMain
+#			endif /* main */
+#			ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#				define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#			endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#			ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#			endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
+#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
+				LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
+				LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
+#			define main \
+				__IDLE__VA_ARGS;\
+				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				int main
+#			define WinMain \
+				__IDLE__VA_ARGS;\
+				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+				int WINAPI WinMain
+#		endif /* SETUP_VA_ARGS */
+LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
+/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 #		endif /* IF COMPILER SUPPORTS VA_ARG */
 
 /* **************************** [v] UPPERCASE [v] *************************** */
@@ -259,38 +303,6 @@ typedef char	**va_list;
 #		define VA_ARGS va_args
 #		define VA_END va_end
 /* **************************** [^] UPPERCASE [^] *************************** */
-
-/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#		ifdef SETUP_VA_ARGS
-LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
-#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#			ifdef main
-#				undef main
-#			endif /* main */
-#			ifdef WinMain
-#				undef WinMain
-#			endif /* main */
-#			ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#				define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
-				LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
-				LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
-#			define main \
-				__IDLE__VA_ARGS;\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				int main
-#			define WinMain \
-				__IDLE__VA_ARGS;\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				int WINAPI WinMain
-#		endif /* SETUP_VA_ARGS */
-LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #		ifdef __TI_COMPILER_VERSION__

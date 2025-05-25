@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/05/25 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -32,12 +32,15 @@
 |*............................................................................*|
 |*  NAME  :   TYPE    :                     DESCRIPTION                       *|
 |*........:...........:.......................................................*|
-|* try    : #define   : BEGINS A BLOCK THAT MAY THROW AN ERROR                *|
+|* TRY    : #define   : BEGINS A BLOCK THAT MAY THROW AN ERROR                *|
+|* try    :           :                                                       *|
 |*........:...........:.......................................................*|
-|* catch  : #define() : CATCHES THROWN ERRORS FROM THE `try` BLOCK            *|
+|* CATCH  : #define() : CATCHES THROWN ERRORS FROM THE `try` BLOCK            *|
+|* catch  :           :                                                       *|
 |*........:...........:.......................................................*|
-|* throw  : #define() : IMMEDIATELY JUMPS TO `catch` WITH A SPECIFIED ERROR   *|
-|*............................................................................*|
+|* THROW  : #define() : IMMEDIATELY JUMPS TO `catch` WITH A SPECIFIED ERROR   *|
+|* throw  :           :                                                       *|
+|*........:...........:.......................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -56,12 +59,15 @@
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF WITH LIKE "#define main ..."                                    *|
+|* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
 |* :                                                                          *|
-|* : BEFORE USING THIS LIBRARY, PLEASE SET A MACRO WITH NAME                  *|
-|* : "SETUP_TRY_CATCH" AND INCLUDE THIS LIBRARY TO MAKE IT WORK!!!            *|
+|* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_TRY_CATCH"   *|
+|* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
 |* :                                                                          *|
-|* : AFTER THAT, YOU DON'T NEED TO SET THAT MACRO ANYWHERE ELSE.              *|
+|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE PROPERLY DEFINED.      *|
+|* :                                                                          *|
+|* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
+|* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
 |* :                                                                          *|
 |* ;.., #define SETUP_TRY_CATCH                                               *|
 |*    : #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
@@ -190,22 +196,21 @@
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
 #		ifndef __TRY_CATCH_BUFFER_SIZE__
-#			define __TRY_CATCH_BUFFER_SIZE__ 32 // <- INCREASE IT IF YOU NEED
+#			define __TRY_CATCH_BUFFER_SIZE__ 32 // <- INCREASE IF NEEDED
 #		endif /* !__TRY_CATCH_BUFFER_SIZE__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#		define try if (!setjmp(__TRY_CATCH_BUFFER__[__TRY_CATCH_INDEX__++]))
-#		define catch(VARIABLE_NAME) \
+#		define TRY if (!setjmp(__TRY_CATCH_BUFFER__[__TRY_CATCH_INDEX__++]))
+#		define CATCH(VARIABLE_NAME) \
 			else \
 				for (\
 					VARIABLE_NAME = __TRY_CATCH_VALUE__; \
 					__TRY_CATCH_VALUE__; \
 					__TRY_CATCH_VALUE__ = 0\
 				)
-#		define throw(ERROR_NO) \
+#		define THROW(ERROR_NO) \
 			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
 			longjmp(__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], (int)ERROR_NO)
-
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_TRY_CATCH
@@ -222,6 +227,9 @@ LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #			ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
 #				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
 #			endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#			ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#			endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
 #			define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 				LOCAL jmp_buf	__TRY_CATCH_BUFFER__[\
 					__TRY_CATCH_BUFFER_SIZE__\
@@ -230,11 +238,13 @@ LOCAL int		__TRY_CATCH_VALUE__ = 0;
 				LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #			define main \
 				__IDLE__TRY_CATCH;\
+				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
 				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
 				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
 				int main
 #			define WinMain \
 				__IDLE__TRY_CATCH;\
+				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
 				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
 				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
 				int WINAPI WinMain
@@ -243,6 +253,12 @@ LOCAL extern jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
 LOCAL extern char		__TRY_CATCH_INDEX__;
 LOCAL extern int		__TRY_CATCH_VALUE__;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+
+/* **************************** [v] LOWERCASE [v] *************************** */
+#	define try TRY
+#	define catch CATCH
+#	define throw THROW
+/* **************************** [^] LOWERCASE [^] *************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #		ifdef __TI_COMPILER_VERSION__
