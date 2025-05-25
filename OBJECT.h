@@ -1,5 +1,5 @@
 /******************************************************************************\
-# C - OBJECT                                     #       Maximum Tension       #
+# H - OBJECT                                     #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -287,15 +287,15 @@ extern "C" {
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#		ifndef __OBJECT_MAX_FUNCTION_LIMIT__
-#			define __OBJECT_MAX_FUNCTION_LIMIT__ 32 // <- INCREASE IF NEEDED
-#		endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
+#	ifndef __OBJECT_MAX_FUNCTION_LIMIT__
+#		define __OBJECT_MAX_FUNCTION_LIMIT__ 32 // <- INCREASE IF NEEDED
+#	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#define OBJECT_FUNCTIONS(OBJCET_NAME) \
+#	define OBJECT_FUNCTIONS(OBJCET_NAME) \
 	void *OBJCET_NAME[__OBJECT_MAX_FUNCTION_LIMIT__] =
 
-#define OBJECT_FROM(OBJECT_STRUCT_NAME) \
+#	define OBJECT_FROM(OBJECT_STRUCT_NAME) \
 	static struct OBJECT_STRUCT_NAME	*this = 0;\
 	\
 	if (__OBJECT_IS_READY__ == 0)\
@@ -306,7 +306,7 @@ extern "C" {
 		longjmp(__OBJECT_LONGJMP_ADDRESS__, 0);\
 	}
 
-#define OBJECT(OBJCET_NAME, VARIABLE_NAME) \
+#	define OBJECT(OBJCET_NAME, VARIABLE_NAME) \
 	struct OBJCET_NAME	VARIABLE_NAME;\
 	\
 	{\
@@ -350,40 +350,40 @@ extern "C" {
 		((void (*)())(*OBJCET_NAME))
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#		ifdef SETUP_OBJECT
+#	ifdef SETUP_OBJECT
 LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = 0;
 LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
 LOCAL int		__OBJECT_IS_READY__ = 0;
-#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#			ifdef main
-#				undef main
-#			endif /* main */
-#			ifdef WinMain
-#				undef WinMain
-#			endif /* main */
-#			ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
-#			ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#				define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#			define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-				LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = 0;\
-				LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;\
-				LOCAL int		__OBJECT_IS_READY__ = 0;
-#			define main \
-				__IDLE__TRY_CATCH;\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				int main
-#			define WinMain \
-				__IDLE__TRY_CATCH;\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				int WINAPI WinMain
-#		endif /* SETUP_OBJECT */
+#	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#		ifdef main
+#			undef main
+#		endif /* main */
+#		ifdef WinMain
+#			undef WinMain
+#		endif /* main */
+#		ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#		endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#		ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#			define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#		endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#		define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
+			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = 0;\
+			LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;\
+			LOCAL int		__OBJECT_IS_READY__ = 0;
+#		define main \
+			__IDLE__TRY_CATCH;\
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+			int main
+#		define WinMain \
+			__IDLE__TRY_CATCH;\
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+			int WINAPI WinMain
+#	endif /* SETUP_OBJECT */
 LOCAL extern void		*__OBJECT_STRUCTURE_POINTER__;
 LOCAL extern jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
 LOCAL extern int		__OBJECT_IS_READY__;
