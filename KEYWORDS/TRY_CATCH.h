@@ -255,9 +255,9 @@ LOCAL extern int		__TRY_CATCH_VALUE__;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* **************************** [v] LOWERCASE [v] *************************** */
-#	define try TRY
-#	define catch CATCH
-#	define throw THROW
+#		define try TRY
+#		define catch CATCH
+#		define throw THROW
 /* **************************** [^] LOWERCASE [^] *************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
