@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -27,7 +27,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: INLINE ::::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION. EZ LOL                 *|
+|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLE                                                                *|
@@ -145,18 +145,25 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* [[clang::always_inline]] NOT WORKING IN CLANG. TOO BAD! AHEM, BELIEVE ME.  *|
+|* [[clang::always_inline]] NOT WORKING IN CLANG. BELIEVE ME.                 *|
+|*                                                                            *|
+|* USE THIS KEYWORD IN YOUR "static" AND ON THE FUNCTIONS THAT DEFINED IN THE *|
+|* HEADER FILES!!!                                                            *|
+|*                                                                            *|
+|* YOU DON'T NEED TO MAP INLINE FUNCTIONS WITH MVS LINKER PRAGMAS             *|
+|* (SUCH AS `#pragma map`) WHEN TARGETING Z/OS SYSTEMS. INLINE FUNCTIONS DO   *|
+|* NOT GENERATE EXTERNAL SYMBOLS UNLESS INLINING FAILS.                       *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef INLINE_H
-#	define INLINE_H 202505 /* VERSION */
+#	define INLINE_H 202506 /* VERSION */
 
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
@@ -171,7 +178,7 @@ extern "C" {
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifdef _MSC_VER /* MICROSOFT C++ */
-#		define INLINE __inline__ __forceinline
+#		define INLINE __forceinline
 #	else
 #		ifdef __cplusplus /* C++ */
 #			define INLINE inline
@@ -185,10 +192,13 @@ extern "C" {
 #					if (\
 						defined(__GNUC__) && /* IF GCC */\
 						(\
-							(__GNUC__ >= 4) && /* IF GEQ 4.X.X */\
-							(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+							(__GNUC__ > 4) || /* IF GTR 4.X.X */\
+							(\
+								(__GNUC__ == 4) && /* IF EQU 4.X.X */\
+								(__GNUC_MINOR__ >= 2) /* IF GEQ X.2.X */\
+							)\
 						)\
-					) /* IS GCC VERSION 4.2.X OR GREATHER (MAXIMUM C99) */
+					) /* IS GCC VERSION 4.2.X OR GREATER (MAXIMUM C99) */
 #						ifdef __DJGPP__
 #							define INLINE __inline__ \
 							__attribute__((__gnu_inline__))
@@ -201,14 +211,17 @@ extern "C" {
 #						endif /* DJGPP */
 #					else /* __attribute__ DOESN'T SUPPORTED */
 #						if (\
-							(__GNUC__ >= 2) && /* IF GRE 2.X.X */\
-							(__GNUC_MINOR__ >= 7) /* IF GEQ X.7.X */\
-						) /* GCC VERSION 2.7.X OR GREATHER (MAXIMUM C89) */
+							(__GNUC__ > 2) || /* IF GTR 2.X.X */\
+							(\
+								(__GNUC__ == 2) && /* IF EQU 2.X.X */\
+								(__GNUC_MINOR__ >= 7) /* IF GEQ X.7.X */\
+							)\
+						) /* GCC VERSION 2.7.X OR GREATER (MAXIMUM C89) */
 #							define INLINE __inline__
 #						else /* GCC DOESN'T SUPPORT INLINE */
-#							define INLINE /* NULL */
-#						endif /* __GNUC__ 2.7.X */
-#					endif /* __GNUC__ 4.2.X */
+#							define INLINE /* NOT SUPPORTED */
+#						endif /* __GNUC__ >= 2.7.X */
+#					endif /* __GNUC__ >= 4.2.X */
 #				endif /* __clang__ */
 #			endif /* __TINYC__ */
 #		endif /* __cplusplus */

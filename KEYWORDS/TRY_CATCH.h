@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -166,17 +166,27 @@
 |*                                                                            *|
 \******************************************************************************/
 
+/*############################################################################*\
+|*#                                SIDE NOTES                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* IF YOU TRY TO USE THIS SYSTEM ON DEVICES LIKE 8051, PIC, MSP430, ETC.,     *|
+|* THIS APPROACH CAN BLOAT MEMORY QUICKLY. THEREFORE, PLEASE CONSIDER USING   *|
+|* THIS SYSTEM ONLY ON DEVICES WITH MORE THAN 4KB OF RAM.                     *|
+|*                                                                            *|
+\******************************************************************************/
+
 #ifndef TRY_CATCH_H
-#	define TRY_CATCH_H 202505 /* VERSION */
+#	define TRY_CATCH_H 202506 /* VERSION */
 #	ifndef __cplusplus /* C++ */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #		ifdef __TI_COMPILER_VERSION__
 #			pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#			pragma CHECK_MISRA("-5.4") /*
+#			pragma CHECK_MISRA("5.4") /*
 #				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
 #			*/
-#			pragma CHECK_MISRA("-19.3") /*
+#			pragma CHECK_MISRA("19.3") /*
 #				THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME>
 #				OR "FILENAME" SEQUENCE
 #			*/
@@ -200,17 +210,25 @@
 #		endif /* !__TRY_CATCH_BUFFER_SIZE__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#		define TRY if (!setjmp(__TRY_CATCH_BUFFER__[__TRY_CATCH_INDEX__++]))
+#		define TRY \
+			++__TRY_CATCH_INDEX__;\
+			\
+			if (!setjmp(__TRY_CATCH_BUFFER__[(__TRY_CATCH_INDEX__ - 1)]))
 #		define CATCH(VARIABLE_NAME) \
-			else \
-				for (\
+			else for (\
 					VARIABLE_NAME = __TRY_CATCH_VALUE__; \
 					__TRY_CATCH_VALUE__; \
 					__TRY_CATCH_VALUE__ = 0\
 				)
 #		define THROW(ERROR_NO) \
-			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
-			longjmp(__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], (int)ERROR_NO)
+			if (__TRY_CATCH_INDEX__ > 0)\
+			{\
+				__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
+				longjmp(\
+					__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], \
+					(int)ERROR_NO\
+				);\
+			}
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #		ifdef SETUP_TRY_CATCH

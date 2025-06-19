@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -84,33 +84,21 @@
 \******************************************************************************/
 
 #ifndef READ_FILE_H
-#	define READ_FILE_H 202505 /* VERSION */
+#	define READ_FILE_H 202506 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
-/* *************************** [v] MVS LINKER [v] *************************** */
-/* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
-// NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#	ifdef __MVS__
-#		pragma map(READ_FILE, "RD_FILE0")
-#		pragma map(read_file, "rd_file1")
-#	endif /* __MVS__ */
-/* *************************** [^] MVS LINKER [^] *************************** */
-
 #	ifdef __cplusplus /* C++ */
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include	"../KEYWORDS/INLINE.h" /*
-#		 define INLINE
-#		        */
 #		include <iostream> /*
 #		nmspace std;
 #		  class std::streamsize;
@@ -131,6 +119,9 @@
 #		include <fstream> /*
 #		  class std::ifstream;
 #		        */
+#		include	"../KEYWORDS/INLINE.h" /*
+#		 define INLINE
+#		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ***************************** [v] STRUCT [v] ***************************** */
@@ -147,7 +138,7 @@ struct s_file
 };
 /* ***************************** [^] STRUCT [^] ***************************** */
 
-extern INLINE int
+static INLINE int
 	READ_FILE(const std::string &FILE_PATH, struct S_FILE *const FILE_STRUCT)
 {
 	if (FILE_PATH.empty())
@@ -182,7 +173,7 @@ extern INLINE int
 }
 
 /* *************************** [v] LOWER CASE [v] *************************** */
-extern INLINE int
+static INLINE int
 	read_file(const std::string &file_path, struct s_file *const file_struct)
 {
 	return (READ_FILE(file_path, (struct S_FILE *)file_struct));
@@ -192,15 +183,6 @@ extern INLINE int
 #	else /* C */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include	"../KEYWORDS/INLINE.h" /*
-#		 define INLINE
-#		        */
-#		include	"../ATTRIBUTES/FAR.h" /*
-#		 define FAR
-#		        */
-#		include	"../ENVIRONMENTS/KNR_STYLE.h" /*
-#		 define KNR_STYLE
-#		        */
 #		include <stddef.h> /*
 #		typedef size_t;
 #		        */
@@ -214,16 +196,25 @@ extern INLINE int
 		   void rewind(FILE *);
 		 size_t fread(void *, size_t, size_t, FILE *);
 #		        */
-#		ifndef KNR_STYLE /* K&R */
+#		ifndef KNR_STYLE /* STANDARD C */
 #			include <stdlib.h> /*
 			   void *malloc(size_t);
 			   void free(void *);
 #			        */
-#		else /* STANDARD C */
+#		else /* K&R */
 // <stdlib.h> MAY NOT EXIST
 extern void	*malloc();
 extern void	free();
-#		endif /* KNR_STYLE */
+#		endif /* !KNR_STYLE */
+#		include "../KEYWORDS/INLINE.h" /*
+#		 define INLINE
+#		        */
+#		include "../ATTRIBUTES/FAR.h" /*
+#		 define FAR
+#		        */
+#		include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#		 define KNR_STYLE
+#		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ***************************** [v] STRUCT [v] ***************************** */
@@ -246,10 +237,10 @@ typedef struct s_file	t_file;
 /* **************************** [^] TYPEDEFS [^] **************************** */
 
 #		ifndef KNR_STYLE /* STANDARD C */
-extern INLINE int
+static INLINE int
 	READ_FILE(const char *FILE_PATH, FAR struct S_FILE *const FILE_STRUCT)
 #		else /* K&R */
-extern INLINE int
+static INLINE int
 	READ_FILE(FILE, FILE_STRUCT)
 	char				*FILE_PATH;
 	FAR struct S_FILE	*FILE_STRUCT;
@@ -311,10 +302,10 @@ extern INLINE int
 
 /* *************************** [v] LOWER CASE [v] *************************** */
 #		ifndef KNR_STYLE /* K&R */
-extern INLINE int
+static INLINE int
 	read_file(const char *file_path, FAR struct s_file *const file_struct)
 #		else /* STANDARD C */
-extern INLINE int
+static INLINE int
 	read_file(file_path, file_struct)
 	char				*file_path;
 	FAR struct s_file	*file_struct;

@@ -1,5 +1,5 @@
 /******************************************************************************\
-# H - CACHE                                      #       Maximum Tension       #
+# H - ARCHITECTURE                               #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,30 +18,15 @@
 |*............................................................................*|
 |*        NAME        :   TYPE  :                 DESCRIPTION                 *|
 |*....................:.........:.............................................*|
-|* __CACHE_BYTES__    : #define : INDICATES HOW MANY BYTES THE ARCHITECTURE   *|
-|*                    :         : OF THE DEVICE OR COMPILER USES.             *|
+|* __SYSTEM_256_BIT__ : #define : DEFINED IF SYSTEM ALSO SUPPORTS 256 BIT.    *|
 |*....................:.........:.............................................*|
-|* L1_CACHE_BYTES     : #define : INDICATES HOW MANY BITS THE ARCHITECTURE OF *|
-|*                    :         : THE DEVICE OR COMPILER USES.                *|
-|*....................:.........:.............................................*|
-|* L1_CACHE_SHIFT     : #define : INDICATES THE NUMBER OF BIT SHIFTS IN THE   *|
-|*                    :         : ARCHITECTURE OF THE DEVICE OR COMPILER.     *|
-|*....................:.........:.............................................*|
-|* CACHE_LINE_MASK    : #define : NEGATIVE VERSION OF (L1_CACHE_BYTES).       *|
-|*....................:.........:.............................................*|
-|* SMP_CACHE_BYTES    : #define : FOR SYMMETRIC MULTIPROCESSING SYSTEMS       *|
-|*                    :         : (SMP), SAME AS (L1_CACHE_BYTES).            *|
-|*....................:.........:.............................................*|
-|* SMP_CACHE_SHIFT    : #define : FOR SYMMETRIC MULTIPROCESSING SYSTEMS       *|
-|*                    :         : (SMP), SAME AS (L1_CACHE_SHIFT).            *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_256_BIT__ : #define : DEFINED IF SYSTEM IS 256 BIT.               *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_128_BIT__ : #define : DEFINED IF SYSTEM IS 128 BIT.               *|
+|* __SYSTEM_128_BIT__ : #define : DEFINED IF SYSTEM ALSO SUPPORTS 128 BIT.    *|
 |*....................:.........:.............................................*|
 |* __SYSTEM_64_BIT__  : #define : DEFINED IF SYSTEM IS 64 BIT.                *|
 |*....................:.........:.............................................*|
 |* __SYSTEM_32_BIT__  : #define : DEFINED IF SYSTEM IS 32 BIT.                *|
+|*....................:.........:.............................................*|
+|* __SYSTEM_31_BIT__  : #define : DEFINED IF SYSTEM ALSO SUPPORTS 31 BIT.     *|
 |*....................:.........:.............................................*|
 |* __SYSTEM_16_BIT__  : #define : DEFINED IF SYSTEM IS 16 BIT.                *|
 |*....................:.........:.............................................*|
@@ -62,25 +47,18 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* FOR THE LINUX CACHE.H LIBRARY, I PREFER USING THE OLD VERSION OF THE       *|
-|* [__read_mostly] DEFINE. I AM USING v2.6.27-rc2 -> v4.7.10 TO MAKE IT WORK  *|
-|* ON OLDER VERSIONS AS WELL.                                                 *|
-|*                                                                            *|
-|* ADDED THE [__ro_after_init] DEFINITION, WHICH WAS REMOVED IN NEWER         *|
-|* VERSIONS.                                                                  *|
-|*                                                                            *|
 |* FOR SUPPORT REALLY OLD COMPILERS, I STRICTLY AVOID USING #IF IN THIS FILE. *|
 |*                                                                            *|
 \******************************************************************************/
 
-#ifndef CACHE_H
-#	define CACHE_H 202505 /* VERSION */
+#ifndef ARCHITECTURE_H
+#	define ARCHITECTURE_H 202506 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
@@ -105,60 +83,88 @@ extern "C" {
 #	endif
 /* *************************** [^] ARC CONFIG [^] *************************** */
 
-/* **************************** [v] 128-BITS [v] **************************** */
-#	ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#		ifdef __s390__ /* IBM SYSTEM/390 */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_256_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __s390__ */
-#	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
-/* **************************** [^] 128-BITS [^] **************************** */
+/* **************************** [v] 256-BITS [v] **************************** */
+#	ifdef __AVX2__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) V2 */
+#		define __SYSTEM_256_BIT__
+#	else
+#		ifdef __AVX__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) */
+#			define __SYSTEM_256_BIT__
+#		endif /* __AVX__ */
+#	endif /* __AVX2__ */
+/* **************************** [^] 256-BITS [^] **************************** */
 
 /* **************************** [v] 128-BITS [v] **************************** */
-#	ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#		ifdef __POWERPC__ /* IBM 1991 (AIM) CPU */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#		ifdef __IBMC__ /* IBM XL C/C++ COPILER */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#		ifdef __IBMCPP__ /* IBM XL C/C++ COPILER */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#		ifdef __xlC__ /* IBM XL C/C++ COPILER */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#		ifdef __xlc__ /* IBM XL C/C++ COPILER */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#		ifdef __ibmxl__ /* IBM XL C/C++ COPILER */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_128_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC32__ */
-#	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
+#	ifdef __SSE__ /* INTEL SIMD (128-BIT VECTOR REGISTERS) */
+#		define __SYSTEM_128_BIT__
+#	endif /* __SSE__ */
+#	ifdef __ARM_NEON__ /* ARM NEON SIMD (128-BIT VECTOR REGISTERS) */
+#		define __SYSTEM_128_BIT__
+#	endif /* __ARM_NEON__ */
+#	ifdef __ARM_NEON /* ARM NEON SIMD (128-BIT VECTOR REGISTERS) */
+#		define __SYSTEM_128_BIT__
+#	endif /* __ARM_NEON */
 /* **************************** [^] 128-BITS [^] **************************** */
 
 /* **************************** [v] 64-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#		ifdef __DECC /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				ifdef __alpha__ /* LAST VERSION */
+#					define __SYSTEM_64_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __alpha__ */
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __DECC */
+#		ifdef __DECCXX /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				ifdef __alpha__ /* LAST VERSION */
+#					define __SYSTEM_64_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __alpha__ */
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __DECCXX */
+#		ifdef __POWERPC__ /* IBM 1991 (AIM) CPU */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __POWERPC__ */
+#		ifdef __IBMC__ /* IBM XL C/C++ COPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __IBMC__ */
+#		ifdef __xlC__ /* IBM XL C/C++ COPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __xlC__ */
+#		ifdef __xlc__ /* IBM XL C/C++ COPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __xlc__ */
+#		ifdef __ibmxl__ /* IBM XL C/C++ COPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __ibmxl__ */
+#		ifdef __IBMCPP__ /* IBM z/OS XL C/C++ COPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __IBMCPP__ */
+#		ifdef __s390x__ /* IBM SYSTEM/390 */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __s390x__ */
 #		ifdef __PIC32__ /* PIC 32-BIT MICROCONTROLLERS */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_64_BIT__
@@ -171,13 +177,13 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* _MSC_VER */
-#		ifdef __INTEL_COMPILER /* ICC/C */
+#		ifdef __INTEL_COMPILER /* ICC (INTEL C COMPILER) */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_64_BIT__
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __INTEL_COMPILER */
-#		ifdef __ICC /* ICC/C */
+#		ifdef __ICC /* ICC (INTEL C COMPILER) */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_64_BIT__
 #				define LOCALMACRO__ARCHITECTURE_FOUND
@@ -249,6 +255,30 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __powerpc64__ */
+#		ifdef __convexc__ /* CONVEX C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __convexc__ */
+#		ifdef __NDPC__ /* MICROWAY NDP C */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __NDPC__ */
+#		ifdef __NDPX__ /* MICROWAY NDP */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __NDPX__ */
+#		ifdef _CRAYC /* CRAY C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_64_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* _CRAYC */
 #		ifdef __x86_64__ /* X86 / INTEL */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_64_BIT__
@@ -428,6 +458,60 @@ extern "C" {
 
 /* **************************** [v] 32-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#		ifdef __CC_ARM /* ARM COMPILER (KEIL ARMCC) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __CC_ARM */
+#		ifdef __PATHCC__ /* EKOPATH COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __PATHCC__ */
+#		ifdef __USLC__ /* USL C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __USLC__ */
+#		ifdef _PACC_VER /* PALM C/C++ COMPILER (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* _PACC_VER */
+#		ifdef __NWCC__ /* NATHAN W. COHEN'S C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __NWCC__ */
+#		ifdef __COMPCERT__ /* COMPCERT VERIFIED C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __COMPCERT__ */
+#		ifdef _MRI /* MICROTEC C/C++ */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* _MRI */
+#		ifdef __CA__ /* KEIL CARM (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __CA__ */
+#		ifdef __KEIL__ /* KEIL CARM (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __KEIL__ */
 #		ifdef _M_IX86 /* INTEL 32BIT CPU */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_32_BIT__
@@ -566,6 +650,18 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* _TMS320C6740 */
+#		ifdef __LCC__ /* LCC (LOCAL C COMPILER) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __LCC__ */
+#		ifdef __KCC /* KAI C++ */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __KCC */
 #		ifdef __XC32__ /* PIC XC COMPILER */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_32_BIT__
@@ -584,6 +680,30 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __PIC32__ */
+#		ifdef __VAXC /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __VAXC */
+#		ifdef VAXC /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* VAXC */
+#		ifdef __DECC /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __DECC */
+#		ifdef __DECCXX /* COMPAQ C/C++ COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __DECCXX */
 #		ifdef __ARM_ARCH /* PIC 32-BIT MICROCONTROLLERS */
 #			ifdef __ARM_ARCH_6K__ /* ARM CPU */
 #				ifndef LOCALMACRO__ARCHITECTURE_FOUND
@@ -622,11 +742,24 @@ extern "C" {
 #				endif
 #			endif /* __SIZEOF_INT__ */
 #		endif /* __DMC__ */
+#		ifdef __s390__ /* IBM SYSTEM/390 */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_31_BIT__ /* YES. 31 BIT */
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __s390__ */
 #	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
 /* **************************** [^] 32-BITS [^] ***************************** */
 
 /* **************************** [v] 16-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#		ifdef __C166__ /* KEIL C166 (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_16_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __C166__ */
 #		ifdef __RL78__ /* RENESAS RL78 */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_16_BIT__
@@ -669,6 +802,14 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* TMS320C55X */
+
+#		ifdef MIRACLE /* MIRACLE C */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_16_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* MIRACLE */
+
 #		ifdef _M_I86 /* INTEL 16BIT CPU */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_16_BIT__
@@ -693,6 +834,44 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __XC16 */
+#		ifdef __PIC24F__ /* PIC FAMILY MICROCONTROLLERS */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_16_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __PIC24F__ */
+#		ifdef AZTEC_C /* AZTEC C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				ifdef __I8086__ /* INTEL 8086 */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __I8086__ */
+#				ifdef __MSDOS__ /* MICROSOFT DISK OPERATING SYSTEM */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __MSDOS__ */
+#				ifdef _M_I86 /* INTEL 8086 */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* _M_I86 */
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* AZTEC_C */
+#		ifdef __AZTEC_C__ /* AZTEC C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				ifdef __I8086__ /* INTEL 8086 */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __I8086__ */
+#				ifdef __MSDOS__ /* MICROSOFT DISK OPERATING SYSTEM */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* __MSDOS__ */
+#				ifdef _M_I86 /* INTEL 8086 */
+#					define __SYSTEM_16_BIT__
+#					define LOCALMACRO__ARCHITECTURE_FOUND
+#				endif /* _M_I86 */
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __AZTEC_C__ */
 #		ifdef __DMC__ /* DIGITAL MARS (DMC) */
 #			ifdef __INTSIZE
 #				if (__INTSIZE == 2)
@@ -716,6 +895,24 @@ extern "C" {
 
 /* ***************************** [v] 8-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#		ifdef __CC65__ /* CC65 (65C02 C COMPILER) | FOR 6502 FAMILY */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_8_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __CC65__ */
+#		ifdef __C51__ /* KEIL C51 - 8051 MICROCONTROLLER (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_8_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __C51__ */
+#		ifdef __CX51__ /* KEIL C51 - 8051 MICROCONTROLLER (ARM) */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_8_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __CX51__ */
 #		ifdef __SCCZ80 /* SMALL DEVICE C COMPILER ZILOG Z80 */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_8_BIT__
@@ -752,12 +949,6 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __68HC08__ */
-#		ifdef __PIC24F__ /* PIC FAMILY MICROCONTROLLERS */
-#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
-#				define __SYSTEM_8_BIT__
-#				define LOCALMACRO__ARCHITECTURE_FOUND
-#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#		endif /* __PIC24F__ */
 #		ifdef __XC8__ /* PIC XC COMPILER */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_8_BIT__
@@ -776,117 +967,43 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __XC8 */
+#		ifdef AZTEC_C /* AZTEC C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_8_BIT__ /* MOS 6502 OR ZILOG Z80 */
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* AZTEC_C */
+#		ifdef __AZTEC_C__ /* AZTEC C COMPILER */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_8_BIT__ /* MOS 6502 OR ZILOG Z80 */
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __AZTEC_C__ */
 #	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
 /* ***************************** [^] 8-BITS [^] ***************************** */
 
-/* ************************* [v] SEALING SYSTEM [v] ************************* *\
-|* *   SEALING SYSTEM IS FOR AVOID USING "#IF" PRE-PROCESSING COMMANDS TO   * *|
-|* * MAKE THE LIBRARY CAN ABLE TO WORK AND COMPILE WITHOUT ANY WARNINGS AND * *|
-|* *         ERRORS IN EVERY C COMPILER AND C COMPILER VERSIONS!!!          * *|
-\* ************************************************************************** */
+/* *************************** [v] ARC CONFIG [v] *************************** */
 #	ifdef LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY
-#		ifdef CONFIG_ARC_CACHE_LINE_SHIFT
-#			define L1_CACHE_SHIFT CONFIG_ARC_CACHE_LINE_SHIFT /* ARC STANDARD */
-#		else /* CONFIG_L1_CACHE_SHIFT */
-#			define L1_CACHE_SHIFT CONFIG_L1_CACHE_SHIFT /* LINUX STANDARD */
+#		ifdef CONFIG_ARC_CACHE_LINE_SHIFT /* ARC STANDARD */
+#			define LOCALMACRO__L1_CACHE_SHIFT CONFIG_ARC_CACHE_LINE_SHIFT
+#		else /* LINUX STANDARD */
+#			define LOCALMACRO__L1_CACHE_SHIFT CONFIG_L1_CACHE_SHIFT
 #		endif /* CONFIG_ARC_CACHE_LINE_SHIFT */
-#		define L1_CACHE_BYTES (1 << L1_CACHE_SHIFT) /* BITS (AUTOMATIC) */
-#		define __CACHE_BYTES__ (L1_CACHE_BYTES / 8) /* BYTES (AUTOMATIC) */
-#		define CACHE_LINE_MASK (~(L1_CACHE_BYTES - 1)) /* - MASK (AUTOMATIC) */
-#		define SMP_CACHE_BYTES L1_CACHE_BYTES /* SAMPLE (AUTOMATIC) */
-#		define SMP_CACHE_SHIFT L1_CACHE_SHIFT /* SAMPLE */
-#		if (L1_CACHE_BYTES == 8)
+#		define LOCALMACRO__L1_CACHE_BYTES (1 << LOCALMACRO__L1_CACHE_SHIFT)
+#		if (LOCALMACRO__L1_CACHE_BYTES == 8)
 #			define __SYSTEM_8_BIT__
-#		endif
-#		if (L1_CACHE_BYTES == 16)
+#		endif /* LOCALMACRO__L1_CACHE_BYTES == 8 */
+#		if (LOCALMACRO__L1_CACHE_BYTES == 16)
 #			define __SYSTEM_16_BIT__
-#		endif
-#		if (L1_CACHE_BYTES == 32)
+#		endif /* LOCALMACRO__L1_CACHE_BYTES == 16 */
+#		if (LOCALMACRO__L1_CACHE_BYTES == 32)
 #			define __SYSTEM_32_BIT__
-#		endif
-#		if (L1_CACHE_BYTES == 64)
+#		endif /* LOCALMACRO__L1_CACHE_BYTES == 32 */
+#		if (LOCALMACRO__L1_CACHE_BYTES >= 64)
 #			define __SYSTEM_64_BIT__
-#		endif
-#		if (L1_CACHE_BYTES == 128)
-#			define __SYSTEM_128_BIT__
-#		endif
-#		if (L1_CACHE_BYTES == 256)
-#			define __SYSTEM_256_BIT__
-#		endif
-#	else /* 8 BIT */ // SORRY BUT WHY?
-#		ifdef __SYSTEM_8_BIT__
-#			define L1_CACHE_SHIFT 3 /* 2^3 8 BIT */
-#			define L1_CACHE_BYTES 8 /* BITS */
-#			define CACHE_LINE_MASK -8 /* - MASK */
-#			define SMP_CACHE_BYTES 8 /* SAMPLE */
-#			define SMP_CACHE_SHIFT 3 /* SAMPLE */
-#			define __CACHE_BYTES__ 1 /* BYTE */ // (PROBABLY???)
-#		else /* 16 BIT */
-#			ifdef __SYSTEM_16_BIT__
-#				define L1_CACHE_SHIFT 4 /* 2^4 16 BIT */
-#				define L1_CACHE_BYTES 16 /* BITS */
-#				define CACHE_LINE_MASK -16 /* - MASK */
-#				define SMP_CACHE_BYTES 16 /* SAMPLE */
-#				define SMP_CACHE_SHIFT 4 /* SAMPLE */
-#				define __CACHE_BYTES__ 2 /* BYTES */
-#				define __SYSTEM_16_BIT__
-#			else /* 32 BIT */
-#				ifdef __SYSTEM_32_BIT__
-#					define L1_CACHE_SHIFT 5 /* 2^5 32 BIT */
-#					define L1_CACHE_BYTES 32 /* BITS */
-#					define CACHE_LINE_MASK -32 /* - MASK */
-#					define SMP_CACHE_BYTES 32 /* SAMPLE */
-#					define SMP_CACHE_SHIFT 5 /* SAMPLE */
-#					define __CACHE_BYTES__ 4 /* BYTES */
-#				else /* 64 BIT */
-#					ifdef __SYSTEM_64_BIT__
-#						define L1_CACHE_SHIFT 6 /* 2^6 64 BIT */
-#						define L1_CACHE_BYTES 64 /* BITS */
-#						define CACHE_LINE_MASK -64 /* - MASK */
-#						define SMP_CACHE_BYTES 64 /* SAMPLE */
-#						define SMP_CACHE_SHIFT 6 /* SAMPLE */
-#						define __CACHE_BYTES__ 8 /* BYTES */
-#					else /* 128 BIT */
-#						ifdef __SYSTEM_128_BIT__
-#							define L1_CACHE_SHIFT 7 /* 2^7 128 BIT */
-#							define L1_CACHE_BYTES 128 /* BITS */
-#							define CACHE_LINE_MASK -128 /* - MASK */
-#							define SMP_CACHE_BYTES 128 /* SAMPLE */
-#							define SMP_CACHE_SHIFT 7 /* SAMPLE */
-#							define __CACHE_BYTES__ 16 /* BYTES */
-#						else /* 256 BIT */
-#							ifdef __SYSTEM_256_BIT__
-#								ifndef __ARCH_S390_CACHE_H
-#									define L1_CACHE_SHIFT 8 /* 2^8 256 BIT */
-#									define L1_CACHE_BYTES 256 /* BITS */
-#									define NET_SKB_PAD 32 /* NET CODE LINUX */
-#									define __ARCH_S390_CACHE_H
-#									define __read_mostly \
-										__attribute__(( \
-											__section__(".data.read_mostly")\
-										)) /* IMPROV READ ACCESS */
-#									define __ro_after_init __read_mostly
-#								endif /* __ARCH_S390_CACHE_H */
-#								define CACHE_LINE_MASK -256 /* - MASK */
-#								define SMP_CACHE_BYTES 256 /* SAMPLE */
-#								define SMP_CACHE_SHIFT 8 /* SAMPLE */
-#								define __CACHE_BYTES__ 32 /* BYTES */
-#							else /* DEFAULT (32 BIT) */
-#								define L1_CACHE_SHIFT 5 /* 2^5 32 BIT */
-#								define L1_CACHE_BYTES 32 /* BITS */
-#								define CACHE_LINE_MASK -32 /* - MASK */
-#								define SMP_CACHE_BYTES 32 /* SAMPLE */
-#								define SMP_CACHE_SHIFT 5 /* SAMPLE */
-#								define __CACHE_BYTES__ 4 /* BYTES */
-#								define __SYSTEM_32_BIT__
-#							endif /* __SYSTEM_256_BIT__ */
-#						endif /* __SYSTEM_128_BIT__ */
-#					endif /* __SYSTEM_64_BIT__ */
-#				endif /* __SYSTEM_32_BIT__ */
-#			endif /* __SYSTEM_16_BIT__ */
-#		endif /* __SYSTEM_8_BIT__ */
+#		endif /* LOCALMACRO__L1_CACHE_BYTES >= 64 */
 #	endif /* LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY */
-/* ************************* [^] SEALING SYSTEM [^] ************************* */
+/* *************************** [^] ARC CONFIG [^] *************************** */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
@@ -900,4 +1017,4 @@ extern "C" {
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#endif /* !CACHE_H */
+#endif /* !ARCHITECTURE_H */

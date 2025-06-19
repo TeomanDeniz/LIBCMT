@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -172,16 +172,16 @@
 \******************************************************************************/
 
 #ifndef VA_ARG_H
-#	define VA_ARG_H 202505 /* VERSION */
+#	define VA_ARG_H 202506 /* VERSION */
 #	ifndef __cplusplus /* C++ */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #		ifdef __TI_COMPILER_VERSION__
 #			pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#			pragma CHECK_MISRA("-5.4") /*
+#			pragma CHECK_MISRA("5.4") /*
 #				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
 #			*/
-#			pragma CHECK_MISRA("-19.3") /*
+#			pragma CHECK_MISRA("19.3") /*
 #				THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME>
 #				OR "FILENAME" SEQUENCE
 #			*/

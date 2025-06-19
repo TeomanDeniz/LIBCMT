@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/25 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -52,6 +52,8 @@
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
 |* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
 |* :                                                                          *|
+|* : ELSE, JUST SKIP THE SETUP AND JUMP TO LINE 72 AT THE BOTTOM OF THIS FILE *|
+|* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_OBJECT"      *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
 |* :                                                                          *|
@@ -94,7 +96,7 @@
 |* :     ...                                                                  *|
 |* : }                                                                        *|
 |*                                                                            *|
-|* AT THE END, CONNECT BOTH YOUR STRUCTURE AND YOUR FINCTIONS BY USING        *|
+|* AT THE END, CONNECT BOTH YOUR STRUCTURE AND YOUR FUNCTIONS BY USING        *|
 |* "object_functions (STRUCTURE_TYPE_NAME){...};"                             *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
@@ -173,7 +175,7 @@
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
-|* ;.., CONNECTIONG YOUR OBJECT TO YOUR FUNCTIONS                             *|
+|* ;.., CONNECTING YOUR OBJECT TO YOUR FUNCTIONS                              *|
 |* :  :                                                                       *|
 |* :  : struct test_object_type                                               *|
 |* :  : {                                                                     *|
@@ -248,29 +250,33 @@
 |* IT'S IMPLEMENTS "this" VARIABLE INTO THE FUNCTIONS YOU CONNECTED TO YOUR   *|
 |* STRUCTURE.                                                                 *|
 |*                                                                            *|
-|* AND HAS A CONSTRUCTOR SYSTEM TOO.                                          *|
+|* AND THIS SYTEM HAS A CONSTRUCTOR SYSTEM TOO.                               *|
+|*                                                                            *|
+\******************************************************************************/
+
+/*############################################################################*\
+|*#                                SIDE NOTES                                #*|
+|*############################################################################*|
+|*                                                                            *|
+|* IF YOU TRY TO USE THIS SYSTEM ON DEVICES LIKE 8051, PIC, MSP430, ETC.,     *|
+|* THIS APPROACH CAN BLOAT MEMORY QUICKLY. THEREFORE, PLEASE CONSIDER USING   *|
+|* THIS SYSTEM ONLY ON DEVICES WITH MORE THAN 4KB OF RAM.                     *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef OBJECT_H
-#	define OBJECT_H 202505 /* VERSION */
+#	define OBJECT_H 202506 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
-
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include "KEYWORDS/LOCAL.h" /*
@@ -285,6 +291,12 @@ extern "C" {
 #	typedef size_t;
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
+/* *************************** [v] C++ (PUSH) [v] *************************** */
+#	ifdef __cplusplus /* C++ */
+extern "C" {
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
 #	ifndef __OBJECT_MAX_FUNCTION_LIMIT__

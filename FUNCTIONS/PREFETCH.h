@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -86,26 +86,18 @@
 \******************************************************************************/
 
 #ifndef PREFETCH_H
-#	define PREFETCH_H 202505 /* VERSION */
+#	define PREFETCH_H 202506 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
-
-/* *************************** [v] MVS LINKER [v] *************************** */
-/* **** MVS LINKER DOES NOT SUPPORT EXTERNAL NAMES LARGER THAN 8 BYTES!! **** */
-// NOTE: TARGETING IBM MAINFRAME SYSTEMS (Z/OS)
-#	ifdef __MVS__
-#		pragma map(PREFETCH_RANGE, "PRFRANGE")
-#	endif /* __MVS__ */
-/* *************************** [^] MVS LINKER [^] *************************** */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
@@ -125,18 +117,12 @@ extern "C" {
 #	include	"../KEYWORDS/IGNORE_VAR.h" /*
 #	 define IGNORE_VAR
 #	        */
-#	include	"../ENVIRONMENTS/CACHE.h" /*
-#	 define L1_CACHE_BYTES
-#	        */
 #	include	"../ENVIRONMENTS/KNR_STYLE.h" /*
 #	 define KNR_STYLE
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* **************************** [v] PREFETCH [v] **************************** */
-#	ifndef PREFETCH_STRIDE
-#		define PREFETCH_STRIDE (4 * L1_CACHE_BYTES)
-#	endif /* !PREFETCH_STRIDE */
 #	if (\
 		defined(__TINYC__) || /* TINY C COMPILER */\
 		defined(__DJGPP__) || /* DJGPP DOS C COMPILER */\
@@ -267,32 +253,32 @@ extern "C" {
 
 /* ************************* [v] PREFETCH_RANGE [v] ************************* */
 #	ifndef KNR_STYLE /* STANDARD C */
-extern INLINE void
-	PREFETCH_RANGE(void *VARIABLE, register unsigned int LENGHT)
+static INLINE void
+	PREFETCH_RANGE(void *VARIABLE, register unsigned int LENGTH)
 #	else /* K&R */
-extern INLINE void
-	PREFETCH_RANGE(VARIABLE, LENGHT)
+static INLINE void
+	PREFETCH_RANGE(VARIABLE, LENGTH)
 	void					*VARIABLE;
-	register unsigned int	LENGHT;
+	register unsigned int	LENGTH;
 #	endif /* !KNR_STYLE */
 {
 #	if (\
 		!defined(ARCH_HAS_PREFETCH) && \
 		!defined(PREFETCH)\
 	)
-	IGNORE_VAR VARIABLE;
-	IGNORE_VAR LENGHT;
+	IGNORE_VAR	VARIABLE;
+	IGNORE_VAR	LENGTH;
 #	else
 	char	*CACHE;
 	char	*END;
 
 	CACHE = (char *) VARIABLE;
-	END = (char *) VARIABLE + LENGHT;
+	END = (char *) VARIABLE + LENGTH;
 
 	while (CACHE < END)
 	{
 		PREFETCH(CACHE);
-		CACHE += PREFETCH_STRIDE;
+		CACHE += (4 * sizeof(long));
 	}
 #	endif /* !ARCH_HAS_PREFETCH && !PREFETCH */
 }
@@ -301,18 +287,18 @@ extern INLINE void
 #	ifndef _LINUX_PREFETCH_H
 #		define _LINUX_PREFETCH_H
 #		ifndef KNR_STYLE /* STANDARD C */
-extern INLINE void
-	prefetch_range(void *variable, register unsigned int lenght)
+static INLINE void
+	prefetch_range(void *variable, register unsigned int LENGTH)
 #		else /* K&R */
-extern INLINE void
-	prefetch_range(variable, lenght)
+static INLINE void
+	prefetch_range(variable, LENGTH)
 	void					*variable;
-	register unsigned int	lenght;
+	register unsigned int	LENGTH;
 #		endif /* !KNR_STYLE */
 {
-	PREFETCH_RANGE(variable, lenght);
+	PREFETCH_RANGE(variable, LENGTH);
 }
-#	endif /* _LINUX_PREFETCH_H */
+#	endif /* !_LINUX_PREFETCH_H */
 /* ************************* [^] prefetch_range [^] ************************* */
 
 /* *********************** [v] spin_lock_prefetch [v] *********************** */
