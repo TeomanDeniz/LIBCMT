@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -79,8 +79,8 @@ extern "C" {
 #		ifdef CONFIG_L1_CACHE_SHIFT
 #			define LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY
 #			define LOCALMACRO__ARCHITECTURE_FOUND
-#		endif
-#	endif
+#		endif /* CONFIG_L1_CACHE_SHIFT */
+#	endif /* CONFIG_ARC_CACHE_LINE_SHIFT */
 /* *************************** [^] ARC CONFIG [^] *************************** */
 
 /* **************************** [v] 256-BITS [v] **************************** */
@@ -731,7 +731,7 @@ extern "C" {
 #						define __SYSTEM_32_BIT__
 #						define LOCALMACRO__ARCHITECTURE_FOUND
 #					endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#				endif
+#				endif /* __INTSIZE == 4 */
 #			endif /* __INTSIZE */
 #			ifdef __SIZEOF_INT__
 #				if (__SIZEOF_INT__ == 4)
@@ -739,7 +739,7 @@ extern "C" {
 #						define __SYSTEM_32_BIT__
 #						define LOCALMACRO__ARCHITECTURE_FOUND
 #					endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#				endif
+#				endif /* __SIZEOF_INT__ == 4 */
 #			endif /* __SIZEOF_INT__ */
 #		endif /* __DMC__ */
 #		ifdef __s390__ /* IBM SYSTEM/390 */
@@ -802,14 +802,12 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* TMS320C55X */
-
 #		ifdef MIRACLE /* MIRACLE C */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_16_BIT__
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* MIRACLE */
-
 #		ifdef _M_I86 /* INTEL 16BIT CPU */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_16_BIT__
@@ -879,7 +877,7 @@ extern "C" {
 #						define __SYSTEM_16_BIT__
 #						define LOCALMACRO__ARCHITECTURE_FOUND
 #					endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#				endif
+#				endif /* __INTSIZE == 2 */
 #			endif /* __INTSIZE */
 #			ifdef __SIZEOF_INT__
 #				if (__SIZEOF_INT__ == 2)
@@ -887,7 +885,7 @@ extern "C" {
 #						define __SYSTEM_16_BIT__
 #						define LOCALMACRO__ARCHITECTURE_FOUND
 #					endif /* LOCALMACRO__ARCHITECTURE_FOUND */
-#				endif
+#				endif /* __SIZEOF_INT__ == 2 */
 #			endif /* __SIZEOF_INT__ */
 #		endif /* __DMC__ */
 #	endif /* !LOCALMACRO__ARCHITECTURE_FOUND */

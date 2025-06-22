@@ -3,9 +3,6 @@ LIBCMT: With this library, you can use every feature in C language even if it's 
 
 ## Contents
 
-LIBCMT
----
-
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/OBJECT.gif) **[OBJECT](https://github.com/TeomanDeniz/LIBCMT/blob/main/OBJECT.h)** - Implement the basic structure of Object Oriented programing into C Language.
 
 + ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/Attributes.png) **Attributes**
@@ -38,8 +35,7 @@ LIBCMT
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/try_catch.gif) **[TRY_CATCH](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)** - Use original `try`, `catch`, and `throw` keywords in C Language like in C++.
 	+ ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/LOCAL.gif) **[LOCAL](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)** - Ensures each thread has its own independent copy of a global or static variable it used on.
 
-Graphics
----
+## Graphics
 
 * © These icons are inspired by the style of Windows 2000 icons. They are original creations and are not affiliated with or endorsed by Microsoft.
 

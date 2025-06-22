@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/05 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -132,6 +132,9 @@
 |*  * IF YOU'RE USING ZEPHYR OPERATING SYSTEM, YOU MUST DEFINE A MACRO        *|
 |*    __TRY__ZEPHYR TO MAKE THESE FUNCTIONS WORK ON YOUR OPERATING SYSTEM.    *|
 |*                                                                            *|
+|*  * IF YOU'RE USING TI-RTOS OPERATING SYSTEM, YOU MUST DEFINE A MACRO       *|
+|*    __TRY__TIRTOS TO MAKE THESE FUNCTIONS WORK ON YOUR OPERATING SYSTEM.    *|
+|*                                                                            *|
 |*  FOR MORE INFO, PLEASE READ THE TABLE (SUPPORTED PLATFOMS) AT THE BOTTOM!  *|
 |*                                                                            *|
 \******************************************************************************/
@@ -175,6 +178,8 @@
 |*:                  :                FUNCTION                               :*|
 |*:..................:.......................................................:*|
 |*:          VXWORKS : THREAD_JOIN -> NOT SUPPORTED, ALWAYS RETURNS -1       :*|
+|*:..................:.......................................................:*|
+|*:          TI-RTOS : THREAD_JOIN -> NOT SUPPORTED, ALWAYS RETURNS -1       :*|
 |*:..................:.......................................................:*|
 \******************************************************************************/
 
@@ -301,7 +306,7 @@ extern "C" {
 #	endif /* !LOCALMACRO_THREAD_FOUND */
 /* ******************** [^] LOCALMACRO_THREAD_PLAN9 [^] ********************* */
 
-/* ******************** [v] LOCALMACRO_THREAD_PLAN9 [v] ********************* */
+/* ******************* [v] LOCALMACRO_THREAD_VXWORKS [v] ******************** */
 #	ifndef LOCALMACRO_THREAD_FOUND
 #		ifdef __VXWORKS__
 #			define LOCALMACRO_THREAD_VXWORKS
@@ -313,7 +318,7 @@ extern "C" {
 #			endif /* __vxworks */
 #		endif /* __VXWORKS__ */
 #	endif /* !LOCALMACRO_THREAD_FOUND */
-/* ******************** [^] LOCALMACRO_THREAD_PLAN9 [^] ********************* */
+/* ******************* [^] LOCALMACRO_THREAD_VXWORKS [^] ******************** */
 
 /* ******************* [v] LOCALMACRO_THREAD_FREERTOS [v] ******************* */
 #	ifndef LOCALMACRO_THREAD_FOUND
@@ -367,6 +372,17 @@ extern "C" {
 #		endif /* CONFIG_ZEPHYR */
 #	endif /* !LOCALMACRO_THREAD_FOUND */
 /* ******************* [^] LOCALMACRO_THREAD_ZEPHYR [^] ********************* */
+
+/* ******************* [v] LOCALMACRO_THREAD_TI_RTOS [v] ******************** */
+#	ifndef LOCALMACRO_THREAD_FOUND
+#		ifdef __TI_COMPILER_VERSION__
+#			ifdef __TRY__TIRTOS
+#				define LOCALMACRO_THREAD_TI_RTOS
+#				define LOCALMACRO_THREAD_FOUND
+#			endif /* __TRY__TIRTOS */
+#		endif /* __TI_COMPILER_VERSION__ */
+#	endif /* !LOCALMACRO_THREAD_FOUND */
+/* ******************* [^] LOCALMACRO_THREAD_TI_RTOS [^] ******************** */
 
 #	ifdef LOCALMACRO_THREAD_FOUND
 #		ifdef LOCALMACRO_THREAD_FOR_OS2
@@ -1453,6 +1469,116 @@ static INLINE int
 				semTake((__MUTEX_LOCK__), WAIT_FOREVER)
 #			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) semGive((__MUTEX_UNLOCK__))
 #		endif /* LOCALMACRO_THREAD_VXWORKS */
+
+#		ifdef LOCALMACRO_THREAD_TI_RTOS
+/* **************************** [v] INCLUDES [v] **************************** */
+#			include <ti/sysbios/knl/Task.h> /*
+#			typedef Task_Handle;
+#			typedef Task_Params;
+#			typedef Task_FuncPtr;
+#			   void Task_Params_init(Task_Params *)
+#			>>>>>>> Task_Handle
+#			^^^^^^^ Task_create(Task_FuncPtr, Task_Params *, Error_Block *);
+#			        */
+#			include <ti/sysbios/knl/Semaphore.h> /*
+#			typedef Semaphore_Handle;
+#			 define Semaphore_Mode_BINARY
+#			typedef Semaphore_Params;
+#			>>>>>>> Semaphore_Handle
+#			^^^^^^^ Semaphore_create(int, Semaphore_Params *, Error_Block *);
+#			   void Semaphore_delete(Semaphore_Handle *);
+#			   bool Semaphore_pend(Semaphore_Handle, uint32_t);
+#			   void Semaphore_post(Semaphore_Handle);
+#			        */
+#			include <xdc/std.h> /*
+#			typedef UArg;
+#			        */
+#			include <xdc/runtime/Error.h> /*
+#			typedef Error_Block;
+#			        */
+#			include <ti/sysbios/BIOS.h> /*
+#			 define BIOS_WAIT_FOREVER
+#			        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
+/* **************************** [v] TYPEDEFS [v] **************************** */
+typedef Task_Handle			T_THREAD;
+typedef Semaphore_Handle	T_MUTEX;
+/* **************************** [^] TYPEDEFS [^] **************************** */
+
+#			ifndef KNR_STYLE /* STANDARD C */
+static INLINE T_THREAD
+	THREAD_CREATE(void (*F)(void *), void *ARG)
+#			else /* K&R */
+static INLINE T_THREAD
+	THREAD_CREATE(F, ARG)
+	void	(*F)(void *);
+	void	*ARG;
+#			endif /* !KNR_STYLE */
+{
+	Task_Params	TASK_PARAMS;
+
+	Task_Params_init(&TASK_PARAMS);
+	TASK_PARAMS.arg0 = (UArg)ARG;
+	TASK_PARAMS.stackSize = 1024;
+	return (Task_create((Task_FuncPtr)F, &TASK_PARAMS, (Error_Block *)0));
+}
+
+#			ifndef KNR_STYLE /* STANDARD C */
+static INLINE int
+	THREAD_JOIN(T_THREAD THREAD, void **RETURN_VALUE)
+#			else /* K&R */
+static INLINE int
+	THREAD_JOIN(THREAD, RETURN_VALUE)
+	T_THREAD	THREAD;
+	void		**RETURN_VALUE;
+#			endif /* !KNR_STYLE */
+{
+	IGNORE_VAR	THREAD;
+
+	if (RETURN_VALUE)
+		*RETURN_VALUE = (void *)0;
+
+	/* NOT SUPPORTED IN TI-RTOS */
+	return (-1);
+}
+
+#			ifndef KNR_STYLE /* STANDARD C */
+static INLINE T_MUTEX
+	MUTEX_CREATE(void)
+#			else /* K&R */
+static INLINE T_MUTEX
+	MUTEX_CREATE()
+#			endif /* !KNR_STYLE */
+{
+	Semaphore_Params	SEMAPHORE_PARAMS;
+
+	Semaphore_Params_init(&SEMAPHORE_PARAMS);
+	SEMAPHORE_PARAMS.mode = Semaphore_Mode_BINARY;
+	return (Semaphore_create(1, &SEMAPHORE_PARAMS, (Error_Block *)0));
+}
+
+#			ifndef KNR_STYLE /* STANDARD C */
+static INLINE int
+	MUTEX_DESTROY(T_MUTEX MUTEX)
+#			else /* K&R */
+static INLINE int
+	MUTEX_DESTROY(MUTEX)
+	T_MUTEX	MUTEX;
+#			endif /* !KNR_STYLE */
+{
+	if (!MUTEX)
+		return (1);
+
+	Semaphore_delete(&MUTEX); // [v] changed for TI-RTOS
+	return (0);
+}
+
+#			define MUTEX_LOCK(__MUTEX_LOCK__)
+				Semaphore_pend(__MUTEX_LOCK__, BIOS_WAIT_FOREVER)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+				Semaphore_post(__MUTEX_UNLOCK__)
+#		endif /* LOCALMACRO_THREAD_TI_RTOS */
 #	else
 #		error "OPERATING SYSTEM OR COMPILER DOESN'T SUPPORT THREADS!!!"
 #	endif /* LOCALMACRO_THREAD_FOUND */
@@ -1478,10 +1604,10 @@ static INLINE t_thread
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE int
-	THREAD_JOIN(t_thread thread, void **return_value)
+	thread_join(t_thread thread, void **return_value)
 #	else /* K&R */
 static INLINE int
-	THREAD_JOIN(thread, return_value)
+	thread_join(thread, return_value)
 	t_thread	thread;
 	void		**return_value;
 #	endif /* !KNR_STYLE */
@@ -1491,10 +1617,10 @@ static INLINE int
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE t_mutex
-	MUTEX_CREATE(void)
+	mutex_create(void)
 #	else /* K&R */
 static INLINE t_mutex
-	MUTEX_CREATE()
+	mutex_create()
 #	endif /* !KNR_STYLE */
 {
 	return ((t_mutex)MUTEX_CREATE());
@@ -1511,6 +1637,9 @@ static INLINE int
 {
 	return (MUTEX_DESTROY((T_MUTEX)mutex));
 }
+
+#	define mutex_lock(__mutex_lock__) MUTEX_LOCK(__mutex_lock__)
+#	define mutex_unlock(__mutex_unlock__) MUTEX_UNLOCK(__mutex_unlock__)
 /* *************************** [^] LOWERCASE [^] **************************** */
 
 /* *************************** [v] C++ (POP) [v] **************************** */

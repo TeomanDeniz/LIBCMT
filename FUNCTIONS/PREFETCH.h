@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/06/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -288,15 +288,15 @@ static INLINE void
 #		define _LINUX_PREFETCH_H
 #		ifndef KNR_STYLE /* STANDARD C */
 static INLINE void
-	prefetch_range(void *variable, register unsigned int LENGTH)
+	prefetch_range(void *variable, register unsigned int length)
 #		else /* K&R */
 static INLINE void
-	prefetch_range(variable, LENGTH)
+	prefetch_range(variable, length)
 	void					*variable;
-	register unsigned int	LENGTH;
+	register unsigned int	length;
 #		endif /* !KNR_STYLE */
 {
-	PREFETCH_RANGE(variable, LENGTH);
+	PREFETCH_RANGE(variable, length);
 }
 #	endif /* !_LINUX_PREFETCH_H */
 /* ************************* [^] prefetch_range [^] ************************* */
