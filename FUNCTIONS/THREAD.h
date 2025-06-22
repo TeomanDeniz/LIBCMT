@@ -782,7 +782,6 @@ static INLINE int
 }
 #				define MUTEX_LOCK(__MUTEX_LOCK__) \
 					pthread_mutex_lock(__MUTEX_LOCK__);
-
 #				define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 					pthread_mutex_unlock(__MUTEX_UNLOCK__);
 #			else /* [v] POSIX THREADS *************************************** */
