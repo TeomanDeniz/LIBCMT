@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -30,17 +30,23 @@
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
 |*............................................................................*|
-|*       NAME       :   TYPE    :                 DESCRIPTION                 *|
-|*..................:...........:.............................................*|
-|* OBJECT_FUNCTIONS : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR      *|
-|* object_functions :           : STRUCTURE                                   *|
-|*..................:...........:.............................................*|
-|* OBJECT_FROM      : #define() : CONNECT A STRUCTURE INTO A FUNCTION         *|
-|* object_from      :           :                                             *|
-|*..................:...........:.............................................*|
-|* OBJECT           : #define() : CREATE YOUR OBJECT                          *|
-|* object           :           :                                             *|
-|*..................:.........................................................*|
+|*        NAME        :   TYPE    :                DESCRIPTION                *|
+|*....................:...........:...........................................*|
+|* OBJECT__FUNCTIONS  : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR    *|
+|* object__functions  :           : STRUCTURE                                 *|
+|*....................:...........:...........................................*|
+|* OBJECT__FUNCTION   : #define() : CREATE FUNCTION POINTER INSIDE YOUR       *|
+|* object__function   :           : STRUCTURE                                 *|
+|*....................:...........:...........................................*|
+|* OBJECT__CONNECT    : #define() : CONNECT A STRUCTURE INTO A FUNCTION       *|
+|* object_from        :           :                                           *|
+|*....................:...........:...........................................*|
+|* OBJECT             : #define() : CREATE AN OBJECT                          *|
+|* object             :           :                                           *|
+|*....................:...........:...........................................*|
+|* USE                : #define() : USE A FUNCTION INSIDE AN OBJECT           *|
+|* use                :           :                                           *|
+|*....................:...........:...........................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -52,7 +58,7 @@
 |* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
 |* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
 |* :                                                                          *|
-|* : ELSE, JUST SKIP THE SETUP AND JUMP TO LINE 72 AT THE BOTTOM OF THIS FILE *|
+|* : ELSE, JUST SKIP THE SETUP AND JUMP TO LINE 78 AT THE BOTTOM OF THIS FILE *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_OBJECT"      *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
@@ -69,119 +75,77 @@
 |*    : ...                                                                   *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* THIS LIBRARY MAKES YOU USE "this" SPECIAL VARIABLE INSIDE YOUR FUNCTIONS   *|
-|* IF THEY ARE CONNECTED TO A STRUCTURE.                                      *|
+|* :::::::::::::::::::::::::::::::: GENERAL ::::::::::::::::::::::::::::::::: *|
 |*                                                                            *|
-|* JUST CREATE A STRUCTURE LIKE NORMAL. PUT ALL OF YOUR FUNCTION POINTERS AT  *|
-|* THE TOP OF YOUR STRUCTURE (IT IS PRIORITY)                                 *|
+|* THIS LIBRARY PROVIDES AN OOP-LIKE SYSTEM FOR C, FEATURING:                 *|
+|* - IMPLICIT "this" POINTER                                                  *|
+|* - CONSTRUCTOR SUPPORT                                                      *|
+|* - FUNCTION POINTER BINDING BY INDEX                                        *|
 |*                                                                            *|
-|* O - EXAMPLE                                                                *|
+|* DEFINE YOUR STRUCTURE NORMALLY WITH FUNCTION POINTERS AT THE TOP.          *|
+|* CONNECT YOUR FUNCTIONS USING "object__functions(...) { ... }".             *|
+|* THE FIRST INDEX (0) IS ALWAYS THE CONSTRUCTOR FUNCTION.                    *|
+|* FUNCTIONS ARE BOUND TO STRUCT MEMBERS BY ORDER, NOT NAME.                  *|
+|*                                                                            *|
+|* O - FUNCTION CONNECTION                                                    *|
 |* :                                                                          *|
 |* : struct test_object_type                                                  *|
 |* : {                                                                        *|
-|* :     void (*FUNC1)();                                                     *|
-|* :                                                                          *|
-|* :     int a;                                                               *|
+|* :     void object__function(worked);                                       *|
+|* :     int value;                                                           *|
 |* : };                                                                       *|
-|*                                                                            *|
-|* SELECT YOUR FUNCTIONS AND CONNECT THEM TO YOUR STRUCTURE BY USING          *|
-|* "object_from (STRUCTURE_TYPE_NAME)"                                        *|
-|*                                                                            *|
-|* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* : void FUNC1()                                                             *|
+|* : static void CONSTRUCTOR(void)                                            *|
 |* : {                                                                        *|
-|* :     object_from (test_object_type);                                      *|
-|* :                                                                          *|
-|* :     ...                                                                  *|
+|* :     object__connect(test_object_type);                                   *| 
+|* :     this->value = 0;                                                     *|
 |* : }                                                                        *|
-|*                                                                            *|
-|* AT THE END, CONNECT BOTH YOUR STRUCTURE AND YOUR FUNCTIONS BY USING        *|
-|* "object_functions (STRUCTURE_TYPE_NAME){...};"                             *|
-|*                                                                            *|
-|* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* : object_functions (test_object_type)                                      *|
+|* : static void worked(int n)                                                *|
 |* : {                                                                        *|
-|* :     0, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION                       *|
+|* :     object__connect(test_object_type);                                   *|
+|* :     this->value += n;                                                    *|
+|* : }                                                                        *|
 |* :                                                                          *|
-|* :     FUNC1,                                                               *|
-|* :     0                                                                    *|
-|* : };                                                                       *|
-|* :                                                                          *|
-|* ;.., BUT BE AWARE! THESE FUNCTIONS ARE PUT INTO YOUR STRUCTURE BY USING    *|
-|*    : THEIR INDEX NUMBER! NOT BY THEIR NAMES!!!                             *|
-|*    :                                                                       *|
-|*    : strcut test                                                           *|
-|*    : {                                                                     *|
-|*    :      void (*A)(); // FUNCTION_1                                       *|
-|*    :      void (*B)(); // FUNCTION_3                                       *|
-|*    :      void (*C)(); // FUNCTION_2                                       *|
-|*    :                                                                       *|
-|*    :      int variable;                                                    *|
-|*    :      ...                                                              *|
-|*    : }                                                                     *|
-|*    :                                                                       *|
-|*    : object_functions (test)                                               *|
-|*    : {                                                                     *|
-|*    :     0, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION                    *|
-|*    :                                                                       *|
-|*    :     FUNCTION_1,                                                       *|
-|*    :     FUNCTION_3,                                                       *|
-|*    :     FUNCTION_2,                                                       *|
-|*    :     0                                                                 *|
-|*    : };                                                                    *|
-|*                                                                            *|
-|* AND YET, YOUR OBJECT IS READY TO USE. YOU CAN ALSO DEFINE A CONSTRUCTOR    *|
-|* FUNCTION IF YOU WANT.                                                      *|
-|*                                                                            *|
-|* AND MAKE YOUR OBJECT/STRUCTURE DO SOME JOBS ON THE CREATION.               *|
-|*                                                                            *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* : object_functions (test_object_type)                                      *|
+|* : object__functions(test_object_type)                                      *|
 |* : {                                                                        *|
-|* :     FUNC1, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION                   *|
+|* :     CONSTRUCTOR,                                                         *|
+|* :     worked,                                                              *|
 |* :     0                                                                    *|
 |* : };                                                                       *|
 |*                                                                            *|
-|* NOW WHAT? YOU CAN CREATE YOUR STRUCTURE BY USING "object (...) (ARGS...)"  *|
-|*                                                                            *|
-|* O - EXAMPLE                                                                *|
-|* :         YOUR OBJECT TYPE NAME   CONSTRUCTOR FUNCTION PARAMETERS          *|
-|* :         vvvvvvvvvvvvvvvv        vv                                       *|
-|* : object (test_object_type, TEST) ();                                      *|
-|* :                           ^^^^                                           *|
-|* :                           YOUR OBJECT VARIABLE NAME                      *|
-|* : TEST.FUNC1();                                                            *|
-|*                                                                            *|
-|* IF YOUR CONSTRUCTOR HAVING PARAMETERS FROM OUTSIDE, YOU CAN SEND           *|
-|* PARAMETERS WHILE CREATING YOUR OBJECT.                                     *|
-|*                                                                            *|
-|* O - EXAMPLE                                                                *|
-|* : void FUNC1(int a)                                                        *|
-|* : {                                                                        *|
-|* :     object_from (test_object_type);                                      *|
+|* O - USAGE                                                                  *|
 |* :                                                                          *|
-|* :     ...                                                                  *|
-|* : }                                                                        *|
-|* :                                                                          *|
-|* :         YOUR OBJECT TYPE NAME   CONSTRUCTOR FUNCTION PARAMETERS          *|
-|* :         vvvvvvvvvvvvvvvv        vvvv                                     *|
-|* : object (test_object_type, TEST) (42);                                    *|
-|* :                           ^^^^                                           *|
-|* :                           YOUR OBJECT VARIABLE NAME                      *|
-|* : TEST.FUNC1();                                                            *|
+|* : object(test_object_type, obj) (); // CONSTRUCTOR CALLED                  *|
+|* : obj.worked(42); // uses implicit "this"                                  *|
 |*                                                                            *|
-|* O - EXAMPLES                                                               *|
+|* WHEN USING MULTIPLE OBJECTS IN THE SAME SCOPE, USE "use(...)" TO SWITCH    *|
+|* CONTEXT SAFELY:                                                            *|
+|*                                                                            *|
+|* O - MULTIPLE OBJECTS EXAMPLE                                               *|
+|* :                                                                          *|
+|* : object(test_object_type, test1) ();                                      *|
+|* : object(test_object_type, test2) ();                                      *|
+|* :                                                                          *|
+|* : use(test1).worked(42);                                                   *|
+|* : test1.worked(42);                                                        *|
+|* : test1.worked(42);                                                        *|
+|* : use(test2).worked(42);                                                   *|
+|* : use(test1).worked(42);                                                   *|
+|* : use(test2).worked(42);                                                   *|
+|*                                                                            *|
+|* USING "use(obj)" BEFORE A SEQUENCE SAVES A CONTEXT SWITCH (ASM OPTIM).     *|
+|* IT IS OPTIONAL, BUT RECOMMENDED FOR PERFORMANCE WHEN SWITCHING OBJECTS.    *|
+|*                                                                            *|
+|* O - FULL EXAMPLE                                                           *|
 |* :                                                                          *|
 |* ;.., CONNECTING YOUR OBJECT TO YOUR FUNCTIONS                              *|
 |* :  :                                                                       *|
 |* :  : struct test_object_type                                               *|
 |* :  : {                                                                     *|
-|* :  :     void (*FUNC1)();                                                  *|
-|* :  :     void (*FUNC2)();                                                  *|
-|* :  :     void (*FUNC3)();                                                  *|
+|* :  :     int object__function(FUNC1);                                      *|
+|* :  :     void object__function(FUNC2);                                     *|
+|* :  :     void object__function(FUNC3);                                     *|
 |* :  :                                                                       *|
 |* :  :     int a;                                                            *|
 |* :  : };                                                                    *|
@@ -193,11 +157,12 @@
 |* :  :     printf("0\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
-|* :  : static void FUNC1()                                                   *|
+|* :  : static int FUNC1()                                                    *|
 |* :  : {                                                                     *|
 |* :  :     object_from (test_object_type);                                   *|
 |* :  :                                                                       *|
 |* :  :     printf("1\n");                                                    *|
+|* :  :     return (42);                                                      *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
 |* :  : static void FUNC2()                                                   *|
@@ -224,15 +189,37 @@
 |* :  :     0                                                                 *|
 |* :  : };                                                                    *|
 |* :                                                                          *|
-|* ;.., CREATING AND USING AN OBJECT                                          *|
+|* ;.., CREATING AND USING OBJECTS                                            *|
 |*    :                                                                       *|
 |*    : int main(void)                                                        *|
 |*    : {                                                                     *|
-|*    :     object (test_object_type, TEST) ();                               *|
+|*    :     {                                                                 *|
+|*    :         object (test_object_type, TEST) ();                           *|
 |*    :                                                                       *|
-|*    :     TEST.FUNC1();                                                     *|
-|*    :     TEST.FUNC2();                                                     *|
-|*    :     TEST.FUNC3();                                                     *|
+|*    :         TEST.FUNC1();                                                 *|
+|*    :         TEST.FUNC2();                                                 *|
+|*    :         TEST.FUNC3();                                                 *|
+|*    :     }                                                                 *|
+|*    :                                                                       *|
+|*    :     {                                                                 *|
+|*    :         object (test_object_type, TEST1) ();                          *|
+|*    :         object (test_object_type, TEST2) ();                          *|
+|*    :                                                                       *|
+|*    :         use(TEST1).FUNC1();                                           *|
+|*    :         TEST1.FUNC2();                                                *|
+|*    :                                                                       *|
+|*    :         use(TEST2).FUNC1();                                           *|
+|*    :         TEST2.FUNC2();                                                *|
+|*    :                                                                       *|
+|*    :         use(TEST1).FUNC1();                                           *|
+|*    :         use(TEST2).FUNC1();                                           *|
+|*    :                                                                       *|
+|*    :         // IF COMMA OPERATOR SUPPORTED (LIKE: a = (x++, y = 42, z))   *|
+|*    :         printf("%d\n", use(TEST1).FUNC1());                           *|
+|*    :         // ELSE (WHICH IS REALLY OLD COMPILERS)                       *|
+|*    :         use(TEST1);                                                   *|
+|*    :         printf("%d\n", TEST1.FUNC1());                                *|
+|*    :     }                                                                 *|
 |*    :                                                                       *|
 |*    :     return (0);                                                       *|
 |*    : }                                                                     *|
@@ -265,7 +252,7 @@
 \******************************************************************************/
 
 #ifndef OBJECT_H
-#	define OBJECT_H 202506 /* VERSION */
+#	define OBJECT_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -281,6 +268,9 @@
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include "KEYWORDS/LOCAL.h" /*
 #	 define LOCAL
+#	        */
+#	include "CHECK_FEATURE/COMMA_OPERATOR.h" /*
+#	 define IS__COMMA_OPERATOR__SUPPORTED
 #	        */
 #	include <setjmp.h> /*
 #	 define jmp_buf
@@ -304,66 +294,58 @@ extern "C" {
 #	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#	define OBJECT_FUNCTIONS(OBJCET_NAME) \
-	void *OBJCET_NAME[__OBJECT_MAX_FUNCTION_LIMIT__] =
+#	define OBJECT__FUNCTIONS(OBJCET_TYPE) \
+		void *OBJCET_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
 
-#	define OBJECT_FROM(OBJECT_STRUCT_NAME) \
-	static struct OBJECT_STRUCT_NAME	*this = 0;\
-	\
-	if (__OBJECT_IS_READY__ == 0)\
-	{\
-		if (!this && __OBJECT_STRUCTURE_POINTER__ != (void *)0)\
-			this = (struct OBJECT_STRUCT_NAME *)__OBJECT_STRUCTURE_POINTER__;\
-		\
-		longjmp(__OBJECT_LONGJMP_ADDRESS__, 0);\
-	}
+#	define OBJECT__FUNCTION(FUNCTION_NAME) (*FUNCTION_NAME)()
+
+#	define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
+		struct OBJECT_STRUCT_TYPE	*const this = \
+			(struct OBJECT_STRUCT_TYPE *const)__OBJECT_STRUCTURE_POINTER__
 
 #	define OBJECT(OBJCET_NAME, VARIABLE_NAME) \
-	struct OBJCET_NAME	VARIABLE_NAME;\
-	\
-	{\
-		size_t	__OBJECT_CLASS_INDEX__;\
+		struct OBJCET_NAME	VARIABLE_NAME;\
 		\
-		__OBJECT_STRUCTURE_POINTER__ = &VARIABLE_NAME;\
-		__OBJECT_CLASS_INDEX__ = 0;\
-		__OBJECT_IS_READY__ = 0;\
-		\
-		while (!__OBJECT_IS_READY__)\
 		{\
-			if (!setjmp(__OBJECT_LONGJMP_ADDRESS__))\
+			register size_t	__OBJECT_INDEX__;\
+			void			(*FUNCTION)();\
+			\
+			__OBJECT_INDEX__ = 0;\
+			\
+			while (OBJCET_NAME[__OBJECT_INDEX__])\
 			{\
-				void	(*FUNCTION)();\
+				FUNCTION = \
+					(void (*)())(OBJCET_NAME[__OBJECT_INDEX__]);\
 				\
-				if (OBJCET_NAME[__OBJECT_CLASS_INDEX__])\
+				if (__OBJECT_INDEX__)\
 				{\
-					FUNCTION = \
-						(void (*)())(OBJCET_NAME[__OBJECT_CLASS_INDEX__]);\
-					\
-					if (__OBJECT_CLASS_INDEX__)\
-					{\
-						((long **)&VARIABLE_NAME)[__OBJECT_CLASS_INDEX__ - 1]\
-							= (long *)FUNCTION;\
-					}\
-					\
-					++__OBJECT_CLASS_INDEX__;\
-					FUNCTION();\
+					((long **)&VARIABLE_NAME)[__OBJECT_INDEX__ - 1]\
+						= (long *)FUNCTION;\
 				}\
 				\
-				if (__OBJECT_CLASS_INDEX__)\
-					__OBJECT_IS_READY__ = 1;\
-				else\
-					++__OBJECT_CLASS_INDEX__;\
-				\
+				++__OBJECT_INDEX__;\
 			}\
 		}\
-	}\
-	\
-	if (*OBJCET_NAME)\
-		((void (*)())(*OBJCET_NAME))
+		\
+		__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME;\
+		\
+		if (*OBJCET_NAME)\
+			((void (*)())(*OBJCET_NAME))
+
+#	ifdef IS__COMMA_OPERATOR__SUPPORTED
+#		define USE(VARIABLE_NAME) (\
+			__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME,\
+			VARIABLE_NAME\
+		)
+#	else
+#		define USE(VARIABLE_NAME) \
+			__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME;\
+			(void)VARIABLE_NAME
+#	endif /* IS__COMMA_OPERATOR__SUPPORTED */
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #	ifdef SETUP_OBJECT
-LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = 0;
+LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
 LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
 LOCAL int		__OBJECT_IS_READY__ = 0;
 #	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
@@ -379,8 +361,11 @@ LOCAL int		__OBJECT_IS_READY__ = 0;
 #		ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
 #			define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
 #		endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#		ifdef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#			undef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#		endif /* LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
 #		define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = 0;\
+			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;\
 			LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;\
 			LOCAL int		__OBJECT_IS_READY__ = 0;
 #		define main \
@@ -396,15 +381,20 @@ LOCAL int		__OBJECT_IS_READY__ = 0;
 			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
 			int WINAPI WinMain
 #	endif /* SETUP_OBJECT */
+/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+
+/* *************************** [v] PROTOTYPES [v] *************************** */
 LOCAL extern void		*__OBJECT_STRUCTURE_POINTER__;
 LOCAL extern jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
 LOCAL extern int		__OBJECT_IS_READY__;
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+/* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* **************************** [v] LOWERCASE [v] *************************** */
-#	define object_functions OBJECT_FUNCTIONS
-#	define object_from OBJECT_FROM
+#	define object__functions OBJECT__FUNCTIONS
+#	define object__function OBJECT__FUNCTION
+#	define object__connect OBJECT__CONNECT
 #	define object OBJECT
+#	define use USE
 /* **************************** [^] LOWERCASE [^] *************************** */
 
 /* *************************** [v] C++ (POP) [v] **************************** */

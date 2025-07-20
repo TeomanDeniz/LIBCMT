@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,8 +18,8 @@
 |*............................................................................*|
 |*   NAME   :  TYPE   :                     DESCRIPTION                       *|
 |*..........:.........:.......................................................*|
-|* NORETURN : #define : TELLING TO THE COMPILER THE PROGRAM WILL BE END IN    *|
-|* noreturn :         : THIS FUNCTION.                                        *|
+|* NORETURN : #define : TELLS THE COMPILER THAT THE PROGRAM WILL END IN THIS  *|
+|* noreturn :         : FUNCTION.                                             *|
 |*..........:.........:.......................................................*|
 \******************************************************************************/
 
@@ -28,7 +28,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: NORETURN :::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION.                        *|
+|* JUST PUT THIS TAG AT THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
@@ -52,20 +52,20 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                            WHAT DOES THAT DO?                            #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* IT WARNS THE COMPILER THAT THE FUNCTION MAY EXIT THE WHOLE PROGRAM WITHOUT *|
-|* REACHING BACK TO main() FUNCTION. THEN ONLY WAY TO DO THAT IS USING exit() *|
+|* WARNS THE COMPILER THAT THE FUNCTION MAY TERMINATE THE PROGRAM WITHOUT     *|
+|* RETURNING TO "main()". THE ONLY WAY TO DO THAT IS BY USING THE exit()      *|
 |* FUNCTION.                                                                  *|
 |*                                                                            *|
-|* FOR... OPTIMISATION PURPOSES.                                              *|
+|* FOR OPTIMISATION PURPOSES.                                                 *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef NORETURN_H
-#	define NORETURN_H 202506 /* VERSION */
+#	define NORETURN_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

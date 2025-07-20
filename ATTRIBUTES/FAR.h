@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/07 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,7 +18,8 @@
 |*............................................................................*|
 |*  NAME  :  TYPE   :                   DESCRIPTION                           *|
 |*........:.........:.........................................................*|
-|* FAR    : #define : SET THAT PIECE OF MEMORY GOING TO BE REALLY BIG.        *|
+|* FAR    : #define : MARKS A MEMORY SEGMENT OR POINTER AS FAR, ALLOWING      *|
+|*        :         : ACCESS BEYOND 64KB LIMITS.                              *|
 |*........:.........:.........................................................*|
 \******************************************************************************/
 
@@ -29,7 +30,7 @@
 |* :::::::::::::::::::::::::::::::::: FAR ::::::::::::::::::::::::::::::::::: *|
 |* IT DEFINES THE MEMORY ACCESS TYPE BASED ON COMPILER AND PLATFORM.          *|
 |* IN 16-BIT SYSTEMS, IT EXPANDS TO A FAR POINTER KEYWORD                     *|
-|* (`far`, `_far`, etc.) IN MODERN SYSTEMS, IT MAY BE EMPTY OR NOT USED.      *|
+|* ("far", "_far", etc.) IN MODERN SYSTEMS, IT MAY BE EMPTY OR NOT USED.      *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: EXAMPLES :::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLE 1 (VARIABLES)                                                  *|
@@ -99,20 +100,20 @@
 |* ;.., void (*near_func)(void);                                              *|
 |* :  : FAR void (*far_func)(void);                                           *|
 |* :                                                                          *|
-|* ;... `near_func` CAN ONLY CALL FUNCTIONS WITHIN THE SAME SEGMENT.          *|
+|* ;... "near_func" CAN ONLY CALL FUNCTIONS WITHIN THE SAME SEGMENT.          *|
 |* :                                                                          *|
-|* ;... `far_func` CAN CALL FUNCTIONS IN DIFFERENT SEGMENTS.                  *|
+|* ;... "far_func" CAN CALL FUNCTIONS IN DIFFERENT SEGMENTS.                  *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::: PRO-TIPS ::::::::::::::::::::::::::::::::::::  *|
 |* - IN MODERN SYSTEMS (32/64-BIT), FAR POINTERS ARE NOT NEEDED.              *|
-|* - ON MODERN COMPILERS, `FAR` IS USUALLY DEFINED AS EMPTY (`#define FAR`).  *|
+|* - ON MODERN COMPILERS, "FAR" IS USUALLY DEFINED AS EMPTY ("#define FAR").  *|
 |* - FAR POINTERS ARE SLOWER BECAUSE THEY REQUIRE SEGMENT SWITCHING.          *|
-|* - ONLY USE `FAR` IF YOU'RE COMPILING FOR 16-BIT REAL MODE ENVIRONMENTS.    *|
+|* - ONLY USE "FAR" IF YOU'RE COMPILING FOR 16-BIT REAL MODE ENVIRONMENTS.    *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef FAR_H
-#	define FAR_H 202506 /* VERSION */
+#	define FAR_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -161,18 +161,21 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* IF YOU TRY TO GET 32, 16, OR 8 BIT VARIABLES ON 64 BIT ARCHITECTURES,      *|
-|* YOU ARE GONNA GET "Illegal instruction" ERROR WHILE RUNNING YOUR SCRIPT!   *|
-|* I DID NOT ADD THIS FEATURE BECAUSE THIS IS DUMB AS FUCK AND JUST ANNOYING. *|
+|* ON 64-BIT ARCHITECTURES, RETRIEVING 32, 16, OR 8-BIT VALUES USING THIS     *|
+|* MECHANISM MAY RESULT IN AN "ILLEGAL INSTRUCTION" ERROR DEPENDING ON HOW    *|
+|* THE ARCHITECTURE AND CALLING CONVENTION HANDLE TYPE PROMOTION AND MEMORY.  *|
 |*                                                                            *|
-|* I NEEDED TO USE GLOBAL VARIABLES TO PASS ARGUMENTS BECAUSE BEFORE C99,     *|
-|* COMPOUND LITERALS (AKA: int *test = (int []){1, 2, 3, ...};) ARE NOT EXIST *|
-|*                                     ^^^^^^^^                               *|
+|* THIS BEHAVIOR IS NOT A FLAW IN THIS IMPLEMENTATION, BUT A LIMITATION       *|
+|* INTENTIONALLY LEFT UNSUPPORTED TO ENSURE CONSISTENCY AND STABILITY.        *|
+|*                                                                            *|
+|* GLOBAL VARIABLES ARE USED INTERNALLY BECAUSE, PRIOR TO C99, COMPOUND       *|
+|* LITERALS (E.G., int *X = (int[]){1, 2, 3};) WERE NOT AVAILABLE.            *|
 |*                                                                            *|
 \******************************************************************************/
 
+
 #ifndef VA_ARG_H
-#	define VA_ARG_H 202506 /* VERSION */
+#	define VA_ARG_H 202507 /* VERSION */
 #	ifndef __cplusplus /* C++ */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
@@ -223,15 +226,15 @@
 #			define va_pop 0
 #		else /* COMPILER DOES NOT SUPPORTS VA_ARG */
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include "../KEYWORDS/LOCAL.h" /*
-#		 define LOCAL
-#		        */
+#			include "../KEYWORDS/LOCAL.h" /*
+#			 define LOCAL
+#			        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#		ifndef VA_ARGS_MAX_BYTE_LIMIT
-#			define VA_ARGS_MAX_BYTE_LIMIT 2048 // <- INCREASE IF NEEDED
-#		endif /* !VA_ARGS_MAX_BYTE_LIMIT */
+#			ifndef VA_ARGS_MAX_BYTE_LIMIT
+#				define VA_ARGS_MAX_BYTE_LIMIT 2048 // <- INCREASE IF NEEDED
+#			endif /* !VA_ARGS_MAX_BYTE_LIMIT */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
 /* **************************** [v] TYPEDEFS [v] **************************** */
@@ -257,42 +260,48 @@ typedef char	**VA_LIST;
 #			define _VA_LIST_DEFINED
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#		ifdef SETUP_VA_ARGS
+#			ifdef SETUP_VA_ARGS
 LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
 LOCAL int	__VA_ARGS__GLOBAL_INDEX = -1;
-#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#			ifdef main
-#				undef main
-#			endif /* main */
-#			ifdef WinMain
-#				undef WinMain
-#			endif /* main */
-#			ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#				define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#			ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
-#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
-				LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
-				LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
-#			define main \
-				__IDLE__VA_ARGS;\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				int main
-#			define WinMain \
-				__IDLE__VA_ARGS;\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				int WINAPI WinMain
-#		endif /* SETUP_VA_ARGS */
-LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
+#			else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#				ifdef main
+#					undef main
+#				endif /* main */
+#				ifdef WinMain
+#					undef WinMain
+#				endif /* main */
+#				ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#					define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#				endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#				ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#					define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#				endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
+#				ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#					undef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#				endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
+					LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
+					LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
+#				define main \
+					__IDLE__VA_ARGS;\
+					LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+					LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+					int main
+#				define WinMain \
+					__IDLE__VA_ARGS;\
+					LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+					LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+					int WINAPI WinMain
+#			endif /* SETUP_VA_ARGS */
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 #		endif /* IF COMPILER SUPPORTS VA_ARG */
+
+/* *************************** [v] PROTOTYPES [v] *************************** */
+LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
+/* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* **************************** [v] UPPERCASE [v] *************************** */
 #		define VA_ADD va_add

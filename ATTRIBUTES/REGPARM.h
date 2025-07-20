@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,8 +18,8 @@
 |*............................................................................*|
 |*   NAME  :    TYPE    :                    DESCRIPTION                      *|
 |*.........:............:.....................................................*|
-|* REGPARM : #define () : WITH THIS FEATURE, YOU CAN ABLE TO SEND             *|
-|* regparm :            : VARIABLES TO FUNCTION VIA USING PURE REGISTERS      *|
+|* REGPARM : #define () : WITH THIS FEATURE, YOU ARE ABLE TO SEND             *|
+|* regparm :            : VARIABLES TO FUNCTION BY USING PURE REGISTERS       *|
 |*         :            : INSTEAD OF USING MEMORY.                            *|
 |*.........:............:.....................................................*|
 \******************************************************************************/
@@ -29,14 +29,11 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
-|* THIS FEATURE WILL NOT WORK ON POINTERS. (REFERENCE FROM C++)               *|
-|*                                                                            *|
-|* MAKE SURE ALL THE ARGUMENTS ARE NORMAL VARIABLES INSTEAD OF POINTERS!      *|
 |*                                                                            *|
 |* FOR MORE EFFECTIVE OPTIMISATION, USE "register" KEYWORD ON YOUR ARGUMENTS. *|
 |*                                                                            *|
-|* YOU MUST ENTER THE NUMBER OF VARIABLES THAT PASS TO FUNCTION VIA REGISTERS *|
-|* IN THE INPUT ARGUMENT. "REGPARM(NUMBER OF REGISTERS)"                      *|
+|* YOU MUST ENTER THE NUMBER OF VARIABLES THAT PASS TO FUNCTION WITH          *|
+|* REGISTERS IN THE INPUT ARGUMENT. "REGPARM(NUMBER OF REGISTERS)"            *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
@@ -50,13 +47,17 @@
 |* :  :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., void regparm(4) function(int a, float b, long c, char d)              *|
+|* ;.., void regparm(4) function(int a, float b, long c, char *d)             *|
 |* :  : {                                                                     *|
 |* :  :     . . .                                                             *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
 |* ;.., FOR THE MOST EFFECTIVE:                                               *|
-|*    , void regparm(2) function(register int a, register float b)            *|
+|*    : void regparm(2) function(                                             *|
+|*    :     register int a,                                                   *|
+|*    :     register float b,                                                 *|
+|*    :     register char *c                                                  *|
+|*    : )                                                                     *|
 |*    : {                                                                     *|
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
@@ -64,31 +65,31 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                               WHAT IT DOES                               #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* WITH THAT KEYWORD IN YOUR FUNCTION, YOU CAN DIRECTLY HOLD A VALUE IN THE   *|
-|* REGISTER AND CAN ABLE TO USE IT. LIKE IN C++ (REFERENCE) BUT WITHOUT       *|
-|* POINTERS.                                                                  *|
+|* USING THIS KEYWORD IN YOUR FUNCTION LETS YOU HOLD A VALUE DIRECTLY IN A    *|
+|* CPU REGISTER, ALLOWING DIRECT ACCESS - SIMILAR TO C++ REFERENCES, BUT      *|
+|* WITHOUT USING POINTERS.                                                    *|
 |*                                                                            *|
-|* WHICH MEANS, WHEN THE PROCESS REACH TO THIS FUNCTION (LAYER), THE CPU      *|
-|* GOING TO USE THE EXISTING REGISTER VALUE DIRECTLY INSTEAD OF GETTING THE   *|
-|* VALUE FROM MEMORY (RAM) OR STACKING THE REGISTERS DURING PROCESS.          *|
+|* THIS MEANS WHEN THE PROGRAM REACHES THIS FUNCTION, THE CPU WILL USE THE    *|
+|* EXISTING VALUE IN A REGISTER INSTEAD OF FETCHING IT FROM MEMORY (RAM) OR   *|
+|* PUSHING/POPPING VALUES TO/FROM THE STACK.                                  *|
 |*                                                                            *|
-|* WHICH MEANS, WITH THAT PROGRAM GOING TO AVOID DOING EXTRA COMMANDS DURING  *|
-|* PROCESS TO GET THE VALUE.                                                  *|
+|* IN OTHER WORDS, IT AVOIDS EXTRA INSTRUCTIONS DURING FUNCTION CALLS TO GET  *|
+|* THE VALUE.                                                                 *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: NOTE :::::::::::::::::::::::::::::::::: *|
-|* O - YOU ALSO HAVE TO USE REGPARM ON FUNCTION'S PROTOTYPE IF THERE IS ANY!  *|
+|* O - YOU MUST ALSO USE REGPARM IN THE FUNCTION'S PROTOTYPE, IF PRESENT!     *|
 |* :                                                                          *|
-|* ;.., extern REGPARM(2) void FUNCT(int A, int B); <-- FUNCTION PROTOTYPE    *|
-|*    : REGPARM(2) void FUNCT(int A, int B) {...} <-- FUNCTION DEFINITION     *|
+|* ;.., void REGPARM(2) FUNCT(int A, int B) { ... } <-- FUNCTION DEFINITION   *|
+|*    : extern void REGPARM(2) FUNCT(int A, int B); <-- FUNCTION PROTOTYPE    *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef REGPARM_H
-#	define REGPARM_H 202506 /* VERSION */
+#	define REGPARM_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

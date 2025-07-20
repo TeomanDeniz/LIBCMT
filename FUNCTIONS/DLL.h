@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -89,27 +89,27 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                              WTF DOES THAT DO?                           #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: DLL ::::::::::::::::::::::::::::::::::: *|
-|* DYNAMIC LINK LIBRARIES ARE SEPARATED FILES FROM EXECUTABLES THAT NEEDS     *|
-|* FUNCTIONS/VARIABLES FROM THAT FILE.                                        *|
+|* DYNAMIC LINK LIBRARIES ARE SEPARATE FILES FROM EXECUTABLES THAT NEED       *|
+|* FUNCTIONS/VARIABLES FROM THEM.                                             *|
 |*                                                                            *|
-|* WHY COMPILE THE WHOLE PRINTF FUNCTION FOR PER EXE FILE? JUST MAKE PRINTF   *|
-|* A DLL THEN CONNECT ALL EXES TO IT.                                         *|
+|* WHY COMPILE THE WHOLE PRINTF FUNCTION INTO EVERY EXE FILE? JUST MAKE       *|
+|* PRINTF A DLL AND CONNECT ALL EXES TO IT.                                   *|
 |*                                                                            *|
-|* YOUR 40KB~ EXE FILES WILL BECOME 100~ BYTES. CRAZY RIGHT?                  *|
+|* YOUR ~40KB EXE FILES WILL BECOME ~100 BYTES. CRAZY, RIGHT?                 *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: THIS LIBRARY :::::::::::::::::::::::::::::: *|
-|* YOU CAN GET A FUNTION POINTER FROM A DLL FILE AND USE IT DIRECTLY.         *|
+|* YOU CAN GET A FUNCTION POINTER FROM A DLL FILE AND USE IT DIRECTLY.        *|
 |*                                                                            *|
-|* BUT THIS LIBRARY JUST DOES THAT CROSS PLATFORM KEYWORDS.                   *|
+|* BUT THIS LIBRARY JUST HANDLES CROSS-PLATFORM KEYWORDS FOR THAT.            *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef DLL_H
-#	define DLL_H 202506 /* VERSION */
+#	define DLL_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
 |* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|

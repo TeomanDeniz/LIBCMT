@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/02/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/05/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -16,14 +16,16 @@
 |@                                                                            @|
 |@                                  WARNING!                                  @|
 |@                                                                            @|
+|@                          THIS IS A WIP CONTENT!!!                          @|
+|@                                                                            @|
 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 |@                                                                            @|
 |@     THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS,     @|
 |@                            AND ARCHITECTURES!!!                            @|
 |@                                                                            @|
-|@          WILL GET DEEP AND HUGE MAINTENANCE ON THE FUTURE! USE IT          @|
-|@                             WITH YOUR OWN RISK                             @|
-|@                                           ^^^^                             @|
+|@                  UNDERGO MAJOR MAINTENANCE IN THE FUTURE!                  @|
+|@                         USE IT WITH YOUR OWN RISK!                         @|
+|@                                              ^^^^                          @|
 |@                                                                            @|
 \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
@@ -33,10 +35,10 @@
 |*............................................................................*|
 |* NAME :    TYPE    :                      DESCRIPTION                       *|
 |*......:............:........................................................*|
-|* PUSH : #define () : MOVES A VALUE TO CPU STACK.                            *|
+|* PUSH : #define () : MOVES A VALUE TO STACK MEMORY.                         *|
 |* push :            :                                                        *|
 |*......:............:........................................................*|
-|* POP  : #define () : GETS A VALUE FROM CPU STACK.                           *|
+|* POP  : #define () : GETS A VALUE FROM STACK MEMORY.                        *|
 |* pop  :            :                                                        *|
 |*......:............:........................................................*|
 \******************************************************************************/
@@ -46,8 +48,8 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET A VALUE FROM CPU STACK.  *|
-|* LIKE IN ASSEMBLY. WHIC IT ACTUALLY WORKS WITH ASSEMBLY LOL                 *|
+|* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET A VALUE FROM MEMORY      *|
+|* STACK.                                                                     *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -72,13 +74,13 @@
 \******************************************************************************/
 
 #ifndef PUSH_POP_H
-#	define PUSH_POP_H 202505 /* VERSION */
+#	define PUSH_POP_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("-5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("-19.3") /*
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
 #			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
 #			"FILENAME" SEQUENCE
 #		*/
@@ -91,23 +93,28 @@ extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
-#	define push(PUSH_VAR) \
+#	define PUSH(PUSH_VAR) \
 		__asm__ __volatile__("push %0" : : "rm"((long)PUSH_VAR))
 
 #	if (\
 		defined(_WIN32) || /* WINDOWS */\
 		defined(__DJGPP__) /* MS-DOS */\
 	)
-#		define pop(POP_VAR) \
+#		define POP(POP_VAR) \
 		__asm__ __volatile__("pop %0" : "=rm"((long)POP_VAR))
 #	else
-#		define pop(POP_VAR) \
+#		define POP(POP_VAR) \
 			{\
 				register long	POP_RAX_##POP_VAR;\
 				__asm__ __volatile__("pop %0" : "=rm"(POP_RAX_##POP_VAR));\
 				POP_VAR = POP_RAX_##POP_VAR;\
 			}
 #	endif /* MICROSOFT */
+
+/* **************************** [v] LOWERCASE [v] *************************** */
+#	define push PUSH
+#	define pop POP
+/* **************************** [^] LOWERCASE [^] *************************** */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */

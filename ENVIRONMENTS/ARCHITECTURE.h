@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,19 +18,21 @@
 |*............................................................................*|
 |*        NAME        :   TYPE  :                 DESCRIPTION                 *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_256_BIT__ : #define : DEFINED IF SYSTEM ALSO SUPPORTS 256 BIT.    *|
+|* __SYSTEM_256_BIT__ : #define : DEFINED IF THE SYSTEM SUPPORTS 256 BITS.    *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_128_BIT__ : #define : DEFINED IF SYSTEM ALSO SUPPORTS 128 BIT.    *|
+|* __SYSTEM_128_BIT__ : #define : DEFINED IF THE SYSTEM SUPPORTS 128 BITS.    *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_64_BIT__  : #define : DEFINED IF SYSTEM IS 64 BIT.                *|
+|* __SYSTEM_64_BIT__  : #define : DEFINED IF THE SYSTEM IS 64-BIT.            *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_32_BIT__  : #define : DEFINED IF SYSTEM IS 32 BIT.                *|
+|* __SYSTEM_32_BIT__  : #define : DEFINED IF THE SYSTEM IS 32-BIT.            *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_31_BIT__  : #define : DEFINED IF SYSTEM ALSO SUPPORTS 31 BIT.     *|
+|* __SYSTEM_31_BIT__  : #define : DEFINED IF THE SYSTEM SUPPORTS 31 BITS.     *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_16_BIT__  : #define : DEFINED IF SYSTEM IS 16 BIT.                *|
+|* __SYSTEM_16_BIT__  : #define : DEFINED IF THE SYSTEM IS 16-BIT.            *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_8_BIT__   : #define : DEFINED IF SYSTEM IS 8 BIT.                 *|
+|* __SYSTEM_8_BIT__   : #define : DEFINED IF THE SYSTEM IS 8-BIT.             *|
+|*....................:.........:.............................................*|
+|* __SYSTEM_BIT__     : #define : MACRO INDICATING THE SYSTEM BIT-WIDTH.      *|
 |*....................:.........:.............................................*|
 \******************************************************************************/
 
@@ -39,7 +41,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* THESE DEFINES SHOW YOU HOW MANY BITS THE ARCHITECTURE USES.                *|
+|* THESE DEFINES INDICATE THE BIT-WIDTH SUPPORTED OR USED BY THE SYSTEM.      *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -47,12 +49,12 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* FOR SUPPORT REALLY OLD COMPILERS, I STRICTLY AVOID USING #IF IN THIS FILE. *|
+|* TO SUPPORT VERY OLD COMPILERS, THIS FILE STRICTLY AVOIDS USING #IF.        *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef ARCHITECTURE_H
-#	define ARCHITECTURE_H 202506 /* VERSION */
+#	define ARCHITECTURE_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -1002,6 +1004,26 @@ extern "C" {
 #		endif /* LOCALMACRO__L1_CACHE_BYTES >= 64 */
 #	endif /* LOCALMACRO__ARC_CONFIG_IS_EXIST_ALREADY */
 /* *************************** [^] ARC CONFIG [^] *************************** */
+
+/* ************************* [v] __SYSTEM_BIT__ [v] ************************* */
+#	ifdef __SYSTEM_64_BIT__
+#		define __SYSTEM_BIT__ 64
+#	else
+#		ifdef __SYSTEM_32_BIT__
+#			define __SYSTEM_BIT__ 32
+#		else
+#			ifdef __SYSTEM_16_BIT__
+#				define __SYSTEM_BIT__ 16
+#			else
+#				ifdef __SYSTEM_8_BIT__
+#					define __SYSTEM_BIT__ 8
+#				else
+#					define __SYSTEM_BIT__ 32 /* PROBABLY */
+#				endif /* __SYSTEM_8_BIT__ */
+#			endif /* __SYSTEM_16_BIT__ */
+#		endif /* __SYSTEM_32_BIT__ */
+#	endif /* __SYSTEM_64_BIT__ */
+/* ************************* [^] __SYSTEM_BIT__ [^] ************************* */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */

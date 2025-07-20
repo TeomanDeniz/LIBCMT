@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,7 +18,7 @@
 |*............................................................................*|
 |*  NAME  :  TYPE   :                      DESCRIPTION                        *|
 |*........:.........:.........................................................*|
-|* INLINE : #define : THE FUNCTION IS NOW AN INLINE PASTE LIKE #INCLUDE.      *|
+|* INLINE : #define : THE FUNCTION IS NOW INLINED, SIMILAR TO A #INCLUDE.     *|
 |*........:.........:.........................................................*|
 \******************************************************************************/
 
@@ -27,7 +27,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: INLINE ::::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION.                        *|
+|* JUST PUT THIS TAG AT THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLE                                                                *|
@@ -44,10 +44,10 @@
 |*############################################################################*|
 |*                                                                            *|
 |* (1) DO NOT USE "STATIC" (STATIC INLINE) WHEN YOU DECIDE TO USE THIS        *|
-|* KEYWORD ON A FUNCTION! "STATIC" IS GOING TO CANCEL "INLINE"! OR IT LIMITS  *|
-|* VISIBILITY. IF THE FUNCTION IS ONLY CALLED ONCE OR TWICE, IT MAY NEVER BE  *|
-|* INLINED. IF IT'S UNUSED, IT MAY STILL OCCUPY A SYMBOL. BUT STILL, NOT      *|
-|* WORTH RISKING IT LOL.                                                      *|
+|* KEYWORD WITH A FUNCTION. "STATIC" IS GOING TO CANCEL "INLINE"! OR IT       *|
+|* MAY LIMIT VISIBILITY. IF THE FUNCTION IS ONLY CALLED ONCE OR TWICE, IT MAY *|
+|* NEVER BE INLINED. IF IT'S UNUSED, IT MAY STILL OCCUPY A SYMBOL. STILL,     *|
+|* IT'S NOT WORTH RISKING.                                                    *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
@@ -81,7 +81,8 @@
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* (4) YOU CAN'T CALL ITSELF INSIDE OF INLINE. (YOU CAN'T DO RECURSIVE)       *|
+|* (4) YOU CAN'T CALL THE FUNCTION ITSELF INSIDE AN INLINE FUNCTION           *|
+|*     SO, NO RECURSION                                                       *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
@@ -92,11 +93,11 @@
 |*    :     . . .                                                             *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* (5) YOU CAN'T USE VA_LIST, VA_ARG (SIMPLY ...) KEYWORD ON INLINE FUNCTION! *|
+|* (5) YOU CAN'T USE "va_list", "va_arg" (OR ...) IN INLINE FUNCTIONS!        *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // NO LOL                                                             *|
+|* ;.., // NO, DON'T!                                                         *|
 |*    : INLINE void inline_test(int a, ...)                                   *|
 |*    : {                                                                     *|
 |*    :     va_list list;                                                     *|
@@ -135,9 +136,9 @@
 |*    :     return (0);                                                       *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* IT WAS JUST AN EXAMPLE, YOU'RE FEEL FREE TO FILL YOUR FUNCTION AS MUCH AS  *|
-|* YOU CAN. BUT PLEASE BE AWARE WHAT TO NOT DO INSIDE OF AN INLINE FUNCTION   *|
-|* BY READIN THE "HOW NOT TO USE IT" LIST AT THE TOP!                         *|
+|* IT WAS JUST AN EXAMPLE. FEEL FREE TO FILL YOUR FUNCTION AS MUCH AS YOU     *|
+|* CAN. BUT PLEASE BE AWARE OF WHAT NOT TO DO INSIDE OF AN INLINE FUNCTION BY *|
+|* READING THE "HOW NOT TO USE IT" LIST AT THE TOP!                           *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -147,8 +148,8 @@
 |*                                                                            *|
 |* [[clang::always_inline]] NOT WORKING IN CLANG. BELIEVE ME.                 *|
 |*                                                                            *|
-|* USE THIS KEYWORD IN YOUR "static" AND ON THE FUNCTIONS THAT DEFINED IN THE *|
-|* HEADER FILES!!!                                                            *|
+|* USE THIS KEYWORD WITH YOUR "static" FUNCTIONS AND ON THE FUNCTIONS THAT    *|
+|* DEFINED IN THE HEADER FILES!!!                                             *|
 |*                                                                            *|
 |* YOU DON'T NEED TO MAP INLINE FUNCTIONS WITH MVS LINKER PRAGMAS             *|
 |* (SUCH AS `#pragma map`) WHEN TARGETING Z/OS SYSTEMS. INLINE FUNCTIONS DO   *|
@@ -157,7 +158,7 @@
 \******************************************************************************/
 
 #ifndef INLINE_H
-#	define INLINE_H 202506 /* VERSION */
+#	define INLINE_H 202507 /* VERSION */
 
 /* *************************** [v] TI CGT CCS [v] *************************** */
 #	ifdef __TI_COMPILER_VERSION__

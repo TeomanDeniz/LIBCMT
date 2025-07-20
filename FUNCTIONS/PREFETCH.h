@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -58,20 +58,30 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                              WTF DOES THAT DO?                           #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: PREFETCH :::::::::::::::::::::::::::::::: *|
-|* YOU'RE TELLING THE CPU THAT THAT ONE PIECE OF MEMORY MUST BE IN PRE-SEARCH *|
-|* AND IT'S VALUE MUST BE IN CPU BEFORE IT IS GET USED.                       *|
-|* SIMPLY: THE CPU GETS THE VALUE FROM THE MEMORY AND STORES IT IN CPU'S      *|
-|* STACK BEFORE IT IS GET USED.                                               *|
+|* YOU'RE TELLING THE CPU TO LOAD A SPECIFIC MEMORY LOCATION INTO ITS CACHE   *|
+|* **BEFORE** IT'S ACTUALLY NEEDED.                                           *|
+|*   ^^^^^^                                                                   *|
+|* SIMPLY PUT: IT HINTS THE CPU TO FETCH THE VALUE INTO CACHE EARLY,          *|
+|* REDUCING MEMORY ACCESS LATENCY WHEN THAT VALUE IS USED SOON AFTER.         *|
+|*                                                                            *|
+|* THIS DOES NOT MOVE DATA TO "STACK" — IT MOVES IT INTO CACHE LINES.         *|
+|* IT'S A PERFORMANCE HINT, NOT A GUARANTEED ACTION.                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: PREFETCH_RANGE ::::::::::::::::::::::::::::: *|
-|* SINCE, "PREFETCH" FUNCTION PREFETCHES ONLY ONE VARIABLE, YOU CAN PREFETCH  *|
-|* MULTILE VARIABLES WITH THIS FUNCTION. MAYBE EVEN THE WHOLE ARRAY.          *|
+|* THE "PREFETCH" FUNCTION ONLY WORKS FOR A SINGLE VARIABLE.                  *|
+|*                                                                            *|
+|* "PREFETCH_RANGE" ALLOWS YOU TO PREFETCH MULTIPLE VARIABLES OR A WHOLE      *|
+|* ARRAY BY PREFETCHING A BLOCK OF MEMORY IN A LOOP OR RANGE.                 *|
+|*                                                                            *|
+|* USE THIS WHEN WORKING WITH LARGE BUFFERS OR ARRAYS TO MINIMIZE CACHE       *|
+|* MISSES BEFORE HEAVY PROCESSING.                                            *|
 |*                                                                            *|
 \******************************************************************************/
+
 
 /*############################################################################*\
 |*#                                SIDE NOTES                                #*|
@@ -86,7 +96,7 @@
 \******************************************************************************/
 
 #ifndef PREFETCH_H
-#	define PREFETCH_H 202506 /* VERSION */
+#	define PREFETCH_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

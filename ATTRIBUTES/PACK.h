@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -33,8 +33,9 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
-|* YOU MUST USE BOTH "PACK" AND "PRAGMA_PACK_..." ON A STRUCT IF YOU WANT TO  *|
-|* PACK IT. IF YOU WANNA USE FULL SYNTAX SUPPORT OF THIS FEATURE.             *|
+|* YOU MUST USE BOTH "PACK" AND "PRAGMA_PACK_..." MACROS ON A STRUCT IF YOU   *|
+|* WANT TO PACK IT. THIS IS REQUIRED TO UNLOCK THE FULL SYNTAX SUPPORT FOR    *|
+|* THIS FEATURE.                                                              *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
@@ -42,33 +43,35 @@
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
 |* :  : struct test                                                           *|
 |* :  : {                                                                     *|
-|* :  :     . . .                                                             *|
+|* :  :     ...                                                               *|
 |* :  : } PACK;                                                               *|
 |* :  : PRAGMA_PACK_POP                                                       *|
 |* :                                                                          *|
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
 |*    : typedef struct test                                                   *|
 |*    : {                                                                     *|
-|*    :     . . .                                                             *|
+|*    :     ...                                                               *|
 |*    : } PACK t_test;                                                        *|
 |*    : PRAGMA_PACK_POP                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                               WHAT IT DOES                               #*|
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* [PACK] IS PACKING OR REMOVING PADDING BYTES FROM YOUR STURCT.              *|
-|* I WOULD PREFER NOT TO USE THIS MODULE UNLESS YOU HAVE A VERY BIG STRUCT.   *|
+|* [PACK] REMOVES PADDING BYTES FROM YOUR STRUCT TO TIGHTLY PACK ITS FIELDS.  *|
 |*                                                                            *|
-|* BECAUSE REMOVING PADDINGS FROM YOUR STURCT WILL CAUSE SOME PERFORMANCE     *|
-|* ISSUES.                                                                    *|
+|* UNLESS YOU ARE DEALING WITH A VERY LARGE STRUCT OR LOW-LEVEL BINARY DATA,  *|
+|* IT IS RECOMMENDED TO AVOID USING THIS FEATURE.                             *|
+|*                                                                            *|
+|* REMOVING PADDING CAN CAUSE PERFORMANCE PENALTIES ON SOME SYSTEMS.          *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: HOW? :::::::::::::::::::::::::::::::::: *|
-|* WHILE CPU READING YOUR STRUCT, IT IS READING AND DECIDING TO USE IT VIA    *|
-|* IT'S ALING. ALING WORKS AS 1 - 2 - 4 - 8 - 16 - 32 - 64... SO PADDING      *|
+|* WHEN THE CPU ACCESSES STRUCT FIELDS, IT RELIES ON MEMORY ALIGNMENT RULES.  *|
+|* ALIGNMENT USUALLY FOLLOWS POWERS OF TWO (1, 2, 4, 8, 16, ...).             *|
+|* TO MAINTAIN THIS, COMPILERS AUTOMATICALLY ADD PADDING BYTES.               *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
@@ -76,20 +79,20 @@
 |* :  : {                                                                     *|
 |* :  :     int a;                                                            *|
 |* :  : };                                                                    *|
-|* :  ;... THIS STRUCT'S SIZEOF GOING TO BE [4] BYTES!                        *|
+|* :  ;... SIZEOF = 4 BYTES                                                   *|
 |* :                                                                          *|
 |* ;.., struct test                                                           *|
 |* :  : {                                                                     *|
 |* :  :     int a;                                                            *|
 |* :  :     char b;                                                           *|
 |* :  : };                                                                    *|
-|* :  ;.., THIS STRUCT'S SIZEOF GOING TO BE [8] BYTES!                        *|
+|* :  ;.., SIZEOF = 8 BYTES                                                   *|
 |* :     :                                                                    *|
-|* :     ;.., WHERE IS 3 BYTES SINCE WE USED 5 BYTES IN THE STURCT?           *|
-|* :        : ANSER: WE CALLING THEM PADDING. THESE EXTRA SPACES ARE FOR MAKE *|
-|* :        : THE CPU READ THE STURCT FASTER FROM THE MEMORY.                 *|
+|* :     ;.., WHERE DID THE EXTRA 3 BYTES GO?                                 *|
+|* :        : ANSWER: THEY ARE PADDING BYTES ADDED FOR ALIGNMENT.             *|
+|* :        : THIS HELPS THE CPU READ THE STRUCT FASTER.                      *|
 |* :                                                                          *|
-|* ;.., SO, IF WE DO:                                                         *|
+|* ;.., PACKING THE STRUCT:                                                   *|
 |*    :                                                                       *|
 |*    ;.., PRAGMA_PACK_PUSH                                                   *|
 |*    :  : struct test                                                        *|
@@ -99,20 +102,19 @@
 |*    :  : } PACK;                                                            *|
 |*    :  : PRAGMA_PACK_POP                                                    *|
 |*    :                                                                       *|
-|*    ;... THIS STRUCT'S SIZEOF GOING TO BE [5] BYTES NOW!                    *|
+|*    ;... NOW SIZEOF = 5 BYTES                                               *|
 |*                                                                            *|
-|* SO, PADDING IN STURCUT WORKS LIKE FILLING THE AREA WITH EXTRA BYTES TO     *|
-|* REACH THESE NUMBERS. OTHERWISE, IT WILL CAUSE AN OVERFLOW (OVERREAD).      *|
-|* OR COMPILER JUST DECIDES THE ALING OF THE STRUCT BY 1 OR 2 TO PREVENT IT   *|
-|* FROM HAPPENING.                                                            *|
+|* PADDING WORKS BY FILLING STRUCTS WITH EXTRA BYTES TO ALIGN THEIR FIELDS.   *|
+|* WITHOUT IT, YOU RISK OVERREAD/OVERFLOW OR UNALIGNED ACCESS.                *|
+|* COMPILERS MAY FORCE THE ALIGNMENT TO A LOWER VALUE TO PREVENT THIS.        *|
 |*                                                                            *|
-|* AND YOU MUST AWARE, THIS IS GOING TO CAUSE SOME PERFORMANCE ISSUES WHILE   *|
-|* SHARING YOUR STRUCT BETWEEN FUNCTIONS.                                     *|
+|* /!\ BE AWARE: PACKING MAY CAUSE PERFORMANCE ISSUES WHEN PASSING STRUCTS    *|
+|* BETWEEN FUNCTIONS OR MODULES DUE TO UNALIGNED MEMORY ACCESS.               *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef PACK_H
-#	define PACK_H 202506 /* VERSION */
+#	define PACK_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

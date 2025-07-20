@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/05/28 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,7 +18,7 @@
 |*............................................................................*|
 |*    NAME    :  TYPE   :                      DESCRIPTION                    *|
 |*............:.........:.....................................................*|
-|* IGNORE_VAR : #define : TELLING TO THE COMPILER THE VARIABLE MAY NOT USED   *|
+|* IGNORE_VAR : #define : TELLS THE COMPILER THE VARIABLE MAY NOT BE USED    *|
 |* ignore_var :         :                                                     *|
 |*............:.........:.....................................................*|
 \******************************************************************************/
@@ -28,7 +28,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: IGNORE ::::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE VARIABLE. EZ LOL                 *|
+|* TO USE, SIMPLY ADD THE TAG IN FRONT OF THE VARIABLE.                       *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
@@ -36,7 +36,7 @@
 |* :                                                                          *|
 |* ;.., ignore_var int i;                                                     *|
 |* :                                                                          *|
-|* ;.., int main(int argc, char **argv)                                       *|
+|* ;.., int main(int argc, char **argv)                                       *| 
 |*    : {                                                                     *|
 |*    :     ignore_var argc;                                                  *|
 |*    :                                                                       *|
@@ -47,20 +47,20 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                              WHAT DOES IT DO?                            #*|
 |*############################################################################*|
 |*                                                                            *|
-|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* THIS KEYWORD TELLS TO THE COMPILER THE VARABLE IS MAY NOT USED IN THE      *|
+|* ::::::::::::::::::::::::::::::: EXPLANATION :::::::::::::::::::::::::::::: *|
+|* THIS KEYWORD TELLS THE COMPILER THAT THE VARIABLE MAY NOT BE USED IN THE   *|
 |* PROGRAM.                                                                   *|
 |*                                                                            *|
-|* IF NOT USED, IGNORE THIS VARIABLE DIRECTLY AND THEN CONTINUE TO COMPILE    *|
-|* THE PROGRAM WITHOUT GIVING ANY WARNING.                                    *|
+|* IF UNUSED, THE COMPILER IGNORES THIS VARIABLE AND CONTINUES COMPILING      *|
+|* THE PROGRAM WITHOUT GENERATING ANY WARNINGS.                               *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef IGNORE_VAR_H
-#	define IGNORE_VAR_H 202506 /* VERSION */
+#	define IGNORE_VAR_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

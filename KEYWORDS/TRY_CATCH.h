@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -48,7 +48,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: TRY ::::::::::::::::::::::::::::::::::: *|
-|* WRAPS A BLOCK OF CODE THAT MAY CALL "throw(...)" INSIDE IT.                *|
+|* WRAPS A BLOCK OF CODE THAT MAY CALL "throw(...)" WITHIN IT.                *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: CATCH :::::::::::::::::::::::::::::::::: *|
 |* PLACED RIGHT AFTER "try", CAPTURES THE ERROR CODE PASSED FROM "throw(...)" *|
@@ -58,8 +58,8 @@
 |*                                                                            *|
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
-|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
+|* : NOTE: SETUP IS OPTIONAL IF YOU’RE HANDLING THE main FUNCTION YOURSELF    *|
+|* : WITH LIKE "#define main ..." OR "#define main(...) ..."                  *|
 |* :                                                                          *|
 |* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_TRY_CATCH"   *|
 |* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
@@ -67,7 +67,7 @@
 |* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE PROPERLY DEFINED.      *|
 |* :                                                                          *|
 |* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
-|* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
+|* : THE MACRO AGAIN. ALL OTHER FILES WILL ONLY SEE "extern" DECLARATIONS.    *|
 |* :                                                                          *|
 |* ;.., #define SETUP_TRY_CATCH                                               *|
 |*    : #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
@@ -87,53 +87,54 @@
 |* :  :     printf("ERROR: %d\n", err);                                       *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., FOR TCC (TINY C COMPILER) LIKE COMPILERS, YOU HAVE TO CREATE YOUR     *|
+|* ;.., FOR COMPILERS LIKE TCC (TINY C COMPILER), YOU MUST DECLARE YOUR       *|
 |* :  : "int err" VARIABLE OUTSIDE OF THE "catch()" SCOPE.                    *|
 |* :  :                                                                       *|
-|* :  : IT'S BECAUSE OF YOU CAN'T CREATE VARIABLES INSIDE CONTROL CLAUSES IN  *|
-|* :  : TINY C COMPILER. LIKE YOU CAN'T DO SOMETHING LIKE: "for (int a;...)". *|
+|* :  : THIS IS BECAUSE TINY C COMPILER DOES NOT ALLOW VARIABLE DECLARATIONS  *|
+|* :  : INSIDE CONTROL CLAUSES. FOR EXAMPLE, YOU CAN’T DO SOMETHING LIKE:     *|
+|* :  : "for (int a;...)"                                                     *|
 |* :  :                                                                       *|
-|* :  : FOR EAXMPLE:                                                          *|
+|* :  : FOR EXAMPLE:                                                          *|
 |* :  ;..,                                                                    *|
 |* :     : int err;                                                           *|
 |* :     :                                                                    *|
 |* :     : try                                                                *|
 |* :     : {                                                                  *|
-|* :     :     if (1) throw(99);                                              *|
+|* :     :     if (1) throw (99);                                             *|
 |* :     : }                                                                  *|
-|* :     : catch(err)                                                         *|
+|* :     : catch (err)                                                        *|
 |* :     : {                                                                  *|
 |* :     :     printf("ERROR: %d\n", err);                                    *|
 |* :     : }                                                                  *|
 |* :                                                                          *|
-|* ;.., TRY/CATCH VIA USING INSIDE A FUNCION WE CALLED:                       *|
+|* ;.., TRY/CATCH INSIDE A CALLED FUNCTION:                                   *|
 |* :  :                                                                       *|
 |* :  : void test(void)                                                       *|
 |* :  : {                                                                     *|
-|* :  :     throw(42);                                                        *|
+|* :  :     throw (42);                                                       *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
 |* :  : try                                                                   *|
 |* :  : {                                                                     *|
 |* :  :     test();                                                           *|
 |* :  : }                                                                     *|
-|* :  : catch(int err)                                                        *|
+|* :  : catch (int err)                                                       *|
 |* :  : {                                                                     *|
 |* :  :     printf("ERROR: %d\n", err);                                       *|
 |* :  : }                                                                     *|
 |* :                                                                          *|
-|* ;.., TRY/CATCH VIA USING NESTED STATEMEMNT:                                *|
+|* ;.., TRY/CATCH WITH A NESTED STATEMENT:                                    *|
 |*    :                                                                       *|
 |*    : try                                                                   *|
 |*    : {                                                                     *|
 |*    :     try                                                               *|
 |*    :     {                                                                 *|
-|*    :         throw(42);                                                    *|
+|*    :         throw (42);                                                   *|
 |*    :     }                                                                 *|
 |*    :     catch (int error)                                                 *|
 |*    :     {                                                                 *|
 |*    :         printf("err_1: %d\n", error);                                 *|
-|*    :         throw(32);                                                    *|
+|*    :         throw (32);                                                   *|
 |*    :     }                                                                 *|
 |*    : }                                                                     *|
 |*    : catch (int error)                                                     *|
@@ -159,10 +160,11 @@
 |* - "catch(variable)" ALLOWS YOU TO ACCESS THE ERROR CODE THROWN.            *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: NOTES :::::::::::::::::::::::::::::::::: *|
-|*     * ONLY throw() AND catch() WITH int TYPE!                              *|
+|*     * ONLY SUPPORTS throw() AND catch() WITH int TYPE!                     *|
 |*                                                                            *|
 |*     * IF THIS LIBRARY IS ATTEMPTED TO BE COMPILED IN A C++ COMPILER,       *|
-|*       THE LIBRARY WILL NOT DEFINE "try", "catch", AND "throw" KEYWORDS!    *|
+|*       THE LIBRARY WILL NOT DEFINE THE "try", "catch", AND "throw" MACROS   *|
+|*       BUT DEFINES "TRY", "CATCH", AND "THROW" ANYWAY.                      *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -171,117 +173,136 @@
 |*############################################################################*|
 |*                                                                            *|
 |* IF YOU TRY TO USE THIS SYSTEM ON DEVICES LIKE 8051, PIC, MSP430, ETC.,     *|
-|* THIS APPROACH CAN BLOAT MEMORY QUICKLY. THEREFORE, PLEASE CONSIDER USING   *|
+|* THIS APPROACH MAY QUICKLY BLOAT MEMORY. THEREFORE, PLEASE CONSIDER USING   *|
 |* THIS SYSTEM ONLY ON DEVICES WITH MORE THAN 4KB OF RAM.                     *|
+|*                                                                            *|
+|* DO NOT EXIT FROM TRY-CATCH BY USING "return" OR "goto" KEYWORDS, IT MAY    *|
+|* CAUSE A SEGMENTATION ERROR OR UNEXPECTED RESULTS. INSTEAD, JUST DO:        *|
+|* USE "throw(0)" TO COMPLETELY EXIT THE TRY BLOCK.                           *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef TRY_CATCH_H
-#	define TRY_CATCH_H 202506 /* VERSION */
-#	ifndef __cplusplus /* C++ */
+#	define TRY_CATCH_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
-#		ifdef __TI_COMPILER_VERSION__
-#			pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#			pragma CHECK_MISRA("5.4") /*
-#				TAG NAMES SHALL BE A UNIQUE IDENTIFIER
-#			*/
-#			pragma CHECK_MISRA("19.3") /*
-#				THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME>
-#				OR "FILENAME" SEQUENCE
-#			*/
-#		endif /* __TI_COMPILER_VERSION__ */
+#	ifdef __TI_COMPILER_VERSION__
+#		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
+#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
+#		pragma CHECK_MISRA("19.3") /*
+#			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
+#			"FILENAME" SEQUENCE
+#		*/
+#	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include "LOCAL.h" /*
-#		 define LOCAL
-#		        */
-#		include <setjmp.h> /*
-#		 define jmp_buf
-#		 define setjmp(jmp_buf env)
-#		 define longjmp(jmp_buf env, int val)
-#		        */
+#	include "LOCAL.h" /*
+#	 define LOCAL
+#	        */
+#	include <setjmp.h> /*
+#	 define jmp_buf
+#	 define setjmp(jmp_buf env)
+#	 define longjmp(jmp_buf env, int val)
+#	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
+#	ifdef __cplusplus /* C++ */
+extern "C" {
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
+
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#		ifndef __TRY_CATCH_BUFFER_SIZE__
-#			define __TRY_CATCH_BUFFER_SIZE__ 32 // <- INCREASE IF NEEDED
-#		endif /* !__TRY_CATCH_BUFFER_SIZE__ */
+#	ifndef __TRY_CATCH_BUFFER_SIZE__
+#		define __TRY_CATCH_BUFFER_SIZE__ 32 // <- INCREASE IF NEEDED
+#	endif /* !__TRY_CATCH_BUFFER_SIZE__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#		define TRY \
-			++__TRY_CATCH_INDEX__;\
-			\
-			if (!setjmp(__TRY_CATCH_BUFFER__[(__TRY_CATCH_INDEX__ - 1)]))
-#		define CATCH(VARIABLE_NAME) \
-			else for (\
-					VARIABLE_NAME = __TRY_CATCH_VALUE__; \
-					__TRY_CATCH_VALUE__; \
-					__TRY_CATCH_VALUE__ = 0\
-				)
-#		define THROW(ERROR_NO) \
-			if (__TRY_CATCH_INDEX__ > 0)\
-			{\
-				__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
-				longjmp(\
-					__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], \
-					(int)ERROR_NO\
-				);\
-			}
+#	define TRY \
+		++__TRY_CATCH_INDEX__;\
+		\
+		if (!setjmp(__TRY_CATCH_BUFFER__[(__TRY_CATCH_INDEX__ - 1)]))
+
+#	define CATCH(VARIABLE_NAME) \
+		else for (\
+				VARIABLE_NAME = __TRY_CATCH_VALUE__; \
+				__TRY_CATCH_VALUE__; \
+				__TRY_CATCH_VALUE__ = 0\
+			)
+
+#	define THROW(ERROR_NO) \
+		if (__TRY_CATCH_INDEX__ > 0)\
+		{\
+			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
+			longjmp(\
+				__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], \
+				(int)ERROR_NO\
+			);\
+		}
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#		ifdef SETUP_TRY_CATCH
+#	ifdef SETUP_TRY_CATCH
 LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
 LOCAL char		__TRY_CATCH_INDEX__ = 0;
 LOCAL int		__TRY_CATCH_VALUE__ = 0;
-#		else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#			ifdef main
-#				undef main
-#			endif /* main */
-#			ifdef WinMain
-#				undef WinMain
-#			endif /* main */
-#			ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
-#			ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#			endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
-#			define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
-				LOCAL jmp_buf	__TRY_CATCH_BUFFER__[\
-					__TRY_CATCH_BUFFER_SIZE__\
-				];\
-				LOCAL char		__TRY_CATCH_INDEX__ = 0;\
-				LOCAL int		__TRY_CATCH_VALUE__ = 0;
-#			define main \
-				__IDLE__TRY_CATCH;\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				int main
-#			define WinMain \
-				__IDLE__TRY_CATCH;\
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-				int WINAPI WinMain
-#		endif /* SETUP_TRY_CATCH */
+#	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#		ifdef main
+#			undef main
+#		endif /* main */
+#		ifdef WinMain
+#			undef WinMain
+#		endif /* main */
+#		ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#		endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#		ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#			define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#		endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
+#		ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#			undef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#		endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#		define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
+			LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];\
+			LOCAL char		__TRY_CATCH_INDEX__ = 0;\
+			LOCAL int		__TRY_CATCH_VALUE__ = 0;
+#		define main \
+			__IDLE__TRY_CATCH;\
+			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			int main
+#		define WinMain \
+			__IDLE__TRY_CATCH;\
+			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			int WINAPI WinMain
+#	endif /* SETUP_TRY_CATCH */
+/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+
+/* *************************** [v] PROTOTYPES [v] *************************** */
 LOCAL extern jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
 LOCAL extern char		__TRY_CATCH_INDEX__;
 LOCAL extern int		__TRY_CATCH_VALUE__;
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+/* *************************** [^] PROTOTYPES [^] *************************** */
 
+/* *************************** [v] C++ (PUSH) [v] *************************** */
+#	ifdef __cplusplus /* C++ */
+}
+#	else
 /* **************************** [v] LOWERCASE [v] *************************** */
 #		define try TRY
 #		define catch CATCH
 #		define throw THROW
 /* **************************** [^] LOWERCASE [^] *************************** */
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
-#		ifdef __TI_COMPILER_VERSION__
-#			pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
-#		endif /* __TI_COMPILER_VERSION__ */
+#	ifdef __TI_COMPILER_VERSION__
+#		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
+#	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #	endif /* !__cplusplus */

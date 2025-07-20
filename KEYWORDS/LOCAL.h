@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/14 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,7 +18,7 @@
 |*............................................................................*|
 |*  NAME  :   TYPE   :                       DESCRIPTION                      *|
 |*........:..........:........................................................*|
-|* LOCAL  : #define  : MAKE VARIABLE THREAD-LOCAL (SEPARATE PER THREAD)       *|
+|* LOCAL  : #define  : MAKES A VARIABLE THREAD-LOCAL (SEPARATE PER THREAD)    *|
 |* local  :          :                                                        *|
 |*........:..........:........................................................*|
 \******************************************************************************/
@@ -43,13 +43,13 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
+|*#                             WHAT DOES IT DO?                             #*|
 |*############################################################################*|
 |*                                                                            *|
-|* THIS KEYWORD MUST BE ONLY USED AT GLOBAL AND STATIC VARIABLES WHEN NEEDED! *|
+|* THIS KEYWORD MUST ONLY BE USED WITH GLOBAL OR STATIC VARIABLES WHEN NEEDED *|
 |*                                                                            *|
 |* MARKS A GLOBAL OR STATIC VARIABLE AS THREAD-LOCAL, MEANING EACH THREAD     *|
-|* GETS ITS OWN SEPARATE INSTANCE OF THE VARIABLE.                            *|
+|* GETS ITS OWN SEPARATE INSTANCE OF THAT VARIABLE.                           *|
 |*                                                                            *|
 |* THIS ENSURES THAT THE VARIABLE IS NOT SHARED BETWEEN THREADS, PREVENTING   *|
 |* RACE CONDITIONS OR UNINTENDED DATA SHARING.                                *|
@@ -60,18 +60,18 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* YES, YOU DO HAVE TO SET "LOCAL" KEYWORD ON YOUR PROTOTYPES OF GLOBAL       *|
+|* YES, YOU DO NEED TO USE THE "LOCAL" KEYWORD IN YOUR PROTOTYPES OF GLOBAL   *|
 |* VARIABLES TOO.                                                             *|
 |*                                                                            *|
 |* extern local int g_variable;                                               *|
 |*        ^^^^^                                                               *|
-|*        ADD THAT IF YOU'RE TRYING TO GET YOUR GLOBAL VARIABLE VIA USING     *|
-|*        "extern" KEYWORD. (THANKS MrNorkum TO INFORM THIS BUG TO ME)        *|
+|*        ADD THIS IF YOU’RE TRYING TO ACCESS YOUR GLOBAL VARIABLE USING THE  *|
+|*        "extern" KEYWORD. (THANKS TO MrNorkum FOR REPORTING THIS BUG)       *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef LOCAL_H
-#	define LOCAL_H 202506 /* VERSION */
+#	define LOCAL_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
 |* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|

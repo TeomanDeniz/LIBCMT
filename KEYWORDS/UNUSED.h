@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/06/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,7 +18,7 @@
 |*............................................................................*|
 |*  NAME  :  TYPE   :                      DESCRIPTION                        *|
 |*........:.........:.........................................................*|
-|* UNUSED : #define : TELLING TO THE COMPILER THE FUNCTION MAY UNUSED         *|
+|* UNUSED : #define : TELLS THE COMPILER THAT THE FUNCTION MAY NOT BE USED    *|
 |* unused :         :                                                         *|
 |*........:.........:.........................................................*|
 \******************************************************************************/
@@ -28,7 +28,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: UNUSED ::::::::::::::::::::::::::::::::: *|
-|* JUST PUT THIS TAG ON THE BEGINNING OF THE FUNCTION. EZ LOL                 *|
+|* JUST PUT THIS TAG AT THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
@@ -49,16 +49,16 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|* THIS KEYWORD TELLS TO THE COMPILER THE FUNCTION IS MAY NOT USED IN THE     *|
+|* THIS KEYWORD TELLS THE COMPILER THAT THE FUNCTION MAY NOT BE USED IN THE   *|
 |* PROGRAM.                                                                   *|
 |*                                                                            *|
-|* IF NOT USED, IGNORE THIS FUNCTION DIRECTLY AND THEN CONTINUE TO COMPILE    *|
-|* THIS PROGRAM WITHOUT GIVING ANY WARNING.                                   *|
+|* IF UNUSED, THE COMPILER IGNORES THIS FUNCTION AND CONTINUES COMPILING      *|
+|* THE PROGRAM WITHOUT GIVING ANY WARNINGS.                                   *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef UNUSED_H
-#	define UNUSED_H 202506 /* VERSION */
+#	define UNUSED_H 202507 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
