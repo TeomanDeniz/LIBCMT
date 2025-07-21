@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,21 +18,21 @@
 |*............................................................................*|
 |*        NAME        :   TYPE  :                 DESCRIPTION                 *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_256_BIT__ : #define : DEFINED IF THE SYSTEM SUPPORTS 256 BITS.    *|
+|* __SYSTEM_256_BIT__ : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 256-BIT *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_128_BIT__ : #define : DEFINED IF THE SYSTEM SUPPORTS 128 BITS.    *|
+|* __SYSTEM_128_BIT__ : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 128-BIT *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_64_BIT__  : #define : DEFINED IF THE SYSTEM IS 64-BIT.            *|
+|* __SYSTEM_64_BIT__  : #define : DEFINED IF THE SYSTEM IS 64-BIT             *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_32_BIT__  : #define : DEFINED IF THE SYSTEM IS 32-BIT.            *|
+|* __SYSTEM_32_BIT__  : #define : DEFINED IF THE SYSTEM IS 32-BIT             *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_31_BIT__  : #define : DEFINED IF THE SYSTEM SUPPORTS 31 BITS.     *|
+|* __SYSTEM_31_BIT__  : #define : DEFINED IF THE SYSTEM SUPPORTS 31-BIT       *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_16_BIT__  : #define : DEFINED IF THE SYSTEM IS 16-BIT.            *|
+|* __SYSTEM_16_BIT__  : #define : DEFINED IF THE SYSTEM IS 16-BIT             *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_8_BIT__   : #define : DEFINED IF THE SYSTEM IS 8-BIT.             *|
+|* __SYSTEM_8_BIT__   : #define : DEFINED IF THE SYSTEM IS 8-BIT              *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_BIT__     : #define : MACRO INDICATING THE SYSTEM BIT-WIDTH.      *|
+|* __SYSTEM_BIT__     : #define : MACRO INDICATING THE SYSTEM BIT-WIDTH       *|
 |*....................:.........:.............................................*|
 \******************************************************************************/
 

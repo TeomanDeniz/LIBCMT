@@ -592,13 +592,13 @@ void printf(const char *, va_args);
 
 | Name                 | Type      | Description                                   |
 | -------------------- | --------- | --------------------------------------------- |
-| `__SYSTEM_256_BIT__` | `#define` | Defined if the system also supports 256 bits. |
-| `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128 bits. |
-| `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit.              |
-| `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit.              |
-| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system supports 31 bits.       |
-| `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit.              |
-| `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit.               |
+| `__SYSTEM_256_BIT__` | `#define` | Defined if the system also supports 256-bit   |
+| `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128-bit   |
+| `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit               |
+| `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit               |
+| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system supports 31-bit         |
+| `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit               |
+| `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit                |
 | `__SYSTEM_BIT__`     | `#define` | Macro indicating the system bit-width.        |
 
 These defines indicate the bit-width supported or used by the system.
