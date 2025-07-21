@@ -1,8 +1,6 @@
 # LIBCMT
 LIBCMT: This library adds cross platfrom or OOP features in C language even if they are not exist in your compiler.
 
-## Contents
-
 <details>
 
 <summary>
@@ -289,7 +287,7 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 
 ## How to Use
 
-**Important** - For more effective optimization, use the `register` keyword on your arguments.
+**Important** - For more effective optimisation, use the `register` keyword on your arguments.
 
 You must enter the number of variables passed to the function via registers in the argument: `REGPARM(<number_of_registers>)`
 
@@ -436,11 +434,9 @@ FAR void (*far_func)(void); // can call functions in different segments.
 
 **[ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**
 
-| ⚠️ **WARNING**                                                                         |  
-|:---------------------------------------------------------------------------------------:|
-| **THIS IS A WIP CONTENT!!!**                                                            |
-| THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, AND ARCHITECTURES!!! |
-| UNDERGO MAJOR MAINTENANCE IN THE FUTURE! USE IT WITH YOUR OWN **RISK**                  |
+| ⚠️ **WARNING**                                                                                                                                                                   |
+|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!<br/>MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK** |
 
 | **NAME**       | **TYPE**      | **DESCRIPTION**                 |
 |----------------|---------------|---------------------------------|
@@ -456,8 +452,8 @@ With these functions, you're able to move and retrieve values from the memory st
 Let's write a simple and probably the world's fastest swap example:
 
 ```c
-register int a = 42;
-register int b = 11;
+register int	a = 42;
+register int	b = 11;
 
 PUSH(a); // > Added 42 to CPU stack
 a = b;   // |
@@ -594,16 +590,16 @@ void printf(const char *, va_args);
 
 **[ENVIRONMENTS/ARCHITECTURE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/ARCHITECTURE.h)**
 
-| Name                 | Type      | Description                              |
-| -------------------- | --------- | ---------------------------------------- |
-| `__SYSTEM_256_BIT__` | `#define` | Defined if the system supports 256 bits. |
-| `__SYSTEM_128_BIT__` | `#define` | Defined if the system supports 128 bits. |
-| `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit.         |
-| `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit.         |
-| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system supports 31 bits.  |
-| `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit.         |
-| `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit.          |
-| `__SYSTEM_BIT__`     | `#define` | Macro indicating the system bit-width.   |
+| Name                 | Type      | Description                                   |
+| -------------------- | --------- | --------------------------------------------- |
+| `__SYSTEM_256_BIT__` | `#define` | Defined if the system also supports 256 bits. |
+| `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128 bits. |
+| `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit.              |
+| `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit.              |
+| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system supports 31 bits.       |
+| `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit.              |
+| `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit.               |
+| `__SYSTEM_BIT__`     | `#define` | Macro indicating the system bit-width.        |
 
 These defines indicate the bit-width supported or used by the system.
 
@@ -953,17 +949,10 @@ For detailed information and examples, please refer to the POSIX Threads (pthrea
 
 | PLATFORM       | NOTES                                                      |
 | -------------- | ---------------------------------------------------------- |
-| UNIX           | POSIX -1003.1C (<=1995): Also known as LinuxThreads        |
-|                | - Robust or recursive mutexes not fully reliable           |
-|                | - Signals + threads are buggy                              |
-|                | - TLS and priority inheritance unreliable                  |
-|                | - Avoid using threads inside `fork()`                      |
-|                | POSIX +1003.1C (>1995): All functions fully supported      |
+| UNIX           | POSIX -1003.1C (<=1995): Also known as LinuxThreads<br/>- Robust or recursive mutexes not fully reliable<br/>- Signals + threads are buggy<br/>- TLS and priority inheritance unreliable<br/>- Avoid using threads inside `fork()`<br/>POSIX +1003.1C (>1995): All functions fully supported      |
 | WINDOWS/WINAPI | All functions fully supported                              |
-| OS/2           | 32-bit: All functions fully supported                      |
-|                | 16-bit:                                                    |
-|                | - `THREAD_CREATE`: Cannot send argument to thread function |
-|                | - `THREAD_JOIN`: Not supported, always returns -1          |
+| OS/2 - 32-bit  | All functions fully supported                              |
+| OS/2 - 16-bit  | - `THREAD_CREATE`: Cannot send argument to thread function<br/>- `THREAD_JOIN`: Not supported, always returns -1          |
 | HAIKU          | All functions fully supported                              |
 | PLAN9          | All functions fully supported                              |
 | FREERTOS       | `THREAD_JOIN` not supported, always returns -1             |
@@ -982,12 +971,12 @@ If your OS is not listed, these features may not be supported on your device, OS
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ignore.gif">
-	<b>IGNORE_VAR</b> - Tag the variables that may not used in the project. (For ignore warnings)
+	<b>IGNORE_VAR</b> - Tag the variables that may not be used in the project. (For ignoring warnings)
 </summary>
 
 **[KEYWORDS/IGNORE_VAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)**
 
-| **NName*                    | **Type**   | **Description**                                    |
+| **Name**                    | **Type**   | **Description**                                    |
 |-----------------------------|------------|----------------------------------------------------|
 | `IGNORE_VAR`, `ignore_var`  | `#define`  | Tells the compiler the variable may not be used    |
 
@@ -1027,7 +1016,7 @@ If unused, the compiler ignores this variable and continues compiling the progra
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/inline.png">
-	<b>INLINE</b> - Inlines your function on specific compilers.
+	<b>INLINE</b> - Inline your function on specific compilers.
 </summary>
 
 **[KEYWORDS/INLINE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)**
@@ -1044,7 +1033,7 @@ Just put this tag at the beginning of the function.
 ```c
 INLINE void function(void)
 {
-	...
+	. . .
 }
 ```
 
@@ -1069,7 +1058,7 @@ static INLINE int test(void)
 
 2. **Don't use `goto`**
 
-Technically allowed, but may break optimization badly.
+Technically allowed, but may break optimisation badly.
 
 **Bad Example**:
 ```c
@@ -1077,7 +1066,7 @@ Technically allowed, but may break optimization badly.
 INLINE int test(void)
 {
 	LAYER:
-	...
+	. . .
 	goto LAYER;
 }
 ```
@@ -1090,7 +1079,7 @@ INLINE int test(void)
 INLINE void test(void)
 {
 	static int	dog;
-	...
+	. . .
 }
 ```
 
@@ -1104,7 +1093,7 @@ Inline functions can't call themselves.
 INLINE void inline_test(int a)
 {
 	inline_test(a + 1);
-	...
+	. . .
 }
 ```
 
@@ -1116,7 +1105,7 @@ INLINE void inline_test(int a)
 INLINE void inline_test(int a, ...)
 {
 	va_list list;
-	...
+	. . .
 }
 ```
 
@@ -1162,7 +1151,7 @@ This was just an example. You’re free to write whatever you want inside the fu
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/no_return.png">
-	<b>NORETURN</b> - Optimizes your function if there is a direct exit in it.
+	<b>NORETURN</b> - Optimise your function if there is a direct exit in it.
 </summary>
 
 **[KEYWORDS/NORETURN.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)**
@@ -1179,22 +1168,22 @@ Just put this tag at the beginning of the function.
 ```c
 NORETURN void function(void)
 {
-	...
+	. . .
 
 	if (...) 
 		exit(0);
 
-	...
+	. . .
 }
 
 noreturn void function(void)
 {
-	...
+	. . .
 
 	if (...) 
 		exit(0);
 
-	...
+	. . .
 }
 ```
 
@@ -1204,7 +1193,7 @@ Warns the compiler that the function may terminate the program without returning
 
 The only way to do that is by using the `exit()` function.
 
-This is used for optimization purposes.
+This is used for optimisation purposes.
 
 ----
 </details>
@@ -1230,12 +1219,12 @@ Just put this tag at the beginning of the function.
 ```c
 UNUSED void function(void)
 {
-	...
+	. . .
 }
 
 unused void function(void)
 {
-	...
+	. . .
 }
 ```
 
@@ -1402,14 +1391,14 @@ throw (0); // to completely exit the try block
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/LOCAL.gif">
-	<b>LOCAL</b> - Ensures each thread has its own independent copy of a "global" or "static" variable it used on.
+	<b>LOCAL</b> - Ensure each thread has its own independent copy of a "global" or "static" variable it used on.
 </summary>
 
 **[KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**
 
-| **NAME**         | **TYPE**   | **DESCRIPTION**                                      |
-|------------------|------------|------------------------------------------------------|
-| `LOCAL`, `local` | `#define`  | Makes a variable thread-local (separate per thread). |
+| **NAME**         | **TYPE**   | **DESCRIPTION**                                     |
+|------------------|------------|-----------------------------------------------------|
+| `LOCAL`, `local` | `#define`  | Make a variable thread-local (separate per thread). |
 
 ## How To Use
 
@@ -1422,7 +1411,7 @@ local int g_variable = 0;
 ```c
 void test(void)
 {
-	static local int variable = 0;
+	static local int	variable = 0;
 }
 ```
 
