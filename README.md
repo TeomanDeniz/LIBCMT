@@ -612,7 +612,7 @@ Defines a macro if your compiler is using K&R style syntax or not.
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/is_stdc.gif">
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/dll.png">
 	<b>DLL</b> - Cross platform dynamic link library functions.
 </summary>
 
