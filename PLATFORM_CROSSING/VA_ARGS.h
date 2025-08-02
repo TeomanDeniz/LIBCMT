@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -175,7 +175,7 @@
 
 
 #ifndef VA_ARG_H
-#	define VA_ARG_H 202507 /* VERSION */
+#	define VA_ARG_H 202508 /* VERSION */
 #	ifndef __cplusplus /* C++ */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
@@ -210,6 +210,12 @@
 			defined(__PCC__) || \
 			defined(__TenDRA__)\
 		)
+/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
+#			ifndef VA_ARGS_MAX_BYTE_LIMIT
+#				define VA_ARGS_MAX_BYTE_LIMIT /* IGNORE */
+#			endif /* !VA_ARGS_MAX_BYTE_LIMIT */
+/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
+
 /* **************************** [v] INCLUDES [v] **************************** */
 #			include <stdarg.h> /*
 #			??????? va_list;
@@ -270,37 +276,40 @@ LOCAL int	__VA_ARGS__GLOBAL_INDEX = -1;
 #				ifdef WinMain
 #					undef WinMain
 #				endif /* main */
-#				ifndef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#					define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#				endif /* !LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#				ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#					define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#				endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
-#				ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#					undef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#				endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#				ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#					define LOCALMACRO__VA_ARGS__TRY_CATCH_GLOBAL_VARIABLES \
+						LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#				else
+#					define LOCALMACRO__VA_ARGS__TRY_CATCH_GLOBAL_VARIABLES
+#				endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#				ifdef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#					define LOCALMACRO__VA_ARGS__OBJECT_GLOBAL_VARIABLES \
+						LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#				else
+#					define LOCALMACRO__VA_ARGS__OBJECT_GLOBAL_VARIABLES
+#				endif /* LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
 #				define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
 					LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];\
 					LOCAL int		__VA_ARGS__GLOBAL_INDEX = -1;
 #				define main \
-					__IDLE__VA_ARGS;\
-					LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-					LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+					__IDLE__VA_ARGS; \
+					LOCALMACRO__VA_ARGS__TRY_CATCH_GLOBAL_VARIABLES \
+					LOCALMACRO__VA_ARGS__OBJECT_GLOBAL_VARIABLES \
+					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
 					int main
 #				define WinMain \
-					__IDLE__VA_ARGS;\
-					LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
-					LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
+					__IDLE__VA_ARGS; \
+					LOCALMACRO__VA_ARGS__TRY_CATCH_GLOBAL_VARIABLES \
+					LOCALMACRO__VA_ARGS__OBJECT_GLOBAL_VARIABLES \
+					LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES \
 					int WINAPI WinMain
 #			endif /* SETUP_VA_ARGS */
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 #		endif /* IF COMPILER SUPPORTS VA_ARG */
 
 /* *************************** [v] PROTOTYPES [v] *************************** */
-LOCAL extern char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
-LOCAL extern int	__VA_ARGS__GLOBAL_INDEX;
+extern LOCAL char	*__VA_ARGS__GLOBAL_[VA_ARGS_MAX_BYTE_LIMIT];
+extern LOCAL int	__VA_ARGS__GLOBAL_INDEX;
 /* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* **************************** [v] UPPERCASE [v] *************************** */

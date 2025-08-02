@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -253,38 +253,41 @@ LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #		ifdef WinMain
 #			undef WinMain
 #		endif /* main */
-#		ifndef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#			define LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#		endif /* !LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
-#		ifndef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#			define LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#		endif /* !LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
-#		ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#			undef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#		endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#		ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#			define LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
+				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#		else
+#			define LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES
+#		endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#		ifdef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
+				LOCALMACRO__OBJECT_GLOBAL_VARIABLES
+#		else
+#			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES
+#		endif /* LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
 #		define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 			LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];\
 			LOCAL char		__TRY_CATCH_INDEX__ = 0;\
 			LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #		define main \
-			__IDLE__TRY_CATCH;\
-			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			__IDLE__TRY_CATCH; \
+			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
+			LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 			int main
 #		define WinMain \
-			__IDLE__TRY_CATCH;\
-			LOCALMACRO__OBJECT_GLOBAL_VARIABLES\
-			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES\
-			LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES\
+			__IDLE__TRY_CATCH; \
+			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
+			LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
+			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 			int WINAPI WinMain
 #	endif /* SETUP_TRY_CATCH */
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* *************************** [v] PROTOTYPES [v] *************************** */
-LOCAL extern jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
-LOCAL extern char		__TRY_CATCH_INDEX__;
-LOCAL extern int		__TRY_CATCH_VALUE__;
+extern LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
+extern LOCAL char		__TRY_CATCH_INDEX__;
+extern LOCAL int		__TRY_CATCH_VALUE__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
@@ -305,5 +308,4 @@ LOCAL extern int		__TRY_CATCH_VALUE__;
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
-#	endif /* !__cplusplus */
 #endif /* !TRY_CATCH_H */

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/05 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/31 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -184,7 +184,7 @@
 \******************************************************************************/
 
 #ifndef THREAD_H
-#	define THREAD_H 202507 /* VERSION */
+#	define THREAD_H 202508 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -215,30 +215,12 @@ extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
-/* ******************* [v] LOCALMACRO_THREAD_FOR_OS2 [v] ******************** */
-#	ifdef __OS2__
-#		define LOCALMACRO_THREAD_FOR_OS2
+/* ***************** [v] LOCALMACRO_THREAD_FOR_WINDOWS [v] ****************** */
+#	ifdef _WIN32
+#		define LOCALMACRO_THREAD_FOR_WINDOWS
 #		define LOCALMACRO_THREAD_FOUND
-#		ifdef __32BIT__
-#			define LOCALMACRO_THREAD_FOR_OS2_32BIT
-#		else
-#			ifdef _M_386
-#				define LOCALMACRO_THREAD_FOR_OS2_32BIT
-#			endif /* _M_386 */
-#		endif /* __32BIT__ */
-#	else
-#		ifdef __EMX__
-#			define LOCALMACRO_THREAD_FOR_OS2
-#			ifdef __32BIT__
-#				define LOCALMACRO_THREAD_FOR_OS2_32BIT
-#			else
-#				ifdef _M_386
-#					define LOCALMACRO_THREAD_FOR_OS2_32BIT
-#				endif /* _M_386 */
-#			endif /* __32BIT__ */
-#		endif /* __EMX__ */
-#	endif /* __OS2__ */
-/* ******************* [^] LOCALMACRO_THREAD_FOR_OS2 [^] ******************** */
+#	endif /* _WIN32 */
+/* ***************** [^] LOCALMACRO_THREAD_FOR_WINDOWS [^] ****************** */
 
 /* ******************* [v] LOCALMACRO_THREAD_FOR_UNIX [v] ******************* */
 #	ifndef LOCALMACRO_THREAD_FOUND
@@ -279,14 +261,32 @@ extern "C" {
 #	endif /* !LOCALMACRO_THREAD_FOUND */
 /* ******************* [^] LOCALMACRO_THREAD_FOR_UNIX [^] ******************* */
 
-/* ***************** [v] LOCALMACRO_THREAD_FOR_WINDOWS [v] ****************** */
+/* ******************* [v] LOCALMACRO_THREAD_FOR_OS2 [v] ******************** */
 #	ifndef LOCALMACRO_THREAD_FOUND
-#		ifdef _WIN32
-#			define LOCALMACRO_THREAD_FOR_WINDOWS
+#		ifdef __OS2__
+#			define LOCALMACRO_THREAD_FOR_OS2
 #			define LOCALMACRO_THREAD_FOUND
-#		endif /* _WIN32 */
+#			ifdef __32BIT__
+#				define LOCALMACRO_THREAD_FOR_OS2_32BIT
+#			else
+#				ifdef _M_386
+#					define LOCALMACRO_THREAD_FOR_OS2_32BIT
+#				endif /* _M_386 */
+#			endif /* __32BIT__ */
+#		else
+#			ifdef __EMX__
+#				define LOCALMACRO_THREAD_FOR_OS2
+#				ifdef __32BIT__
+#					define LOCALMACRO_THREAD_FOR_OS2_32BIT
+#				else
+#					ifdef _M_386
+#						define LOCALMACRO_THREAD_FOR_OS2_32BIT
+#					endif /* _M_386 */
+#				endif /* __32BIT__ */
+#			endif /* __EMX__ */
+#		endif /* __OS2__ */
 #	endif /* !LOCALMACRO_THREAD_FOUND */
-/* ***************** [^] LOCALMACRO_THREAD_FOR_WINDOWS [^] ****************** */
+/* ******************* [^] LOCALMACRO_THREAD_FOR_OS2 [^] ******************** */
 
 /* ******************** [v] LOCALMACRO_THREAD_HAIKU [v] ********************* */
 #	ifndef LOCALMACRO_THREAD_FOUND
@@ -533,39 +533,45 @@ static INLINE int
 	return (1);
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				DosRequestMutexSem(__MUTEX_LOCK__, SEM_INDEFINITE_WAIT)
-#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 				DosReleaseMutexSem(__MUTEX_UNLOCK__)
 #		endif /* LOCALMACRO_THREAD_FOR_OS2 */
 
 #		ifdef LOCALMACRO_THREAD_FOR_WINDOWS
 /* **************************** [v] INCLUDES [v] **************************** */
-#			include <windows.h> /*
-#			 define INFINITE;
-#			typedef HANDLE;
-#			typedef CRITICAL_SECTION;
-#			typedef LPSECURITY_ATTRIBUTES;
-#			typedef SIZE_T;
-#			typedef LPTHREAD_START_ROUTINE;
-#			typedef DWORD;
-#			typedef LPDWORD;
-#			 HANDLE CreateThread(LPSECURITY_ATTRIBUTES, SIZE_T,
-#			        	LPTHREAD_START_ROUTINE, __drv_aliasesMem, DWORD,
-#			        	LPDWORD);
-#			  DWORD WaitForSingleObject(HANDLE, DWORD);
-#			   BOOL GetExitCodeThread(HANDLE, LPDWORD);
-#			   BOOL CloseHandle(HANDLE);
-#			   void InitializeCriticalSection(LPCRITICAL_SECTION);
-#			   void DeleteCriticalSection(LPCRITICAL_SECTION);
-#			   void EnterCriticalSection(LPCRITICAL_SECTION);
-#			   void LeaveCriticalSection(LPCRITICAL_SECTION);
-#			        */
 #			include <stdlib.h> /*
+#			typedef size_t;
 #			   void *malloc(size_t);
 #			   void free(void *);
 #			        */
+#			include <windef.h> /*
+#			typedef HANDLE;
+#			typedef DWORD;
+#			typedef BOOL;
+#			typedef LPVOID;
+#			typedef LPDWORD;
+#			typedef LPTHREAD_START_ROUTINE;
+#			typedef SIZE_T;
+#			        */
+#			include <minwinbase.h> /*
+#			typedef CRITICAL_SECTION;
+#			typedef LPSECURITY_ATTRIBUTES;
+#			        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
+/* *************************** [v] PROTOTYPES [v] *************************** */
+extern HANDLE	CreateThread(LPSECURITY_ATTRIBUTES, SIZE_T,
+	LPTHREAD_START_ROUTINE, void *, DWORD, LPDWORD);
+extern DWORD	WaitForSingleObject(HANDLE, DWORD);
+extern BOOL		GetExitCodeThread(HANDLE, LPDWORD);
+extern BOOL		CloseHandle(HANDLE);
+extern void		InitializeCriticalSection(LPCRITICAL_SECTION);
+extern void		DeleteCriticalSection(LPCRITICAL_SECTION);
+extern void		EnterCriticalSection(LPCRITICAL_SECTION);
+extern void		LeaveCriticalSection(LPCRITICAL_SECTION);
+/* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* **************************** [v] TYPEDEFS [v] **************************** */
 typedef HANDLE				T_THREAD;
@@ -612,7 +618,7 @@ static INLINE int
 	if (!THREAD)
 		return (-1);
 
-	WaitForSingleObject(THREAD, INFINITE);
+	WaitForSingleObject(THREAD, ((DWORD)-1));
 
 	if (RETURN_VALUE)
 		GetExitCodeThread(THREAD, (LPDWORD)(*RETURN_VALUE));
@@ -659,9 +665,9 @@ static INLINE int
 	return (0);
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				EnterCriticalSection(__MUTEX_LOCK__)
-#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 				LeaveCriticalSection(__MUTEX_UNLOCK__)
 #		endif /* LOCALMACRO_THREAD_FOR_WINDOWS */
 
@@ -874,9 +880,9 @@ static INLINE int
 	return (0);
 }
 
-#				define MUTEX_LOCK(__MUTEX_LOCK__)
+#				define MUTEX_LOCK(__MUTEX_LOCK__) \
 					pthread_mutex_lock(__MUTEX_LOCK__);
-#				define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#				define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 					pthread_mutex_unlock(__MUTEX_UNLOCK__);
 #			endif /* LOCALMACRO_LINUXTHREAD_FOR_UNIX */
 #		endif /* LOCALMACRO_THREAD_FOR_UNIX */
@@ -1231,9 +1237,9 @@ static INLINE int
 	return (0);
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				xSemaphoreTake(__MUTEX_LOCK__, portMAX_DELAY)
-#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 				xSemaphoreGive(__MUTEX_UNLOCK__)
 #		endif /* LOCALMACRO_THREAD_FREERTOS */
 
@@ -1361,9 +1367,9 @@ static INLINE int
 	return (0);
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				k_mutex_lock(__MUTEX_LOCK__, K_FOREVER)
-#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 				k_mutex_unlock(__MUTEX_UNLOCK__)
 #		endif /* LOCALMACRO_THREAD_ZEPHYR */
 
@@ -1464,7 +1470,7 @@ static INLINE int
 	return (semDelete(MUTEX));
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				semTake((__MUTEX_LOCK__), WAIT_FOREVER)
 #			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) semGive((__MUTEX_UNLOCK__))
 #		endif /* LOCALMACRO_THREAD_VXWORKS */
@@ -1573,9 +1579,9 @@ static INLINE int
 	return (0);
 }
 
-#			define MUTEX_LOCK(__MUTEX_LOCK__)
+#			define MUTEX_LOCK(__MUTEX_LOCK__) \
 				Semaphore_pend(__MUTEX_LOCK__, BIOS_WAIT_FOREVER)
-#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
+#			define MUTEX_UNLOCK(__MUTEX_UNLOCK__) \
 				Semaphore_post(__MUTEX_UNLOCK__)
 #		endif /* LOCALMACRO_THREAD_TI_RTOS */
 #	else
