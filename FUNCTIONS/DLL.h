@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/07/31 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -108,6 +108,17 @@
 |*                                                                            *|
 \******************************************************************************/
 
+/*############################################################################*\
+|*                                 SIDE NOTES                                 *|
+|*############################################################################*|
+|*                                                                            *|
+|* FOR OS/2 16-BIT, USE YOUR FUNCTION'S ORDINAL NUMBER TO RETRIEVE THE        *|
+|* FUNCTION POINTER FROM THE DLL.                                             *|
+|*                                                                            *|
+|* REFER TO YOUR COMPILER'S DOCUMENTATION FOR DETAILS ON COMPILING DLLS.      *|
+|*                                                                            *|
+\*############################################################################*/
+
 #ifndef DLL_H
 #	define DLL_H 202507 /* VERSION */
 
@@ -125,58 +136,238 @@
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
+/* **************************** [v] INCLUDES [v] **************************** */
+#	include "../KEYWORDS/INLINE.h" /*
+#	 define INLINE
+#	        */
+#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	 define KNR_STYLE
+#	        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
 extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
+/* ********************* [v] LOCALMACRO_DLL_FOR_OS2 [v] ********************* */
+#	ifdef __OS2__
+#		define LOCALMACRO_DLL_FOR_OS2
+#		define LOCALMACRO_THREAD_FOUND
+#		ifdef __32BIT__
+#			define LOCALMACRO_DLL_FOR_OS2_32BIT
+#		else
+#			ifdef _M_386
+#				define LOCALMACRO_DLL_FOR_OS2_32BIT
+#			endif /* _M_386 */
+#		endif /* __32BIT__ */
+#	else
+#		ifdef __EMX__
+#			define LOCALMACRO_DLL_FOR_OS2
+#			ifdef __32BIT__
+#				define LOCALMACRO_DLL_FOR_OS2_32BIT
+#			else
+#				ifdef _M_386
+#					define LOCALMACRO_DLL_FOR_OS2_32BIT
+#				endif /* _M_386 */
+#			endif /* __32BIT__ */
+#		endif /* __EMX__ */
+#	endif /* __OS2__ */
+/* ********************* [^] LOCALMACRO_DLL_FOR_OS2 [^] ********************* */
+
+/* ******************** [v] LOCALMACRO_DLL_FOR_UNIX [v] ********************* */
+#	ifndef LOCALMACRO_THREAD_FOUND
+#		ifdef __APPLE__
+#			define LOCALMACRO_THREAD_FOUND
+#			define LOCALMACRO_DLL_FOR_UNIX
+#		else
+#			ifdef __linux__
+#				define LOCALMACRO_THREAD_FOUND
+#				define LOCALMACRO_DLL_FOR_UNIX
+#			else
+#				ifdef __gnu_linux__
+#					define LOCALMACRO_THREAD_FOUND
+#					define LOCALMACRO_DLL_FOR_UNIX
+#				else
+#					ifdef __FreeBSD__
+#						define LOCALMACRO_THREAD_FOUND
+#						define LOCALMACRO_DLL_FOR_UNIX
+#					else
+#						ifdef __NetBSD__
+#							define LOCALMACRO_THREAD_FOUND
+#							define LOCALMACRO_DLL_FOR_UNIX
+#						else
+#							ifdef __OpenBSD__
+#								define LOCALMACRO_THREAD_FOUND
+#								define LOCALMACRO_DLL_FOR_UNIX
+#							else
+#								ifdef __DragonFly__
+#									define LOCALMACRO_THREAD_FOUND
+#									define LOCALMACRO_DLL_FOR_UNIX
+#								else
+#									ifdef __sun
+#										define LOCALMACRO_THREAD_FOUND
+#										define LOCALMACRO_DLL_FOR_UNIX
+#									endif /* __sun */
+#								endif /* __DragonFly__ */
+#							endif /* __OpenBSD__ */
+#						endif /* __NetBSD__ */
+#					endif /* __FreeBSD__ */
+#				endif /* __gnu_linux__ */
+#			endif /* __linux__ */
+#		endif /* __APPLE__ */
+#	endif /* !LOCALMACRO_THREAD_FOUND */
+/* ******************** [^] LOCALMACRO_DLL_FOR_UNIX [^] ********************* */
+
+/* ******************* [v] LOCALMACRO_DLL_FOR_WINDOWS [v] ******************* */
+#	ifndef LOCALMACRO_THREAD_FOUND
+#		ifdef _WIN32
+#			define LOCALMACRO_THREAD_FOUND
+#			define LOCALMACRO_DLL_FOR_WINDOWS
+#		endif /* _WIN32 */
+#	endif /* !LOCALMACRO_THREAD_FOUND */
+/* ******************* [^] LOCALMACRO_DLL_FOR_WINDOWS [^] ******************* */
+
+#	ifdef LOCALMACRO_THREAD_FOUND
+#		ifdef LOCALMACRO_DLL_FOR_OS2
+#			ifdef LOCALMACRO_DLL_FOR_OS2_32BIT
 /* **************************** [v] INCLUDES [v] **************************** */
-#	if (\
-		defined(__APPLE__) || /* MACOS / IOS */\
-		defined(__linux__) || /* LINUX */\
-		defined(__gnu_linux__) || /* LINUX (GNU) */\
-		defined(__FreeBSD__) || /* FREE BSD OS */\
-		defined(__NetBSD__) || /* NET BSD OS */\
-		defined(__OpenBSD__) || /* OPEN BSD OS */\
-		defined(__DragonFly__) || /* DRAGONFLY BSD */\
-		defined(__sun) /* SUN STUDIO */\
-	) /* UNIX */
-#		include	<dlfcn.h> /*
-#		 define RTLD_LAZY
-#		   void *dlopen(char *, int);
-#		   void *dlsym(void *, char *);
-#		    int dlclose(void *);
+#		define INCL_DOSMODULEMGR
+#		include <os2.h> /*
+#		typedef HMODULE;
+#		typedef USHORT;
+#		typedef PFN;
+#		 USHORT DosLoadModule(PSZ, USHORT, PSZ, PHMODULE);
+#		 APIRET DosQueryProcAddr(HMODULE, ULONG, PCSZ, PFN *);
+#		 USHORT DosFreeModule(HMODULE);
 #		        */
-#	else /* NOT UNIX */
-#		ifdef _WIN32 /* WINDOWS */
-#			include <windef.h> /*
-#			typedef HINSTANCE;
-#			        */
-#			include <winbase.h> /*
-#			 define LoadLibrary
-#			FARPROC GetProcAddress(HINSTANCE, LPCSTR);
-#			   BOOL FreeLibrary(HMODULE);
-#			        */
-#		endif /* WINDOWS */
-#	endif /* UNIX */
 /* **************************** [^] INCLUDES [^] **************************** */
 
-#	if (\
-		defined(__APPLE__) || /* MACOS / IOS */\
-		defined(__linux__) || /* LINUX */\
-		defined(__gnu_linux__) || /* LINUX (GNU) */\
-		defined(__FreeBSD__) || /* FREE BSD OS */\
-		defined(__NetBSD__) || /* NET BSD OS */\
-		defined(__OpenBSD__) || /* OPEN BSD OS */\
-		defined(__DragonFly__) || /* DRAGONFLY BSD */\
-		defined(__sun) /* SUN STUDIO */\
-	) /* UNIX */
-typedef void		*DLL;
-#			define OPEN_DLL(DLL_FILE) (void *)dlopen(DLL_FILE, RTLD_LAZY)
-#			define READ_DLL(THE_DLL, FUNCTION_NAME) \
-				dlsym(THE_DLL, FUNCTION_NAME)
-#			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) dlclose(DLL_FILE_FOR_CLOSE)
+typedef HMODULE	DLL;
+
+#				ifndef KNR_STYLE /* STANDARD C */
+static DLL
+	OPEN_DLL(char *__DLL_FILE__)
+#				else /* K&R */
+static DLL
+	OPEN_DLL(__DLL_FILE__)
+	char	*__DLL_FILE__;
+#				endif /* !KNR_STYLE */
+{
+	DLL				__TEMP_DLL__;
+	register USHORT	RETURN_CODE;
+
+	RETURN_CODE = DosLoadModule((char *)0, 0, __DLL_FILE__, &__TEMP_DLL__);
+
+	if (RETURN_CODE)
+		return ((DLL)0);
+
+	return (__TEMP_DLL__);
+}
+
+#				ifndef KNR_STYLE /* STANDARD C */
+static PFN
+	READ_DLL(DLL __THE_DLL__, char *__FUNCTION_NAME__)
+#				else /* K&R */
+static PFN
+	READ_DLL(__THE_DLL__, __FUNCTION_NAME__)
+	DLL		__THE_DLL__;
+	char	*__FUNCTION_NAME__;
+#				endif /* !KNR_STYLE */
+{
+	PFN	ADDRESS;
+
+	ADDRESS = (PFN)0;
+	if (DosQueryProcAddr(__THE_DLL__, 0, __FUNCTION_NAME__, &ADDRESS) == 0)
+		return (ADDRESS);
+
+	return ((PFN)0);
+}
+
+#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+					(DosFreeModule(__DLL_FILE_FOR_CLOSE__) == 0)
+#				ifdef __GNUC__
+#					define DYNAMIC __declspec(dllexport)
+#				else /* OLDER OS/2 COMPILERS */
+#					define DYNAMIC _export
+#				endif /* __GNUC__ */
+#			else /* 16BIT */
+/* **************************** [v] INCLUDES [v] **************************** */
+#		define INCL_DOSMODULEMGR
+#		include <os2.h> /*
+#		typedef SEL;
+#		typedef USHORT;
+#		typedef PFN;
+#		 APIRET DosLoadSeg(PCSZ, PSEL);
+#		 APIRET DosGetProcAddr(SEL, USHORT, PFN *);
+#		 APIRET DosFreeSeg(SEL);
+#		        */
+/* **************************** [^] INCLUDES [^] **************************** */
+
+typedef SEL	DLL;
+
+#				ifndef KNR_STYLE /* STANDARD C */
+static DLL
+	OPEN_DLL(char *__DLL_FILE__)
+#				else /* K&R */
+static DLL
+	OPEN_DLL(__DLL_FILE__)
+	char	*__DLL_FILE__;
+#				endif /* !KNR_STYLE */
+{
+	SEL		SEGMENT;
+	USHORT	RETURN_CODE;
+
+	RETURN_CODE = DosLoadSeg(__DLL_FILE__, &SEGMENT);
+
+	if (RETURN_CODE)
+		return ((DLL)0);
+
+	return (SEGMENT);
+}
+
+#				ifndef KNR_STYLE /* STANDARD C */
+static PFN
+	READ_DLL(DLL __THE_DLL__, USHORT __FUNCTION_ORDINAL__)
+#				else /* K&R */
+static PFN
+	READ_DLL(__THE_DLL__, __FUNCTION_ORDINAL__)
+	DLL		__THE_DLL__;
+	USHORT	__FUNCTION_ORDINAL__;
+#				endif /* !KNR_STYLE */
+{
+	PFN	ADDRESS;
+
+	ADDRESS = (PFN)0;
+
+	if (DosGetProcAddr(__THE_DLL__, __FUNCTION_ORDINAL__, &ADDRESS) == 0)
+		return (ADDRESS);
+
+	return ((PFN)0);
+}
+
+#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+					(DosFreeSeg(__DLL_FILE_FOR_CLOSE__) == 0)
+#				define DYNAMIC _export
+#			endif /* LOCALMACRO_DLL_FOR_OS2_32BIT */
+#		endif /* LOCALMACRO_DLL_FOR_OS2 */
+#		ifdef LOCALMACRO_DLL_FOR_UNIX
+/* **************************** [v] INCLUDES [v] **************************** */
+#			include	<dlfcn.h> /*
+#			 define RTLD_LAZY
+#			   void *dlopen(char *, int);
+#			   void *dlsym(void *, char *);
+#			    int dlclose(void *);
+#			        */
+/* **************************** [^] INCLUDES [^] **************************** */
+typedef void	*DLL;
+#			define OPEN_DLL(__DLL_FILE__)
+				(void *)dlopen(__DLL_FILE__, RTLD_LAZY)
+#			define READ_DLL(__THE_DLL__, __FUNCTION_NAME__) \
+				dlsym(__THE_DLL__, __FUNCTION_NAME__)
+#			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+				dlclose(__DLL_FILE_FOR_CLOSE__)
 #			ifdef __GNUC__
 #				define DYNAMIC __attribute__((visibility("default")))
 #			else
@@ -186,13 +377,24 @@ typedef void		*DLL;
 #					define DYNAMIC __declspec(dllexport) __cdecl
 #				endif /* __clang__ */
 #			endif /* __GNUC__ */
-#		ifdef _WIN32 /* WINDOWS */
+#		endif /* LOCALMACRO_DLL_FOR_UNIX */
+#		ifdef LOCALMACRO_DLL_FOR_WINDOWS
+/* **************************** [v] INCLUDES [v] **************************** */
+#			include <windef.h> /*
+#			typedef HINSTANCE;
+#			        */
+#			include <winbase.h> /*
+#			 define LoadLibrary
+#			FARPROC GetProcAddress(HINSTANCE, LPCSTR);
+#			   BOOL FreeLibrary(HMODULE);
+#			        */
+/* **************************** [^] INCLUDES [^] **************************** */
 typedef HINSTANCE	DLL;
-#			define OPEN_DLL(DLL_FILE) LoadLibrary(DLL_FILE)
-#			define READ_DLL(THE_DLL, FUNCTION_NAME) \
-				GetProcAddress(THE_DLL, FUNCTION_NAME)
-#			define CLOSE_DLL(DLL_FILE_FOR_CLOSE) \
-				(int)FreeLibrary(DLL_FILE_FOR_CLOSE)
+#			define OPEN_DLL(__DLL_FILE__) LoadLibrary(__DLL_FILE__)
+#			define READ_DLL(__THE_DLL__, __FUNCTION_NAME__) \
+				GetProcAddress(__THE_DLL__, __FUNCTION_NAME__)
+#			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
+				(int)FreeLibrary(__DLL_FILE_FOR_CLOSE__)
 #			ifdef __GNUC__
 #				define DYNAMIC __attribute__((visibility("default")))
 #			else
@@ -202,14 +404,10 @@ typedef HINSTANCE	DLL;
 #					define DYNAMIC __declspec(dllexport) __stdcall
 #				endif /* __clang__ */
 #			endif /* __GNUC__ */
-#		endif /* _WIN32 */
-#	endif /* UNIX */
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
+#		endif /* LOCALMACRO_DLL_FOR_WINDOWS */
+#	else
+#		error "OPERATING SYSTEM OR COMPILER DOESN'T SUPPORT DLL(S)!!!"
+#	endif /* LOCALMACRO_THREAD_FOUND */
 
 /* *************************** [v] LOWER CASE [v] *************************** */
 typedef DLL	dll;
@@ -217,6 +415,12 @@ typedef DLL	dll;
 #	define close_dll CLOSE_DLL
 #	define dynamic DYNAMIC
 /* *************************** [^] LOWER CASE [^] *************************** */
+
+/* *************************** [v] C++ (POP) [v] **************************** */
+#	ifdef __cplusplus /* C++ */
+}
+#	endif /* __cplusplus */
+/* *************************** [^] C++ (POP) [^] **************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

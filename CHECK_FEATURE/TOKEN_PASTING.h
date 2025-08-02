@@ -8,30 +8,57 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-/*
+/*############################################################################*\
+|*#                                 CONTENTS                                 #*|
+|*############################################################################*|
+|*............................................................................*|
+|*             NAME             :   TYPE    :           DESCRIPTION           *|
+|*..............................:...........:.................................*|
+|* IS__TOKEN_PASTING__SUPPORTED : #define   : DEFINED IF TOKEN PASTING IS     *|
+|*                              :           : SUPPORTED BY YOUR COMPILER      *|
+|*..............................:...........:.................................*|
+\******************************************************************************/
 
-Check if token-pasting (##) is supported
+/*############################################################################*\
+|*#                              WTF THAT DOES?                              #*|
+|*############################################################################*|
+|*                                                                            *|
+|* THE MACRO "IS__TOKEN_PASTING__SUPPORTED" IS DEFINED IF THE COMPILER        *|
+|* SUPPORTS THE "TOKEN PASTING" FEATURE.                                      *|
+|*                                                                            *|
+\******************************************************************************/
 
-IS__TOKEN_PASTING__SUPPORTED
-
-*/
-
+/*############################################################################*\
+|*#                          WHAT IS THIS FEATURE?                           #*|
+|*############################################################################*|
+|*                                                                            *|
+|* TOKEN PASTING REFERS TO THE "##" OPERATOR IN MACROS, USED TO MERGE TWO     *|
+|* TOKENS INTO ONE.                                                           *|
+|*                                                                            *|
+|* EXAMPLE:                                                                   *|
+|*                                                                            *|
+|*   #define AB(A, B) A##B                                                    *|
+|*                                                                            *|
+|*   int AB(ma, in)(void) // EXPANDS TO: int main(void)                       *|
+|*   { ... }                                                                  *|
+|*                                                                            *|
+\******************************************************************************/
 
 #ifndef CHECK_FEATURE__TOKEN_PASTING_H
-#	define CHECK_FEATURE__TOKEN_PASTING_H
+#	define CHECK_FEATURE__TOKEN_PASTING_H 202508 /* VERSION */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __STDC_VERSION__
-#			if (__STDC_VERSION__ >= 199901L)
+#			if (__STDC_VERSION__ >= 199012L) /* C89/ANSI C introduced ## */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __STDC_VERSION__ >= 199901L */
+#			endif /* __STDC_VERSION__ >= 199012L */
 #		endif /* __STDC_VERSION__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __cplusplus
+#		ifdef __cplusplus /* C++ */
 #			if (__cplusplus >= 199711L) /* C++98 OR LATER */
 #				define IS__TOKEN_PASTING__SUPPORTED
 #			endif /* __cplusplus >= 199711L */
@@ -39,103 +66,146 @@ IS__TOKEN_PASTING__SUPPORTED
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __GNUC__
-#			define IS__TOKEN_PASTING__SUPPORTED
-#			define IS__TOKEN_PASTING__SUPPORTED
+#			if (__GNUC__ >= 2) /* GCC 2.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __GNUC__ >= 2 */
 #		endif /* __GNUC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef _MSC_VER /* MICROSOFT C COMPILER */
-#			define IS__TOKEN_PASTING__SUPPORTED
-#			define IS__TOKEN_PASTING__SUPPORTED
+#			if (_MSC_VER >= 800) /* AT VERSION VISUAL C++ 1.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* _MSC_VER >= 800 */
 #		endif /* _MSC_VER */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __clang__
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __clang__ /* LLVM / CLANG */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __clang__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __ICC
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __ICC /* INTEL C++ COMPILER */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __ICC */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __ECC
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __ECC /* INTEL C++ COMPILER */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __ECC */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __ICL
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __ICL /* INTEL C++ COMPILER */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __ICL */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __INTEL_COMPILER
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __INTEL_COMPILER /* INTEL C++ COMPILER */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __INTEL_COMPILER */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __TINYC__ /* TCC - TINY C COMPILTER */
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __TINYC__ /* TCC - TINY C COMPILER */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __TINYC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __WATCOMC__ /* OPEN WATCOM */
-#			if (__WATCOMC__ >= 1100) /* C11+ */
+#			if (__WATCOMC__ >= 900) /* VERSION 9.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __WATCOMC__ >= 1100 */
+#			endif /* __WATCOMC__ >= 900 */
 #		endif /* __WATCOMC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __CODEGEARC__ /* BORLAND C++ */
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __CODEGEARC__ /* BORLAND C++ (CODEGEAR) */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __CODEGEARC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __BORLANDC__ /* BORLAND C++ */
-#			if (__BORLANDC__ >= 0X520) /* (5.02 --- 1.0)+ */
+#			if (__BORLANDC__ >= 0X400) /* VERSION 3.0+ (0X400+) */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __BORLANDC__ >= 0X520 */
+#			endif /* __BORLANDC__ >= 0X400 */
 #		endif /* __BORLANDC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __LCC__
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __LCC__ /* LCC */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __LCC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef AZTEC_C /* AZTEC C COMPILER */
-#			if (__VERSION >= 0X510)
+#			if (__VERSION >= 0X510) /* VERSION 5.10+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
 #			endif /* __VERSION >= 0X510 */
 #		endif /* AZTEC_C */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __DECC /* COMPAQ C/C++ */
-#			if (__DECC_VER >= 500000000) /* VERSION 5.0+ */
+#		ifdef __AZTEC_C__ /* AZTEC C COMPILER */
+#			if (__VERSION >= 0X510) /* VERSION 5.10+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __DECC_VER >= 500000000 */
+#			endif /* __VERSION >= 0X510 */
+#		endif /* __AZTEC_C__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __DECC /* COMPAQ C/C++ */
+#			if (__DECC_VER >= 50090001) /* VERSION 5.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __DECC_VER >= 50090001 */
 #		endif /* __DECC */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __DECCXX /* COMPAQ C/C++ */
 #			define IS__TOKEN_PASTING__SUPPORTED
-#			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* __DECCXX */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef _ACC_ /* PROBABLY? */
-#			define IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _ACC_ /* ACC */
 #			define IS__TOKEN_PASTING__SUPPORTED
 #		endif /* _ACC_ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __ACK__ /* AMSTERDAM COMPILER KIT */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __ACK__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __COMPCERT__ /* COMPCERT */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __COMPCERT__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __COVERITY__ /* COVERITY C/C++ STATIC ANALYZER */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __COVERITY__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _DICE /* DICE C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* _DICE */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SYSC__ /* DIGNUS SYSTEMS/C++ */
+#			if (__SYSC_VER__ >= 15000) /* VERSION 1.50+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SYSC_VER__ >= 15000 */
+#		endif /* __SYSC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __convexc__ /* CONVEX C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __convexc__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __DCC__ /* DIAB C/C++ */
+#			if (__VERSION_NUMBER__ >= 4000) /* VERSION 4.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __VERSION_NUMBER__ >= 4000 */
+#		endif /* __DCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __HP_cc /* HP ANSI C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __HP_cc */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __CMB__ /* ALTIUM MICROBLAZE C */
@@ -153,57 +223,51 @@ IS__TOKEN_PASTING__SUPPORTED
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __CC_ARM /* ARM C COMPILER */
-#			if (__ARMCC_VERSION >= 200000)
+#			if (__ARMCC_VERSION >= 200000) /* VERSION 2.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __ARMCC_VERSION */
+#			endif /* __ARMCC_VERSION >= 200000 */
 #		endif /* __CC_ARM */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __COMO__ /* COMEAU C++ */
-#			if (__COMO_VERSION__ >= 430) /* VERSION 4.3+ */
+#			if (__COMO_VERSION__ >= 200) /* VERSION 2.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __COMO_VERSION__ >= 430 */
+#			endif /* __COMO_VERSION__ >= 200 */
 #		endif /* __COMO__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef _CRAYC /* CRAY C COMPILER */
-#			if (_RELEASE >= 8) /* VERSION 8+ */
+#			if (_RELEASE >= 6) /* VERSION 6.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* _RELEASE >= 8 */
+#			endif /* _RELEASE >= 6 */
 #		endif /* _CRAYC */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __DMC__ /* DIGITAL MARS */
-#			if (__DMC__ >= 850)
+#			if (__DMC__ >= 0X700) /* VERSION 7.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __DMC__ >= 850 */
+#			endif /* __DMC__ >= 0X700 */
 #		endif /* __DMC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __DJGPP__
+#		ifdef __DJGPP__ /* MS-DOS GCC COMPILER */
 #			if (__DJGPP__ >= 2) /* VERSION 2+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
 #			endif /* __DJGPP__ >= 2 */
 #		endif /* __DJGPP__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __EDG__
-#			if (__EDG_VERSION__ >= 300) /* VERSION 3.0+ */
+#		ifdef __EDG__ /* EDG C++ FRONTEND */
+#			if (__EDG_VERSION__ >= 200) /* VERSION 2.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __EDG_VERSION__ >= 300 */
+#			endif /* __EDG_VERSION__ >= 200 */
 #		endif /* __EDG__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __PATHCC__ /* EKOPATH */
-#			if (\
-				__PATHCC__ > 4 || \
-				(\
-					__PATHCC__ == 4 && \
-					__PATHCC_MINOR__ >= 0\
-				)\
-			) /* VERSION V4.0+ */
+#			if (__PATHCC__ >= 2) /* VERSION 2.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* VERSION 4.0+ */
+#			endif /* __PATHCC__ >= 2 */
 #		endif /* __PATHCC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
@@ -243,84 +307,310 @@ IS__TOKEN_PASTING__SUPPORTED
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __xlC__ /* IBM XL C/C++ (LEGACY VERSIONS) */
-#			if (__IBMC__ >= 0X0D0000) /* VERSION 13.00+ */
+#			if (__IBMC__ >= 0X0600) /* VERSION 6.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __IBMC__ >= 0X0D0000 */
+#			endif /* __IBMC__ >= 0X0600 */
 #		endif /* __xlC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __IBMC__ /* IBM Z/OS XL C */
-#			if (__IBMC__ >= 1300) /* VERSION 13+ */
+#			if (__IBMC__ >= 0X0600) /* VERSION 6.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			else
-#				if (__COMPILER_VER__ >= 0X41300000) /* VERSION 13+: N=4/V=13 */
-#					define IS__TOKEN_PASTING__SUPPORTED
-#				endif /* __COMPILER_VER__ >= 0X41300000 */
-#			endif /* __IBMC__ >= 1300 */
+#			endif /* __IBMC__ >= 0X0600 */
 #		endif /* __IBMC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __IBMCPP__ /* IBM Z/OS XL C++ */
-#			if (__IBMCPP__ >= 1300) /* VERSION 13+ */
+#			if (__IBMCPP__ >= 0X0600) /* VERSION 6.0+ */
 #				define IS__TOKEN_PASTING__SUPPORTED
-#			else
-#				if (__COMPILER_VER__ >= 0X41300000) /* VERSION 13+: N=4/V=13 */
-#					define IS__TOKEN_PASTING__SUPPORTED
-#				endif /* __COMPILER_VER__ >= 0X41300000 */
-#			endif /* __IBMCPP__ >= 1300 */
+#			endif /* __IBMCPP__ >= 0X0600 */
 #		endif /* __IBMCPP__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
-
-// #	ifndef IS__TOKEN_PASTING__SUPPORTED
-// #		ifdef  /*  */
-// #			if ()
-// #				define IS__TOKEN_PASTING__SUPPORTED
-// #			endif /*  */
-// #		endif /*  */
-// #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
-
-/*
-
-TODO: (READ THEIR DOCUMENTATIONS)
-
-ImageCraft C (__IMAGECRAFT__)
-KAI C++ (__KCC, __KCC_VERSION)
-KEIL CARM (__CA__ or __KEIL__)
-KEIL C166 (__C166__)
-KEIL C51 (__C51__ or __CX51__)
-LLVM (__llvm__)
-MetaWare High C/C++ (__HIGHC__)
-Metrowerks CodeWarrior (__MWERKS__ or __CWCC__)
-Microtec C/C++ (_MRI)
-Microway NDP C (__NDPC__ or __NDPX__)
-MinGW and MinGW-w64 (__MINGW32__, __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION, __MINGW64__, __MINGW64_MAJOR_VERSION, __MINGW64_MINOR_VERSION)
-MIPSpro (__sgi or sgi)
-Miracle C (MIRACLE)
-MPW C++ (__MRC__ or MPW_C or MPW_CPLUS)
-Norcroft C (__CC_NORCROFT, __ARMCC_VERSION)
-NWCC (__NWCC__)
-Open64 (__OPEN64__ or __OPENCC__)
-Oracle Pro*C Precompiler (ORA_PROC)
-Oracle Solaris Studio (__SUNPRO_C)
-Pacific C (__PACIFIC__)
-Palm C/C++ (_PACC_VER)
-Pelles C (__POCC__)
-Portland Group C/C++ (__PGI, __PGIC__)
-Renesas C/C++ (__RENESAS__ or __HITACHI__, __RENESAS_VERSION__)
-SAS/C (SASC or __SASC or __SASC__, __VERSION__, __REVISION__)
-SCO OpenServer (_SCO_DS)
-Small Device C Compiler (SDCC)
-SN Compiler (__SNC__)
-Stratus VOS C (__VOSC__)
-Symantec C++ (__SC__)
-TenDRA C/C++ (__TenDRA__)
-Texas Instruments C/C++ Compiler (__TI_COMPILER_VERSION__ or _TMS320C6X, __TI_COMPILER_VERSION__)
-THINK C (THINKC3, THINKC4)
-Turbo C/C++ (__TURBOC__)
-Ultimate C/C++ (_UCC, _MAJOR_REV, _MINOR_REV)
-USL C (__USLC__, __SCO_VERSION__)
-VBCC (__VBCC__)
-Zortech C++ (__ZTC__)
-*/
-
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __IMAGECRAFT__ /* IMAGECRAFT C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __IMAGECRAFT__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __KCC__ /* KAI C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __KCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __CA__ /* KEIL CARM */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __CA__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __KEIL__ /* KEIL CARM */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __KEIL__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __C166__ /* KEIL C166 */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __C166__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __C51__ /* KEIL C51 */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __C51__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __CX51__ /* KEIL C51 */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __CX51__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __llvm__ /* LLVM / CLANG */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __llvm__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __HIGHC__ /* METAWARE HEIGH/C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __HIGHC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __MWERKS__ /* METROWERKS CODEWARRIOR */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __MWERKS__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _MRI /* MICROTEC MRI */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* _MRI */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __NDPC__ /* MICROWAY NDP */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __NDPC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __NDPX__ /* MICROWAY NDP */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __NDPX__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __MINGW32__ /* MINGW-32 */
+#			ifdef __MINGW32_MAJOR_VERSION
+#				if (__MINGW32_MAJOR_VERSION >= 1)
+#					define IS__TOKEN_PASTING__SUPPORTED
+#				endif /* __MINGW32_MAJOR_VERSION >= 1 */
+#			endif /* __MINGW32_MAJOR_VERSION */
+#		endif /* __MINGW32__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __MINGW64__ /* MINGW-W64 */
+#			ifdef __MINGW64_VERSION_MAJOR
+#				if (__MINGW64_VERSION_MAJOR >= 1)
+#					define IS__TOKEN_PASTING__SUPPORTED
+#				endif /* __MINGW64_VERSION_MAJOR >= 1 */
+#			endif /* __MINGW64_VERSION_MAJOR */
+#		endif /* __MINGW64__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __sgi /* MIPSPRO */
+#			if (_COMPILER_VERSION >= 700) /* VERSION 7.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* _COMPILER_VERSION >= 700 */
+#		endif /* __sgi */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef sgi /* MIPSPRO */
+#			if (_COMPILER_VERSION >= 700) /* VERSION 7.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* _COMPILER_VERSION >= 700 */
+#		endif /* sgi */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __MRC__ /* MPW C++ */
+#			if (__MRC__ >= 0X500) /* VERSION 5.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __MRC__ >= 0X500 */
+#		endif /* __MRC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef MPW_C /* MPW C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* MPW_C */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef MPW_CPLUS /* MPW C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* MPW_CPLUS */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __CC_NORCROFT /* NORCROFT C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __CC_NORCROFT */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __NWCC__ /* NWCC */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __NWCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __OPEN64__ /* OPEN64 */
+#			if (__OPENCC__ >= 4) /* VERSION 4.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __OPENCC__ >= 4 */
+#		endif /* __OPEN64__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __OPENCC__ /* OPEN64 */
+#			if (__OPENCC__ >= 4) /* VERSION 4.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __OPENCC__ >= 4 */
+#		endif /* __OPENCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef ORA_PROC /* ORACLE PRO*C PRECOMPILER */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* ORA_PROC */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SUNPRO_C /* ORACLE SOLARIS STUDIO */
+#			if (__SUNPRO_C >= 0X500) /* VERSION 5.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SUNPRO_C >= 0X500 */
+#		endif /* __SUNPRO_C */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _PACC_VER /* PALM C/C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* _PACC_VER */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __POCC__ /* PELLES C */
+#			if (__POCC__ >= 300) /* VERSION 3.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __POCC__ >= 300 */
+#		endif /* __POCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __PGI /* PORTLAND GROUP C/C++ */
+#			if (__PGIC__ >= 7) /* VERSION 7.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __PGIC__ >= 7 */
+#		endif /* __PGI */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __PGIC__ /* PORTLAND GROUP C/C++ */
+#			if (__PGIC__ >= 7) /* VERSION 7.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __PGIC__ >= 7 */
+#		endif /* __PGIC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __RENESAS__ /* RENESAS C/C++ */
+#			if (__RENESAS_VERSION__ >= 0X0800) /* VERSION 8.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __RENESAS_VERSION__ >= 0X0800 */
+#		endif /* __RENESAS__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __HITACHI__ /* RENESAS C/C++ (HITACHI) */
+#			if (__HITACHI_VERSION__ >= 0X0800) /* VERSION 8.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __HITACHI_VERSION__ >= 0X0800 */
+#		endif /* __HITACHI__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef SASC /* SAS/C */
+#			if (__SASC__ >= 650) /* VERSION 6.50+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SASC__ >= 650 */
+#		endif /* SASC */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SASC /* SAS/C */
+#			if (__SASC__ >= 650) /* VERSION 6.50+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SASC__ >= 650 */
+#		endif /* __SASC */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SASC__ /* SAS/C */
+#			if (__SASC__ >= 650) /* VERSION 6.50+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SASC__ >= 650 */
+#		endif /* __SASC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _SCO_DS /* SCO OPENSERVER */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* _SCO_DS */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef SDCC /* SMALL DEVICE C COMPILER */
+#			if (SDCC >= 256) /* VERSION 2.5.6+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* SDCC >= 256 */
+#		endif /* SDCC */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SNC__ /* SN COMPILER */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __SNC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __VOSC__ /* STRATUS VOS C */
+#			if (__VOSC__ == 1) /* ONLY ANSI C MODE (1) */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __VOSC__ == 1 */
+#		endif /* __VOSC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __SC__ /* SYMANTEC C++ */
+#			if (__SC__ >= 0X700) /* VERSION 7.0+*/
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SC__ >= 0X700 */
+#		endif /* __SC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __TenDRA__ /* TENDRA C/C++ */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __TenDRA__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __TI_COMPILER_VERSION__ /* TEXAS INSTRUMENTS C/C++ COMPILER */
+#			if (__TI_COMPILER_VERSION__ >= 4009001) /* VERSION 4.9.1+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __TI_COMPILER_VERSION__ >= 4009001 */
+#		endif /* __TI_COMPILER_VERSION__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _TMS320C6X /* TEXAS INSTRUMENTS C/C++ COMPILER */
+#			if (__TI_COMPILER_VERSION__ >= 4009001) /* VERSION 4.9.1+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __TI_COMPILER_VERSION__ >= 4009001 */
+#		endif /* _TMS320C6X */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef _UCC /* ULTIMATE C/C++ */
+#			if (_MAJOR_REV >= 2) /* VERSION 2.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* _MAJOR_REV >= 2 */
+#		endif /* _UCC */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __USLC__ /* USL C */
+#			if (__SCO_VERSION__ >= 302199801) /* VERSION 3.2+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __SCO_VERSION__ >= 302199801 */
+#		endif /* __USLC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __VBCC__ /* VBCC */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __VBCC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	ifndef IS__TOKEN_PASTING__SUPPORTED
+#		ifdef __ZTC__ /* ZORTECH C++ */
+#			if (__ZTC__ >= 0X300) /* VERSION 3.0+ */
+#				define IS__TOKEN_PASTING__SUPPORTED
+#			endif /* __ZTC__ >= 0X300 */
+#		endif /* __ZTC__ */
+#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #endif /* !CHECK_FEATURE__TOKEN_PASTING_H */

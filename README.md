@@ -188,7 +188,132 @@ int main(void)
 ----
 </details>
 
+# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm2.gif) ASM
+
+<details>
+
+<summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif">
+	<b>PUSH & POP</b> - Add the value to memory stack
+</summary>
+
+**[ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**
+
+| ⚠️ **WARNING**                                                                                                                                                                   |
+|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!<br/>MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK** |
+
+| **NAME**       | **TYPE**      | **DESCRIPTION**                 |
+|----------------|---------------|---------------------------------|
+| `PUSH`, `push` | `#define ()`  | Moves a value to stack memory.  |
+| `POP`, `pop`   | `#define ()`  | Gets a value from stack memory. |
+
+## What Does It Do
+
+With these functions, you're able to move and retrieve values from the memory stack.
+
+## How To Use
+
+Let's write a simple and probably the world's fastest swap example:
+
+```c
+register int	a = 42;
+register int	b = 11;
+
+PUSH(a); // > Added 42 to CPU stack
+a = b;   // |
+POP(b);  // < Removed 42 from CPU stack
+
+// b is now 42
+// a is now 11
+```
+
+----
+</details>
+
 # ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/Attributes.png) Attributes
+
+<details>
+
+<summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif">
+	<b>FAR</b> - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this.
+</summary>
+
+**[ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**
+
+| **NAME**              | **TYPE**   | **DESCRIPTION**                                                               |
+|-----------------------|------------|-------------------------------------------------------------------------------|
+| `REGPARM`, `regparm`  | `#define`  | Marks a memory segment or pointer as far, allowing access beyond 64KB limits. |
+
+## How to Use
+
+`FAR` defines the memory access type depending on the compiler and platform.
+
+* On **16-bit systems**, it expands to a far pointer keyword (e.g., `far`, `_far`).
+* On **modern systems**, it's often empty or unused.
+
+## Examples
+
+**Example - Variables**: Creates an integer variable that uses a far memory pointer.
+```c
+FAR int far_var;
+far_var = 42;
+```
+
+**Example - Pointers**: A string pointer stored in far memory space.
+```c
+FAR char *far_ptr;
+far_ptr = "Hello, world!";
+```
+
+**Example - Structs**: A struct stored in far memory.
+```c
+struct FAR far_struct
+{
+	int id;
+	char name[20];
+};
+```
+
+**Example - Function Pointers**: A function pointer in far memory.
+```c
+FAR void (*far_function)(void);
+```
+
+**Pro-Tip**:
+* Check your compiler documentation for memory models and pointer types.
+* To support very old compilers, this file avoids using `#if`.
+* On **modern systems** (32/64-bit), far pointers are obsolete and mostly ignored.
+* Far pointers are slower (due to segment switching).
+* Use `FAR` only if you're planning to compile your code on 16-bit real mode environments.
+
+## What It Does
+
+`FAR` is a **memory qualifier** used to access memory locations beyond the current segment in **16-bit architectures**.
+
+In 16-bit compilers (MS-DOS, Turbo C, Watcom, etc.), pointers are:
+* **Near**: within a single segment
+* **Far**: across segments
+
+**How?** Memory segmentation in 16-bit systems uses 64KB segments:
+* **Near pointer** -> 16-bit offset
+* **Far pointer** -> 32-bit (segment:offset)
+
+**Example**:
+```c
+int near_ptr_var; // accesses memory in the current segment.
+int FAR far_ptr_var; // accesses memory across segments (full 1MB space).
+```
+
+**Function Pointers**:
+```c
+void (*near_func)(void); // can call functions within the same segment.
+FAR void (*far_func)(void); // can call functions in different segments.
+```
+
+----
+</details>
 
 <details>
 
@@ -341,240 +466,67 @@ extern void REGPARM(2) FUNCT(int A, int B); // Function prototype
 ----
 </details>
 
+# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/CHECK_FEATURE.gif) Check Feature
+
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif">
-	<b>FAR</b> - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this.
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/COMMA_OPERATOR.gif">
+	<b>COMMA OPERATOR</b> - Defines a macro if comma operator is supported on your compiler
 </summary>
 
-**[ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**
+**[CHECK_FEATURE/COMMA_OPERATOR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.h)**
 
-| **NAME**              | **TYPE**   | **DESCRIPTION**                                                               |
-|-----------------------|------------|-------------------------------------------------------------------------------|
-| `REGPARM`, `regparm`  | `#define`  | Marks a memory segment or pointer as far, allowing access beyond 64KB limits. |
+| **Name**                        | **Type**     | **Description**                                      |
+|---------------------------------|--------------|------------------------------------------------------|
+| `IS__COMMA_OPERATOR__SUPPORTED` | `#define`    | Defines if comma operator supported by your compiler |
 
-## How to Use
+## What Does This Header Do
 
-`FAR` defines the memory access type depending on the compiler and platform.
+Defines `IS__COMMA_OPERATOR__SUPPORTED` if the compiler supports the comma operator.
 
-* On **16-bit systems**, it expands to a far pointer keyword (e.g., `far`, `_far`).
-* On **modern systems**, it's often empty or unused.
+## What Is The "Comma Operator"
 
-## Examples
-
-**Example - Variables**: Creates an integer variable that uses a far memory pointer.
-```c
-FAR int far_var;
-far_var = 42;
-```
-
-**Example - Pointers**: A string pointer stored in far memory space.
-```c
-FAR char *far_ptr;
-far_ptr = "Hello, world!";
-```
-
-**Example - Structs**: A struct stored in far memory.
-```c
-struct FAR far_struct
-{
-	int id;
-	char name[20];
-};
-```
-
-**Example - Function Pointers**: A function pointer in far memory.
-```c
-FAR void (*far_function)(void);
-```
-
-**Pro-Tip**:
-* Check your compiler documentation for memory models and pointer types.
-* To support very old compilers, this file avoids using `#if`.
-* On **modern systems** (32/64-bit), far pointers are obsolete and mostly ignored.
-* Far pointers are slower (due to segment switching).
-* Use `FAR` only if you're planning to compile your code on 16-bit real mode environments.
-
-## What It Does
-
-`FAR` is a **memory qualifier** used to access memory locations beyond the current segment in **16-bit architectures**.
-
-In 16-bit compilers (MS-DOS, Turbo C, Watcom, etc.), pointers are:
-* **Near**: within a single segment
-* **Far**: across segments
-
-**How?** Memory segmentation in 16-bit systems uses 64KB segments:
-* **Near pointer** -> 16-bit offset
-* **Far pointer** -> 32-bit (segment:offset)
+The comma operator refers to the `(,)` operator in macros or expressions, used to evaluate multiple expressions in sequence and return the last.
 
 **Example**:
 ```c
-int near_ptr_var; // accesses memory in the current segment.
-int FAR far_ptr_var; // accesses memory across segments (full 1MB space).
-```
-
-**Function Pointers**:
-```c
-void (*near_func)(void); // can call functions within the same segment.
-FAR void (*far_func)(void); // can call functions in different segments.
+int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 66
 ```
 
 ----
 </details>
 
-# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/asm2.gif) ASM
-
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif">
-	<b>PUSH & POP</b> - Add the value to memory stack
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/TOKEN_PASTING.gif">
+	<b>TOKEN PASTNG</b> - Defines a macro if comma operator is supported on your compiler
 </summary>
 
-**[ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**
+**[CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**
 
-| ⚠️ **WARNING**                                                                                                                                                                   |
-|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!<br/>MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK** |
+| **Name**                       | **Type**     | **Description**                                     |
+|--------------------------------|--------------|-----------------------------------------------------|
+| `IS__TOKEN_PASTING__SUPPORTED` | `#define`    | Defines if token pasting supported by your compiler |
 
-| **NAME**       | **TYPE**      | **DESCRIPTION**                 |
-|----------------|---------------|---------------------------------|
-| `PUSH`, `push` | `#define ()`  | Moves a value to stack memory.  |
-| `POP`, `pop`   | `#define ()`  | Gets a value from stack memory. |
+## What Does This Header Do
 
-## What Does It Do
+Defines `IS__TOKEN_PASTING__SUPPORTED` if the compiler supports the token pasting (`##`) feature.
 
-With these functions, you're able to move and retrieve values from the memory stack.
+## What Is The "Token Pasting"
 
-## How To Use
+Token pasting refers to the `##` operator in macros, used to merge two tokens into one during preprocessing.
 
-Let's write a simple and probably the world's fastest swap example:
-
+**Example**:
 ```c
-register int	a = 42;
-register int	b = 11;
+#define AB(A, B) A##B
 
-PUSH(a); // > Added 42 to CPU stack
-a = b;   // |
-POP(b);  // < Removed 42 from CPU stack
-
-// b is now 42
-// a is now 11
-```
-
-----
-</details>
-
-# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/plaltform_corssing.gif) Platform Crossing
-
-<details>
-
-<summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif">
-	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
-</summary>
-
-**[PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**
-
-| Name                   | Type        | Description                                            |
-| ---------------------- | ----------- | ------------------------------------------------------ |
-| `va_list`, `VA_LIST`   | `typedef`   | A type for creating your argument list                 |
-| `va_add`, `VA_ADD`     | `#define()` | Add a variable to your `va_list` in your function      |
-| `va_arg`, `VA_ARG`     | `#define()` | Get a variable from your `va_list` in your function    |
-| `va_copy`, `VA_COPY`   | `#define()` | Copy your `va_list` address                            |
-| `va_push`, `VA_PUSH`   | `#define`   | Open the argument list to send arguments               |
-| `va_pop`, `VA_POP`     | `#define`   | Close the argument list after sending arguments        |
-| `va_start`, `VA_START` | `#define()` | Get the address pointer of your argument list          |
-| `va_args`, `VA_ARGS`   | `#define`   | Tell the compiler the function accepts varargs (`...`) |
-| `va_end`, `VA_END`     | `#define()` | End a `va_list` pointer                                |
-
-## Setup
-
-If you're handling the `main` function yourself via `#define main ...`, setup is optional.
-
-Before using this library, define the macro `SETUP_VA_ARGS` once in a single `.c` file (e.g., `main.c` or your entry point):
-
-```c
-// main.c
-#define SETUP_VA_ARGS
-#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"
-
-int main(void)
+int AB(ma, in)(void) // Expands to: int main(void)
 {
 	. . .
 }
 ```
-
-In all other files:
-
-```c
-// static_link.c
-#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h" // DO NOT define SETUP_VA_ARGS here
-```
-
-## How To Use
-
-```c
-void test(int, va_args); // Prototype
-
-int main(void)
-{
-	test(42,
-		va_push
-			va_add(double, 42.0)
-			va_add(char *, "Hello world")
-			va_add(int, 0X44800000) // Float: 1024.0
-		va_pop
-	);
-	return 0;
-}
-
-extern int	printf(const char *, ...); // Prototype
-
-void test(int start, va_args)
-{
-	va_list x;
-	va_list y;
-
-	va_start(x, start);
-	va_copy(y, x);
-
-	printf("%d\nx:%f\n", start, va_arg(x, double));
-	va_end(x);
-
-	printf("y:%f\n", va_arg(y, double));
-	printf("y:%s\n", va_arg(y, char *));
-	printf("y:%f\n", va_arg(y, float)); // Yes, this works
-
-	va_end(y);
-}
-```
-
-## What Does This Do?
-
-This library allows use of `va_args`-style variable argument functions on **pre-C89** compilers.
-
-It mimics `<stdarg.h>` but requires a little extra setup.
-
-**Required Macros:**
-+ Use `VA_PUSH` and `VA_POP` to wrap arguments.
-+ Use `va_add(type, value)` to add arguments.
-+ Replace `...` with `va_args` in function signatures.
-
-**Examples**:
-
-Using the function:
-```c
-printf("%d %d", va_push va_add(int, 42) va_add(char, 'a') va_pop);
-```
-
-Creating the function:
-```c
-void printf(const char *, va_args);
-```
-
-**Side Note:** On **64-bit architectures**, retrieving 32-, 16-, or 8-bit values using this mechanism may result in an **"Illegal instruction"** error, depending on how the architecture and calling convention handle type promotion and memory. This behavior is __not a flaw__ in this implementation, but a known limitation that's intentionally left unsupported to maintain consistency and stability.
 
 ----
 </details>
@@ -596,7 +548,7 @@ void printf(const char *, va_args);
 | `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128-bit   |
 | `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit               |
 | `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit               |
-| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system supports 31-bit         |
+| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system also supports 31-bit    |
 | `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit               |
 | `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit                |
 | `__SYSTEM_BIT__`     | `#define` | Macro indicating the system bit-width.        |
@@ -708,6 +660,10 @@ But this library just handles cross-platform keywords for that.
 Why compile the whole `printf` unction into every `.exe` file? Just strue `printf` in a DLL file and connect all EXEs to it.
 
 Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
+
+## Side Notes
+* For OS/2 16-BIT, use your function's ordinal number to retrieve the function pointer from the dll.
+* Refer to your compiler's documentation for details on compiling dlls.
 
 ----
 </details>
@@ -826,7 +782,7 @@ Yes, you **must** free the `"data"` field of the structure when you're done.
 	<b>THREAD</b> - Use and manage multithreading in your application across platforms.
 </summary>
 
-**[FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/THREAD.h)**
+**[FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/THREAD.h)**
 
 | `THREAD_CREATE`, `thread_create` | (\*F)()   | Create a thread by providing a function                  |
 |----------------------------------|-----------|----------------------------------------------------------|
@@ -1150,6 +1106,56 @@ This was just an example. You’re free to write whatever you want inside the fu
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/LOCAL.gif">
+	<b>LOCAL</b> - Ensure each thread has its own independent copy of a "global" or "static" variable it used on.
+</summary>
+
+**[KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**
+
+| **NAME**         | **TYPE**   | **DESCRIPTION**                                     |
+|------------------|------------|-----------------------------------------------------|
+| `LOCAL`, `local` | `#define`  | Make a variable thread-local (separate per thread). |
+
+## How To Use
+
+**For Global Variables**:
+```c
+local int g_variable = 0;
+```
+
+**For Static Variables**:
+```c
+void test(void)
+{
+	static local int	variable = 0;
+}
+```
+
+## What Does It Do
+
+This keyword must only be used with **global** or `static` variables when needed.
+
+It marks the variable as **thread-local**, meaning **each thread gets its own separate instance** of that variable.
+
+This ensures the variable is **not shared between threads**, preventing race conditions or unintended data sharing.
+
+## Side Notes
+
+Yes, you must use the `local` keyword in the **prototypes of global variables** too.
+
+```c
+extern local int g_variable;
+//     ^^^^^
+```
+
+Add that if you're trying to access your global variable using the `extern` keyword.
+
+----
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/no_return.png">
 	<b>NORETURN</b> - Optimise your function if there is a direct exit in it.
 </summary>
@@ -1194,45 +1200,6 @@ Warns the compiler that the function may terminate the program without returning
 The only way to do that is by using the `exit()` function.
 
 This is used for optimisation purposes.
-
-----
-</details>
-
-<details>
-
-<summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/unused.gif">
-	<b>UNUSED</b> - Tag the functions that may not used in the project. (For ignore warnings)
-</summary>
-
-**[KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**
-
-| **NAME**           | **TYPE**     | **DESCRIPTION**                                      |
-|--------------------|--------------|------------------------------------------------------|
-| `UNUSED`, `unused` | `#define`    | Tells the compiler that the function may not be used |
-
-## How To Use
-
-Just put this tag at the beginning of the function.
-
-**Example**:
-```c
-UNUSED void function(void)
-{
-	. . .
-}
-
-unused void function(void)
-{
-	. . .
-}
-```
-
-## What Does That Do
-
-This keyword tells the compiler that the function may not be used in the program.
-
-If unused, the compiler ignores this function and continues compiling the program without giving any warnings.
 
 ----
 </details>
@@ -1390,49 +1357,151 @@ throw (0); // to completely exit the try block
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/LOCAL.gif">
-	<b>LOCAL</b> - Ensure each thread has its own independent copy of a "global" or "static" variable it used on.
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/unused.gif">
+	<b>UNUSED</b> - Tag the functions that may not used in the project. (For ignore warnings)
 </summary>
 
-**[KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**
+**[KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**
 
-| **NAME**         | **TYPE**   | **DESCRIPTION**                                     |
-|------------------|------------|-----------------------------------------------------|
-| `LOCAL`, `local` | `#define`  | Make a variable thread-local (separate per thread). |
+| **NAME**           | **TYPE**     | **DESCRIPTION**                                      |
+|--------------------|--------------|------------------------------------------------------|
+| `UNUSED`, `unused` | `#define`    | Tells the compiler that the function may not be used |
 
 ## How To Use
 
-**For Global Variables**:
-```c
-local int g_variable = 0;
-```
+Just put this tag at the beginning of the function.
 
-**For Static Variables**:
+**Example**:
 ```c
-void test(void)
+UNUSED void function(void)
 {
-	static local int	variable = 0;
+	. . .
+}
+
+unused void function(void)
+{
+	. . .
 }
 ```
 
-## What Does It Do
+## What Does That Do
 
-This keyword must only be used with **global** or `static` variables when needed.
+This keyword tells the compiler that the function may not be used in the program.
 
-It marks the variable as **thread-local**, meaning **each thread gets its own separate instance** of that variable.
+If unused, the compiler ignores this function and continues compiling the program without giving any warnings.
 
-This ensures the variable is **not shared between threads**, preventing race conditions or unintended data sharing.
+----
+</details>
 
-## Side Notes
+# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/plaltform_corssing.gif) Platform Crossing
 
-Yes, you must use the `local` keyword in the **prototypes of global variables** too.
+<details>
+
+<summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif">
+	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
+</summary>
+
+**[PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**
+
+| Name                   | Type        | Description                                            |
+| ---------------------- | ----------- | ------------------------------------------------------ |
+| `va_list`, `VA_LIST`   | `typedef`   | A type for creating your argument list                 |
+| `va_add`, `VA_ADD`     | `#define()` | Add a variable to your `va_list` in your function      |
+| `va_arg`, `VA_ARG`     | `#define()` | Get a variable from your `va_list` in your function    |
+| `va_copy`, `VA_COPY`   | `#define()` | Copy your `va_list` address                            |
+| `va_push`, `VA_PUSH`   | `#define`   | Open the argument list to send arguments               |
+| `va_pop`, `VA_POP`     | `#define`   | Close the argument list after sending arguments        |
+| `va_start`, `VA_START` | `#define()` | Get the address pointer of your argument list          |
+| `va_args`, `VA_ARGS`   | `#define`   | Tell the compiler the function accepts varargs (`...`) |
+| `va_end`, `VA_END`     | `#define()` | End a `va_list` pointer                                |
+
+## Setup
+
+If you're handling the `main` function yourself via `#define main ...`, setup is optional.
+
+Before using this library, define the macro `SETUP_VA_ARGS` once in a single `.c` file (e.g., `main.c` or your entry point):
 
 ```c
-extern local int g_variable;
-//     ^^^^^
+// main.c
+#define SETUP_VA_ARGS
+#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"
+
+int main(void)
+{
+	. . .
+}
 ```
 
-Add that if you're trying to access your global variable using the `extern` keyword.
+In all other files:
+
+```c
+// static_link.c
+#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h" // DO NOT define SETUP_VA_ARGS here
+```
+
+## How To Use
+
+```c
+void test(int, va_args); // Prototype
+
+int main(void)
+{
+	test(42,
+		va_push
+			va_add(double, 42.0)
+			va_add(char *, "Hello world")
+			va_add(int, 0X44800000) // Float: 1024.0
+		va_pop
+	);
+	return 0;
+}
+
+extern int	printf(const char *, ...); // Prototype
+
+void test(int start, va_args)
+{
+	va_list x;
+	va_list y;
+
+	va_start(x, start);
+	va_copy(y, x);
+
+	printf("%d\nx:%f\n", start, va_arg(x, double));
+	va_end(x);
+
+	printf("y:%f\n", va_arg(y, double));
+	printf("y:%s\n", va_arg(y, char *));
+	printf("y:%f\n", va_arg(y, float)); // Yes, this works
+
+	va_end(y);
+}
+```
+
+## What Does This Do?
+
+This library allows use of `va_args`-style variable argument functions on **pre-C89** compilers.
+
+It mimics `<stdarg.h>` but requires a little extra setup.
+
+**Required Macros:**
++ Use `VA_PUSH` and `VA_POP` to wrap arguments.
++ Use `va_add(type, value)` to add arguments.
++ Replace `...` with `va_args` in function signatures.
+
+**Examples**:
+
+Using the function:
+```c
+printf("%d %d", va_push va_add(int, 42) va_add(char, 'a') va_pop);
+```
+
+Creating the function:
+```c
+void printf(const char *, va_args);
+```
+
+**Side Note:** On **64-bit architectures**, retrieving 32-, 16-, or 8-bit values using this mechanism may result in an **"Illegal instruction"** error, depending on how the architecture and calling convention handle type promotion and memory. This behavior is __not a flaw__ in this implementation, but a known limitation that's intentionally left unsupported to maintain consistency and stability.
 
 ----
 </details>
