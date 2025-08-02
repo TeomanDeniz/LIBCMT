@@ -223,7 +223,7 @@ int main(void)
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif">
-	<b>PUSH & POP</b> - Add the value to memory stack
+	<b>PUSH & POP</b> - Add the value to memory stack <b>(WIP)</b>
 </summary>
 
 **[ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**
@@ -430,7 +430,7 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/regparm.png">
-	<b>REGPARM</b> - Pass arguments to a function via using CPU registers.
+	<b>REGPARM</b> - Pass arguments to a function via using CPU registers. <b>(WIP)</b>
 </summary>
 
 **[ATTRIBUTES/REGPARM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)**
@@ -530,7 +530,7 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/TOKEN_PASTING.gif">
-	<b>TOKEN PASTNG</b> - Defines a macro if comma operator is supported on your compiler
+	<b>TOKEN PASTNG</b> - Defines a macro if token pasting is supported on your compiler
 </summary>
 
 **[CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**
@@ -701,7 +701,7 @@ Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/prefetch.png">
-	<b>PREFETCH</b> - Reduces the cache-miss latency of memory accesses.
+	<b>PREFETCH</b> - Reduces the cache-miss latency of memory accesses. <b>(WIP)</b>
 </summary>
 
 **[FUNCTIONS/PREFETCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)**
@@ -763,7 +763,7 @@ Use this when working with large buffers or arrays to minimize cache misses befo
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/READ_FILE.gif">
-	<b>READ_FILE</b> - Reads a file and returns it's content to you.
+	<b>READ_FILE</b> - Reads a file and returns it's content to you. <b>(WIP)</b>
 </summary>
 
 **[FUNCTIONS/READ_FILE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)**
