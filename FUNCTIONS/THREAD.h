@@ -411,11 +411,11 @@ typedef HMTX	T_MUTEX;
 #			ifdef LOCALMACRO_THREAD_FOR_OS2_32BIT
 #				ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #				else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #				endif /* !KNR_STYLE */
 {
@@ -458,11 +458,11 @@ static INLINE int
 #			else /* [v] 16BIT *********************************************** */
 #				ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #				else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #				endif /* !KNR_STYLE */
 {
@@ -580,11 +580,11 @@ typedef CRITICAL_SECTION	*T_MUTEX;
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -702,11 +702,11 @@ typedef pthread_mutex_t	*T_MUTEX;
 #			ifdef LOCALMACRO_LINUXTHREAD_FOR_UNIX
 #				ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #				else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #				endif /* !KNR_STYLE */
 {
@@ -793,11 +793,11 @@ static INLINE int
 #			else /* [v] POSIX THREADS *************************************** */
 #				ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #				else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #				endif /* !KNR_STYLE */
 {
@@ -839,7 +839,7 @@ static INLINE int
 	if (!THREAD)
 		return (1);
 
-	RETURN = pthread_join(THREAD, RETURN_VALUE);
+	RETURN = pthread_join(*THREAD, RETURN_VALUE);
 	free(THREAD);
 	return (RETURN);
 }
@@ -942,11 +942,11 @@ static int32
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -1081,7 +1081,7 @@ typedef int	T_MUTEX;
 /* **************************** [^] TYPEDEFS [^] **************************** */
 
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 {
 	int	PROCESS_ID;
 
@@ -1167,11 +1167,11 @@ typedef SemaphoreHandle_t	T_MUTEX;
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -1274,11 +1274,11 @@ typedef struct k_mutex	*T_MUTEX;
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -1399,11 +1399,11 @@ typedef SEM_ID 	T_MUTEX;
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -1513,11 +1513,11 @@ typedef Semaphore_Handle	T_MUTEX;
 
 #			ifndef KNR_STYLE /* STANDARD C */
 static INLINE T_THREAD
-	THREAD_CREATE(void (*F)(void *), void *ARG)
+	THREAD_CREATE(void *(*F)(void *), void *ARG)
 #			else /* K&R */
 static INLINE T_THREAD
 	THREAD_CREATE(F, ARG)
-	void	(*F)(void *);
+	void	*(*F)(void *);
 	void	*ARG;
 #			endif /* !KNR_STYLE */
 {
@@ -1596,11 +1596,11 @@ typedef T_MUTEX		t_mutex;
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE t_thread
-	thread_create(void (*f)(void *), void *arg)
+	thread_create(void *(*f)(void *), void *arg)
 #	else /* K&R */
 static INLINE t_thread
 	thread_create(f, arg)
-	void	(*f)(void *);
+	void	*(*f)(void *);
 	void	*arg;
 #	endif /* !KNR_STYLE */
 {
