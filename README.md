@@ -1,5 +1,5 @@
 # LIBCMT
-LIBCMT: This library adds cross platfrom or OOP features in C language even if they are not exist in your compiler.
+LIBCMT: A collection of portable tools and features designed to extend the standard C library, compatible with all compilers and operating systems.
 
 <details>
 
