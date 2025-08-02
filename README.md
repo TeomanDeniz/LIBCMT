@@ -1,5 +1,32 @@
 # LIBCMT
-LIBCMT: A collection of portable tools and features designed to extend the standard C library, compatible with all compilers and operating systems.
+LIBCMT is a modular and portable C library extension designed to provide essential tools and features missing from the standard C library fully compatible with all compilers and platforms.
+
+## Usage
+
+To include **all features**:
+
+```c
+#include "LIBCMT/LIBCMT.h"    // For C
+// or
+#include "LIBCMT/LIBCMT.hpp"  // For C++
+```
+
+## Modular Include (Optional)
+
+You can selectively include specific components by defining `INCL__<MODULE>` macros before the include:
+
+```c
+#define INCL__FAR
+#include "LIBCMT/LIBCMT.h" // Includes only the FAR module
+```
+Or
+```c
+#define INCL__FAR
+#define INCL__OBJECT
+#include "LIBCMT/LIBCMT.h" // Includes FAR and OBJECT modules only
+```
+
+If no `INCL__...` macro is defined, all modules will be automatically included by default.
 
 <details>
 

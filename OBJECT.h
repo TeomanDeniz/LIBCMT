@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/07/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -294,8 +294,8 @@ extern "C" {
 #	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#	define OBJECT__FUNCTIONS(OBJCET_TYPE) \
-		void *OBJCET_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
+#	define OBJECT__FUNCTIONS(OBJECT_TYPE) \
+		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
 
 #	define OBJECT__FUNCTION(FUNCTION_NAME) (*FUNCTION_NAME)()
 
@@ -303,8 +303,8 @@ extern "C" {
 		struct OBJECT_STRUCT_TYPE	*const this = \
 			(struct OBJECT_STRUCT_TYPE *const)__OBJECT_STRUCTURE_POINTER__
 
-#	define OBJECT(OBJCET_NAME, VARIABLE_NAME) \
-		struct OBJCET_NAME	VARIABLE_NAME;\
+#	define OBJECT(OBJECT_NAME, VARIABLE_NAME) \
+		struct OBJECT_NAME	VARIABLE_NAME;\
 		\
 		{\
 			register size_t	__OBJECT_INDEX__;\
@@ -312,10 +312,10 @@ extern "C" {
 			\
 			__OBJECT_INDEX__ = 0;\
 			\
-			while (OBJCET_NAME[__OBJECT_INDEX__])\
+			while (OBJECT_NAME[__OBJECT_INDEX__])\
 			{\
 				FUNCTION = \
-					(void (*)())(OBJCET_NAME[__OBJECT_INDEX__]);\
+					(void (*)())(OBJECT_NAME[__OBJECT_INDEX__]);\
 				\
 				if (__OBJECT_INDEX__)\
 				{\
@@ -329,8 +329,8 @@ extern "C" {
 		\
 		__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME;\
 		\
-		if (*OBJCET_NAME)\
-			((void (*)())(*OBJCET_NAME))
+		if (*OBJECT_NAME)\
+			((void (*)())(*OBJECT_NAME))
 
 #	ifdef IS__COMMA_OPERATOR__SUPPORTED
 #		define USE(VARIABLE_NAME) (\
