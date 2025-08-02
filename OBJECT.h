@@ -252,7 +252,7 @@
 \******************************************************************************/
 
 #ifndef OBJECT_H
-#	define OBJECT_H 202507 /* VERSION */
+#	define OBJECT_H 202508 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
