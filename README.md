@@ -242,9 +242,9 @@ POP(b);  // < Removed 42 from CPU stack
 
 **[ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**
 
-| **NAME**              | **TYPE**   | **DESCRIPTION**                                                               |
-|-----------------------|------------|-------------------------------------------------------------------------------|
-| `REGPARM`, `regparm`  | `#define`  | Marks a memory segment or pointer as far, allowing access beyond 64KB limits. |
+| **NAME** | **TYPE**   | **DESCRIPTION**                                                               |
+|----------|------------|-------------------------------------------------------------------------------|
+| `FAR`    | `#define`  | Marks a memory segment or pointer as far, allowing access beyond 64KB limits. |
 
 ## How to Use
 
