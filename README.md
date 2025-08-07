@@ -662,13 +662,13 @@ Congrats! You now created a dynamic link library!
 	dll_file = open_dll("my_dll.dll");
 
 	if (!dll_file) // DLL file couldn't open or not a DLL
-	    exit(1);
+		exit(1);
 
 	void (*my_write)(); // Function pointer
 	my_write = (void (*)()) read_dll(dll_file, "my_write");
 
 	if (!my_write) // Function doesn't exist in DLL
-	    exit(1);
+		exit(1);
 
 	my_write();
 	close_dll(dll_file);
@@ -1427,7 +1427,7 @@ If unused, the compiler ignores this function and continues compiling the progra
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/far.gif">
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/va_args.gif">
 	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
 </summary>
 
@@ -1535,7 +1535,7 @@ void printf(const char *, va_args);
 ----
 </details>
 
-## Graphics
+## Icons
 
 * © These icons are inspired by the style of Windows 2000 icons. They are original creations and are not affiliated with or endorsed by Microsoft.
 

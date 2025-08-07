@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/07 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -244,7 +244,9 @@ extern "C" {
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
+/* **************************** [v] TYPEDEFS [v] **************************** */
 typedef HMODULE	DLL;
+/* **************************** [^] TYPEDEFS [^] **************************** */
 
 #				ifndef KNR_STYLE /* STANDARD C */
 static DLL
@@ -305,7 +307,9 @@ static PFN
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
+/* **************************** [v] TYPEDEFS [v] **************************** */
 typedef SEL	DLL;
+/* **************************** [^] TYPEDEFS [^] **************************** */
 
 #				ifndef KNR_STYLE /* STANDARD C */
 static DLL
@@ -361,7 +365,11 @@ static PFN
 #			    int dlclose(void *);
 #			        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
+/* **************************** [v] TYPEDEFS [v] **************************** */
 typedef void	*DLL;
+/* **************************** [^] TYPEDEFS [^] **************************** */
+
 #			define OPEN_DLL(__DLL_FILE__)
 				(void *)dlopen(__DLL_FILE__, RTLD_LAZY)
 #			define READ_DLL(__THE_DLL__, __FUNCTION_NAME__) \
@@ -379,18 +387,17 @@ typedef void	*DLL;
 #			endif /* __GNUC__ */
 #		endif /* LOCALMACRO_DLL_FOR_UNIX */
 #		ifdef LOCALMACRO_DLL_FOR_WINDOWS
-/* **************************** [v] INCLUDES [v] **************************** */
-#			include <windef.h> /*
-#			typedef HINSTANCE;
-#			        */
-#			include <winbase.h> /*
-#			 define LoadLibrary
-#			FARPROC GetProcAddress(HINSTANCE, LPCSTR);
-#			   BOOL FreeLibrary(HMODULE);
-#			        */
-/* **************************** [^] INCLUDES [^] **************************** */
-typedef HINSTANCE	DLL;
-#			define OPEN_DLL(__DLL_FILE__) LoadLibrary(__DLL_FILE__)
+/* *************************** [v] PROTOTYPES [v] *************************** */
+extern void *LoadLibraryA(const char *);
+extern void *GetProcAddress(void *, const char *);
+extern int FreeLibrary(void *);
+/* *************************** [^] PROTOTYPES [^] *************************** */
+
+/* **************************** [v] TYPEDEFS [v] **************************** */
+typedef void	*DLL;
+/* **************************** [^] TYPEDEFS [^] **************************** */
+
+#			define OPEN_DLL(__DLL_FILE__) LoadLibraryA(__DLL_FILE__)
 #			define READ_DLL(__THE_DLL__, __FUNCTION_NAME__) \
 				GetProcAddress(__THE_DLL__, __FUNCTION_NAME__)
 #			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
@@ -411,7 +418,9 @@ typedef HINSTANCE	DLL;
 
 /* *************************** [v] LOWER CASE [v] *************************** */
 typedef DLL	dll;
+
 #	define open_dll OPEN_DLL
+#	define read_dll READ_DLL
 #	define close_dll CLOSE_DLL
 #	define dynamic DYNAMIC
 /* *************************** [^] LOWER CASE [^] *************************** */

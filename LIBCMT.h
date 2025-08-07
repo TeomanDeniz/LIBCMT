@@ -8,13 +8,14 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/06 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
 #ifndef LIBCMT_H
 #	define LIBCMT_H 202508 /* VERSION */
 
+/* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_1 [v] ******************* */
 #	ifndef INCL_OBJECT
 #		ifndef INCL_FAR
 #			ifndef INCL_PACK
@@ -26,7 +27,9 @@
 #			endif /* !INCL_PACK */
 #		endif /* !INCL_FAR */
 #	endif /* !INCL_OBJECT */
+/* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_1 [^] ******************* */
 
+/* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_2 [v] ******************* */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_1
 #		ifndef INCL_KNR_STYLE
 #			ifndef INCL_DLL
@@ -40,7 +43,9 @@
 #			endif /* !INCL_DLL */
 #		endif /* !INCL_KNR_STYLE */
 #	endif /* LOCALMACRO_DEFINE_ALL_TRY_1 */
+/* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_2 [^] ******************* */
 
+/* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_3 [v] ******************* */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_2
 #		ifndef INCL_IGNORE_VAR
 #			ifndef INCL_INLINE
@@ -54,37 +59,47 @@
 #			endif /* !INCL_INLINE */
 #		endif /* !INCL_IGNORE_VAR */
 #	endif /* LOCALMACRO_DEFINE_ALL_TRY_2 */
+/* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_3 [^] ******************* */
 
+/* ********************* [v] LOCALMACRO_DEFINE_ALL [v] ********************** */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_3
 #		ifndef INCL_UNUSED
 #			ifndef INCL_VA_ARGS
 #				ifndef INCL_COMMA_OPERATOR
 #					ifndef INCL_TOKEN_PASTING
-#						define INCL_OBJECT
-//#						define INCL_FAR
-//#						define INCL_PACK
-//#						define INCL_REGPARM
-//#						define INCL_ARCHITECTURE
-//#						define INCL_KNR_STYLE
-//#						define INCL_DLL
-//#						define INCL_PREFETCH
-//#						define INCL_READ_FILE
-#						define INCL_THREAD
-#						define INCL_IGNORE_VAR
-#						define INCL_INLINE
-#						define INCL_LOCAL
-#						define INCL_NORETURN
-#						define INCL_TRY_CATCH
-#						define INCL_UNUSED
-#						define INCL_VA_ARGS
-#						define INCL_TOKEN_PASTING
-#						define INCL_COMMA_OPERATOR
+#						define LOCALMACRO_DEFINE_ALL
 #					endif /* !INCL_TOKEN_PASTING */
 #				endif /* !INCL_COMMA_OPERATOR */
 #			endif /* !INCL_VA_ARGS */
 #		endif /* !INCL_UNUSED */
 #	endif /* LOCALMACRO_DEFINE_ALL_TRY_3 */
+/* ********************* [^] LOCALMACRO_DEFINE_ALL [^] ********************** */
 
+/* *********************** [v] LIBCMT JUST CALLED [v] *********************** */
+#	ifdef LOCALMACRO_DEFINE_ALL
+#		define INCL_OBJECT
+#		define INCL_FAR
+#		define INCL_PACK
+#		define INCL_REGPARM
+#		define INCL_ARCHITECTURE
+#		define INCL_KNR_STYLE
+#		define INCL_DLL
+#		define INCL_PREFETCH
+#		define INCL_READ_FILE
+#		define INCL_THREAD
+#		define INCL_IGNORE_VAR
+#		define INCL_INLINE
+#		define INCL_LOCAL
+#		define INCL_NORETURN
+#		define INCL_TRY_CATCH
+#		define INCL_UNUSED
+#		define INCL_VA_ARGS
+#		define INCL_TOKEN_PASTING
+#		define INCL_COMMA_OPERATOR
+#	endif /* LOCALMACRO_DEFINE_ALL */
+/* *********************** [^] LIBCMT JUST CALLED [^] *********************** */
+
+/* ***************************** [v] OBJECT [v] ***************************** */
 #	ifdef INCL_OBJECT
 #		include "OBJECT.h" /*
 #		 define OBJECT_FUNCTIONS(OBJECT_NAME)
@@ -95,6 +110,7 @@
 #		 define object
 #		        */
 #	endif /* INCL_OBJECT */
+/* ***************************** [^] OBJECT [^] ***************************** */
 
 /* *************************** [v] ATTRIBUTES [v] *************************** */
 #	ifdef INCL_FAR
