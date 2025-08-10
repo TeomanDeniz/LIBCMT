@@ -38,7 +38,7 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 	<b>OBJECT</b> - Implements basic OOP (Object-Oriented Programming) features in C.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/OBJECT.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/OBJECT.h)**]
 > ### Call With:
 > ```c
@@ -244,7 +244,7 @@ int main(void)
 > **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!
 > MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**]
 > ### Call With:
 > ```c
@@ -289,7 +289,7 @@ POP(b);  // < Removed 42 from CPU stack
 	<b>FAR</b> - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**]
 > ### Call With:
 > ```c
@@ -377,7 +377,7 @@ FAR void (*far_func)(void); // can call functions in different segments.
 	<b>PACK</b> - Packs and removes the padding bytes from your struct.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ATTRIBUTES/PACK.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)**]
 > ### Call With:
 > ```c
@@ -465,7 +465,7 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 	<b>REGPARM</b> - Pass arguments to a function via using CPU registers. <b>(WIP)</b>
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ATTRIBUTES/REGPARM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)**]
 > ### Call With:
 > ```c
@@ -542,7 +542,7 @@ extern void REGPARM(2) FUNCT(int A, int B); // Function prototype
 	<b>COMMA OPERATOR</b> - Defines a macro if comma operator is supported on your compiler
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/CHECK_FEATURE/COMMA_OPERATOR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.h)**]
 > ### Call With:
 > ```c
@@ -573,11 +573,11 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/CPU.gif">
-	<b>INLINE ASM SUPPORT</b> - Defines a macro if inline asm is supported on your compiler and which type of syntax it is using
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/INLINE_ASM.gif">
+	<b>INLINE ASM</b> - Defines a macro if inline asm is supported on your compiler and which type of syntax it is using
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/CHECK_FEATURE/INLINE_ASM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/INLINE_ASM.h)**]
 > ### Call With:
 > ```c
@@ -678,7 +678,7 @@ This header detects whether the compiler supports inline assembly and, if so, id
 	<b>TOKEN PASTNG</b> - Defines a macro if token pasting is supported on your compiler
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**]
 > ### Call With:
 > ```c
@@ -720,7 +720,7 @@ int AB(ma, in)(void) // Expands to: int main(void)
 	<b>ARCHITECTURE</b> - You can get information about your CPU architecture.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ENVIRONMENTS/ARCHITECTURE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/ARCHITECTURE.h)**]
 > ### Call With:
 > ```c
@@ -753,7 +753,7 @@ These defines indicate the bit-width supported or used by the system.
 	<b>CPU</b> - You can get information about CPU in runtime.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ENVIRONMENTS/CPU.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CPU.h)**]
 > ### Call With:
 > ```c
@@ -792,7 +792,7 @@ Purpose: Allows any codebase to get a consistent CPU identification string witho
 
 # **[📜 ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**]
 > ### Call With:
 > ```c
@@ -818,7 +818,7 @@ Defines a macro if your compiler is using K&R style syntax or not.
 	<b>DLL</b> - Cross platform dynamic link library functions.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/FUNCTIONS/DLL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)**]
 > ### Call With:
 > ```c
@@ -912,7 +912,7 @@ Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
 	<b>PREFETCH</b> - Reduces the cache-miss latency of memory accesses. <b>(WIP)</b>
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/FUNCTIONS/PREFETCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)**]
 > ### Call With:
 > ```c
@@ -980,7 +980,7 @@ Use this when working with large buffers or arrays to minimize cache misses befo
 	<b>READ_FILE</b> - Reads a file and returns it's content to you. <b>(WIP)</b>
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/FUNCTIONS/READ_FILE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)**]
 > ### Call With:
 > ```c
@@ -1031,7 +1031,7 @@ Yes, you **must** free the `"data"` field of the structure when you're done.
 	<b>THREAD</b> - Use and manage multithreading in your application across platforms.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/THREAD.h)**]
 > ### Call With:
 > ```c
@@ -1185,7 +1185,7 @@ If your OS is not listed, these features may not be supported on your device, OS
 	<b>IGNORE_VAR</b> - Tag the variables that may not be used in the project. (For ignoring warnings)
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/IGNORE_VAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)**]
 > ### Call With:
 > ```c
@@ -1236,7 +1236,7 @@ If unused, the compiler ignores this variable and continues compiling the progra
 	<b>INLINE</b> - Inline your function on specific compilers.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/INLINE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)**]
 > ### Call With:
 > ```c
@@ -1377,7 +1377,7 @@ This was just an example. You’re free to write whatever you want inside the fu
 	<b>LOCAL</b> - Ensure each thread has its own independent copy of a "global" or "static" variable it used on.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**]
 > ### Call With:
 > ```c
@@ -1433,7 +1433,7 @@ Add that if you're trying to access your global variable using the `extern` keyw
 	<b>NORETURN</b> - Optimise your function if there is a direct exit in it.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/NORETURN.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)**]
 > ### Call With:
 > ```c
@@ -1490,7 +1490,7 @@ This is used for optimisation purposes.
 	<b>TRY_CATCH</b> - Use original "try", "catch()", and "throw()" keywords in C Language like in JavaScript.
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/TRY_CATCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)**]
 > ### Call With:
 > ```c
@@ -1646,7 +1646,7 @@ throw (0); // to completely exit the try block
 	<b>UNUSED</b> - Tag the functions that may not used in the project. (For ignore warnings)
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**]
 > ### Call With:
 > ```c
@@ -1693,7 +1693,7 @@ If unused, the compiler ignores this function and continues compiling the progra
 	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
 </summary>
 
-> [!IMPORTANT]
+> ⚠️ Important
 > ### File at: [**[📜 LIBCMT/PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**]
 > ### Call With:
 > ```c
