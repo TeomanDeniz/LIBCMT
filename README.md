@@ -1,4 +1,4 @@
-<IMG SRC="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/refs/heads/main/images/repo_projects/libcmt/HEADER.png" ALT="Header" STYLE="WIDTH: 100%;"/>
+<IMG SRC="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/refs/heads/main/images/repo_projects/libcmt/HEADER2.png" ALT="Header" STYLE="WIDTH: 100%;"/>
 
 LIBCMT is a modular and portable C library extension designed to provide essential tools and features missing from the standard C library fully compatible with all compilers and platforms.
 
