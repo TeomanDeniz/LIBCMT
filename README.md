@@ -602,13 +602,13 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 This header detects whether the compiler supports inline assembly and, if so, identifies which syntax style it uses. Different compilers have different assembly embedding formats, and the library defines a macro for the matching type.
 
 > ## Supported Syntax Types & Examples
-> ### GNU Style (GCC, Clang) - Extended Inline Assembly
+> ### GNU Style (GCC, Clang) - Extended Inline Assembly - **`INLINE_ASM_TYPE__GNU`**
 > ```c
 > int result;
 > asm("movl %1, %0" : "=r"(result) : "r"(input_var) : );
 > ```
 > 
-> ### Microsoft Visual C++ Style - Block Assembly
+> ### Microsoft Visual C++ Style - Block Assembly - **`INLINE_ASM_TYPE__MSVC`**
 > ```c
 > int input_var = 42;
 > 
@@ -618,13 +618,13 @@ This header detects whether the compiler supports inline assembly and, if so, id
 > }
 > ```
 > 
-> ### Borland Style - Simple Inline
+> ### Borland Style - Simple Inline - **`INLINE_ASM_TYPE__BORLAND`**
 > ```c
 > asm mov eax, input_var
 > asm mov result, eax
 > ```
 > 
-> ### Aztec C Style (x86) - Block with Braces
+> ### Aztec C Style (x86) - Block with Braces - **`INLINE_ASM_TYPE__AZTEC`**
 > ```c
 > asm {
 >     mov ax, input_var
@@ -632,19 +632,19 @@ This header detects whether the compiler supports inline assembly and, if so, id
 > }
 > ```
 > 
-> ### Lattice C Style (68K/Amiga) - String Based
+> ### Lattice C Style (68K/Amiga) - String Based - **`INLINE_ASM_TYPE__LATTICE`**
 > ```c
 > asm("move.l input_var,d0");
 > asm("move.l d0,result");
 > ```
 > 
-> ### Intel C MS-Style - Single Line
+> ### Intel C MS-Style - Single Line - **`INLINE_ASM_TYPE__INTEL_MS`**
 > ```c
 > __asm mov eax, input_var
 > __asm mov result, eax
 > ```
 > 
-> Watcom C Style - Pragma/Block
+> ### Watcom C Style - Pragma/Block - **`INLINE_ASM_TYPE__WATCOM`**
 > ```c
 > _asm {
 >     mov eax, input_var
@@ -655,12 +655,12 @@ This header detects whether the compiler supports inline assembly and, if so, id
 > void myhalt(void);
 > ```
 > 
-> ### ARM Compiler Style - Constraints
+> ### ARM Compiler Style - Constraints - **`INLINE_ASM_TYPE__ARM`**
 > ```c
 > __asm("mov %0,%1" : "=r"(result) : "r"(input_var));
 > ```
 > 
-> ### Keil Embedded Style - Pragma Blocks
+> ### Keil Embedded Style - Pragma Blocks - **`INLINE_ASM_TYPE__KEIL`**
 > ```c
 > #pragma asm
 > MOV A, #input_var
