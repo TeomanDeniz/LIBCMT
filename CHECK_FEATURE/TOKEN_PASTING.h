@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/02 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - AGPL-3.0  :: Update - 2025/08/10 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -52,7 +52,7 @@
 #	define CHECK_FEATURE__TOKEN_PASTING_H 202508 /* VERSION */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __STDC_VERSION__
-#			if (__STDC_VERSION__ >= 199012L) /* C89/ANSI C introduced ## */
+#			if (__STDC_VERSION__ >= 199012L) /* C89/ANSI C */
 #				define IS__TOKEN_PASTING__SUPPORTED
 #			endif /* __STDC_VERSION__ >= 199012L */
 #		endif /* __STDC_VERSION__ */

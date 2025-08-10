@@ -1,4 +1,5 @@
-# LIBCMT
+<IMG SRC="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/refs/heads/main/images/repo_projects/libcmt/HEADER.png" ALT="Header" STYLE="WIDTH: 100%;"/>
+
 LIBCMT is a modular and portable C library extension designed to provide essential tools and features missing from the standard C library fully compatible with all compilers and platforms.
 
 ## Usage
@@ -37,7 +38,13 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 	<b>OBJECT</b> - Implements basic OOP (Object-Oriented Programming) features in C.
 </summary>
 
-**[OBJECT.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/OBJECT.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/OBJECT.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/OBJECT.h)**]
+> ### Call With:
+> ```c
+> #define INCL__OBJECT
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**                                 | **TYPE**    | **DESCRIPTION**                                     |
 | ---------------------------------------- | ----------- | --------------------------------------------------- |
@@ -49,7 +56,14 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 
 ## Setup
 
-**Note:** Setup is optional if you're redefining `main` manually via `#define main ...`. Otherwise, skip this section and go directly to usage examples below.
+> [!NOTE]
+> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
+> ```c
+> #define main ...
+> // or
+> #define main(...) ...
+> ```
+> Otherwise, skip this section and go directly to usage examples below.
 
 Before using this library, you **must define** the macro `SETUP_OBJECT` **once**, typically in your `main.c` or entry point file.
 
@@ -131,7 +145,7 @@ object__functions(test_object_type)
 
 Using `use(obj)` before a call avoids a full context switch. This is optional, but improves performance when switching between objects.
 
-# Full Example:
+## Full Example:
 
 `test_object.c`:
 ```c
@@ -226,11 +240,17 @@ int main(void)
 	<b>PUSH & POP</b> - Add the value to memory stack <b>(WIP)</b>
 </summary>
 
-**[ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**
+> [!WARNING]  
+> **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!
+> MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
 
-| ⚠️ **WARNING**                                                                                                                                                                   |
-|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!<br/>MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK** |
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**]
+> ### Call With:
+> ```c
+> #define INCL__PUSH_POP
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**       | **TYPE**      | **DESCRIPTION**                 |
 |----------------|---------------|---------------------------------|
@@ -269,7 +289,13 @@ POP(b);  // < Removed 42 from CPU stack
 	<b>FAR</b> - If a program compiles on a 16-bit system and you have a chunk of memory larger than 64 KB, you need this.
 </summary>
 
-**[ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**]
+> ### Call With:
+> ```c
+> #define INCL__FAR
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME** | **TYPE**   | **DESCRIPTION**                                                               |
 |----------|------------|-------------------------------------------------------------------------------|
@@ -351,7 +377,13 @@ FAR void (*far_func)(void); // can call functions in different segments.
 	<b>PACK</b> - Packs and removes the padding bytes from your struct.
 </summary>
 
-**[ATTRIBUTES/PACK.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ATTRIBUTES/PACK.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)**]
+> ### Call With:
+> ```c
+> #define INCL__PACK
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**            | **TYPE**   | **DESCRIPTION**                                                   |
 |---------------------|------------|-------------------------------------------------------------------|
@@ -433,7 +465,13 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 	<b>REGPARM</b> - Pass arguments to a function via using CPU registers. <b>(WIP)</b>
 </summary>
 
-**[ATTRIBUTES/REGPARM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ATTRIBUTES/REGPARM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)**]
+> ### Call With:
+> ```c
+> #define INCL__REGPARM
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**              | **TYPE**      | **DESCRIPTION**                                                                                              |
 |-----------------------|---------------|--------------------------------------------------------------------------------------------------------------|
@@ -504,7 +542,13 @@ extern void REGPARM(2) FUNCT(int A, int B); // Function prototype
 	<b>COMMA OPERATOR</b> - Defines a macro if comma operator is supported on your compiler
 </summary>
 
-**[CHECK_FEATURE/COMMA_OPERATOR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/COMMA_OPERATOR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.h)**]
+> ### Call With:
+> ```c
+> #define INCL__COMMA_OPERATOR
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **Name**                        | **Type**     | **Description**                                      |
 |---------------------------------|--------------|------------------------------------------------------|
@@ -529,11 +573,118 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/CPU.gif">
+	<b>INLINE ASM SUPPORT</b> - Defines a macro if inline asm is supported on your compiler and which type of syntax it is using
+</summary>
+
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/INLINE_ASM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/INLINE_ASM.h)**]
+> ### Call With:
+> ```c
+> #define INCL__COMMA_OPERATOR
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| Name                         | Type      | Description                                                |
+| ---------------------------- | --------- | ---------------------------------------------------------- |
+| `IS__INLINE_ASM__SUPPORTED`  | `#define` | Defined if the compiler supports inline assembly in C/C++. |
+| `INLINE_ASM_TYPE__GNU`       | `#define` | GNU-style extended inline assembly (GCC, Clang).           |
+| `INLINE_ASM_TYPE__MSVC`      | `#define` | Microsoft Visual C++ block-style assembly.                 |
+| `INLINE_ASM_TYPE__BORLAND`   | `#define` | Borland/Turbo C simple inline assembly.                    |
+| `INLINE_ASM_TYPE__AZTEC`     | `#define` | Aztec C block-style (x86).                                 |
+| `INLINE_ASM_TYPE__LATTICE`   | `#define` | Lattice C string-style (68K/Amiga).                        |
+| `INLINE_ASM_TYPE__INTEL_MS`  | `#define` | Intel C MS-style single-line assembly.                     |
+| `INLINE_ASM_TYPE__WATCOM`    | `#define` | Watcom C pragma/block-style assembly.                      |
+| `INLINE_ASM_TYPE__ARM`       | `#define` | ARM compiler-style inline assembly with constraints.       |
+| `INLINE_ASM_TYPE__KEIL`      | `#define` | Keil embedded pragma-block-style assembly.                 |
+
+## Purpose
+This header detects whether the compiler supports inline assembly and, if so, identifies which syntax style it uses. Different compilers have different assembly embedding formats, and the library defines a macro for the matching type.
+
+> ## Supported Syntax Types & Examples
+> ### GNU Style (GCC, Clang) - Extended Inline Assembly
+> ```c
+> int result;
+> asm("movl %1, %0" : "=r"(result) : "r"(input_var) : );
+> ```
+> 
+> ### Microsoft Visual C++ Style - Block Assembly
+> ```c
+> int input_var = 42;
+> 
+> __asm {
+>     mov eax, input_var
+>     mov result, eax
+> }
+> ```
+> 
+> ### Borland Style - Simple Inline
+> ```c
+> asm mov eax, input_var
+> asm mov result, eax
+> ```
+> 
+> ### Aztec C Style (x86) - Block with Braces
+> ```c
+> asm {
+>     mov ax, input_var
+>     mov result, ax
+> }
+> ```
+> 
+> ### Lattice C Style (68K/Amiga) - String Based
+> ```c
+> asm("move.l input_var,d0");
+> asm("move.l d0,result");
+> ```
+> 
+> ### Intel C MS-Style - Single Line
+> ```c
+> __asm mov eax, input_var
+> __asm mov result, eax
+> ```
+> 
+> Watcom C Style - Pragma/Block
+> ```c
+> _asm {
+>     mov eax, input_var
+>     mov result, eax
+> }
+> // or
+> #pragma aux myhalt = "mov ax,4C00h" "int 21h";
+> void myhalt(void);
+> ```
+> 
+> ### ARM Compiler Style - Constraints
+> ```c
+> __asm("mov %0,%1" : "=r"(result) : "r"(input_var));
+> ```
+> 
+> ### Keil Embedded Style - Pragma Blocks
+> ```c
+> #pragma asm
+> MOV A, #input_var
+> MOV result, A
+> #pragma endasm
+> ```
+
+----
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/TOKEN_PASTING.gif">
 	<b>TOKEN PASTNG</b> - Defines a macro if token pasting is supported on your compiler
 </summary>
 
-**[CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**]
+> ### Call With:
+> ```c
+> #define INCL__TOKEN_PASTING
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **Name**                       | **Type**     | **Description**                                     |
 |--------------------------------|--------------|-----------------------------------------------------|
@@ -569,7 +720,13 @@ int AB(ma, in)(void) // Expands to: int main(void)
 	<b>ARCHITECTURE</b> - You can get information about your CPU architecture.
 </summary>
 
-**[ENVIRONMENTS/ARCHITECTURE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/ARCHITECTURE.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/ARCHITECTURE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/ARCHITECTURE.h)**]
+> ### Call With:
+> ```c
+> #define INCL__ARCHITECTURE
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | Name                 | Type      | Description                                   |
 | -------------------- | --------- | --------------------------------------------- |
@@ -592,11 +749,56 @@ These defines indicate the bit-width supported or used by the system.
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/CPU.gif">
+	<b>CPU</b> - You can get information about CPU in runtime.
+</summary>
+
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/CPU.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CPU.h)**]
+> ### Call With:
+> ```c
+> #define INCL__CPU
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| Name              | Type      | Description                                                                                                            |
+| ----------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `__CPU_INTEL__`   | `#define` | Defined if the target CPU is Intel CPU (x86/x86-64)                                                                    |
+| `__CPU_AMD__`     | `#define` | Defined if the target CPU is ARM-Based CPU (aarch32/aarch64)                                                           |
+| `__CPU_AMD_X86__` | `#define` | Defined if the target CPU is ARM-x86 CPU                                                                               |
+| `__CPU_POWERPC__` | `#define` | Defined if the target CPU is IBM-PowerPC CPU                                                                           |
+| `__CPU_RISCV__`   | `#define` | Defined if the target CPU is RISC-V CPU                                                                                |
+| `__CPU_VER__`     | `(*F)()`  | Returns static C-string describing CPU vendor and version info at runtime. Same signature on both Intel and ARM builds |
+
+This header provides CPU vendor/architecture detection and a runtime version query function with a unified signature across supported CPUs.
+
+- At compile time, preprocessor checks detect the target CPU architecture (Intel x86/x86-64, AMD x86, ARM/AArch32/AArch64, PowerPC, RISC-V, etc.) and define the corresponding __CPU_xxx__ macro.
+- At runtime, __CPU_VER__() returns a static C-string containing the CPU vendor ID and a short model/version/stepping description.
+- For x86-family CPUs, CPUID is used to obtain vendor and version fields.
+- For ARM-family CPUs, MIDR_EL1 or MIDR is read and parsed.
+- For other architectures, similar native registers or instructions can be implemented in the same interface.
+
+Purpose: Allows any codebase to get a consistent CPU identification string without linking extra libraries, calling OS APIs, or using sprintf/printf.
+
+----
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/is_stdc.gif">
 	<b>KNR_STYLE</b> - Creates a macro that determines whether the compiler uses the STD ANSI C standard or the K&R substandard 1989.
 </summary>
 
-**[ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**
+# **[📜 ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**
+
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**]
+> ### Call With:
+> ```c
+> #define INCL__KNR_STYLE
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | Name        | Type      | Description                                    |
 | ----------- | --------- | ---------------------------------------------- |
@@ -616,7 +818,13 @@ Defines a macro if your compiler is using K&R style syntax or not.
 	<b>DLL</b> - Cross platform dynamic link library functions.
 </summary>
 
-**[FUNCTIONS/DLL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/FUNCTIONS/DLL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)**]
+> ### Call With:
+> ```c
+> #define INCL__DLL
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | NAME                     | TYPE         | DESCRIPTION                                       |
 |--------------------------|--------------|---------------------------------------------------|
@@ -704,7 +912,13 @@ Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
 	<b>PREFETCH</b> - Reduces the cache-miss latency of memory accesses. <b>(WIP)</b>
 </summary>
 
-**[FUNCTIONS/PREFETCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/FUNCTIONS/PREFETCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)**]
+> ### Call With:
+> ```c
+> #define INCL__PREFETCH
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | Name                                       | Type         | Description                                                  |
 | ------------------------------------------ | ------------ | ------------------------------------------------------------ |
@@ -766,7 +980,13 @@ Use this when working with large buffers or arrays to minimize cache misses befo
 	<b>READ_FILE</b> - Reads a file and returns it's content to you. <b>(WIP)</b>
 </summary>
 
-**[FUNCTIONS/READ_FILE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/FUNCTIONS/READ_FILE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)**]
+> ### Call With:
+> ```c
+> #define INCL__READ_FILE
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | NAME                     | TYPE      | DESCRIPTION                              |
 | ------------------------ | --------- | ---------------------------------------- |
@@ -811,7 +1031,13 @@ Yes, you **must** free the `"data"` field of the structure when you're done.
 	<b>THREAD</b> - Use and manage multithreading in your application across platforms.
 </summary>
 
-**[FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/THREAD.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/THREAD.h)**]
+> ### Call With:
+> ```c
+> #define INCL__THREAD
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | `THREAD_CREATE`, `thread_create` | (\*F)()   | Create a thread by providing a function                  |
 |----------------------------------|-----------|----------------------------------------------------------|
@@ -959,7 +1185,13 @@ If your OS is not listed, these features may not be supported on your device, OS
 	<b>IGNORE_VAR</b> - Tag the variables that may not be used in the project. (For ignoring warnings)
 </summary>
 
-**[KEYWORDS/IGNORE_VAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/IGNORE_VAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)**]
+> ### Call With:
+> ```c
+> #define INCL__IGNORE_VAR
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **Name**                    | **Type**   | **Description**                                    |
 |-----------------------------|------------|----------------------------------------------------|
@@ -1004,7 +1236,13 @@ If unused, the compiler ignores this variable and continues compiling the progra
 	<b>INLINE</b> - Inline your function on specific compilers.
 </summary>
 
-**[KEYWORDS/INLINE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/INLINE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)**]
+> ### Call With:
+> ```c
+> #define INCL__INLINE
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **Name** | **Type**  | **Description**                                       |
 | -------- | --------- | ----------------------------------------------------- |
@@ -1139,7 +1377,13 @@ This was just an example. You’re free to write whatever you want inside the fu
 	<b>LOCAL</b> - Ensure each thread has its own independent copy of a "global" or "static" variable it used on.
 </summary>
 
-**[KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**]
+> ### Call With:
+> ```c
+> #define INCL__LOCAL
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**         | **TYPE**   | **DESCRIPTION**                                     |
 |------------------|------------|-----------------------------------------------------|
@@ -1189,7 +1433,13 @@ Add that if you're trying to access your global variable using the `extern` keyw
 	<b>NORETURN</b> - Optimise your function if there is a direct exit in it.
 </summary>
 
-**[KEYWORDS/NORETURN.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/NORETURN.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)**]
+> ### Call With:
+> ```c
+> #define INCL__NORETURN
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **Name**                | **Type**   | **Description**                                                |
 |-------------------------|------------|----------------------------------------------------------------|
@@ -1240,7 +1490,13 @@ This is used for optimisation purposes.
 	<b>TRY_CATCH</b> - Use original "try", "catch()", and "throw()" keywords in C Language like in JavaScript.
 </summary>
 
-**[KEYWORDS/TRY_CATCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/TRY_CATCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)**]
+> ### Call With:
+> ```c
+> #define INCL__TRY_CATCH
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | Name             | Type        | Description                                         |
 | ---------------- | ----------- | --------------------------------------------------- |
@@ -1256,16 +1512,16 @@ This is used for optimisation purposes.
 
 * **`throw`** - Throws an error code and jumps to the nearest `catch()` block.
 
-### Setup
+## Setup
 
-**Note**: Setup is optional if you're handling the main function yourself using:
-```c
-#define main ...
-// or
-#define main(...) ...
-```
-
-Otherwise, just ignore Setup section and go to **Examples** area at the bottom.
+> [!NOTE]
+> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
+> ```c
+> #define main ...
+> // or
+> #define main(...) ...
+> ```
+> Otherwise, skip this section and go directly to usage examples below.
 
 Before using this library, define the macro `SETUP_TRY_CATCH` **once** in one `.c` file (typically your `main.c` or entry point). This ensures global variables used internally are properly defined.
 
@@ -1390,7 +1646,13 @@ throw (0); // to completely exit the try block
 	<b>UNUSED</b> - Tag the functions that may not used in the project. (For ignore warnings)
 </summary>
 
-**[KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**]
+> ### Call With:
+> ```c
+> #define INCL__UNUSED
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | **NAME**           | **TYPE**     | **DESCRIPTION**                                      |
 |--------------------|--------------|------------------------------------------------------|
@@ -1431,7 +1693,13 @@ If unused, the compiler ignores this function and continues compiling the progra
 	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
 </summary>
 
-**[PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**
+> [!IMPORTANT]
+> ### File at: [**[📜 LIBCMT/PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**]
+> ### Call With:
+> ```c
+> #define INCL__VA_ARGS
+> #include "LIBCMT/LIBCMT.h"
+> ```
 
 | Name                   | Type        | Description                                            |
 | ---------------------- | ----------- | ------------------------------------------------------ |
@@ -1447,7 +1715,14 @@ If unused, the compiler ignores this function and continues compiling the progra
 
 ## Setup
 
-If you're handling the `main` function yourself via `#define main ...`, setup is optional.
+> [!NOTE]
+> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
+> ```c
+> #define main ...
+> // or
+> #define main(...) ...
+> ```
+> Otherwise, skip this section and go directly to usage examples below.
 
 Before using this library, define the macro `SETUP_VA_ARGS` once in a single `.c` file (e.g., `main.c` or your entry point):
 
@@ -1538,4 +1813,3 @@ void printf(const char *, va_args);
 ## Icons
 
 * © These icons are inspired by the style of Windows 2000 icons. They are original creations and are not affiliated with or endorsed by Microsoft.
-

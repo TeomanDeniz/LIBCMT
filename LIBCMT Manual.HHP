@@ -1,6 +1,6 @@
 [OPTIONS]
 Compatibility=1.1 or later
-Compiled file=LIBCMT.chm
+Compiled file=LIBCMT Manual.chm
 Contents file=1.HHC
 Default Window=WINDOW
 Default topic=PREFACE.htm
