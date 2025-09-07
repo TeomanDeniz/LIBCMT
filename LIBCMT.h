@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/10 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -84,7 +84,6 @@
 /* *********************** [v] LIBCMT JUST CALLED [v] *********************** */
 #	ifdef LOCALMACRO_DEFINE_ALL
 #		define INCL__OBJECT
-#		define INCL__PUSH_POP
 #		define INCL__FAR
 #		define INCL__PACK
 #		define INCL__REGPARM
@@ -170,6 +169,8 @@
 #		 define INLINE_ASM_TYPE__WATCOM
 #		 define INLINE_ASM_TYPE__ARM
 #		 define INLINE_ASM_TYPE__KEIL
+#		 define INLINE_ASM_TYPE__HCCF
+#		 define INLINE_ASM_TYPE__ISO
 #		        */
 #	endif /* INCL__INLINE_ASM */
 #	ifdef INCL__TOKEN_PASTING
@@ -193,10 +194,24 @@
 #	endif /* INCL__CPU */
 #		include "ENVIRONMENTS/CPU.h" /*
 #		 define __CPU_INTEL__
-#		 define __CPU_AMD__
+#		 define __CPU_ARM__
 #		 define __CPU_AMD_X86__
 #		 define __CPU_POWERPC__
 #		 define __CPU_RISCV__
+#		 define __CPU_HC12__
+#		 define __CPU_HCS08__
+#		 define __CPU_COLDFIRE__
+#		 define __CPU_M68K__
+#		 define __CPU_SH__
+#		 define __CPU_MIPS__
+#		 define __CPU_SPARC__
+#		 define __CPU_6502__
+#		 define __CPU_Z80__
+#		 define __CPU_TI__
+#		 define __CPU_SHARC__
+#		 define __CPU_BLACKFIN__
+#		 define __CPU_DSP56K__
+#		 define __CPU_VER__
 #		   char *__CPU_VER__();
 #		        */
 #	endif /* INCL__CPU */

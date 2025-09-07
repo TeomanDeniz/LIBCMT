@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - AGPL-3.0  :: Update - 2025/08/10 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/07 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -39,6 +39,10 @@
 |*...........................:...........:....................................*|
 |* INLINE_ASM_TYPE__KEIL     : #define   : KEIL EMBEDDED STYLE                *|
 |*...........................:...........:....................................*|
+|* INLINE_ASM_TYPE__HCCF     : #define   : FREESCALE HC12, HCS08, COLDFIRE    *|
+|*...........................:...........:....................................*|
+|* INLINE_ASM_TYPE__ISO      : #define   : ISO C EXTENDED INLINE ASSEMBLY     *|
+|*...........................:...........:....................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -60,6 +64,8 @@
 |* - INLINE_ASM_TYPE__WATCOM: WATCOM C PRAGMA/BLOCK STYLE                     *|
 |* - INLINE_ASM_TYPE__ARM: ARM COMPILER STYLE                                 *|
 |* - INLINE_ASM_TYPE__KEIL: KEIL EMBEDDED STYLE                               *|
+|* - INLINE_ASM_TYPE__HCCF: FREESCALE SERIES                                  *|
+|* - INLINE_ASM_TYPE__ISO: ISO C EXTENDED INLINE ASSEMBLY                     *|
 |*                                                                            *|
 |* FOR DETAILED SYNTAX EXAMPLES, SEE THE "ASM SYNTAX STYLES" SECTION BELOW.   *|
 |*                                                                            *|
@@ -85,8 +91,19 @@
 |* - WATCOM STYLE: PRAGMA/BLOCK (WATCOM C)                                    *|
 |* - ARM STYLE: CONSTRAINTS (ARM COMPILER)                                    *|
 |* - KEIL STYLE: PRAGMA BLOCKS (KEIL EMBEDDED)                                *|
+|* - FREESCALE: BOTH PRAGMA BLOCKS AND SINGLE LINE (HC(S)XX/COLDFIRE)         *|
+|* - ISO STYLE: EXTENDED INLINE ASSEMBLY (ISO C)                              *|
 |*                                                                            *|
 |* FOR DETAILED SYNTAX EXAMPLES, SEE THE "ASM SYNTAX STYLES" SECTION BELOW.   *|
+|*                                                                            *|
+\******************************************************************************/
+
+/*############################################################################*\
+|*#                                IMPORTANT                                 #*|
+|*############################################################################*|
+|*                                                                            *|
+|* PLEASE CHECK THE TABLE AT LIBCMT/INLINE_ASM_TABLE.md FOR INFORMATION ABOUT *|
+|*                          SUPPORTED ARCHITECTURES                           *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -94,12 +111,12 @@
 |*#                            ASM SYNTAX STYLES                             #*|
 |*############################################################################*|
 |*                                                                            *|
-|* O - GNU STYLE (GCC, CLANG) - EXTENDED INLINE ASSEMBLY                      *|
+|* O - GNU STYLE (GCC, CLANG) - EXTENDED INLINE ASSEMBLY INLINE_ASM_TYPE__GNU *|
 |* :                                                                          *|
 |* : int result;                                                              *|
 |* : asm("movl %1, %0" : "=r"(result) : "r"(input_var) : );                   *|
 |*                                                                            *|
-|* O - MICROSOFT VISUAL C++ STYLE - BLOCK ASSEMBLY                            *|
+|* O - MICROSOFT VISUAL C++ STYLE - BLOCK ASSEMBLY      INLINE_ASM_TYPE__MSVC *|
 |* :                                                                          *|
 |* : int input_var = 42;                                                      *|
 |* : __asm {                                                                  *|
@@ -107,65 +124,80 @@
 |* :     mov result, eax                                                      *|
 |* : }                                                                        *|
 |*                                                                            *|
-|* O - BORLAND STYLE - SIMPLE INLINE                                          *|
+|* O - BORLAND STYLE - SIMPLE INLINE                 INLINE_ASM_TYPE__BORLAND *|
 |* :                                                                          *|
 |* : asm mov eax, input_var                                                   *|
 |* : asm mov result, eax                                                      *|
 |*                                                                            *|
-|* O - AZTEC C STYLE (X86) - BLOCK WITH BRACES                                *|
+|* O - AZTEC C STYLE (X86) - BLOCK WITH BRACES         INLINE_ASM_TYPE__AZTEC *|
 |* :                                                                          *|
 |* : asm {                                                                    *|
 |* :     mov ax, input_var                                                    *|
 |* :     mov result, ax                                                       *|
 |* : }                                                                        *|
 |*                                                                            *|
-|* O - LATTICE C STYLE (68K/AMIGA) - STRING BASED                             *|
+|* O - LATTICE C STYLE (68K/AMIGA) - STRING BASED    INLINE_ASM_TYPE__LATTICE *|
 |* :                                                                          *|
 |* : asm("move.l input_var,d0");                                              *|
 |* : asm("move.l d0,result");                                                 *|
 |*                                                                            *|
-|* O - INTEL C MS-STYLE - SINGLE LINE                                         *|
+|* O - INTEL C MS-STYLE - SINGLE LINE               INLINE_ASM_TYPE__INTEL_MS *|
 |* :                                                                          *|
 |* : __asm mov eax, input_var                                                 *|
 |* : __asm mov result, eax                                                    *|
 |*                                                                            *|
-|* O - WATCOM C STYLE - PRAGMA/BLOCK                                          *|
+|* O - WATCOM C STYLE                                 INLINE_ASM_TYPE__WATCOM *|
 |* :                                                                          *|
-|* : _asm {                                                                   *|
-|* :     mov eax, input_var                                                   *|
-|* :     mov result, eax                                                      *|
-|* : }                                                                        *|
-|* : OR PRAGMA AUXILIARY FUNCTIONS                                            *|
-|* : #pragma aux myhalt = "mov ax,4C00h" "int 21h";                           *|
-|* : void myhalt(void);                                                       *|
+|* :..O - BLOCK                                                               *|
+|* :  :                                                                       *|
+|* :  : _asm {                                                                *|
+|* :  :     mov eax, input_var                                                *|
+|* :  :     mov result, eax                                                   *|
+|* :  : }                                                                     *|
+|* :                                                                          *|
+|* :..O - PRAGMA                                                              *|
+|*    :                                                                       *|
+|*    : #pragma aux myhalt = "mov ax,4C00h" "int 21h";                        *|
+|*    : void myhalt(void);                                                    *|
 |*                                                                            *|
-|* O - ARM COMPILER STYLE - CONSTRAINTS                                       *|
+|* O - ARM COMPILER STYLE - CONSTRAINTS                  INLINE_ASM_TYPE__ARM *|
 |* :                                                                          *|
 |* : __asm("mov %0,%1" : "=r"(result) : "r"(input_var));                      *|
 |*                                                                            *|
-|* O - KEIL EMBEDDED STYLE - PRAGMA BLOCKS                                    *|
+|* O - KEIL EMBEDDED STYLE - PRAGMA BLOCKS              INLINE_ASM_TYPE__KEIL *|
 |* :                                                                          *|
 |* : #pragma asm                                                              *|
-|* : MOV A, #input_var                                                        *|
-|* : MOV result, A                                                            *|
+|* :     MOV A, #input_var                                                    *|
+|* :     MOV result, A                                                        *|
 |* : #pragma endasm                                                           *|
+|*                                                                            *|
+|* O - FREESCALE                                        INLINE_ASM_TYPE__HCCF *|
+|* :                                                                          *|
+|* :..O - SINGLE LINE                                                         *|
+|* :  :                                                                       *|
+|* :  : unsigned char result, input_var = 0X42;                               *|
+|* :  :                                                                       *|
+|* :  : asm LDAA input_var                                                    *|
+|* :  : asm STAA result                                                       *|
+|* :                                                                          *|
+|* :..O - PRAGMA                                                              *|
+|*    : #pragma asm                                                           *|
+|*    :     LDAA input_var                                                    *|
+|*    :     STAA result                                                       *|
+|*    : #pragma endasm                                                        *|
+|*                                                                            *|
+|* O - ISO C STYLE - INLINE ASSEMBLY                     INLINE_ASM_TYPE__ISO *|
+|* :                                                                          *|
+|* : __asm__ __volatile__ (                                                   *|
+|* :     "movl %0, %%eax;"                                                    *|
+|* :     "movl %%eax, %1;"                                                    *|
+|* :     : "r"(input_var), "r"(result)                                        *|
+|* : );                                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef CHECK_FEATURE__INLINE_ASM_H
 #	define CHECK_FEATURE__INLINE_ASM_H 202508 /* VERSION */
-#	ifndef IS__INLINE_ASM__SUPPORTED
-#		ifdef __STDC_VERSION__
-#			if (__STDC_VERSION__ >= 199901L) /* C99 OR LATER */
-#				define IS__INLINE_ASM__SUPPORTED
-#			endif /* __STDC_VERSION__ >= 199901L */
-#		endif /* __STDC_VERSION__ */
-#	endif /* !IS__INLINE_ASM__SUPPORTED */
-#	ifndef IS__INLINE_ASM__SUPPORTED
-#		ifdef __cplusplus /* C++ */
-#			define IS__INLINE_ASM__SUPPORTED
-#		endif /* __cplusplus */
-#	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __GNUC__
 #			define IS__INLINE_ASM__SUPPORTED
@@ -837,11 +869,79 @@
 #		endif /* THINKC4 */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __HC12__ /* FREESCALE / NXP (HC(S)12 */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__HCCF
+#		endif /* __HC12__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __HCS08__ /* FREESCALE / HCS08) */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__HCCF
+#		endif /* __HCS08__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __COLDFIRE__ /* FREESCALE / COLDFIRE) */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__HCCF
+#		endif /* __COLDFIRE__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __CC65__ /* CC65 C COMPILER FOR 6502 */
-#			if (__CC65__ >= 0x2A1) /* VERSION 2.10.1+ */
+#			if (__CC65__ >= 0X2A1) /* VERSION 2.10.1+ */
 #				define IS__INLINE_ASM__SUPPORTED
 #				define INLINE_ASM_TYPE__GNU
-#			endif /* __CC65__ >= 0x2A1 */
+#			endif /* __CC65__ >= 0X2A1 */
 #		endif /* __CC65__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __STRICT_ANSI__ /* STRICT ANSI C MODE */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__ISO
+#		endif /* __STRICT_ANSI__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __cplusplus /* C++ */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__ISO
+#		endif /* __cplusplus */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef CONFIG_ZEPHYR /* ZEPHYR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__GNU
+#		endif /* CONFIG_ZEPHYR */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef CONFIG_KERNEL_INIT_PRIORITY_DEFAULT /* ZEPHYR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__GNU
+#		endif /* CONFIG_KERNEL_INIT_PRIORITY_DEFAULT */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef ZEPHYR_VERSION_CODE /* ZEPHYR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__GNU
+#		endif /* ZEPHYR_VERSION_CODE */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __ZEPHYR__ /* ZEPHYR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__GNU
+#		endif /* __ZEPHYR__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __TRY__ZEPHYR /* ZEPHYR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__GNU
+#		endif /* __TRY__ZEPHYR */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __STDC_VERSION__
+#			if (__STDC_VERSION__ >= 199901L) /* C99 OR LATER */
+#				define IS__INLINE_ASM__SUPPORTED
+#				define INLINE_ASM_TYPE__GNU
+#			endif /* __STDC_VERSION__ >= 199901L */
+#		endif /* __STDC_VERSION__ */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #endif /* !CHECK_FEATURE__INLINE_ASM_H */

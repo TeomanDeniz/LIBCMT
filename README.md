@@ -581,7 +581,7 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 > ### File at: [**[📜 LIBCMT/CHECK_FEATURE/INLINE_ASM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/INLINE_ASM.h)**]
 > ### Call With:
 > ```c
-> #define INCL__COMMA_OPERATOR
+> #define INCL__INLINE_ASM
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
@@ -597,9 +597,14 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 | `INLINE_ASM_TYPE__WATCOM`    | `#define` | Watcom C pragma/block-style assembly.                      |
 | `INLINE_ASM_TYPE__ARM`       | `#define` | ARM compiler-style inline assembly with constraints.       |
 | `INLINE_ASM_TYPE__KEIL`      | `#define` | Keil embedded pragma-block-style assembly.                 |
+| `INLINE_ASM_TYPE__HCCF`      | `#define` | HC(S) or ColdFire compiler-style inline assembly.          |
+| `INLINE_ASM_TYPE__ISO`       | `#define` | ISO-C extended inline assembly.                            |
 
 ## Purpose
 This header detects whether the compiler supports inline assembly and, if so, identifies which syntax style it uses. Different compilers have different assembly embedding formats, and the library defines a macro for the matching type.
+
+> ⚠️ Important
+> **PLEASE CHECK THE TABLE AT [[`📜 LIBCMT/INLINE_ASM_TABLE.md`](https://github.com/TeomanDeniz/LIBCMT/blob/main/INLINE_ASM_TABLE.md)] FOR INFORMATION ABOUT SUPPORTED ARCHITECTURES.**
 
 > ## Supported Syntax Types & Examples
 > ### GNU Style (GCC, Clang) - Extended Inline Assembly - **`INLINE_ASM_TYPE__GNU`**
@@ -666,6 +671,39 @@ This header detects whether the compiler supports inline assembly and, if so, id
 > MOV A, #input_var
 > MOV result, A
 > #pragma endasm
+> ```
+> 
+> ### Watcom C Style - Pragma/Block - **`INLINE_ASM_TYPE__WATCOM`**
+> ```c
+> _asm {
+>     mov eax, input_var
+>     mov result, eax
+> }
+> // or
+> #pragma aux myhalt = "mov ax,4C00h" "int 21h";
+> void myhalt(void);
+> ```
+> 
+> ### FreeScale - HC12, HCS08, ColdFire - **`INLINE_ASM_TYPE__HCCF`**
+> ```c
+> unsigned char result, input_var = 0X42;
+> 
+> asm LDAA input_var
+> asm STAA result
+> // or
+> #pragma asm
+>     LDAA input_var
+>     STAA result
+> #pragma endasm
+> ```
+> 
+> ### ISO C Style - Inline Assembly - **`INLINE_ASM_TYPE__ISO`**
+> ```c
+> __asm__ __volatile__ (
+>     "movl %0, %%eax;"
+>     "movl %%eax, %1;"
+>     : "r"(input_var), "r"(result)
+> );
 > ```
 
 ----
@@ -761,14 +799,27 @@ These defines indicate the bit-width supported or used by the system.
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| Name              | Type      | Description                                                                                                            |
-| ----------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `__CPU_INTEL__`   | `#define` | Defined if the target CPU is Intel CPU (x86/x86-64)                                                                    |
-| `__CPU_AMD__`     | `#define` | Defined if the target CPU is ARM-Based CPU (aarch32/aarch64)                                                           |
-| `__CPU_AMD_X86__` | `#define` | Defined if the target CPU is ARM-x86 CPU                                                                               |
-| `__CPU_POWERPC__` | `#define` | Defined if the target CPU is IBM-PowerPC CPU                                                                           |
-| `__CPU_RISCV__`   | `#define` | Defined if the target CPU is RISC-V CPU                                                                                |
-| `__CPU_VER__`     | `(*F)()`  | Returns static C-string describing CPU vendor and version info at runtime. Same signature on both Intel and ARM builds |
+| Name               | Type      | Description                                                                                                            |
+| ------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `__CPU_INTEL__`    | `#define` | Defined if the target CPU is Intel (x86/x86-64)                                                                        |
+| `__CPU_ARM__`      | `#define` | Defined if the target CPU is ARM-Based (aarch32/aarch64)                                                               |
+| `__CPU_AMD_X86__`  | `#define` | Defined if the target CPU is ARM-x86                                                                                   |
+| `__CPU_POWERPC__`  | `#define` | Defined if the target CPU is IBM-PowerPC                                                                               |
+| `__CPU_RISCV__`    | `#define` | Defined if the target CPU is RISC-V                                                                                    |
+| `__CPU_HC12__`     | `#define` | Defined if the target CPU is HC12                                                                                      |
+| `__CPU_HCS08__`    | `#define` | Defined if the target CPU is HCS08                                                                                     |
+| `__CPU_COLDFIRE__` | `#define` | Defined if the target CPU is ColdFire                                                                                  |
+| `__CPU_M68K__`     | `#define` | Defined if the target CPU is M68K                                                                                      |
+| `__CPU_SH__`       | `#define` | Defined if the target CPU is SuperH                                                                                    |
+| `__CPU_MIPS__`     | `#define` | Defined if the target CPU is MIPS                                                                                      |
+| `__CPU_SPARC__`    | `#define` | Defined if the target CPU is SPARC                                                                                     |
+| `__CPU_6502__`     | `#define` | Defined if the target CPU is 6502 Microprocessor                                                                       |
+| `__CPU_Z80__`      | `#define` | Defined if the target CPU is Z80                                                                                       |
+| `__CPU_TI__`       | `#define` | Defined if the target CPU is TI-MCU Processor                                                                          |
+| `__CPU_SHARC__`    | `#define` | Defined if the target CPU is SHARC                                                                                     |
+| `__CPU_BLACKFIN__` | `#define` | Defined if the target CPU is Blackfin                                                                                  |
+| `__CPU_DSP56K__`   | `#define` | Defined if the target CPU is Motorola-DSP56000                                                                         |
+| `__CPU_VER__`      | `(*F)()`  | Returns static C-string describing CPU vendor and version info at runtime. Same signature on both Intel and ARM builds |
 
 This header provides CPU vendor/architecture detection and a runtime version query function with a unified signature across supported CPUs.
 
@@ -899,7 +950,7 @@ Why compile the whole `printf` unction into every `.exe` file? Just strue `print
 Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
 
 ## Side Notes
-* For OS/2 16-BIT, use your function's ordinal number to retrieve the function pointer from the dll.
+* For OS/2 16-BIT or AmigaOS-3, use your function's ordinal number to retrieve the function pointer from the dll.
 * Refer to your compiler's documentation for details on compiling dlls.
 
 ----
