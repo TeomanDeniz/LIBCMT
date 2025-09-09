@@ -604,6 +604,7 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 This header detects whether the compiler supports inline assembly and, if so, identifies which syntax style it uses. Different compilers have different assembly embedding formats, and the library defines a macro for the matching type.
 
 > ⚠️ Important
+> 
 > **PLEASE CHECK THE TABLE AT [[`📜 LIBCMT/INLINE_ASM_TABLE.md`](https://github.com/TeomanDeniz/LIBCMT/blob/main/INLINE_ASM_TABLE.md)] FOR INFORMATION ABOUT SUPPORTED ARCHITECTURES.**
 
 > ## Supported Syntax Types & Examples
