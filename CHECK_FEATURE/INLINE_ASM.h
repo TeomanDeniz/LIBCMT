@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/07 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -197,7 +197,7 @@
 \******************************************************************************/
 
 #ifndef CHECK_FEATURE__INLINE_ASM_H
-#	define CHECK_FEATURE__INLINE_ASM_H 202508 /* VERSION */
+#	define CHECK_FEATURE__INLINE_ASM_H 202509 /* VERSION */
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __GNUC__
 #			define IS__INLINE_ASM__SUPPORTED
@@ -385,8 +385,13 @@
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __CC_ARM /* ARM C COMPILER */
 #			if (__ARMCC_VERSION >= 200000) /* VERSION 2.0+ */
-#				define IS__INLINE_ASM__SUPPORTED
-#				define INLINE_ASM_TYPE__ARM
+#				if (__ARMCC_VERSION <= 600000) /* VERSION 5.0- */
+#					define IS__INLINE_ASM__SUPPORTED
+#					define INLINE_ASM_TYPE__MSVC
+#				else /* VERSION 5.1+ */
+#					define IS__INLINE_ASM__SUPPORTED
+#					define INLINE_ASM_TYPE__ARM
+#				endif /* __ARMCC_VERSION <= 600000 */
 #			endif /* __ARMCC_VERSION >= 200000 */
 #		endif /* __CC_ARM */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
@@ -561,6 +566,12 @@
 #			define IS__INLINE_ASM__SUPPORTED
 #			define INLINE_ASM_TYPE__BORLAND
 #		endif /* __MWERKS__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __CWCC__ /* METROWERKS CODEWARRIOR */
+#			define IS__INLINE_ASM__SUPPORTED
+#			define INLINE_ASM_TYPE__BORLAND
+#		endif /* __CWCC__ */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef _MRI /* MICROTEC MRI */

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -120,7 +120,7 @@
 \*############################################################################*/
 
 #ifndef DLL_H
-#	define DLL_H 202508 /* VERSION */
+#	define DLL_H 202509 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
 |* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|
@@ -154,7 +154,7 @@ extern "C" {
 /* ********************* [v] LOCALMACRO_DLL_FOR_OS2 [v] ********************* */
 #	ifdef __OS2__
 #		define LOCALMACRO_DLL_FOR_OS2
-#		define LOCALMACRO_THREAD_FOUND
+#		define LOCALMACRO_DLL_FOUND
 #		ifdef __32BIT__
 #			define LOCALMACRO_DLL_FOR_OS2_32BIT
 #		else
@@ -177,41 +177,41 @@ extern "C" {
 /* ********************* [^] LOCALMACRO_DLL_FOR_OS2 [^] ********************* */
 
 /* ******************** [v] LOCALMACRO_DLL_FOR_UNIX [v] ********************* */
-#	ifndef LOCALMACRO_THREAD_FOUND
+#	ifndef LOCALMACRO_DLL_FOUND
 #		ifdef __APPLE__
-#			define LOCALMACRO_THREAD_FOUND
+#			define LOCALMACRO_DLL_FOUND
 #			define LOCALMACRO_DLL_FOR_UNIX
 #		else
 #			ifdef __linux__
-#				define LOCALMACRO_THREAD_FOUND
+#				define LOCALMACRO_DLL_FOUND
 #				define LOCALMACRO_DLL_FOR_UNIX
 #			else
 #				ifdef __gnu_linux__
-#					define LOCALMACRO_THREAD_FOUND
+#					define LOCALMACRO_DLL_FOUND
 #					define LOCALMACRO_DLL_FOR_UNIX
 #				else
 #					ifdef __FreeBSD__
-#						define LOCALMACRO_THREAD_FOUND
+#						define LOCALMACRO_DLL_FOUND
 #						define LOCALMACRO_DLL_FOR_UNIX
 #					else
 #						ifdef __NetBSD__
-#							define LOCALMACRO_THREAD_FOUND
+#							define LOCALMACRO_DLL_FOUND
 #							define LOCALMACRO_DLL_FOR_UNIX
 #						else
 #							ifdef __OpenBSD__
-#								define LOCALMACRO_THREAD_FOUND
+#								define LOCALMACRO_DLL_FOUND
 #								define LOCALMACRO_DLL_FOR_UNIX
 #							else
 #								ifdef __DragonFly__
-#									define LOCALMACRO_THREAD_FOUND
+#									define LOCALMACRO_DLL_FOUND
 #									define LOCALMACRO_DLL_FOR_UNIX
 #								else
 #									ifdef __sun
-#										define LOCALMACRO_THREAD_FOUND
+#										define LOCALMACRO_DLL_FOUND
 #										define LOCALMACRO_DLL_FOR_UNIX
 #									else
 #										ifdef __amigaos4__ /* ELF EXIST */
-#											define LOCALMACRO_THREAD_FOUND
+#											define LOCALMACRO_DLL_FOUND
 #											define LOCALMACRO_DLL_FOR_UNIX
 #										endif /* __amigaos4__ */
 #									endif /* __sun */
@@ -222,38 +222,38 @@ extern "C" {
 #				endif /* __gnu_linux__ */
 #			endif /* __linux__ */
 #		endif /* __APPLE__ */
-#	endif /* !LOCALMACRO_THREAD_FOUND */
+#	endif /* !LOCALMACRO_DLL_FOUND */
 /* ******************** [^] LOCALMACRO_DLL_FOR_UNIX [^] ********************* */
 
 /* ******************* [v] LOCALMACRO_DLL_FOR_WINDOWS [v] ******************* */
-#	ifndef LOCALMACRO_THREAD_FOUND
+#	ifndef LOCALMACRO_DLL_FOUND
 #		ifdef _WIN32
-#			define LOCALMACRO_THREAD_FOUND
+#			define LOCALMACRO_DLL_FOUND
 #			define LOCALMACRO_DLL_FOR_WINDOWS
 #		endif /* _WIN32 */
-#	endif /* !LOCALMACRO_THREAD_FOUND */
+#	endif /* !LOCALMACRO_DLL_FOUND */
 /* ******************* [^] LOCALMACRO_DLL_FOR_WINDOWS [^] ******************* */
 
 /* ****************** [v] LOCALMACRO_DLL_FOR_AMIGAOS3 [v] ******************* */
-#	ifndef LOCALMACRO_THREAD_FOUND
+#	ifndef LOCALMACRO_DLL_FOUND
 #		ifdef __MORPHOS__ /* MORPHOS */
-#			define LOCALMACRO_THREAD_FOUND
+#			define LOCALMACRO_DLL_FOUND
 #			define LOCALMACRO_DLL_FOR_AMIGAOS3
 #		else
 #			ifdef __AROS__ /* AROS */
-#				define LOCALMACRO_THREAD_FOUND
+#				define LOCALMACRO_DLL_FOUND
 #				define LOCALMACRO_DLL_FOR_AMIGAOS3
 #			else
 #				ifdef __amigaos__ /* AMIGAOS3 */
-#					define LOCALMACRO_THREAD_FOUND
+#					define LOCALMACRO_DLL_FOUND
 #					define LOCALMACRO_DLL_FOR_AMIGAOS3
 #				endif /* __amigaos__ */
 #			endif /* __AROS__ */
 #		endif /* __MORPHOS__ */
-#	endif /* !LOCALMACRO_THREAD_FOUND */
+#	endif /* !LOCALMACRO_DLL_FOUND */
 /* ****************** [^] LOCALMACRO_DLL_FOR_AMIGAOS3 [^] ******************* */
 
-#	ifdef LOCALMACRO_THREAD_FOUND
+#	ifdef LOCALMACRO_DLL_FOUND
 #		ifdef LOCALMACRO_DLL_FOR_OS2
 #			ifdef LOCALMACRO_DLL_FOR_OS2_32BIT
 /* **************************** [v] INCLUDES [v] **************************** */
@@ -311,7 +311,7 @@ static PFN
 	return ((PFN)0);
 }
 
-#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
 					(DosFreeModule(__DLL_FILE_FOR_CLOSE__) == 0)
 #				ifdef __GNUC__
 #					define DYNAMIC __declspec(dllexport)
@@ -375,7 +375,7 @@ static PFN
 	return ((PFN)0);
 }
 
-#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+#				define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
 					(DosFreeSeg(__DLL_FILE_FOR_CLOSE__) == 0)
 #				define DYNAMIC _export
 #			endif /* LOCALMACRO_DLL_FOR_OS2_32BIT */
@@ -394,11 +394,11 @@ static PFN
 typedef void	*DLL;
 /* **************************** [^] TYPEDEFS [^] **************************** */
 
-#			define OPEN_DLL(__DLL_FILE__)
+#			define OPEN_DLL(__DLL_FILE__) \
 				(void *)dlopen(__DLL_FILE__, RTLD_LAZY)
 #			define READ_DLL(__THE_DLL__, __FUNCTION_NAME__) \
 				dlsym(__THE_DLL__, __FUNCTION_NAME__)
-#			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__)
+#			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
 				dlclose(__DLL_FILE_FOR_CLOSE__)
 #			ifdef __GNUC__
 #				define DYNAMIC __attribute__((visibility("default")))
@@ -453,20 +453,21 @@ typedef struct Library	*DLL;
 
 #			define OPEN_DLL(__DLL_FILE__) \
 				IExec->OpenLibrary(__DLL_FILE__, (unsigned long)0)
-#			define READ_DLL(__THE_DLL__, __FUNCTION_ORDINAL__) (\
-				(void (*)())\
+#			define READ_DLL(__THE_DLL__, __FUNCTION_ORDINAL__) \
 				(\
-					(char *)(__THE_DLL__)->lib_Open - \
-					(6 * (__FUNCTION_ORDINAL__))\
-				)\
-			)
+					(void (*)())\
+					(\
+						(char *)(__THE_DLL__)->lib_Open - \
+						(6 * (__FUNCTION_ORDINAL__))\
+					)\
+				)
 #			define CLOSE_DLL(__DLL_FILE_FOR_CLOSE__) \
 				IExec->CloseLibrary(__DLL_FILE_FOR_CLOSE__)
 #			define DYNAMIC
 #		endif /* LOCALMACRO_DLL_FOR_AMIGAOS3 */
 #	else
 #		error "OPERATING SYSTEM OR COMPILER DOESN'T SUPPORT DLL(S)!!!"
-#	endif /* LOCALMACRO_THREAD_FOUND */
+#	endif /* LOCALMACRO_DLL_FOUND */
 
 /* *************************** [v] LOWER CASE [v] *************************** */
 typedef DLL	dll;

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -68,7 +68,7 @@
 |* SIMPLY PUT: IT HINTS THE CPU TO FETCH THE VALUE INTO CACHE EARLY,          *|
 |* REDUCING MEMORY ACCESS LATENCY WHEN THAT VALUE IS USED SOON AFTER.         *|
 |*                                                                            *|
-|* THIS DOES NOT MOVE DATA TO "STACK" — IT MOVES IT INTO CACHE LINES.         *|
+|* THIS DOES NOT MOVE DATA TO "STACK" - IT MOVES IT INTO CACHE LINES.         *|
 |* IT'S A PERFORMANCE HINT, NOT A GUARANTEED ACTION.                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: PREFETCH_RANGE ::::::::::::::::::::::::::::: *|

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/07 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -183,7 +183,7 @@
 \******************************************************************************/
 
 #ifndef TRY_CATCH_H
-#	define TRY_CATCH_H 202508 /* VERSION */
+#	define TRY_CATCH_H 202509 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -227,7 +227,7 @@ extern "C" {
 #	define CATCH(VARIABLE_NAME) \
 		if (__TRY_CATCH_VALUE__ == 0)\
 		{\
-			if (__TRY_CATCH_INDEX__ > 0)\
+			if (__TRY_CATCH_INDEX__ != 0)\
 				--__TRY_CATCH_INDEX__;\
 		}\
 		else \
@@ -238,7 +238,7 @@ extern "C" {
 			)
 
 #	define THROW(ERROR_NO) \
-		if (__TRY_CATCH_INDEX__ > 0)\
+		if (__TRY_CATCH_INDEX__ != 0)\
 		{\
 			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
 			longjmp(\
@@ -249,9 +249,9 @@ extern "C" {
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #	ifdef SETUP_TRY_CATCH
-LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
-LOCAL char		__TRY_CATCH_INDEX__ = 0;
-LOCAL int		__TRY_CATCH_VALUE__ = 0;
+LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
+LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;
+LOCAL int			__TRY_CATCH_VALUE__ = 0;
 #	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
 #		ifdef main
 #			undef main
@@ -272,9 +272,11 @@ LOCAL int		__TRY_CATCH_VALUE__ = 0;
 #			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES
 #		endif /* LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
 #		define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
-			LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];\
-			LOCAL char		__TRY_CATCH_INDEX__ = 0;\
-			LOCAL int		__TRY_CATCH_VALUE__ = 0;
+			LOCAL jmp_buf		__TRY_CATCH_BUFFER__[\
+				__TRY_CATCH_BUFFER_SIZE__\
+			];\
+			LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;\
+			LOCAL int			__TRY_CATCH_VALUE__ = 0;
 #		define main \
 			__IDLE__TRY_CATCH; \
 			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
@@ -291,9 +293,9 @@ LOCAL int		__TRY_CATCH_VALUE__ = 0;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 /* *************************** [v] PROTOTYPES [v] *************************** */
-extern LOCAL jmp_buf	__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
-extern LOCAL char		__TRY_CATCH_INDEX__;
-extern LOCAL int		__TRY_CATCH_VALUE__;
+extern LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
+extern LOCAL unsigned int	__TRY_CATCH_INDEX__;
+extern LOCAL int			__TRY_CATCH_VALUE__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */

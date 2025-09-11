@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -30,23 +30,17 @@
 |*#                                 CONTENTS                                 #*|
 |*############################################################################*|
 |*............................................................................*|
-|*        NAME        :   TYPE    :                DESCRIPTION                *|
-|*....................:...........:...........................................*|
-|* OBJECT__FUNCTIONS  : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR    *|
-|* object__functions  :           : STRUCTURE                                 *|
-|*....................:...........:...........................................*|
-|* OBJECT__FUNCTION   : #define() : CREATE FUNCTION POINTER INSIDE YOUR       *|
-|* object__function   :           : STRUCTURE                                 *|
-|*....................:...........:...........................................*|
-|* OBJECT__CONNECT    : #define() : CONNECT A STRUCTURE INTO A FUNCTION       *|
-|* object_from        :           :                                           *|
-|*....................:...........:...........................................*|
-|* OBJECT             : #define() : CREATE AN OBJECT                          *|
-|* object             :           :                                           *|
-|*....................:...........:...........................................*|
-|* USE                : #define() : USE A FUNCTION INSIDE AN OBJECT           *|
-|* use                :           :                                           *|
-|*....................:...........:...........................................*|
+|*       NAME       :   TYPE    :                 DESCRIPTION                 *|
+|*..................:...........:.............................................*|
+|* OBJECT__TABLE    : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR      *|
+|* object__table    :           : STRUCTURE                                   *|
+|*..................:...........:.............................................*|
+|* OBJECT__CONNECT  : #define() : CONNECT A STRUCTURE INTO A FUNCTION         *|
+|* object__connect  :           :                                             *|
+|*..................:...........:.............................................*|
+|* OBJECT           : #define() : CREATE AN OBJECT                            *|
+|* object           :           :                                             *|
+|*..................:...........:.............................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -83,31 +77,33 @@
 |* - FUNCTION POINTER BINDING BY INDEX                                        *|
 |*                                                                            *|
 |* DEFINE YOUR STRUCTURE NORMALLY WITH FUNCTION POINTERS AT THE TOP.          *|
-|* CONNECT YOUR FUNCTIONS USING "object__functions(...) { ... }".             *|
+|* CONNECT YOUR FUNCTIONS USING "object__table(...) { ... }".                 *|
 |* THE FIRST INDEX (0) IS ALWAYS THE CONSTRUCTOR FUNCTION.                    *|
 |* FUNCTIONS ARE BOUND TO STRUCT MEMBERS BY ORDER, NOT NAME.                  *|
+|* DON'T FORGET TO ADD 0 END OF THE: OBJECT__TABLE {..., 0}!!!                *|
 |*                                                                            *|
 |* O - FUNCTION CONNECTION                                                    *|
 |* :                                                                          *|
 |* : struct test_object_type                                                  *|
 |* : {                                                                        *|
-|* :     void object__function(worked);                                       *|
+|* :     void (*worked)(int);                                                 *|
 |* :     int value;                                                           *|
 |* : };                                                                       *|
 |* :                                                                          *|
+|* : // EVEN THOUGHT YOU DO NOTHING IN CONSTRUCTOR, YOU MUST CREATE IT ANYWAY *|
 |* : static void CONSTRUCTOR(void)                                            *|
 |* : {                                                                        *|
-|* :     object__connect(test_object_type);                                   *| 
+|* :     object__connect (test_object_type);                                  *| 
 |* :     this->value = 0;                                                     *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : static void worked(int n)                                                *|
 |* : {                                                                        *|
-|* :     object__connect(test_object_type);                                   *|
+|* :     object__connect (test_object_type);                                  *|
 |* :     this->value += n;                                                    *|
 |* : }                                                                        *|
 |* :                                                                          *|
-|* : object__functions(test_object_type)                                      *|
+|* : object__table(test_object_type)                                          *|
 |* : {                                                                        *|
 |* :     CONSTRUCTOR,                                                         *|
 |* :     worked,                                                              *|
@@ -116,26 +112,19 @@
 |*                                                                            *|
 |* O - USAGE                                                                  *|
 |* :                                                                          *|
-|* : object(test_object_type, obj) (); // CONSTRUCTOR CALLED                  *|
+|* : object (test_object_type, obj) (); // CONSTRUCTOR CALLED                 *|
 |* : obj.worked(42); // uses implicit "this"                                  *|
-|*                                                                            *|
-|* WHEN USING MULTIPLE OBJECTS IN THE SAME SCOPE, USE "use(...)" TO SWITCH    *|
-|* CONTEXT SAFELY:                                                            *|
 |*                                                                            *|
 |* O - MULTIPLE OBJECTS EXAMPLE                                               *|
 |* :                                                                          *|
-|* : object(test_object_type, test1) ();                                      *|
-|* : object(test_object_type, test2) ();                                      *|
+|* : object (test_object_type, test1) ();                                     *|
+|* : object (test_object_type, test2) ();                                     *|
 |* :                                                                          *|
-|* : use(test1).worked(42);                                                   *|
 |* : test1.worked(42);                                                        *|
 |* : test1.worked(42);                                                        *|
-|* : use(test2).worked(42);                                                   *|
-|* : use(test1).worked(42);                                                   *|
-|* : use(test2).worked(42);                                                   *|
-|*                                                                            *|
-|* USING "use(obj)" BEFORE A SEQUENCE SAVES A CONTEXT SWITCH (ASM OPTIM).     *|
-|* IT IS OPTIONAL, BUT RECOMMENDED FOR PERFORMANCE WHEN SWITCHING OBJECTS.    *|
+|* : test2.worked(42);                                                        *|
+|* : test1.worked(42);                                                        *|
+|* : test2.worked(42);                                                        *|
 |*                                                                            *|
 |* O - FULL EXAMPLE                                                           *|
 |* :                                                                          *|
@@ -143,23 +132,23 @@
 |* :  :                                                                       *|
 |* :  : struct test_object_type                                               *|
 |* :  : {                                                                     *|
-|* :  :     int object__function(FUNC1);                                      *|
-|* :  :     void object__function(FUNC2);                                     *|
-|* :  :     void object__function(FUNC3);                                     *|
+|* :  :     int (*FUNC1)();                                                   *|
+|* :  :     void (*FUNC2)();                                                  *|
+|* :  :     void (*FUNC3)();                                                  *|
 |* :  :                                                                       *|
 |* :  :     int a;                                                            *|
 |* :  : };                                                                    *|
 |* :  :                                                                       *|
 |* :  : static void CONSTRUCTOR()                                             *|
 |* :  : {                                                                     *|
-|* :  :     object_from (test_object_type);                                   *|
+|* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
 |* :  :     printf("0\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
 |* :  : static int FUNC1()                                                    *|
 |* :  : {                                                                     *|
-|* :  :     object_from (test_object_type);                                   *|
+|* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
 |* :  :     printf("1\n");                                                    *|
 |* :  :     return (42);                                                      *|
@@ -167,19 +156,19 @@
 |* :  :                                                                       *|
 |* :  : static void FUNC2()                                                   *|
 |* :  : {                                                                     *|
-|* :  :     object_from (test_object_type);                                   *|
+|* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
 |* :  :     printf("2\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
 |* :  : static void FUNC3()                                                   *|
 |* :  : {                                                                     *|
-|* :  :     object_from (test_object_type);                                   *|
+|* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
 |* :  :     printf("3\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
-|* :  : object_functions (test_object_type)                                   *|
+|* :  : object_table (test_object_type)                                       *|
 |* :  : {                                                                     *|
 |* :  :     CONSTRUCTOR, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION          *|
 |* :  :                                                                       *|
@@ -205,19 +194,15 @@
 |*    :         object (test_object_type, TEST1) ();                          *|
 |*    :         object (test_object_type, TEST2) ();                          *|
 |*    :                                                                       *|
-|*    :         use(TEST1).FUNC1();                                           *|
+|*    :         TEST1.FUNC1();                                                *|
 |*    :         TEST1.FUNC2();                                                *|
 |*    :                                                                       *|
-|*    :         use(TEST2).FUNC1();                                           *|
+|*    :         TEST2.FUNC1();                                                *|
 |*    :         TEST2.FUNC2();                                                *|
 |*    :                                                                       *|
-|*    :         use(TEST1).FUNC1();                                           *|
-|*    :         use(TEST2).FUNC1();                                           *|
+|*    :         TEST1.FUNC1();                                                *|
+|*    :         TEST2.FUNC1();                                                *|
 |*    :                                                                       *|
-|*    :         // IF COMMA OPERATOR SUPPORTED (LIKE: a = (x++, y = 42, z))   *|
-|*    :         printf("%d\n", use(TEST1).FUNC1());                           *|
-|*    :         // ELSE (WHICH IS REALLY OLD COMPILERS)                       *|
-|*    :         use(TEST1);                                                   *|
 |*    :         printf("%d\n", TEST1.FUNC1());                                *|
 |*    :     }                                                                 *|
 |*    :                                                                       *|
@@ -252,7 +237,7 @@
 \******************************************************************************/
 
 #ifndef OBJECT_H
-#	define OBJECT_H 202508 /* VERSION */
+#	define OBJECT_H 202509 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -266,12 +251,6 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "KEYWORDS/LOCAL.h" /*
-#	 define LOCAL
-#	        */
-#	include "CHECK_FEATURE/COMMA_OPERATOR.h" /*
-#	 define IS__COMMA_OPERATOR__SUPPORTED
-#	        */
 #	include <setjmp.h> /*
 #	 define jmp_buf
 #	 define setjmp(jmp_buf env)
@@ -279,6 +258,25 @@
 #	        */
 #	include <stddef.h> /*
 #	typedef size_t;
+#	        */
+#	include <stdint.h> /*
+#	typedef uint64_t;
+#	        */
+#	include "./KEYWORDS/LOCAL.h" /*
+#	 define LOCAL
+#	        */
+#	include "./KEYWORDS/INLINE.h" /*
+#	 define INLINE
+#	        */
+#	include "./ENVIRONMENTS/KNR_STYLE.h" /*
+#	 define KNR_STYLE
+#	        */
+#	include "./ENVIRONMENTS/CPU.h" /*
+#	 define __CPU_INTEL__
+#	 define __CPU_ARM__
+#	        */
+#	include "./ASM/PUSH_POP.h" /*
+#	 define POP_64(VAR)
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
@@ -290,23 +288,22 @@ extern "C" {
 
 /* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
 #	ifndef __OBJECT_MAX_FUNCTION_LIMIT__
-#		define __OBJECT_MAX_FUNCTION_LIMIT__ 32 // <- INCREASE IF NEEDED
+#		define __OBJECT_MAX_FUNCTION_LIMIT__ 64 // <- INCREASE IF NEEDED
 #	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#	define OBJECT__FUNCTIONS(OBJECT_TYPE) \
-		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
-
-#	define OBJECT__FUNCTION(FUNCTION_NAME) (*FUNCTION_NAME)()
-
 #	define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
 		struct OBJECT_STRUCT_TYPE	*const this = \
-			(struct OBJECT_STRUCT_TYPE *const)__OBJECT_STRUCTURE_POINTER__
+			(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__;
+
+#	define OBJECT__TABLE(OBJECT_TYPE) \
+		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
 
 #	define OBJECT(OBJECT_NAME, VARIABLE_NAME) \
 		struct OBJECT_NAME	VARIABLE_NAME;\
 		\
 		{\
+			extern void		*OBJECT_NAME[];\
 			register size_t	__OBJECT_INDEX__;\
 			void			(*FUNCTION)();\
 			\
@@ -319,35 +316,24 @@ extern "C" {
 				\
 				if (__OBJECT_INDEX__)\
 				{\
-					((long **)&VARIABLE_NAME)[__OBJECT_INDEX__ - 1]\
-						= (long *)FUNCTION;\
+					((long **)&(VARIABLE_NAME))[__OBJECT_INDEX__ - 1]\
+						= __TRAMPOLINE_FUNCTION__(&(VARIABLE_NAME), FUNCTION);\
 				}\
 				\
 				++__OBJECT_INDEX__;\
 			}\
 		}\
 		\
-		__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME;\
-		\
 		if (*OBJECT_NAME)\
-			((void (*)())(*OBJECT_NAME))
-
-#	ifdef IS__COMMA_OPERATOR__SUPPORTED
-#		define USE(VARIABLE_NAME) (\
-			__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME,\
-			VARIABLE_NAME\
-		)
-#	else
-#		define USE(VARIABLE_NAME) \
-			__OBJECT_STRUCTURE_POINTER__ = (void *)&VARIABLE_NAME;\
-			(void)VARIABLE_NAME
-#	endif /* IS__COMMA_OPERATOR__SUPPORTED */
+			(\
+				(void (*)())__TRAMPOLINE_FUNCTION__(\
+					&(VARIABLE_NAME), \
+					*OBJECT_NAME)\
+			)
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #	ifdef SETUP_OBJECT
 LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
-LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
-LOCAL int		__OBJECT_IS_READY__ = 0;
 #	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
 #		ifdef main
 #			undef main
@@ -368,9 +354,7 @@ LOCAL int		__OBJECT_IS_READY__ = 0;
 #			define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES
 #		endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
 #		define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;\
-			LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;\
-			LOCAL int		__OBJECT_IS_READY__ = 0;
+			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
 #		define main \
 			__IDLE__TRY_CATCH; \
 			LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
@@ -388,16 +372,167 @@ LOCAL int		__OBJECT_IS_READY__ = 0;
 
 /* *************************** [v] PROTOTYPES [v] *************************** */
 extern LOCAL void		*__OBJECT_STRUCTURE_POINTER__;
-extern LOCAL jmp_buf	__OBJECT_LONGJMP_ADDRESS__;
-extern LOCAL int		__OBJECT_IS_READY__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
 
+#	ifdef __CPU_INTEL__
+#		ifndef KNR_STYLE /* STANDARD C */
+static INLINE void
+	*__TRAMPOLINE_FUNCTION__(void *THIS, void *TARGET)
+#		else /* K&R */
+static INLINE void
+	*__TRAMPOLINE_FUNCTION__(THIS, TARGET)
+	void	*THIS;
+	void	*TARGET;
+#		endif /* !KNR_STYLE */
+{
+	uint64_t		VALUE;
+	register int	INDEX;
+	unsigned char	*_;
+	unsigned char	*CODE;
+
+#		ifdef __unix__
+#			ifndef KNR_STYLE /* STANDARD C */
+	extern void	*mmap(void *, size_t, int, int, int, int);
+#			else /* K&R */
+	extern void	*mmap();
+#			endif /* !KNR_STYLE */
+	CODE = (unsigned char *)mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
+
+	if (CODE == ((unsigned char *) -1))
+		return ((void *)0);
+#		else
+#			ifdef _WIN32
+#				ifndef KNR_STYLE /* STANDARD C */
+	extern void	*VirtualAlloc(void *, size_t, unsigned int, unsigned int);
+#				else /* K&R */
+	extern void	*VirtualAlloc();
+#				endif /* !KNR_STYLE */
+	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
+
+	if (!CODE)
+		return ((void *)0);
+#			endif /* _WIN32 */
+#		endif /* __unix__ */
+
+	_ = CODE;
+	*_++ = 0X48; // MOV
+	*_++ = 0XB8; // RAX
+	VALUE = (uint64_t)THIS;
+
+	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
+
+	*_++ = 0X53; // PUSH RBX
+	*_++ = 0X48; // MOV
+	*_++ = 0XBB; // RBX
+	VALUE = (uint64_t)&__OBJECT_STRUCTURE_POINTER__;
+
+	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
+
+	*_++ = 0X48; // MOV
+	*_++ = 0X89; // [RBX]
+	*_++ = 0X03; // RAX
+	*_++ = 0X5B; // POP RBX
+	*_++ = 0X48; // MOV
+	*_++ = 0XB8; // RAX
+	VALUE = (uint64_t)TARGET;
+
+	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
+
+	*_++ = 0XFF; // JMP
+	*_++ = 0XE0; // RAX
+
+#		ifdef __unix__
+#			ifndef KNR_STYLE /* STANDARD C */
+	extern int	mprotect(void *, size_t, int);
+#			else /* K&R */
+	extern int	mprotect();
+#			endif /* !KNR_STYLE */
+	mprotect(CODE, 4096, 0X5);
+#		endif /* __unix__ */
+
+	return ((void *)CODE);
+}
+#	endif /* __CPU_INTEL__ */
+#	ifdef __CPU_ARM__
+#		ifndef KNR_STYLE /* STANDARD C */
+static INLINE void
+	*__TRAMPOLINE_FUNCTION__(void *THIS, void *TARGET)
+#		else /* K&R */
+static INLINE void
+	*__TRAMPOLINE_FUNCTION__(THIS, TARGET)
+	void	*THIS;
+	void	*TARGET;
+#		endif /* !KNR_STYLE */
+{
+	unsigned char	*CODE;
+	unsigned int	INSTRUCTIONS[5];
+	uint64_t		*LITERALS;
+	register int	INDEX;
+
+	INSTRUCTIONS[0] = (unsigned)0X580000A0;
+	INSTRUCTIONS[1] = (unsigned)0X580000C1;
+	INSTRUCTIONS[2] = (unsigned)0XF9000020;
+	INSTRUCTIONS[3] = (unsigned)0X580000C0;
+	INSTRUCTIONS[4] = (unsigned)0XD61F0000;
+
+#		ifdef __unix__
+#			ifndef KNR_STYLE /* STANDARD C */
+	extern void	*mmap(void *, size_t, int, int, int, int);
+#			else /* K&R */
+	extern void	*mmap();
+#			endif /* !KNR_STYLE */
+
+	CODE = mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
+
+	if (CODE == ((unsigned char *) -1))
+		return ((void *)0);
+#		else
+#			ifdef _WIN32
+#				ifndef KNR_STYLE /* STANDARD C */
+	extern void	*VirtualAlloc(void *, size_t, unsigned int, unsigned int);
+#				else /* K&R */
+	extern void	*VirtualAlloc();
+#				endif /* !KNR_STYLE */
+
+	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
+
+	if (!CODE)
+		return ((void *)0);
+#			endif /* _WIN32 */
+#		endif /* __unix__ */
+
+	for (INDEX = 0; INDEX < 5; ++INDEX)
+	{
+		register unsigned int	VALUE;
+
+		VALUE = INSTRUCTIONS[INDEX];
+		CODE[4 * INDEX + 0] = (unsigned char)(VALUE & (unsigned)0XFF);
+		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & (unsigned)0XFF);
+		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & (unsigned)0XFF);
+		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & (unsigned)0XFF);
+	}
+
+	LITERALS = (uint64_t *)(CODE + 4 * 5);
+	LITERALS[0] = (uint64_t)THIS;
+	LITERALS[1] = (uint64_t)&__OBJECT_STRUCTURE_POINTER__;
+	LITERALS[2] = (uint64_t)TARGET;
+
+#		ifdef __unix__
+	extern int	mprotect(void *, size_t, int);
+	mprotect(CODE, 4096, 0X5);
+#		endif /* __unix__ */
+
+	return ((void *)CODE);
+}
+#	endif /* __CPU_ARM__ */
+
 /* **************************** [v] LOWERCASE [v] *************************** */
-#	define object__functions OBJECT__FUNCTIONS
-#	define object__function OBJECT__FUNCTION
+#	define object__table OBJECT__TABLE
 #	define object__connect OBJECT__CONNECT
 #	define object OBJECT
-#	define use USE
 /* **************************** [^] LOWERCASE [^] *************************** */
 
 /* *************************** [v] C++ (POP) [v] **************************** */

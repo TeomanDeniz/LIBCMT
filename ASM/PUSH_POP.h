@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/02/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/08 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -33,32 +33,26 @@
 |*                                  CONTENTS                                  *|
 |******************************************************************************|
 |*............................................................................*|
-|* NAME :    TYPE    :                      DESCRIPTION                       *|
-|*......:............:........................................................*|
-|* PUSH : #define () : MOVES A VALUE TO STACK MEMORY (NATURAL SIZE).         *|
-|* push :            :                                                        *|
-|*......:............:........................................................*|
-|* PUSHW: #define () : MOVES A 16-BIT VALUE TO STACK MEMORY.                  *|
-|* pushw:            :                                                        *|
-|*......:............:........................................................*|
-|* PUSHD: #define () : MOVES A 32-BIT VALUE TO STACK MEMORY.                  *|
-|* pushd:            :                                                        *|
-|*......:............:........................................................*|
-|* PUSHQ: #define () : MOVES A 64-BIT VALUE TO STACK MEMORY.                  *|
-|* pushq:            :                                                        *|
-|*......:............:........................................................*|
-|* POP  : #define () : GETS A VALUE FROM STACK MEMORY (NATURAL SIZE).        *|
-|* pop  :            :                                                        *|
-|*......:............:........................................................*|
-|* POPW : #define () : GETS A 16-BIT VALUE FROM STACK MEMORY.                 *|
-|* popw :            :                                                        *|
-|*......:............:........................................................*|
-|* POPD : #define () : GETS A 32-BIT VALUE FROM STACK MEMORY.                 *|
-|* popd :            :                                                        *|
-|*......:............:........................................................*|
-|* POPQ : #define () : GETS A 64-BIT VALUE FROM STACK MEMORY.                 *|
-|* popq :            :                                                        *|
-|*......:............:........................................................*|
+|*   NAME  :    TYPE    :                    DESCRIPTION                      *|
+|*.........:............:.....................................................*|
+|* PUSH_16 : #define () : PUSH 2 BYTES INTO CPU STACK                         *|
+|* push_16 :            :                                                     *|
+|*.........:............:.....................................................*|
+|* PUSH_32 : #define () : PUSH 4 BYTES INTO CPU STACK                         *|
+|* push_32 :            :                                                     *|
+|*.........:............:.....................................................*|
+|* PUSH_64 : #define () : PUSH 8 BYTES INTO CPU STACK IF POSSIBLE             *|
+|* push_64 :            :                                                     *|
+|*.........:............:.....................................................*|
+|* POP_16  : #define () : POP 2 BYTES FROM CPU STACK                          *|
+|* pop_16  :            :                                                     *|
+|*.........:............:.....................................................*|
+|* POP_32  : #define () : POP 4 BYTES FROM CPU STACK                          *|
+|* pop_32  :            :                                                     *|
+|*.........:............:.....................................................*|
+|* POP_64  : #define () : POP 8 BYTES FROM CPU STACK IF POSSIBLE              *|
+|* pop_64  :            :                                                     *|
+|*.........:............:.....................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -67,30 +61,12 @@
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM THE CPU      *|
-|* STACK WITH DIFFERENT DATA SIZES AND ARCHITECTURES.                        *|
+|* STACK WITH DIFFERENT DATA SIZES AND ARCHITECTURES.                         *|
 |*                                                                            *|
-|* SUPPORTED ARCHITECTURES:                                                   *|
-|* - INTEL X86/X86-64 (PUSH/POP INSTRUCTIONS)                                 *|
-|* - ARM/AARCH64 (STR/LDR WITH STACK POINTER)                                 *|
-|* - AMD X86-64 (PUSH/POP INSTRUCTIONS)                                       *|
-|* - POWERPC (STW/LWZ WITH STACK REGISTER)                                    *|
-|* - RISC-V (SW/LW WITH STACK POINTER)                                        *|
+|* NOTE: ON 32-BIT SYSTEMS, PUSH_64 AND POP_64 MACROS CAN MAXIMUM PUSH 32-BIT *|
+|*       VARIABLES.                                                           *|
 |*                                                                            *|
-|* SUPPORTED COMPILERS:                                                       *|
-|* - GCC/CLANG (GNU EXTENDED INLINE ASSEMBLY)                                 *|
-|* - MICROSOFT VISUAL C++ (MSVC BLOCK ASSEMBLY)                               *|
-|* - BORLAND/TURBO C (SIMPLE INLINE ASSEMBLY)                                 *|
-|* - INTEL C COMPILER (INTEL MS-STYLE ASSEMBLY)                               *|
-|* - WATCOM C (PRAGMA/BLOCK ASSEMBLY)                                         *|
-|* - ARM COMPILER (ARM CONSTRAINTS ASSEMBLY)                                  *|
-|* - KEIL EMBEDDED (PRAGMA BLOCKS ASSEMBLY)                                   *|
-|* - AZTEC C (BLOCK ASSEMBLY)                                                 *|
-|*                                                                            *|
-|* DATA SIZES:                                                                *|
-|* - PUSH/POP: NATURAL SIZE (32-BIT ON 32-BIT SYSTEMS, 64-BIT ON 64-BIT)     *|
-|* - PUSHW/POPW: 16-BIT VALUES                                                 *|
-|* - PUSHD/POPD: 32-BIT VALUES                                                 *|
-|* - PUSHQ/POPQ: 64-BIT VALUES (ON 64-BIT SYSTEMS, FALLS BACK TO 32-BIT)     *|
+|*       THEY BEHAVE LIKE A "long" TYPE INSTEAD OF A TRUE 64-BIT VALUE.       *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -105,37 +81,46 @@
 |* ;.., register int a = 42;                                                  *|
 |*    : register int b = 11;                                                  *|
 |*    :                                                                       *|
-|*    : PUSH(a); // > ADDED 42 TO CPU STACK                                   *|
-|*    : a = b;   // |                                                         *|
-|*    : POP(b);  // < REMOVED 42 FROM CPU STACK                               *|
+|*    : PUSH_32(a); // > ADDED 42 TO CPU STACK                                *|
+|*    : a = b;      // |                                                      *|
+|*    : POP_32(b);  // < REMOVED 42 FROM CPU STACK                            *|
 |*    ;..,                                                                    *|
 |*       : b IS NOW 42                                                        *|
 |*       : a IS NOW 11                                                        *|
 |*                                                                            *|
-|* O - EXAMPLE 2: 16-BIT VALUES                                               *|
+|* O - EXAMPLE 2: SENDING AND GETING DIRECT VALUES                            *|
 |* :                                                                          *|
-|* ;.., short value16 = 0x1234;                                               *|
+|* ;.., register int a;                                                       *|
 |*    :                                                                       *|
-|*    : PUSHW(value16); // > PUSH 16-BIT VALUE                                *|
-|*    : value16 = 0;                                                          *|
-|*    : POPW(value16);  // < POP 16-BIT VALUE                                 *|
+|*    : PUSH_32(62); // > ADDED 62 TO CPU STACK                               *|
+|*    : POP_32(a);   // < REMOVED 62 FROM CPU STACK                           *|
 |*    ;..,                                                                    *|
-|*       : value16 IS NOW 0x1234                                              *|
+|*       : a IS NOW 62                                                        *|
 |*                                                                            *|
-|* O - EXAMPLE 3: 64-BIT VALUES (ON 64-BIT SYSTEMS)                           *|
+|* O - EXAMPLE 3: 16-BIT VALUES                                               *|
 |* :                                                                          *|
-|* ;.., long long bigValue = 0x123456789ABCDEF0LL;                            *|
+|* ;.., short value16 = 0X1234;                                               *|
 |*    :                                                                       *|
-|*    : PUSHQ(bigValue); // > PUSH 64-BIT VALUE                               *|
-|*    : bigValue = 0;                                                         *|
-|*    : POPQ(bigValue);  // < POP 64-BIT VALUE                                *|
+|*    : PUSH_16(value16); // > PUSH 16-BIT VALUE                              *|
+|*    : value16 = 0;      // |                                                *|
+|*    : POP_16(value16);  // < POP 16-BIT VALUE                               *|
 |*    ;..,                                                                    *|
-|*       : bigValue IS NOW 0x123456789ABCDEF0LL                               *|
+|*       : value16 IS NOW 0X1234                                              *|
+|*                                                                            *|
+|* O - EXAMPLE 4: 64-BIT VALUES (ON 64-BIT SYSTEMS)                           *|
+|* :                                                                          *|
+|* ;.., long bigValue = 0X123456789ABCDEF0LL;                                 *|
+|*    :                                                                       *|
+|*    : PUSH_64(bigValue); // > PUSH 64-BIT VALUE                             *|
+|*    : bigValue = 0;      // |                                               *|
+|*    : POP_64(bigValue);  // < POP 64-BIT VALUE                              *|
+|*    ;..,                                                                    *|
+|*       : bigValue IS NOW 0X123456789ABCDEF0LL                               *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef PUSH_POP_H
-#	define PUSH_POP_H 202508 /* VERSION */
+#	define PUSH_POP_H 202509 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -149,12 +134,36 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
+#	include <stdint.h> /*
+#	typedef uint64_t;
+#	        */
 #	include "../ENVIRONMENTS/CPU.h" /*
-#			CPU ARCHITECTURE DETECTION
-#		*/
+#	 define __CPU_INTEL__
+#	 define __CPU_ARM__
+#	 define __CPU_AMD_X86__
+#	 define __CPU_POWERPC__
+#	 define __CPU_RISCV__
+#	 define __CPU_HC12__
+#	 define __CPU_HCS08__
+#	 define __CPU_COLDFIRE__
+#	 define __CPU_M68K__
+#	 define __CPU_SH__
+#	 define __CPU_MIPS__
+#	 define __CPU_SPARC__
+#	 define __CPU_6502__
+#	 define __CPU_Z80__
+#	 define __CPU_TI__
+#	 define __CPU_SHARC__
+#	 define __CPU_BLACKFIN__
+#	 define __CPU_DSP56K__
+#	        */
+#	include "../ENVIRONMENTS/ARCHITECTURE.h" /*
+#	 define __SYSTEM_64_BIT__
+#	        */
 #	include "../CHECK_FEATURE/INLINE_ASM.h" /*
-#			INLINE ASSEMBLY FEATURE DETECTION
-#		*/
+#	 define IS__INLINE_ASM__SUPPORTED
+#	 define INLINE_ASM_TYPE__ISO
+#	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
@@ -163,620 +172,1054 @@ extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
-/* ********************* [v] PUSH/POP IMPLEMENTATION [v] ******************** */
-#	ifdef IS__INLINE_ASM__SUPPORTED
-
-/* ************************ [v] INTEL X86/X64 CPU [v] *********************** */
-#		ifdef __CPU_INTEL__
-
-/* ************************** [v] GNU ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__GNU
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("push %0" : : "rm"((long)(PUSH_VAR)))
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("pushw %0" : : "rm"((short)(PUSH_VAR)))
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("pushl %0" : : "rm"((int)(PUSH_VAR)))
-
-#				ifdef __x86_64__
-#					define PUSHQ(PUSH_VAR) \
-						__asm__ __volatile__("pushq %0" : : "rm"((long long)(PUSH_VAR)))
-#				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __x86_64__ */
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("pop %0" : "=rm"(POP_VAR))
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("popw %0" : "=rm"(POP_VAR))
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("popl %0" : "=rm"(POP_VAR))
-
-#				ifdef __x86_64__
-#					define POPQ(POP_VAR) \
-						__asm__ __volatile__("popq %0" : "=rm"(POP_VAR))
-#				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __x86_64__ */
-#			endif /* INLINE_ASM_TYPE__GNU */
-/* ************************** [^] GNU ASM STYLE [^] ************************* */
-
-/* ************************* [v] MSVC ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__MSVC
-#				define PUSH(PUSH_VAR) \
-					__asm { push PUSH_VAR }
-
-#				define PUSHW(PUSH_VAR) \
-					__asm { push PUSH_VAR }
-
-#				define PUSHD(PUSH_VAR) \
-					__asm { push PUSH_VAR }
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm { push PUSH_VAR }
-
-#				define POP(POP_VAR) \
-					__asm { pop POP_VAR }
-
-#				define POPW(POP_VAR) \
-					__asm { pop POP_VAR }
-
-#				define POPD(POP_VAR) \
-					__asm { pop POP_VAR }
-
-#				define POPQ(POP_VAR) \
-					__asm { pop POP_VAR }
-#			endif /* INLINE_ASM_TYPE__MSVC */
-/* ************************* [^] MSVC ASM STYLE [^] ************************* */
-
-/* ************************ [v] BORLAND ASM STYLE [v] ********************** */
-#			ifdef INLINE_ASM_TYPE__BORLAND
-#				define PUSH(PUSH_VAR) \
-					asm push PUSH_VAR
-
-#				define PUSHW(PUSH_VAR) \
-					asm push PUSH_VAR
-
-#				define PUSHD(PUSH_VAR) \
-					asm push PUSH_VAR
-
-#				define PUSHQ(PUSH_VAR) \
-					asm push PUSH_VAR
-
-#				define POP(POP_VAR) \
-					asm pop POP_VAR
-
-#				define POPW(POP_VAR) \
-					asm pop POP_VAR
-
-#				define POPD(POP_VAR) \
-					asm pop POP_VAR
-
-#				define POPQ(POP_VAR) \
-					asm pop POP_VAR
-#			endif /* INLINE_ASM_TYPE__BORLAND */
-/* ************************ [^] BORLAND ASM STYLE [^] ********************** */
-
-/* ********************** [v] INTEL MS ASM STYLE [v] ********************* */
-#			ifdef INLINE_ASM_TYPE__INTEL_MS
-#				define PUSH(PUSH_VAR) \
-					__asm push PUSH_VAR
-
-#				define PUSHW(PUSH_VAR) \
-					__asm push PUSH_VAR
-
-#				define PUSHD(PUSH_VAR) \
-					__asm push PUSH_VAR
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm push PUSH_VAR
-
-#				define POP(POP_VAR) \
-					__asm pop POP_VAR
-
-#				define POPW(POP_VAR) \
-					__asm pop POP_VAR
-
-#				define POPD(POP_VAR) \
-					__asm pop POP_VAR
-
-#				define POPQ(POP_VAR) \
-					__asm pop POP_VAR
-#			endif /* INLINE_ASM_TYPE__INTEL_MS */
-/* ********************** [^] INTEL MS ASM STYLE [^] ********************* */
-
-/* ************************ [v] WATCOM ASM STYLE [v] *********************** */
-#			ifdef INLINE_ASM_TYPE__WATCOM
-#				define PUSH(PUSH_VAR) \
-					_asm { push PUSH_VAR }
-
-#				define PUSHW(PUSH_VAR) \
-					_asm { push PUSH_VAR }
-
-#				define PUSHD(PUSH_VAR) \
-					_asm { push PUSH_VAR }
-
-#				define PUSHQ(PUSH_VAR) \
-					_asm { push PUSH_VAR }
-
-#				define POP(POP_VAR) \
-					_asm { pop POP_VAR }
-
-#				define POPW(POP_VAR) \
-					_asm { pop POP_VAR }
-
-#				define POPD(POP_VAR) \
-					_asm { pop POP_VAR }
-
-#				define POPQ(POP_VAR) \
-					_asm { pop POP_VAR }
-#			endif /* INLINE_ASM_TYPE__WATCOM */
-/* ************************ [^] WATCOM ASM STYLE [^] *********************** */
-
-/* ************************ [v] AZTEC ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__AZTEC
-#				define PUSH(PUSH_VAR) \
-					asm { push PUSH_VAR }
-
-#				define PUSHW(PUSH_VAR) \
-					asm { push PUSH_VAR }
-
-#				define PUSHD(PUSH_VAR) \
-					asm { push PUSH_VAR }
-
-#				define PUSHQ(PUSH_VAR) \
-					asm { push PUSH_VAR }
-
-#				define POP(POP_VAR) \
-					asm { pop POP_VAR }
-
-#				define POPW(POP_VAR) \
-					asm { pop POP_VAR }
-
-#				define POPD(POP_VAR) \
-					asm { pop POP_VAR }
-
-#				define POPQ(POP_VAR) \
-					asm { pop POP_VAR }
-#			endif /* INLINE_ASM_TYPE__AZTEC */
-/* ************************ [^] AZTEC ASM STYLE [^] ************************ */
-
-/* ************************* [v] ISO C ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__ISO
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("push %0" : : "rm"((long)(PUSH_VAR)))
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("pushw %0" : : "rm"((short)(PUSH_VAR)))
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("pushl %0" : : "rm"((int)(PUSH_VAR)))
-
-#				ifdef __x86_64__
-#					define PUSHQ(PUSH_VAR) \
-						__asm__ __volatile__("pushq %0" : : "rm"((long long)(PUSH_VAR)))
-#				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __x86_64__ */
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("pop %0" : "=rm"(POP_VAR))
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("popw %0" : "=rm"(POP_VAR))
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("popl %0" : "=rm"(POP_VAR))
-
-#				ifdef __x86_64__
-#					define POPQ(POP_VAR) \
-						__asm__ __volatile__("popq %0" : "=rm"(POP_VAR))
-#				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __x86_64__ */
-#			endif /* INLINE_ASM_TYPE__ISO */
-/* ************************* [^] ISO C ASM STYLE [^] ************************ */
-
-#		endif /* __CPU_INTEL__ */
-/* ************************ [^] INTEL X86/X64 CPU [^] *********************** */
-
-/* *************************** [v] ARM CPU [v] ****************************** */
-#		ifdef __CPU_ARM__
-
-/* ************************** [v] GNU ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__GNU
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("strh %0, [sp, #-2]!" : : "r"((short)(PUSH_VAR)) : "sp")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				ifdef __aarch64__
-#					define PUSHQ(PUSH_VAR) \
-						__asm__ __volatile__("str %0, [sp, #-8]!" : : "r"((long long)(PUSH_VAR)) : "sp")
-#				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __aarch64__ */
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("ldr %0, [sp], #4" : "=r"(POP_VAR) : : "sp")
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("ldrh %0, [sp], #2" : "=r"(POP_VAR) : : "sp")
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("ldr %0, [sp], #4" : "=r"(POP_VAR) : : "sp")
-
-#				ifdef __aarch64__
-#					define POPQ(POP_VAR) \
-						__asm__ __volatile__("ldr %0, [sp], #8" : "=r"(POP_VAR) : : "sp")
-#				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __aarch64__ */
-#			endif /* INLINE_ASM_TYPE__GNU */
-/* ************************** [^] GNU ASM STYLE [^] ************************* */
-
-/* ************************** [v] ARM ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__ARM
-#				define PUSH(PUSH_VAR) \
-					__asm("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)))
-
-#				define PUSHW(PUSH_VAR) \
-					__asm("strh %0, [sp, #-2]!" : : "r"((short)(PUSH_VAR)))
-
-#				define PUSHD(PUSH_VAR) \
-					__asm("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)))
-
-#				ifdef __aarch64__
-#					define PUSHQ(PUSH_VAR) \
-						__asm("str %0, [sp, #-8]!" : : "r"((long long)(PUSH_VAR)))
-#				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __aarch64__ */
-
-#				define POP(POP_VAR) \
-					__asm("ldr %0, [sp], #4" : "=r"(POP_VAR))
-
-#				define POPW(POP_VAR) \
-					__asm("ldrh %0, [sp], #2" : "=r"(POP_VAR))
-
-#				define POPD(POP_VAR) \
-					__asm("ldr %0, [sp], #4" : "=r"(POP_VAR))
-
-#				ifdef __aarch64__
-#					define POPQ(POP_VAR) \
-						__asm("ldr %0, [sp], #8" : "=r"(POP_VAR))
-#				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __aarch64__ */
-#			endif /* INLINE_ASM_TYPE__ARM */
-/* ************************** [^] ARM ASM STYLE [^] ************************* */
-
-/* ************************** [v] KEIL ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__KEIL
-#				define PUSH(PUSH_VAR) \
-					{ \
-						__asm { STR PUSH_VAR, [SP, #-4]! } \
+#	ifndef IS__INLINE_ASM__SUPPORTED /* UH-OH ._. */
+#		error "INLINE ASM DOES NOT SUPPORTED IN YOUR COMPILER :-("
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+
+/* ************************* [v] __CPU_INTEL__ [v] ************************** */
+#	ifdef __CPU_INTEL__
+#		ifdef INLINE_ASM_TYPE__ISO
+#			define PUSH_16(VAR) \
+				{\
+					register unsigned short	__PUSH_16__;\
+					\
+					__PUSH_16__ = (unsigned short)(VAR);\
+					__asm__ __volatile__ (\
+						"pushw %0" \
+						: "r" (__PUSH_16__)\
+					);\
+				}
+#			define POP_16(VAR) \
+				{\
+					register unsigned short	__POP_16__;\
+					\
+					__asm__ __volatile__ (\
+						"popw %0" \
+						: "r" (__POP_16__)\
+					);\
+					(VAR) = __POP_16__;\
+				}
+#			define PUSH_32(VAR) \
+				{\
+					register unsigned int	__PUSH_32__;\
+					\
+					__PUSH_32__ = (unsigned int)(VAR);\
+					__asm__ __volatile__ (\
+						"pushl %0" \
+						: "r" (__PUSH_32__)\
+					);\
+				}
+#			define POP_32(VAR) \
+				{\
+					register unsigned int	__POP_32__;\
+					\
+					__asm__ __volatile__ (\
+						"popl %0" \
+						: "r" (__POP_32__)\
+					);\
+					(VAR) = __POP_32__;\
+				}
+#			ifdef __SYSTEM_64_BIT__
+#				define PUSH_64(VAR) \
+					{\
+						register uint64_t	__PUSH_64__;\
+						\
+						__PUSH_64__ = (uint64_t)(VAR);\
+						__asm__ __volatile__ (\
+							"pushq %0" \
+							: "r" (__PUSH_64__)\
+						);\
 					}
-
-#				define PUSHW(PUSH_VAR) \
-					{ \
-						__asm { STRH PUSH_VAR, [SP, #-2]! } \
+#				define POP_64(VAR) \
+					{\
+						register uint64_t	__POP_64__;\
+						\
+						__asm__ __volatile__ (\
+							"popq %0" \
+							: "r" (__POP_64__)\
+						);\
+						(VAR) = __POP_64__;\
 					}
-
-#				define PUSHD(PUSH_VAR) \
-					{ \
-						__asm { STR PUSH_VAR, [SP, #-4]! } \
+#			else
+#				define PUSH_64(VAR) \
+					{\
+						register unsigned long	__PUSH_64__;\
+						\
+						__PUSH_64__ = (unsigned long)(VAR);\
+						__asm__ __volatile__ (\
+							"pushl %0" \
+							: "r" (__PUSH_64__)\
+						);\
 					}
-
-#				define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-
-#				define POP(POP_VAR) \
-					{ \
-						__asm { LDR POP_VAR, [SP], #4 } \
+#				define POP_64(VAR) \
+					{\
+						register unsigned long	__POP_64__;\
+						\
+						__asm__ __volatile__ (\
+							"popl %0" \
+							: "r" (__POP_64__)\
+						);\
+						(VAR) = __POP_64__;\
 					}
-
-#				define POPW(POP_VAR) \
-					{ \
-						__asm { LDRH POP_VAR, [SP], #2 } \
+#			endif /* __SYSTEM_64_BIT__ */
+#		else
+#			ifdef __GNUC__
+#				define PUSH_16(VAR) \
+					{\
+						register unsigned short	__PUSH_16__;\
+						\
+						__PUSH_16__ = (unsigned short)(VAR);\
+						asm volatile (\
+							"subl $2, %%esp\n\t" \
+							"movw %0, (%%esp)" \
+							: \
+							: "r"(__PUSH_16__) \
+							: "esp", "memory"\
+						);\
 					}
-
-#				define POPD(POP_VAR) \
-					{ \
-						__asm { LDR POP_VAR, [SP], #4 } \
+#				define POP_16(VAR) \
+					{\
+						register unsigned short	__POP_16__;\
+						\
+						asm volatile (\
+							"movw (%%esp), %0\n\t" \
+							"addl $2, %%esp" \
+							: "=r"(__POP_16__) \
+							: \
+							: "esp", "memory"\
+						);\
+						(VAR) = __POP_16__;\
 					}
-
-#				define POPQ(POP_VAR) POPD(POP_VAR)
-#			endif /* INLINE_ASM_TYPE__KEIL */
-/* ************************** [^] KEIL ASM STYLE [^] ************************ */
-
-/* ************************* [v] ISO C ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__ISO
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("strh %0, [sp, #-2]!" : : "r"((short)(PUSH_VAR)) : "sp")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("str %0, [sp, #-4]!" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				ifdef __aarch64__
-#					define PUSHQ(PUSH_VAR) \
-						__asm__ __volatile__("str %0, [sp, #-8]!" : : "r"((long long)(PUSH_VAR)) : "sp")
+#				define PUSH_32(VAR) \
+					{\
+						register unsigned int	__PUSH_32__;\
+						\
+						__PUSH_32__ = (unsigned int)(VAR);\
+						asm volatile (\
+							"subl $4, %%esp\n\t" \
+							"movl %0, (%%esp)" \
+							: \
+							: "r"(__PUSH_32__) \
+							: "esp", "memory"\
+						);\
+					}
+#				define POP_32(VAR) \
+					{\
+						register unsigned int	__POP_32__;\
+						\
+						asm volatile (\
+							"movl (%%esp), %0\n\t" \
+							"addl $4, %%esp" \
+							: "=r"(__POP_32__) \
+							: \
+							: "esp", "memory"\
+						);\
+						(VAR) = __POP_32__;\
+					}
+#				ifdef __SYSTEM_64_BIT__
+#					define PUSH_64(VAR) \
+						{\
+							register uint64_t	__PUSH_64__;\
+							\
+							__PUSH_64__ = (uint64_t)(VAR);\
+							asm volatile (\
+								"subq $8, %%rsp\n\t" \
+								"movq %0, (%%rsp)" \
+								: \
+								: "r"(__PUSH_64__) \
+								: "rsp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register uint64_t	__POP_64__;\
+							\
+							asm volatile (\
+								"movq (%%rsp), %0\n\t" \
+								"addq $8, %%rsp" \
+								: "=r"(__POP_64__) \
+								: \
+								: "rsp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
 #				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __aarch64__ */
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("ldr %0, [sp], #4" : "=r"(POP_VAR) : : "sp")
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("ldrh %0, [sp], #2" : "=r"(POP_VAR) : : "sp")
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("ldr %0, [sp], #4" : "=r"(POP_VAR) : : "sp")
-
-#				ifdef __aarch64__
-#					define POPQ(POP_VAR) \
-						__asm__ __volatile__("ldr %0, [sp], #8" : "=r"(POP_VAR) : : "sp")
+#					define PUSH_64(VAR) \
+						{\
+							register unsigned long	__PUSH_64__;\
+							\
+							__PUSH_64__ = (unsigned long)(VAR);\
+							asm volatile (\
+								"subl $4, %%esp\n\t" \
+								"movl %0, (%%esp)" \
+								: \
+								: "r"(__PUSH_64__) \
+								: "esp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register unsigned long	__POP_64__;\
+							\
+							asm volatile (\
+								"movl (%%esp), %0\n\t" \
+								"addl $4, %%esp" \
+								: "=r"(__POP_64__) \
+								: \
+								: "esp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
+#				endif /* __SYSTEM_64_BIT__ */
+#			endif /* __GNUC__ */
+#			ifdef _MSC_VER
+#				define PUSH_16(VAR) \
+					{\
+						unsigned short	__PUSH_16__;\
+						\
+						__PUSH_16__ = (unsigned short)(VAR);\
+						__asm\
+						{\
+							mov ax, __PUSH_16__\
+							push ax\
+						};\
+					}
+#				define POP_16(VAR) \
+					{\
+						unsigned short	__POP_16__;\
+						\
+						__asm\
+						{\
+							pop ax\
+							mov __PUSH_16__, ax\
+						};\
+						(VAR) = __PUSH_16__;\
+					}
+#				define PUSH_32(VAR) \
+					{\
+						unsigned int	__PUSH_32__;\
+						\
+						__PUSH_32__ = (unsigned int)(VAR);\
+						__asm\
+						{\
+							mov eax, __PUSH_32__\
+							push eax\
+						};\
+					}
+#				define POP_32(VAR) \
+					{\
+						unsigned int	__POP_32__;\
+						\
+						__asm\
+						{\
+							pop eax\
+							mov __POP_32__, eax\
+						};\
+						(VAR) = __POP_32__;\
+					}
+#				ifdef __SYSTEM_64_BIT__
+#					define PUSH_64(VAR) \
+						{\
+							uint64_t	__PUSH_64__;\
+							\
+							__PUSH_64__ = (uint64_t)(VAR);\
+							__asm\
+							{\
+								mov rax, __PUSH_64__\
+								push rax\
+							};\
+						}
+#					define POP_64(VAR) \
+						{\
+							uint64_t	__POP_64__;\
+							\
+							__asm\
+							{\
+								pop rax\
+								mov __POP_64__, rax\
+							};\
+							(VAR) = __POP_64__;\
+						}
 #				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __aarch64__ */
-#			endif /* INLINE_ASM_TYPE__ISO */
-/* ************************* [^] ISO C ASM STYLE [^] ************************ */
+#					define PUSH_64(VAR) \
+						{\
+							unsigned long	__PUSH_64__;\
+							\
+							__PUSH_64__ = (unsigned long)(VAR);\
+							__asm\
+							{\
+								mov eax, __PUSH_64__\
+								push eax\
+							};\
+						}
+#					define POP_64(VAR) \
+						{\
+							unsigned long	__POP_64__;\
+							\
+							__asm\
+							{\
+								pop eax\
+								mov __POP_64__, eax\
+							};\
+							(VAR) = __POP_64__;\
+						}
+#				endif /* __SYSTEM_64_BIT__ */
+#			endif /* _MSC_VER */
+#			ifdef __clang__
+#				define PUSH_16(VAR) \
+					{\
+						register unsigned short	__PUSH_16__;\
+						\
+						__PUSH_16__ = (unsigned short)(VAR);\
+						asm volatile (\
+							"subl $2, %%esp\n\t" \
+							"movw %0, (%%esp)" \
+							: \
+							: "r"(__PUSH_16__) \
+							: "esp", "memory"\
+						);\
+					}
+#				define POP_16(VAR) \
+					{\
+						register unsigned short	__POP_16__;\
+						\
+						asm volatile (\
+							"movw (%%esp), %0\n\t" \
+							"addl $2, %%esp" \
+							: "=r"(__POP_16__) \
+							: \
+							: "esp", "memory"\
+						);\
+						(VAR) = __POP_16__;\
+					}
+#				define PUSH_32(VAR) \
+					{\
+						register unsigned int	__PUSH_32__;\
+						\
+						__PUSH_32__ = (unsigned int)(VAR);\
+						asm volatile (\
+							"subl $4, %%esp\n\t" \
+							"movl %0, (%%esp)" \
+							: \
+							: "r"(__PUSH_32__) \
+							: "esp", "memory"\
+						);\
+					}
+#				define POP_32(VAR) \
+					{\
+						register unsigned int	__POP_32__;\
+						\
+						asm volatile (\
+							"movl (%%esp), %0\n\t" \
+							"addl $4, %%esp" \
+							: "=r"(__POP_32__) \
+							: \
+							: "esp", "memory"\
+						);\
+						(VAR) = __POP_32__;\
+					}
+#				ifdef __SYSTEM_64_BIT__
+#					define PUSH_64(VAR) \
+						{\
+							register uint64_t	__PUSH_64__;\
+							\
+							__PUSH_64__ = (uint64_t)(VAR);\
+							asm volatile (\
+								"subq $8, %%rsp\n\t" \
+								"movq %0, (%%rsp)" \
+								: \
+								: "r"(__PUSH_64__) \
+								: "rsp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register uint64_t	__POP_64__;\
+							\
+							asm volatile (\
+								"movq (%%rsp), %0\n\t" \
+								"addq $8, %%rsp" \
+								: "=r"(__POP_64__) \
+								: \
+								: "rsp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
+#				else
+#					define PUSH_64(VAR) \
+						{\
+							register unsigned long	__PUSH_64__;\
+							\
+							__PUSH_64__ = (unsigned long)(VAR);\
+							asm volatile (\
+								"subl $4, %%esp\n\t" \
+								"movl %0, (%%esp)" \
+								: \
+								: "r"(__PUSH_64__) \
+								: "esp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register unsigned long	__POP_64__;\
+							\
+							asm volatile (\
+								"movl (%%esp), %0\n\t" \
+								"addl $4, %%esp" \
+								: "=r"(__POP_64__) \
+								: \
+								: "esp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
+#				endif /* __SYSTEM_64_BIT__ */
+#			endif /* __clang__ */
+/* TODO: ... */
+#		endif /* INLINE_ASM_TYPE__ISO */
+#	endif /* __CPU_INTEL__ */
+/* ************************* [^] __CPU_INTEL__ [^] ************************** */
 
-#		endif /* __CPU_ARM__ */
-/* *************************** [^] ARM CPU [^] ****************************** */
-
-/* ************************* [v] AMD X86 CPU [v] **************************** */
-#		ifdef __CPU_AMD_X86__
-
-/* ************************** [v] GNU ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__GNU
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("push %0" : : "rm"((long)(PUSH_VAR)))
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("pushw %0" : : "rm"((short)(PUSH_VAR)))
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("pushl %0" : : "rm"((int)(PUSH_VAR)))
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm__ __volatile__("pushq %0" : : "rm"((long long)(PUSH_VAR)))
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("pop %0" : "=rm"(POP_VAR))
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("popw %0" : "=rm"(POP_VAR))
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("popl %0" : "=rm"(POP_VAR))
-
-#				define POPQ(POP_VAR) \
-					__asm__ __volatile__("popq %0" : "=rm"(POP_VAR))
-#			endif /* INLINE_ASM_TYPE__GNU */
-/* ************************** [^] GNU ASM STYLE [^] ************************* */
-
-/* ************************* [v] ISO C ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__ISO
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("push %0" : : "rm"((long)(PUSH_VAR)))
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("pushw %0" : : "rm"((short)(PUSH_VAR)))
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("pushl %0" : : "rm"((int)(PUSH_VAR)))
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm__ __volatile__("pushq %0" : : "rm"((long long)(PUSH_VAR)))
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("pop %0" : "=rm"(POP_VAR))
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("popw %0" : "=rm"(POP_VAR))
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("popl %0" : "=rm"(POP_VAR))
-
-#				define POPQ(POP_VAR) \
-					__asm__ __volatile__("popq %0" : "=rm"(POP_VAR))
-#			endif /* INLINE_ASM_TYPE__ISO */
-/* ************************* [^] ISO C ASM STYLE [^] ************************ */
-
-#		endif /* __CPU_AMD_X86__ */
-/* ************************* [^] AMD X86 CPU [^] **************************** */
-
-/* ************************ [v] POWERPC CPU [v] ****************************** */
-#		ifdef __CPU_POWERPC__
-
-/* ************************** [v] GNU ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__GNU
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("stwu %0, -4(%%r1)" : : "r"((int)(PUSH_VAR)) : "r1")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("sthux %0, %%r1, %1" : : "r"((short)(PUSH_VAR)), "r"(-2) : "r1")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("stwu %0, -4(%%r1)" : : "r"((int)(PUSH_VAR)) : "r1")
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm__ __volatile__("stdu %0, -8(%%r1)" : : "r"((long long)(PUSH_VAR)) : "r1")
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("lwz %0, 0(%%r1); addi %%r1, %%r1, 4" : "=r"(POP_VAR) : : "r1")
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("lhz %0, 0(%%r1); addi %%r1, %%r1, 2" : "=r"(POP_VAR) : : "r1")
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("lwz %0, 0(%%r1); addi %%r1, %%r1, 4" : "=r"(POP_VAR) : : "r1")
-
-#				define POPQ(POP_VAR) \
-					__asm__ __volatile__("ld %0, 0(%%r1); addi %%r1, %%r1, 8" : "=r"(POP_VAR) : : "r1")
-#			endif /* INLINE_ASM_TYPE__GNU */
-/* ************************** [^] GNU ASM STYLE [^] ************************* */
-
-/* ************************* [v] ISO C ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__ISO
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("stwu %0, -4(%%r1)" : : "r"((int)(PUSH_VAR)) : "r1")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("sthux %0, %%r1, %1" : : "r"((short)(PUSH_VAR)), "r"(-2) : "r1")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("stwu %0, -4(%%r1)" : : "r"((int)(PUSH_VAR)) : "r1")
-
-#				define PUSHQ(PUSH_VAR) \
-					__asm__ __volatile__("stdu %0, -8(%%r1)" : : "r"((long long)(PUSH_VAR)) : "r1")
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("lwz %0, 0(%%r1); addi %%r1, %%r1, 4" : "=r"(POP_VAR) : : "r1")
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("lhz %0, 0(%%r1); addi %%r1, %%r1, 2" : "=r"(POP_VAR) : : "r1")
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("lwz %0, 0(%%r1); addi %%r1, %%r1, 4" : "=r"(POP_VAR) : : "r1")
-
-#				define POPQ(POP_VAR) \
-					__asm__ __volatile__("ld %0, 0(%%r1); addi %%r1, %%r1, 8" : "=r"(POP_VAR) : : "r1")
-#			endif /* INLINE_ASM_TYPE__ISO */
-/* ************************* [^] ISO C ASM STYLE [^] ************************ */
-
-#		endif /* __CPU_POWERPC__ */
-/* ************************ [^] POWERPC CPU [^] ****************************** */
-
-/* ************************* [v] RISC-V CPU [v] ****************************** */
-#		ifdef __CPU_RISCV__
-
-/* ************************** [v] GNU ASM STYLE [v] ************************* */
-#			ifdef INLINE_ASM_TYPE__GNU
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -4; sw %0, 0(sp)" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -2; sh %0, 0(sp)" : : "r"((short)(PUSH_VAR)) : "sp")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -4; sw %0, 0(sp)" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				ifdef __riscv_xlen
-#					if __riscv_xlen == 64
-#						define PUSHQ(PUSH_VAR) \
-							__asm__ __volatile__("addi sp, sp, -8; sd %0, 0(sp)" : : "r"((long long)(PUSH_VAR)) : "sp")
+/* ************************** [v] __CPU_ARM__ [v] *************************** */
+#	ifdef __CPU_ARM__
+#		ifdef INLINE_ASM_TYPE__ISO
+#			define PUSH_16(VAR) \
+				{\
+					register unsigned short	__PUSH_16__;\
+					\
+					__PUSH_16__ = (unsigned short)(VAR);\
+					__asm__ __volatile__ (\
+						"sub sp, sp, #2\n\t"\
+						"strh %0, [sp]\n\t"\
+						: \
+						: "r"(__PUSH_16__)\
+						: "sp", "memory"\
+					);\
+				}
+#			define POP_16(VAR) \
+				{\
+					register unsigned short	__POP_16__;\
+					\
+					__asm__ __volatile__ (\
+						"ldrh %0, [sp]\n\t"\
+						"add sp, sp, #2\n\t"\
+						: "=r"(__POP_16__)\
+						: \
+						: "sp", "memory"\
+					);\
+					(VAR) = __POP_16__;\
+				}
+#			define PUSH_32(VAR) \
+				{\
+					register unsigned int	__PUSH_32__;\
+					\
+					__PUSH_32__ = (unsigned int)(VAR);\
+					__asm__ __volatile__ (\
+						"sub sp, sp, #4\n\t"\
+						"str %0, [sp]\n\t"\
+						: \
+						: "r"(__PUSH_32__)\
+						: "sp", "memory"\
+					);\
+				}
+#			define POP_32(VAR) \
+				{\
+					register unsigned int	__POP_32__;\
+					\
+					__asm__ __volatile__ (\
+						"ldr %0, [sp]\n\t"\
+						"add sp, sp, #4\n\t"\
+						: "=r"(__POP_32__)\
+						: \
+						: "sp", "memory"\
+					);\
+					(VAR) = __POP_32__;\
+				}
+#			ifdef __SYSTEM_64_BIT__
+#				define PUSH_64(VAR) \
+					{\
+						register uint64_t	__PUSH_64__;\
+						\
+						__PUSH_64__ = (uint64_t)(VAR);\
+						__asm__ __volatile__ (\
+							"sub sp, sp, #8\n\t"\
+							"str %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_64__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_64(VAR) \
+					{\
+						register uint64_t	__POP_64__;\
+						\
+						__asm__ __volatile__ (\
+							"ldr %0, [sp]\n\t"\
+							"add sp, sp, #8\n\t"\
+							: "=r"(__POP_64__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_64__;\
+					}
+#			else
+#				define PUSH_64(VAR) \
+					{\
+						register unsigned long	__PUSH_64__;\
+						\
+						__PUSH_64__ = (unsigned long)(VAR);\
+						__asm__ __volatile__ (\
+							"sub sp, sp, #4\n\t"\
+							"str %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_64__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_64(VAR) \
+					{\
+						register unsigned long	__POP_64__;\
+						\
+						__asm__ __volatile__ (\
+							"ldr %0, [sp]\n\t"\
+							"add sp, sp, #4\n\t"\
+							: "=r"(__POP_64__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_64__;\
+					}
+#			endif /* __SYSTEM_64_BIT__ */
+#		else
+#			ifdef __CC_ARM
+#				if (__ARMCC_VERSION <= 600000) /* ARMCC V5 */
+#					define PUSH_16(VAR) \
+						{\
+							register unsigned short	__PUSH_16__;\
+							\
+							__PUSH_16__ = (unsigned short)(VAR);\
+							__asm {\
+								sub sp, sp, #2 \
+								strh __PUSH_16__, [sp]\
+							}\
+						}
+#					define POP_16(VAR) \
+						{\
+							register unsigned short	__POP_16__;\
+							\
+							__asm {\
+								LDRH __POP_16__, [sp] \
+								ADD sp, sp, #2\
+							}\
+							(VAR) = __POP_16__;\
+						}
+#					define PUSH_32(VAR) \
+						{\
+							register unsigned int	__PUSH_32__;\
+							\
+							__PUSH_32__ = (unsigned int)(VAR);\
+							__asm {\
+								SUB sp, sp, #4 \
+								STR __PUSH_32__, [sp]\
+							}\
+						}
+#					define POP_32(VAR) \
+						{\
+							register unsigned int	__POP_32__;\
+							\
+							__asm {\
+								LDR __POP_32__, [sp] \
+								ADD sp, sp, #4\
+							}\
+							(VAR) = __POP_32__;\
+						}
+#					ifdef __SYSTEM_64_BIT__
+#						define PUSH_64(VAR) \
+							{\
+								register uint64_t	__PUSH_64__;\
+								\
+								__PUSH_64__ = (uint64_t)(VAR);\
+								__asm {\
+									SUB sp, sp, #8 \
+									STR __PUSH_64__, [sp]\
+								};\
+							}
+#						define POP_64(VAR) \
+							{\
+								register uint64_t	__POP_64__;\
+								\
+								__asm {\
+									LDR __POP_64__, [sp] \
+									ADD sp, sp, #8\
+								};\
+								(VAR) = __POP_64__;\
+							}
 #					else
-#						define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#					endif /* __riscv_xlen == 64 */
-#				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __riscv_xlen */
-
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("lw %0, 0(sp); addi sp, sp, 4" : "=r"(POP_VAR) : : "sp")
-
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("lh %0, 0(sp); addi sp, sp, 2" : "=r"(POP_VAR) : : "sp")
-
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("lw %0, 0(sp); addi sp, sp, 4" : "=r"(POP_VAR) : : "sp")
-
-#				ifdef __riscv_xlen
-#					if __riscv_xlen == 64
-#						define POPQ(POP_VAR) \
-							__asm__ __volatile__("ld %0, 0(sp); addi sp, sp, 8" : "=r"(POP_VAR) : : "sp")
+#						define PUSH_64(VAR) \
+							{\
+								register unsigned long	__PUSH_64__;\
+								\
+								__PUSH_64__ = (unsigned long)(VAR);\
+								__asm {\
+									SUB sp, sp, #4 \
+									STR __PUSH_64__, [sp]\
+								};\
+							}
+#						define POP_64(VAR) \
+							{\
+								register unsigned long	__POP_64__;\
+								\
+								__asm {\
+									LDR __POP_64__, [sp] \
+									ADD sp, sp, #4\
+								};\
+								(VAR) = __POP_64__;\
+							}
+#					endif /* __SYSTEM_64_BIT__ */
+#				else /* __ARMCC_VERSION > 600000 */
+#					define PUSH_16(VAR) \
+						{\
+							register unsigned short	__PUSH_16__;\
+							\
+							__PUSH_16__ = (unsigned short)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #2\n\t"\
+								"strh %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_16__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_16(VAR) \
+						{\
+							register unsigned short	__POP_16__;\
+							\
+							asm volatile (\
+								"ldrh %0, [sp]\n\t"\
+								"add sp, sp, #2\n\t"\
+								: "=r"(__POP_16__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_16__;\
+						}
+#					define PUSH_32(VAR) \
+						{\
+							register unsigned int	__PUSH_32__;\
+							\
+							__PUSH_32__ = (unsigned int)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #4\n\t"\
+								"str %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_32__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_32(VAR) \
+						{\
+							register unsigned int	__POP_32__;\
+							\
+							asm volatile (\
+								"ldr %0, [sp]\n\t"\
+								"add sp, sp, #4\n\t"\
+								: "=r"(__POP_32__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_32__;\
+						}
+#					ifdef __SYSTEM_64_BIT__
+#						define PUSH_64(VAR) \
+							{\
+								register uint64_t	__PUSH_64__;\
+								\
+								__PUSH_64__ = (uint64_t)(VAR);\
+								asm volatile (\
+									"sub sp, sp, #8\n\t"\
+									"str %0, [sp]\n\t"\
+									: \
+									: "r"(__PUSH_64__)\
+									: "sp", "memory"\
+								);\
+							}
+#						define POP_64(VAR) \
+							{\
+								register uint64_t	__POP_64__;\
+								\
+								asm volatile (\
+									"ldr %0, [sp]\n\t"\
+									"add sp, sp, #8\n\t"\
+									: "=r"(__POP_64__)\
+									: \
+									: "sp", "memory"\
+								);\
+								(VAR) = __POP_64__;\
+							}
 #					else
-#						define POPQ(POP_VAR) POPD(POP_VAR)
-#					endif /* __riscv_xlen == 64 */
+#						define PUSH_64(VAR) \
+							{\
+								register unsigned long	__PUSH_64__;\
+								\
+								__PUSH_64__ = (unsigned long)(VAR);\
+								asm volatile (\
+									"sub sp, sp, #4\n\t"\
+									"str %0, [sp]\n\t"\
+									: \
+									: "r"(__PUSH_64__)\
+									: "sp", "memory"\
+								);\
+							}
+#						define POP_64(VAR) \
+							{\
+								register unsigned long	__POP_64__;\
+								\
+								asm volatile (\
+									"ldr %0, [sp]\n\t"\
+									"add sp, sp, #4\n\t"\
+									: "=r"(__POP_64__)\
+									: \
+									: "sp", "memory"\
+								);\
+								(VAR) = __POP_64__;\
+							}
+#					endif /* __SYSTEM_64_BIT__ */
+#				endif /* __ARMCC_VERSION <= 600000 */
+#			endif /* __CC_ARM */
+#			ifdef __GNUC__
+#				define PUSH_16(VAR) \
+					{\
+						register unsigned short	__PUSH_16__;\
+						\
+						__PUSH_16__ = (unsigned short)(VAR);\
+						asm volatile (\
+							"sub sp, sp, #2\n\t"\
+							"strh %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_16__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_16(VAR) \
+					{\
+						register unsigned short	__POP_16__;\
+						\
+						asm volatile (\
+							"ldrh %0, [sp]\n\t"\
+							"add sp, sp, #2\n\t"\
+							: "=r"(__POP_16__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_16__;\
+					}
+#				define PUSH_32(VAR) \
+					{\
+						register unsigned int	__PUSH_32__;\
+						\
+						__PUSH_32__ = (unsigned int)(VAR);\
+						asm volatile (\
+							"sub sp, sp, #4\n\t"\
+							"str %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_32__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_32(VAR) \
+					{\
+						register unsigned int	__POP_32__;\
+						\
+						asm volatile (\
+							"ldr %0, [sp]\n\t"\
+							"add sp, sp, #4\n\t"\
+							: "=r"(__POP_32__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_32__;\
+					}
+#				ifdef __SYSTEM_64_BIT__
+#					define PUSH_64(VAR) \
+						{\
+							register uint64_t	__PUSH_64__;\
+							\
+							__PUSH_64__ = (uint64_t)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #8\n\t"\
+								"str %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_64__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register uint64_t	__POP_64__;\
+							\
+							asm volatile (\
+								"ldr %0, [sp]\n\t"\
+								"add sp, sp, #8\n\t"\
+								: "=r"(__POP_64__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
 #				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __riscv_xlen */
-#			endif /* INLINE_ASM_TYPE__GNU */
-/* ************************** [^] GNU ASM STYLE [^] ************************* */
+#					define PUSH_64(VAR) \
+						{\
+							register unsigned long	__PUSH_64__;\
+							\
+							__PUSH_64__ = (unsigned long)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #4\n\t"\
+								"str %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_64__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register unsigned long	__POP_64__;\
+							\
+							asm volatile (\
+								"ldr %0, [sp]\n\t"\
+								"add sp, sp, #4\n\t"\
+								: "=r"(__POP_64__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
+#				endif /* __SYSTEM_64_BIT__ */
+#			endif /* __GNUC__ */
 
-/* ************************* [v] ISO C ASM STYLE [v] ************************ */
-#			ifdef INLINE_ASM_TYPE__ISO
-#				define PUSH(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -4; sw %0, 0(sp)" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				define PUSHW(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -2; sh %0, 0(sp)" : : "r"((short)(PUSH_VAR)) : "sp")
-
-#				define PUSHD(PUSH_VAR) \
-					__asm__ __volatile__("addi sp, sp, -4; sw %0, 0(sp)" : : "r"((int)(PUSH_VAR)) : "sp")
-
-#				ifdef __riscv_xlen
-#					if __riscv_xlen == 64
-#						define PUSHQ(PUSH_VAR) \
-							__asm__ __volatile__("addi sp, sp, -8; sd %0, 0(sp)" : : "r"((long long)(PUSH_VAR)) : "sp")
-#					else
-#						define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#					endif /* __riscv_xlen == 64 */
+#			ifdef __clang__
+#				define PUSH_16(VAR) \
+					{\
+						register unsigned short	__PUSH_16__;\
+						\
+						__PUSH_16__ = (unsigned short)(VAR);\
+						asm volatile (\
+							"sub sp, sp, #2\n\t"\
+							"strh %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_16__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_16(VAR) \
+					{\
+						register unsigned short	__POP_16__;\
+						\
+						asm volatile (\
+							"ldrh %0, [sp]\n\t"\
+							"add sp, sp, #2\n\t"\
+							: "=r"(__POP_16__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_16__;\
+					}
+#				define PUSH_32(VAR) \
+					{\
+						register unsigned int	__PUSH_32__;\
+						\
+						__PUSH_32__ = (unsigned int)(VAR);\
+						asm volatile (\
+							"sub sp, sp, #4\n\t"\
+							"str %0, [sp]\n\t"\
+							: \
+							: "r"(__PUSH_32__)\
+							: "sp", "memory"\
+						);\
+					}
+#				define POP_32(VAR) \
+					{\
+						register unsigned int	__POP_32__;\
+						\
+						asm volatile (\
+							"ldr %0, [sp]\n\t"\
+							"add sp, sp, #4\n\t"\
+							: "=r"(__POP_32__)\
+							: \
+							: "sp", "memory"\
+						);\
+						(VAR) = __POP_32__;\
+					}
+#				ifdef __SYSTEM_64_BIT__
+#					define PUSH_64(VAR) \
+						{\
+							register uint64_t	__PUSH_64__;\
+							\
+							__PUSH_64__ = (uint64_t)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #8\n\t"\
+								"str %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_64__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register uint64_t	__POP_64__;\
+							\
+							asm volatile (\
+								"ldr %0, [sp]\n\t"\
+								"add sp, sp, #8\n\t"\
+								: "=r"(__POP_64__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
 #				else
-#					define PUSHQ(PUSH_VAR) PUSHD(PUSH_VAR)
-#				endif /* __riscv_xlen */
+#					define PUSH_64(VAR) \
+						{\
+							register unsigned long	__PUSH_64__;\
+							\
+							__PUSH_64__ = (unsigned long)(VAR);\
+							asm volatile (\
+								"sub sp, sp, #4\n\t"\
+								"str %0, [sp]\n\t"\
+								: \
+								: "r"(__PUSH_64__)\
+								: "sp", "memory"\
+							);\
+						}
+#					define POP_64(VAR) \
+						{\
+							register unsigned long	__POP_64__;\
+							\
+							asm volatile (\
+								"ldr %0, [sp]\n\t"\
+								"add sp, sp, #4\n\t"\
+								: "=r"(__POP_64__)\
+								: \
+								: "sp", "memory"\
+							);\
+							(VAR) = __POP_64__;\
+						}
+#				endif /* __SYSTEM_64_BIT__ */
+#			endif /* __clang__ */
+#		endif /* INLINE_ASM_TYPE__ISO */
+#	endif /* __CPU_ARM__ */
+/* ************************** [^] __CPU_ARM__ [^] *************************** */
 
-#				define POP(POP_VAR) \
-					__asm__ __volatile__("lw %0, 0(sp); addi sp, sp, 4" : "=r"(POP_VAR) : : "sp")
+/* ************************ [v] __CPU_AMD_X86__ [v] ************************* */
+#	ifdef __CPU_AMD_X86__
+/* TODO: ... */
+#	endif /* __CPU_AMD_X86__ */
+/* ************************ [^] __CPU_AMD_X86__ [^] ************************* */
 
-#				define POPW(POP_VAR) \
-					__asm__ __volatile__("lh %0, 0(sp); addi sp, sp, 2" : "=r"(POP_VAR) : : "sp")
+/* ************************ [v] __CPU_POWERPC__ [v] ************************* */
+#	ifdef __CPU_POWERPC__
+/* TODO: ... */
+#	endif /* __CPU_POWERPC__ */
+/* ************************ [^] __CPU_POWERPC__ [^] ************************* */
 
-#				define POPD(POP_VAR) \
-					__asm__ __volatile__("lw %0, 0(sp); addi sp, sp, 4" : "=r"(POP_VAR) : : "sp")
+/* ************************* [v] __CPU_RISCV__ [v] ************************** */
+#	ifdef __CPU_RISCV__
+/* TODO: ... */
+#	endif /* __CPU_RISCV__ */
+/* ************************* [^] __CPU_RISCV__ [^] ************************** */
 
-#				ifdef __riscv_xlen
-#					if __riscv_xlen == 64
-#						define POPQ(POP_VAR) \
-							__asm__ __volatile__("ld %0, 0(sp); addi sp, sp, 8" : "=r"(POP_VAR) : : "sp")
-#					else
-#						define POPQ(POP_VAR) POPD(POP_VAR)
-#					endif /* __riscv_xlen == 64 */
-#				else
-#					define POPQ(POP_VAR) POPD(POP_VAR)
-#				endif /* __riscv_xlen */
-#			endif /* INLINE_ASM_TYPE__ISO */
-/* ************************* [^] ISO C ASM STYLE [^] ************************ */
+/* ************************** [v] __CPU_HC12__ [v] ************************** */
+#	ifdef __CPU_HC12__
+/* TODO: ... */
+#	endif /* __CPU_HC12__ */
+/* ************************** [^] __CPU_HC12__ [^] ************************** */
 
-#		endif /* __CPU_RISCV__ */
-/* ************************* [^] RISC-V CPU [^] ****************************** */
+/* ************************* [v] __CPU_HCS08__ [v] ************************** */
+#	ifdef __CPU_HCS08__
+/* TODO: ... */
+#	endif /* __CPU_HCS08__ */
+/* ************************* [^] __CPU_HCS08__ [^] ************************** */
 
-#	else
-/* ***************** [v] INLINE ASM NOT SUPPORTED [v] ********************* */
-#		error "PUSH/POP - INLINE ASSEMBLY NOT SUPPORTED ON THIS COMPILER"
-/* ***************** [^] INLINE ASM NOT SUPPORTED [^] ********************* */
-#	endif /* IS__INLINE_ASM__SUPPORTED */
-/* ********************* [^] PUSH/POP IMPLEMENTATION [^] ******************** */
+/* ************************ [v] __CPU_COLDFIRE__ [v] ************************ */
+#	ifdef __CPU_COLDFIRE__
+/* TODO: ... */
+#	endif /* __CPU_COLDFIRE__ */
+/* ************************ [^] __CPU_COLDFIRE__ [^] ************************ */
 
-/* **************************** [v] LOWERCASE [v] *************************** */
-#	define push PUSH
-#	define pushw PUSHW
-#	define pushd PUSHD
-#	define pushq PUSHQ
-#	define pop POP
-#	define popw POPW
-#	define popd POPD
-#	define popq POPQ
-/* **************************** [^] LOWERCASE [^] *************************** */
+/* ************************** [v] __CPU_M68K__ [v] ************************** */
+#	ifdef __CPU_M68K__
+/* TODO: ... */
+#	endif /* __CPU_M68K__ */
+/* ************************** [^] __CPU_M68K__ [^] ************************** */
+
+/* *************************** [v] __CPU_SH__ [v] *************************** */
+#	ifdef __CPU_SH__
+/* TODO: ... */
+#	endif /* __CPU_SH__ */
+/* *************************** [^] __CPU_SH__ [^] *************************** */
+
+/* ************************** [v] __CPU_MIPS__ [v] ************************** */
+#	ifdef __CPU_MIPS__
+/* TODO: ... */
+#	endif /* __CPU_MIPS__ */
+/* ************************** [^] __CPU_MIPS__ [^] ************************** */
+
+/* ************************* [v] __CPU_SPARC__ [v] ************************** */
+#	ifdef __CPU_SPARC__
+/* TODO: ... */
+#	endif /* __CPU_SPARC__ */
+/* ************************* [^] __CPU_SPARC__ [^] ************************** */
+
+/* ************************** [v] __CPU_6502__ [v] ************************** */
+#	ifdef __CPU_6502__
+/* TODO: ... */
+#	endif /* __CPU_6502__ */
+/* ************************** [^] __CPU_6502__ [^] ************************** */
+
+/* ************************** [v] __CPU_Z80__ [v] *************************** */
+#	ifdef __CPU_Z80__
+/* TODO: ... */
+#	endif /* __CPU_Z80__ */
+/* ************************** [^] __CPU_Z80__ [^] *************************** */
+
+/* *************************** [v] __CPU_TI__ [v] *************************** */
+#	ifdef __CPU_TI__
+/* TODO: ... */
+#	endif /* __CPU_TI__ */
+/* *************************** [^] __CPU_TI__ [^] *************************** */
+
+/* ************************* [v] __CPU_SHARC__ [v] ************************** */
+#	ifdef __CPU_SHARC__
+/* TODO: ... */
+#	endif /* __CPU_SHARC__ */
+/* ************************* [^] __CPU_SHARC__ [^] ************************** */
+
+/* ************************ [v] __CPU_BLACKFIN__ [v] ************************ */
+#	ifdef __CPU_BLACKFIN__
+/* TODO: ... */
+#	endif /* __CPU_BLACKFIN__ */
+/* ************************ [^] __CPU_BLACKFIN__ [^] ************************ */
+
+/* ************************* [v] __CPU_DSP56K__ [v] ************************* */
+#	ifdef __CPU_DSP56K__
+#		ifdef __MWERKS__
+/* TODO: ... */
+#		endif /* __MWERKS__ */
+#	endif /* __CPU_DSP56K__ */
+/* ************************* [^] __CPU_DSP56K__ [^] ************************* */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 }
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (POP) [^] **************************** */
+
+/* *************************** [v] LOWERCASE [v] **************************** */
+#	define push_16 PUSH_16
+#	define push_32 PUSH_32
+#	define push_64 PUSH_64
+#	define pop_16 POP_16
+#	define pop_32 POP_32
+#	define pop_64 POP_64
+/* *************************** [^] LOWERCASE [^] **************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

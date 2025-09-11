@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/08 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/10 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -104,6 +104,7 @@
 #		define INCL__TOKEN_PASTING
 #		define INCL__COMMA_OPERATOR
 #		define INCL__INLINE_ASM
+#		define INCL__PUSH_POP
 #	endif /* LOCALMACRO_DEFINE_ALL */
 /* *********************** [^] LIBCMT JUST CALLED [^] *********************** */
 
@@ -123,10 +124,18 @@
 /* ****************************** [v] ASM [v] ******************************* */
 #	ifdef INCL__PUSH_POP
 #		include "ASM/PUSH_POP.h" /*
-#		 define PUSH(PUSH_VAR)
-#		 define push
-#		 define POP(POP_VAR)
-#		 define pop
+#		 define PUSH_16(VAR)
+#		 define PUSH_32(VAR)
+#		 define PUSH_64(VAR)
+#		 define POP_16(VAR)
+#		 define POP_32(VAR)
+#		 define POP_64(VAR)
+#		 define push_16
+#		 define push_32
+#		 define push_64
+#		 define pop_16
+#		 define pop_32
+#		 define pop_64
 #		        */
 #	endif /* INCL__PUSH_POP */
 /* ****************************** [^] ASM [^] ******************************* */
@@ -212,7 +221,6 @@
 #		 define __CPU_SHARC__
 #		 define __CPU_BLACKFIN__
 #		 define __CPU_DSP56K__
-#		 define __CPU_VER__
 #		   char *__CPU_VER__();
 #		        */
 #	endif /* INCL__CPU */

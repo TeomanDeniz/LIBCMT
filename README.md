@@ -46,13 +46,11 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**                                 | **TYPE**    | **DESCRIPTION**                                     |
-| ---------------------------------------- | ----------- | --------------------------------------------------- |
-| `OBJECT__FUNCTIONS`, `object__functions` | `#define()` | Connect all of the functions into your structure    |
-| `OBJECT__FUNCTION`, `object__function`   | `#define()` | Create function pointer inside your structure       |
-| `OBJECT__CONNECT`, `object__connect`     | `#define()` | Connect a structure into a function (`object_from`) |
-| `OBJECT`, `object`                       | `#define()` | Create an object                                    |
-| `USE`, `use`                             | `#define()` | Use a function inside an object (`use`)             |
+| **NAME**                             | **TYPE**    | **DESCRIPTION**                                  |
+| ------------------------------------ | ----------- | ------------------------------------------------ |
+| `OBJECT__TABLE`, `object__table`     | `#define()` | Connect all of the functions into your structure |
+| `OBJECT__CONNECT`, `object__connect` | `#define()` | Connect a structure into a function              |
+| `OBJECT`, `object`                   | `#define()` | Create an object                                 |
 
 ## Setup
 
@@ -81,6 +79,17 @@ int main()
 	// ...
 }
 ```
+or
+```c
+#define SETUP_OBJECT
+#define INCL__OBJECT
+#include "LIBCMT/LIBCMT.h"
+
+int main()
+{
+	// ...
+}
+```
 
 ## How to Use
 
@@ -90,29 +99,34 @@ This library provides an OOP-like system for C, featuring:
 * Function pointer binding **by index**
 
 To use:
-* Define your struct with `object__function(...)` at the top.
-* Connect your function list using `object__functions(...) { ... }`
+* Define your struct with function pointers at the top.
+* Connect your function list using `object__table(...) { ... }`
 * The first entry (`index 0`) is always treated as the constructor.
+* Don't forget to add `0` end of the `object__table(...) {..., 0}`!!!
 
 ## Function Connection
 ```c
 struct test_object_type
 {
-	void object__function(worked);
+	void (*worked)(int);
 	int value;
 };
 
 static void CONSTRUCTOR(void) // It doesn't have to be "static"
-{ object__connect(test_object_type);
+{
+	object__connect(test_object_type);
+
 	this->value = 0;
 }
 
 static void worked(int n)
-{ object__connect (test_object_type);
+{
+	object__connect (test_object_type);
+
 	this->value += n;
 }
 
-object__functions(test_object_type)
+object__table(test_object_type)
 {
 	CONSTRUCTOR,
 	worked,
@@ -131,19 +145,17 @@ object__functions(test_object_type)
 ## Multiple Objects Example
 ```c
 {
-	object(test_object_type, test1)();
-	object(test_object_type, test2)();
+	object (test_object_type, test1) ();
+	object (test_object_type, test2) ();
 
-	use(test1).worked(42);
 	test1.worked(42);
 	test1.worked(42);
-	use(test2).worked(42);
-	use(test1).worked(42);
-	use(test2).worked(42);
+	test1.worked(42);
+	test2.worked(42);
+	test1.worked(42);
+	test2.worked(42);
 }
 ```
-
-Using `use(obj)` before a call avoids a full context switch. This is optional, but improves performance when switching between objects.
 
 ## Full Example:
 
@@ -151,37 +163,37 @@ Using `use(obj)` before a call avoids a full context switch. This is optional, b
 ```c
 struct test_object_type
 {
-	int  object__function(FUNC1);
-	void object__function(FUNC2);
-	void object__function(FUNC3);
+	int  (*FUNC1)();
+	void (*FUNC2)();
+	void (*FUNC3)();
 	int a;
 };
 
 static void CONSTRUCTOR()
 {
-	object_from(test_object_type);
+	object__connect(test_object_type);
 	printf("0\n");
 }
 
 static int FUNC1()
 {
-	object_from(test_object_type);
+	object__connect(test_object_type);
 	printf("1\n");
 	return (42);
 }
 
 static void FUNC2()
 {
-	object_from(test_object_type);
+	object__connect(test_object_type);
 	printf("2\n");
 }
 
 static void FUNC3() {
-	object_from(test_object_type);
+	object__connect(test_object_type);
 	printf("3\n");
 }
 
-object_functions(test_object_type)
+object_table (test_object_type)
 {
 	CONSTRUCTOR, // Index 0 is always the constructor
 	FUNC1,
@@ -196,7 +208,8 @@ object_functions(test_object_type)
 int main(void)
 {
 	{
-		object(test_object_type, TEST)();
+		object (test_object_type, TEST) ();
+
 		TEST.FUNC1();
 		TEST.FUNC2();
 		TEST.FUNC3();
@@ -206,20 +219,15 @@ int main(void)
 		object (test_object_type, TEST1) ();
 		object (test_object_type, TEST2) ();
 
-		use(TEST1).FUNC1();
+		TEST1.FUNC1();
 		TEST1.FUNC2();
 
-		use(TEST2).FUNC1();
+		TEST2.FUNC1();
 		TEST2.FUNC2();
 
-		use(TEST1).FUNC1();
-		use(TEST2).FUNC1();
+		TEST1.FUNC1();
+		TEST2.FUNC1();
 
-		// If comma operator supported
-		printf("%d\n", use(TEST1).FUNC1());
-
-		// If not supported
-		use(TEST1);
 		printf("%d\n", TEST1.FUNC1());
 	}
 
@@ -252,29 +260,46 @@ int main(void)
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**       | **TYPE**      | **DESCRIPTION**                 |
-|----------------|---------------|---------------------------------|
-| `PUSH`, `push` | `#define ()`  | Moves a value to stack memory.  |
-| `POP`, `pop`   | `#define ()`  | Gets a value from stack memory. |
+| **NAME**             | **TYPE**      | **DESCRIPTION**                          |
+|----------------------|---------------|------------------------------------------|
+| `PUSH_16`, `push_16` | `#define ()`  | Push 2 Bytes into CPU stack.             |
+| `PUSH_32`, `push_32` | `#define ()`  | Push 4 Bytes into CPU stack.             |
+| `PUSH_64`, `push_64` | `#define ()`  | Push 8 Bytes into CPU stack if possible. |
+| `POP_16`, `pop_16`   | `#define ()`  | Pop 2 Bytes into CPU stack.              |
+| `POP_32`, `pop_32`   | `#define ()`  | Pop 4 Bytes into CPU stack.              |
+| `POP_64`, `pop_64`   | `#define ()`  | Pop 8 Bytes into CPU stack if possible.  |
 
 ## What Does It Do
 
-With these functions, you're able to move and retrieve values from the memory stack.
+With these functions, you're able to move and retrieve values from the memory stack with different data sizes and architectures.
+
+> ⚠️ Note
+> 
+> On 32-Bit systems, PUSH_64 and POP_64 macros can maximum push 32-Bit variables. They behave like a `long` type instead of a true 64-bit value.
 
 ## How To Use
 
 Let's write a simple and probably the world's fastest swap example:
-
 ```c
 register int	a = 42;
 register int	b = 11;
 
-PUSH(a); // > Added 42 to CPU stack
-a = b;   // |
-POP(b);  // < Removed 42 from CPU stack
+PUSH_32(a); // > Added 42 to CPU stack
+a = b;      // |
+POP_32(b);  // < Removed 42 from CPU stack
 
 // b is now 42
 // a is now 11
+```
+
+For sending and geting direct values:
+```c
+register int	a;
+
+PUSH_32(62); // > Added 62 to CPU stack
+POP_32(a);   // < Removed 62 from CPU stack
+
+// a is now 62
 ```
 
 ----
