@@ -1,8 +1,13 @@
-# Compiler Predefined Macros Across Architectures
+# Inline Assembly - Compiler Syntax & CPU Support Matrix
 
-This table lists common compiler predefined macros and indicates which CPU architectures they are supported on the the INLINE ASM.
+This table maps compilers (listed top to bottom, identified by their predefined macros) against CPU architectures (listed left to right).
 
-Each row represents a macro, and each column represents a target architecture. Entries show whether a macro is recognized (`YES`), not recognized (`NO`), or uncertain (`?`) for that architecture.
+Each cell shows whether the compiler supports inline assembly for the given CPU:
+> `YES` - Supported
+> 
+> `NO` - Not supported
+> 
+> `?` - Uncertain or partial support
 
 ## Small table
 

@@ -46,7 +46,7 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**                             | **TYPE**    | **DESCRIPTION**                                  |
+| **Name**                             | **Type**    | **Description**                                  |
 | ------------------------------------ | ----------- | ------------------------------------------------ |
 | `OBJECT__TABLE`, `object__table`     | `#define()` | Connect all of the functions into your structure |
 | `OBJECT__CONNECT`, `object__connect` | `#define()` | Connect a structure into a function              |
@@ -54,7 +54,8 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 
 ## Setup
 
-> [!NOTE]
+> ### ⚠️ Note
+> 
 > **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
 > ```c
 > #define main ...
@@ -79,7 +80,7 @@ int main()
 	// ...
 }
 ```
-or
+Or
 ```c
 #define SETUP_OBJECT
 #define INCL__OBJECT
@@ -260,7 +261,7 @@ int main(void)
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**             | **TYPE**      | **DESCRIPTION**                          |
+| **Name**             | **Type**      | **Description**                          |
 |----------------------|---------------|------------------------------------------|
 | `PUSH_16`, `push_16` | `#define ()`  | Push 2 Bytes into CPU stack.             |
 | `PUSH_32`, `push_32` | `#define ()`  | Push 4 Bytes into CPU stack.             |
@@ -322,7 +323,7 @@ POP_32(a);   // < Removed 62 from CPU stack
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME** | **TYPE**   | **DESCRIPTION**                                                               |
+| **Name** | **Type**   | **Description**                                                               |
 |----------|------------|-------------------------------------------------------------------------------|
 | `FAR`    | `#define`  | Marks a memory segment or pointer as far, allowing access beyond 64KB limits. |
 
@@ -410,7 +411,7 @@ FAR void (*far_func)(void); // can call functions in different segments.
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**            | **TYPE**   | **DESCRIPTION**                                                   |
+| **Name**            | **Type**   | **Description**                                                   |
 |---------------------|------------|-------------------------------------------------------------------|
 | `PRAGMA_PACK_PUSH`  | `#define`  | Begins structure packing (works like `#pragma pack(push)`)        |
 | `PRAGMA_PACK_POP`   | `#define`  | Ends structure packing (works like `#pragma pack(pop)`)           |
@@ -498,7 +499,7 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**              | **TYPE**      | **DESCRIPTION**                                                                                              |
+| **Name**              | **Type**      | **Description**                                                                                              |
 |-----------------------|---------------|--------------------------------------------------------------------------------------------------------------|
 | `REGPARM`, `regparm`  | `#define ()`  | With this feature, you are able to send variables to functions using pure registers instead of using memory. |
 
@@ -1116,8 +1117,9 @@ Yes, you **must** free the `"data"` field of the structure when you're done.
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
+| **Name**                         | **Type**  | **Description**                                          |
+| -------------------------------- | --------- | -------------------------------------------------------- |
 | `THREAD_CREATE`, `thread_create` | (\*F)()   | Create a thread by providing a function                  |
-|----------------------------------|-----------|----------------------------------------------------------|
 | `THREAD_JOIN`, `thread_join`     | (\*F)()   | Wait for a thread to finish executing                    |
 | `MUTEX_CREATE`, `mutex_create`   | (\*F)()   | Create a mutex                                           |
 | `MUTEX_DESTROY`, `mutex_destroy` | (\*F)()   | Destroy a mutex                                          |
@@ -1158,20 +1160,6 @@ Waits for a thread to finish and frees its handle. Takes the thread handle and a
 ```c
 void *ret;
 thread_join(thread, &ret);
-```
-
-### `MUTEX_CREATE`
-
-Allocates and initializes a mutex. Returns a mutex handle (`t_mutex`). Returns `NULL` on failure.
-
-**Example**:
-```c
-t_mutex mutex = mutex_create();
-
-if (!mutex)
-{
-	// handle error
-}
 ```
 
 ### `MUTEX_CREATE`
@@ -1462,7 +1450,7 @@ This was just an example. You’re free to write whatever you want inside the fu
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**         | **TYPE**   | **DESCRIPTION**                                     |
+| **Name**         | **Type**   | **Description**                                     |
 |------------------|------------|-----------------------------------------------------|
 | `LOCAL`, `local` | `#define`  | Make a variable thread-local (separate per thread). |
 
@@ -1581,17 +1569,10 @@ This is used for optimisation purposes.
 | `CATCH`, `catch` | `#define()` | Catches thrown errors from the `try` block          |
 | `THROW`, `throw` | `#define()` | Immediately jumps to `catch` with a specified error |
 
-## How To Use
-
-* **`try`** - Wraps a block of code that may call `throw(...)` within it.
-
-* **`catch`** - Placed right after try. Captures the error code passed from `throw(...)`.
-
-* **`throw`** - Throws an error code and jumps to the nearest `catch()` block.
-
 ## Setup
 
-> [!NOTE]
+> ### ⚠️ Note
+> 
 > **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
 > ```c
 > #define main ...
@@ -1600,19 +1581,32 @@ This is used for optimisation purposes.
 > ```
 > Otherwise, skip this section and go directly to usage examples below.
 
-Before using this library, define the macro `SETUP_TRY_CATCH` **once** in one `.c` file (typically your `main.c` or entry point). This ensures global variables used internally are properly defined.
+Before using this library, you **must define** the macro `SETUP_TRY_CATCH` **once**, typically in your `main.c` or entry point file.
 
-You can then include this header anywhere else without redefining the macro. All other files will only see `extern` declarations.
+This ensures internal global variables are defined properly.
 
+Other files should **not** define it again - they'll only see `extern` declarations.
+
+**Example**:
 ```c
 #define SETUP_TRY_CATCH
 #include "LIBCMT/KEYWORDS/TRY_CATCH.h"
-
-int main()
-{
-	. . .
-}
 ```
+Or
+```c
+#define SETUP_TRY_CATCH
+#define INCL__TRY_CATCH
+#include "LIBCMT/LIBCMT.h"
+
+```
+
+## How To Use
+
+* **`try`{...}** - Wraps a block of code that may call `throw(...)` within it.
+
+* **`catch`(int){...}** - Placed right after try. Captures the error code passed from `throw(...)`.
+
+* **`throw`(int)** - Throws an error code and jumps to the nearest `catch()` block.
 
 ## **Examples**
 
@@ -1731,7 +1725,7 @@ throw (0); // to completely exit the try block
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **NAME**           | **TYPE**     | **DESCRIPTION**                                      |
+| **Name**           | **Type**     | **Description**                                      |
 |--------------------|--------------|------------------------------------------------------|
 | `UNUSED`, `unused` | `#define`    | Tells the compiler that the function may not be used |
 
@@ -1792,7 +1786,8 @@ If unused, the compiler ignores this function and continues compiling the progra
 
 ## Setup
 
-> [!NOTE]
+> ### ⚠️ Note
+> 
 > **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
 > ```c
 > #define main ...
@@ -1801,24 +1796,23 @@ If unused, the compiler ignores this function and continues compiling the progra
 > ```
 > Otherwise, skip this section and go directly to usage examples below.
 
-Before using this library, define the macro `SETUP_VA_ARGS` once in a single `.c` file (e.g., `main.c` or your entry point):
+Before using this library, you **must define** the macro `SETUP_VA_ARGS` **once**, typically in your `main.c` or entry point file.
 
+This ensures internal global variables are defined properly.
+
+Other files should **not** define it again - they'll only see `extern` declarations.
+
+**Example**:
 ```c
-// main.c
 #define SETUP_VA_ARGS
 #include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"
-
-int main(void)
-{
-	. . .
-}
 ```
-
-In all other files:
-
+Or
 ```c
-// static_link.c
-#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h" // DO NOT define SETUP_VA_ARGS here
+#define SETUP_VA_ARGS
+#define INCL__VA_ARGS
+#include "LIBCMT/LIBCMT.h"
+
 ```
 
 ## How To Use
