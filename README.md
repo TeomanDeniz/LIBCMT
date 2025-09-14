@@ -101,9 +101,9 @@ This library provides an OOP-like system for C, featuring:
 
 To use:
 * Define your struct with function pointers at the top.
-* Connect your function list using `object__table(...) { ... }`
+* Connect your function list using `object__table(...) = { ... }`
 * The first entry (`index 0`) is always treated as the constructor.
-* Don't forget to add `0` end of the `object__table(...) {..., 0}`!!!
+* Don't forget to add `0` end of the `object__table(...) = {..., 0}`!!!
 
 ## Function Connection
 ```c
@@ -127,7 +127,7 @@ static void worked(int n)
 	this->value += n;
 }
 
-object__table(test_object_type)
+object__table(test_object_type) =
 {
 	CONSTRUCTOR,
 	worked,
@@ -194,7 +194,7 @@ static void FUNC3() {
 	printf("3\n");
 }
 
-object_table (test_object_type)
+object__table (test_object_type) =
 {
 	CONSTRUCTOR, // Index 0 is always the constructor
 	FUNC1,

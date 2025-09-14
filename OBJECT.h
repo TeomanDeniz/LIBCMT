@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -77,10 +77,10 @@
 |* - FUNCTION POINTER BINDING BY INDEX                                        *|
 |*                                                                            *|
 |* DEFINE YOUR STRUCTURE NORMALLY WITH FUNCTION POINTERS AT THE TOP.          *|
-|* CONNECT YOUR FUNCTIONS USING "object__table(...) { ... }".                 *|
+|* CONNECT YOUR FUNCTIONS USING "object__table(...) = { ... }".               *|
 |* THE FIRST INDEX (0) IS ALWAYS THE CONSTRUCTOR FUNCTION.                    *|
 |* FUNCTIONS ARE BOUND TO STRUCT MEMBERS BY ORDER, NOT NAME.                  *|
-|* DON'T FORGET TO ADD 0 END OF THE: OBJECT__TABLE {..., 0}!!!                *|
+|* DON'T FORGET TO ADD 0 END OF THE: OBJECT__TABLE = {..., 0}!!!              *|
 |*                                                                            *|
 |* O - FUNCTION CONNECTION                                                    *|
 |* :                                                                          *|
@@ -103,7 +103,7 @@
 |* :     this->value += n;                                                    *|
 |* : }                                                                        *|
 |* :                                                                          *|
-|* : object__table(test_object_type)                                          *|
+|* : object__table(test_object_type) =                                        *|
 |* : {                                                                        *|
 |* :     CONSTRUCTOR,                                                         *|
 |* :     worked,                                                              *|
@@ -168,7 +168,7 @@
 |* :  :     printf("3\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
-|* :  : object_table (test_object_type)                                       *|
+|* :  : object__table (test_object_type) =                                    *|
 |* :  : {                                                                     *|
 |* :  :     CONSTRUCTOR, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION          *|
 |* :  :                                                                       *|
@@ -260,7 +260,7 @@
 #	typedef size_t;
 #	        */
 #	include <stdint.h> /*
-#	typedef uint64_t;
+#	typedef uintptr_t;
 #	        */
 #	include "./KEYWORDS/LOCAL.h" /*
 #	 define LOCAL
@@ -297,7 +297,7 @@ extern "C" {
 			(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__;
 
 #	define OBJECT__TABLE(OBJECT_TYPE) \
-		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__] =
+		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__]
 
 #	define OBJECT(OBJECT_NAME, VARIABLE_NAME) \
 		struct OBJECT_NAME	VARIABLE_NAME;\
@@ -374,135 +374,120 @@ LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
 extern LOCAL void		*__OBJECT_STRUCTURE_POINTER__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
 
-#	ifdef __CPU_INTEL__
-#		ifndef KNR_STYLE /* STANDARD C */
+#	ifndef KNR_STYLE /* STANDARD C */
 static INLINE void
 	*__TRAMPOLINE_FUNCTION__(void *THIS, void *TARGET)
-#		else /* K&R */
+#	else /* K&R */
 static INLINE void
 	*__TRAMPOLINE_FUNCTION__(THIS, TARGET)
 	void	*THIS;
 	void	*TARGET;
-#		endif /* !KNR_STYLE */
+#	endif /* !KNR_STYLE */
 {
-	uint64_t		VALUE;
-	register int	INDEX;
-	unsigned char	*_;
-	unsigned char	*CODE;
+	register int		INDEX;
+	unsigned char		*CODE;
 
-#		ifdef __unix__
-#			ifndef KNR_STYLE /* STANDARD C */
+#	ifdef __unix__
+#		ifndef KNR_STYLE /* STANDARD C */
 	extern void	*mmap(void *, size_t, int, int, int, int);
-#			else /* K&R */
+#		else /* K&R */
 	extern void	*mmap();
-#			endif /* !KNR_STYLE */
+#		endif /* !KNR_STYLE */
 	CODE = (unsigned char *)mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
 
 	if (CODE == ((unsigned char *) -1))
 		return ((void *)0);
-#		else
-#			ifdef _WIN32
-#				ifndef KNR_STYLE /* STANDARD C */
+#	else
+#		ifdef _WIN32
+#			ifndef KNR_STYLE /* STANDARD C */
 	extern void	*VirtualAlloc(void *, size_t, unsigned int, unsigned int);
-#				else /* K&R */
+#			else /* K&R */
 	extern void	*VirtualAlloc();
-#				endif /* !KNR_STYLE */
+#			endif /* !KNR_STYLE */
 	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
 
 	if (!CODE)
 		return ((void *)0);
-#			endif /* _WIN32 */
-#		endif /* __unix__ */
+#		endif /* _WIN32 */
+#	endif /* __unix__ */
+
+#	ifdef __CPU_INTEL__
+	register uintptr_t	VALUE;
+	unsigned char		*_;
 
 	_ = CODE;
-	*_++ = 0X48; // MOV
-	*_++ = 0XB8; // RAX
-	VALUE = (uint64_t)THIS;
 
-	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
+#		ifdef __SYSTEM_64_BIT__
+	*_++ = 0X48; // MOV
+	*_++ = 0XB8; // RAX,
+	VALUE = (uintptr_t)THIS;
+
+	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64;
 		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
 
-	*_++ = 0X53; // PUSH RBX
+	*_++ = 0X53; // PUSH RBX;
 	*_++ = 0X48; // MOV
-	*_++ = 0XBB; // RBX
-	VALUE = (uint64_t)&__OBJECT_STRUCTURE_POINTER__;
+	*_++ = 0XBB; // RBX,
+	VALUE = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
 
-	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
+	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64;
 		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
 
 	*_++ = 0X48; // MOV
-	*_++ = 0X89; // [RBX]
-	*_++ = 0X03; // RAX
-	*_++ = 0X5B; // POP RBX
+	*_++ = 0X89; // [RBX],
+	*_++ = 0X03; // RAX;
+	*_++ = 0X5B; // POP RBX;
 	*_++ = 0X48; // MOV
-	*_++ = 0XB8; // RAX
-	VALUE = (uint64_t)TARGET;
+	*_++ = 0XB8; // RAX;
+	VALUE = (uintptr_t)TARGET;
 
 	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
 		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
 
 	*_++ = 0XFF; // JMP
-	*_++ = 0XE0; // RAX
+	*_++ = 0XE0; // RAX;
+#	else
+#		ifdef __SYSTEM_32_BIT__
+	*_++ = 0XB8; // MOV EAX,
+	VALUE = (uintptr_t)THIS;
 
-#		ifdef __unix__
-#			ifndef KNR_STYLE /* STANDARD C */
-	extern int	mprotect(void *, size_t, int);
-#			else /* K&R */
-	extern int	mprotect();
-#			endif /* !KNR_STYLE */
-	mprotect(CODE, 4096, 0X5);
-#		endif /* __unix__ */
+	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
 
-	return ((void *)CODE);
-}
+	*_++ = 0X53; // PUSH EBX;
+	*_++ = 0XBB; // MOV EBX,
+	VALUE = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
+
+	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
+
+	*_++ = 0X89; // MOV [EBX],
+	*_++ = 0X03; // EAX;
+	*_++ = 0X5B; // POP EBX;
+	*_++ = 0XB8; // MOV EAX,
+	VALUE = (uintptr_t)TARGET;
+
+	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
+		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
+
+	*_++ = 0XFF; // JMP
+	*_++ = 0XE0; // EAX;
+#			endif /* __SYSTEM_32_BIT__ */
+#		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_INTEL__ */
+
 #	ifdef __CPU_ARM__
-#		ifndef KNR_STYLE /* STANDARD C */
-static INLINE void
-	*__TRAMPOLINE_FUNCTION__(void *THIS, void *TARGET)
-#		else /* K&R */
-static INLINE void
-	*__TRAMPOLINE_FUNCTION__(THIS, TARGET)
-	void	*THIS;
-	void	*TARGET;
-#		endif /* !KNR_STYLE */
-{
-	unsigned char	*CODE;
-	unsigned int	INSTRUCTIONS[5];
-	uint64_t		*LITERALS;
-	register int	INDEX;
+	uintptr_t			*LITERALS;
 
-	INSTRUCTIONS[0] = (unsigned)0X580000A0;
-	INSTRUCTIONS[1] = (unsigned)0X580000C1;
-	INSTRUCTIONS[2] = (unsigned)0XF9000020;
-	INSTRUCTIONS[3] = (unsigned)0X580000C0;
-	INSTRUCTIONS[4] = (unsigned)0XD61F0000;
-
-#		ifdef __unix__
-#			ifndef KNR_STYLE /* STANDARD C */
-	extern void	*mmap(void *, size_t, int, int, int, int);
-#			else /* K&R */
-	extern void	*mmap();
-#			endif /* !KNR_STYLE */
-
-	CODE = mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
-
-	if (CODE == ((unsigned char *) -1))
-		return ((void *)0);
-#		else
-#			ifdef _WIN32
-#				ifndef KNR_STYLE /* STANDARD C */
-	extern void	*VirtualAlloc(void *, size_t, unsigned int, unsigned int);
-#				else /* K&R */
-	extern void	*VirtualAlloc();
-#				endif /* !KNR_STYLE */
-
-	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
-
-	if (!CODE)
-		return ((void *)0);
-#			endif /* _WIN32 */
-#		endif /* __unix__ */
+#		ifdef __SYSTEM_64_BIT__
+	const unsigned int	INSTRUCTIONS[5] =
+		{
+			(unsigned)0X580000A0, /* LDR X0, #IMM (THIS) */
+			(unsigned)0X580000C1, /* LDR X1, #IMM (&GLOBAL) */
+			(unsigned)0XF9000020, /* STR X0, [X1] */
+			(unsigned)0X580000C0, /* LDR X0, #IMM (TARGET) */
+			(unsigned)0XD61F0000  /*  BR X0 */
+		};
 
 	for (INDEX = 0; INDEX < 5; ++INDEX)
 	{
@@ -515,19 +500,51 @@ static INLINE void
 		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & (unsigned)0XFF);
 	}
 
-	LITERALS = (uint64_t *)(CODE + 4 * 5);
-	LITERALS[0] = (uint64_t)THIS;
-	LITERALS[1] = (uint64_t)&__OBJECT_STRUCTURE_POINTER__;
-	LITERALS[2] = (uint64_t)TARGET;
+	LITERALS = (uintptr_t *)(CODE + 4 * 5);
+	LITERALS[0] = (uintptr_t)THIS;
+	LITERALS[1] = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
+	LITERALS[2] = (uintptr_t)TARGET;
+#		else
+#			ifdef __SYSTEM_32_BIT__
+	const unsigned int	INSTRUCTIONS[5] =
+		{
+			(unsigned)0XE59F000C, /* LDR R0, [PC, #12] */
+			(unsigned)0XE59F100C, /* LDR R1, [PC, #12] */
+			(unsigned)0XE5810000, /* STR R0, [R1, #0] */
+			(unsigned)0XE59F0008, /* LDR R0, [PC, #8] */
+			(unsigned)0XE12FFF10  /*  BX R0 */
+		};
 
-#		ifdef __unix__
+	for (INDEX = 0; INDEX < 5; ++INDEX)
+	{
+		register unsigned int	VALUE;
+
+		VALUE = INSTRUCTIONS[INDEX];
+		CODE[4 * INDEX + 0] = (unsigned char)(VALUE & (unsigned)0XFF);
+		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & (unsigned)0XFF);
+		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & (unsigned)0XFF);
+		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & (unsigned)0XFF);
+	}
+
+	LITERALS = (uintptr_t *)(CODE + 20);
+	LITERALS[0] = (uintptr_t)THIS;
+	LITERALS[1] = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
+	LITERALS[2] = (uintptr_t)TARGET;
+#			endif /* __SYSTEM_32_BIT__ */
+#		endif /* __SYSTEM_64_BIT__ */
+#	endif /* __CPU_ARM__ */
+
+#	ifdef __unix__
+#		ifndef KNR_STYLE /* STANDARD C */
 	extern int	mprotect(void *, size_t, int);
+#		else /* K&R */
+	extern int	mprotect();
+#		endif /* !KNR_STYLE */
 	mprotect(CODE, 4096, 0X5);
-#		endif /* __unix__ */
+#	endif /* __unix__ */
 
 	return ((void *)CODE);
 }
-#	endif /* __CPU_ARM__ */
 
 /* **************************** [v] LOWERCASE [v] *************************** */
 #	define object__table OBJECT__TABLE
