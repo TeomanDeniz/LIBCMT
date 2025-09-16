@@ -8,27 +8,29 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/10 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
 #ifndef LIBCMT_H
-#	define LIBCMT_H 202508 /* VERSION */
+#	define LIBCMT_H 202509 /* VERSION */
 
 /* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_1 [v] ******************* */
 #	ifndef INCL__OBJECT
 #		ifndef INCL__PUSH_POP
-#			ifndef INCL__FAR
-#				ifndef INCL__PACK
-#					ifndef INCL__REGPARM
-#						ifndef INCL__ARCHITECTURE
-#							ifndef INCL__CPU
-#								define LOCALMACRO_DEFINE_ALL_TRY_1
-#							endif /* !INCL__CPU */
-#						endif /* !INCL__ARCHITECTURE */
-#					endif /* !INCL__REGPARM */
-#				endif /* !INCL__PACK */
-#			endif /* !INCL__FAR */
+#			ifndef INCL__RAX
+#				ifndef INCL__FAR
+#					ifndef INCL__PACK
+#						ifndef INCL__REGPARM
+#							ifndef INCL__ARCHITECTURE
+#								ifndef INCL__CPU
+#									define LOCALMACRO_DEFINE_ALL_TRY_1
+#								endif /* !INCL__CPU */
+#							endif /* !INCL__ARCHITECTURE */
+#						endif /* !INCL__REGPARM */
+#					endif /* !INCL__PACK */
+#				endif /* !INCL__FAR */
+#			endif /* !INCL__RAX */
 #		endif /* !INCL__PUSH_POP */
 #	endif /* !INCL__OBJECT */
 /* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_1 [^] ******************* */
@@ -105,6 +107,7 @@
 #		define INCL__COMMA_OPERATOR
 #		define INCL__INLINE_ASM
 #		define INCL__PUSH_POP
+#		define INCL__RAX
 #	endif /* LOCALMACRO_DEFINE_ALL */
 /* *********************** [^] LIBCMT JUST CALLED [^] *********************** */
 
@@ -138,6 +141,11 @@
 #		 define pop_64
 #		        */
 #	endif /* INCL__PUSH_POP */
+#	ifdef INCL__RAX
+#		include "ASM/RAX.h" /*
+#		 define GET_RAX(VAR)
+#		        */
+#	endif /* INCL__RAX */
 /* ****************************** [^] ASM [^] ******************************* */
 
 /* *************************** [v] ATTRIBUTES [v] *************************** */

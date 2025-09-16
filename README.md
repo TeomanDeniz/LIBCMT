@@ -46,23 +46,45 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **Name**                             | **Type**    | **Description**                                  |
-| ------------------------------------ | ----------- | ------------------------------------------------ |
-| `OBJECT__TABLE`, `object__table`     | `#define()` | Connect all of the functions into your structure |
-| `OBJECT__CONNECT`, `object__connect` | `#define()` | Connect a structure into a function              |
-| `OBJECT`, `object`                   | `#define()` | Create an object                                 |
+| **Name**                             | **Type**    | **Description**                                     |
+| ------------------------------------ | ----------- | --------------------------------------------------- |
+| `OBJECT__TABLE`, `object__table`     | `#define()` | Connect all of the functions into your structure    |
+| `OBJECT__CONNECT`, `object__connect` | `#define()` | Connect a structure into a function                 |
+| `OBJECT`, `object`                   | `#define()` | Create an object                                    |
+| `I_AM_AN_OBJECT`, `i_am_an_object`   | `#define`   | Declares the function pointer storage for an object |
+
+**OBJECT** is a high-performance C/C++ library for object-oriented programming in pure C, providing dynamic function tables, flexible object creation, and optimized cross-platform function injection.
+
+## Features
+* Pure C object-oriented programming support.
+* Dynamic function tables for runtime function binding.
+* Optimized assembly-level function injection for Intel and ARM CPUs.
+* Supports 32-bit and 64-bit systems.
+* Compatible with TI CGT/CCS compilers, GCC, and MSVC.
+* Cross-platform memory management and exception handling support.
+* Configurable maximum number of functions per object (\_\_OBJECT_MAX_FUNCTION_LIMIT\_\_).
+
+## Why use OBJECT?
+> * Performance
+> Uses inline/assembly injection to directly inject functions into objects.
+> 
+> * Flexibility
+> Dynamically bind functions at runtime without virtual tables.
+> 
+> * Portability
+> Supports multiple CPU architectures and OS environments.
+> 
+> * Memory efficiency
+> Objects only allocate their function tables once.
+> 
+> * Error handling
+> Compatible with try/catch-style macros for safe operations.
 
 ## Setup
 
 > ### ⚠️ Note
 > 
-> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
-> ```c
-> #define main ...
-> // or
-> #define main(...) ...
-> ```
-> Otherwise, skip this section and go directly to usage examples below.
+> **Setup** The setup section is optional if you handle main in ARM 32-bit CPUs. If you want the library to define internal global variables automatically, define SETUP_OBJECT once in one C file (typically your main.c / entry point). And also, if you're not using `#define main ...` or `#define main() ...`, you don't have to setup OBJECT either. It will automatically settle everything up by itself.
 
 Before using this library, you **must define** the macro `SETUP_OBJECT` **once**, typically in your `main.c` or entry point file.
 
@@ -92,150 +114,187 @@ int main()
 }
 ```
 
-## How to Use
+## Contents / API (quick reference)
 
-This library provides an OOP-like system for C, featuring:
-* Implicit `this` pointer
-* Constructor support
-* Function pointer binding **by index**
+> ### **`OBJECT(NAME, VAR)`**
+> 
+> Instantiates an object and binds its function table.
+> * If the object has a constructor: `object(s_struct, obj) (...);`
+> * Otherwise: `object(s_struct, obj);`
+> 
+> Suggested macro for ergonomics:
+> ```c
+> #define o_struct(object_var) object(s_struct, object_var)
+> 
+> o_struct (obj) (...);
+> ```
 
-To use:
-* Define your struct with function pointers at the top.
-* Connect your function list using `object__table(...) = { ... }`
-* The first entry (`index 0`) is always treated as the constructor.
-* Don't forget to add `0` end of the `object__table(...) = {..., 0}`!!!
+> ### **`I_AM_AN_OBJECT`**
+> 
+> Declares the function pointer storage for an object. Place at top of the struct.
+> 
+> ```c
+> struct s_object {
+>     i_am_an_object;
+>     ...
+> };
+> ```
 
-## Function Connection
+> ### **`OBJECT__TABLE(STRUCT_NAME)`**
+> 
+> Defines the function table array for an object type.
+> 
+> ```c
+> object__table(s_struct) = {
+>     constructor_function,
+>     function_2,
+>     ...
+>     0 /* TERMINATOR - DO NOT FORGET */
+> };
+> ```
+> List functions top-to-bottom in the correct indexes. Index 0 is the constructor.
+
+> ### **`OBJECT__CONNECT(STRUCT_NAME)`**
+> 
+> Connects an object structure pointer (`this`) to its instance. Put this macro at the top of function bodies that use `this`.
+> 
+> ```c
+> void function_1() {
+>     object__connect(s_struct);
+>     ...
+> }
+> ```
+
+## Examples
+
+**Basic object definition**
 ```c
-struct test_object_type
-{
-	void (*worked)(int);
-	int value;
-};
+struct test_object_type {
+    i_am_an_object;
 
-static void CONSTRUCTOR(void) // It doesn't have to be "static"
-{
-	object__connect(test_object_type);
-
-	this->value = 0;
-}
-
-static void worked(int n)
-{
-	object__connect (test_object_type);
-
-	this->value += n;
-}
-
-object__table(test_object_type) =
-{
-	CONSTRUCTOR,
-	worked,
-	0
+    void (*worked)(int);
+    int value;
 };
 ```
 
-## Usage
+**Functions**
 ```c
-{
-	object (test_object_type, obj) (); // Constructor called
-	obj.worked(42); // Uses implicit "this"
+static void CONSTRUCTOR(void) {
+    object__connect(test_object_type);
+    this->value = 0;
 }
+
+static void worked(int n) {
+    object__connect(test_object_type);
+    this->value += n;
+}
+
+object__table(test_object_type) = {
+    CONSTRUCTOR,
+    worked,
+    0
+};
 ```
 
-## Multiple Objects Example
+**Usage**
 ```c
-{
-	object (test_object_type, test1) ();
-	object (test_object_type, test2) ();
-
-	test1.worked(42);
-	test1.worked(42);
-	test1.worked(42);
-	test2.worked(42);
-	test1.worked(42);
-	test2.worked(42);
-}
+object(test_object_type, obj) (); // constructor called
+obj.worked(42); // uses implicit `this`
 ```
 
-## Full Example:
-
-`test_object.c`:
+**Multiple objects example**
 ```c
-struct test_object_type
-{
-	int  (*FUNC1)();
-	void (*FUNC2)();
-	void (*FUNC3)();
-	int a;
+object(test_object_type, test1) ();
+object(test_object_type, test2) ();
+
+test1.worked(42);
+test1.worked(42);
+test2.worked(42);
+test1.worked(42);
+test2.worked(42);
+```
+
+**Full example (compact)**
+
+Type + functions + table
+
+```c
+struct test_object_type {
+    i_am_an_object;
+
+    int  (*FUNC1)();
+    void (*FUNC2)();
+    void (*FUNC3)();
+    int a;
 };
 
-static void CONSTRUCTOR()
-{
-	object__connect(test_object_type);
-	printf("0\n");
+static void CONSTRUCTOR() {
+    object__connect(test_object_type);
+    printf("0\n");
 }
 
-static int FUNC1()
-{
-	object__connect(test_object_type);
-	printf("1\n");
-	return (42);
+static int FUNC1() {
+    object__connect(test_object_type);
+    printf("1\n");
+    return (42);
 }
 
-static void FUNC2()
-{
-	object__connect(test_object_type);
-	printf("2\n");
+static void FUNC2() {
+    object__connect(test_object_type);
+    printf("2\n");
 }
 
 static void FUNC3() {
-	object__connect(test_object_type);
-	printf("3\n");
+    object__connect(test_object_type);
+    printf("3\n");
 }
 
-object__table (test_object_type) =
-{
-	CONSTRUCTOR, // Index 0 is always the constructor
-	FUNC1,
-	FUNC2,
-	FUNC3,
-	0
+object__table(test_object_type) = {
+    CONSTRUCTOR, /* index 0 = constructor */
+    FUNC1,
+    FUNC2,
+    FUNC3,
+    0
 };
-```
+ ```
 
-`main.c`:
+Using objects in `main`
+
 ```c
-int main(void)
-{
-	{
-		object (test_object_type, TEST) ();
+int main(void) {
+    {
+        object(test_object_type, TEST) ();
+        TEST.FUNC1();
+        TEST.FUNC2();
+        TEST.FUNC3();
+    }
 
-		TEST.FUNC1();
-		TEST.FUNC2();
-		TEST.FUNC3();
-	}
+    {
+        object(test_object_type, TEST1) ();
+        object(test_object_type, TEST2) ();
 
-	{
-		object (test_object_type, TEST1) ();
-		object (test_object_type, TEST2) ();
+        TEST1.FUNC1();
+        TEST1.FUNC2();
 
-		TEST1.FUNC1();
-		TEST1.FUNC2();
+        TEST2.FUNC1();
+        TEST2.FUNC2();
 
-		TEST2.FUNC1();
-		TEST2.FUNC2();
+        TEST1.FUNC1();
+        TEST2.FUNC1();
 
-		TEST1.FUNC1();
-		TEST2.FUNC1();
+        printf("%d\n", TEST1.FUNC1());
+    }
 
-		printf("%d\n", TEST1.FUNC1());
-	}
-
-	return (0);
+    return (0);
 }
-
 ```
+
+## Notes & reminders
+
+- Always terminate `object__table(...)` with `0`.
+- Index 0 of the function table is the constructor.
+- Use `object__connect(TYPE)` in every function that needs `this`.
+- `__OBJECT_MAX_FUNCTION_LIMIT__` controls the maximum number of functions per object-increase if required.
 
 ----
 </details>
@@ -301,6 +360,71 @@ PUSH_32(62); // > Added 62 to CPU stack
 POP_32(a);   // < Removed 62 from CPU stack
 
 // a is now 62
+```
+
+----
+</details>
+
+<details>
+
+<summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/RAX.gif">
+	<b>RAX</b> - Read or Write the register RAX/X0 <b>(WIP)</b>
+</summary>
+
+> [!WARNING]  
+> **THIS IS A WIP CONTENT!!!** THIS EXTENSION MIGHT NOT WORK ON ALL COMPILERS, OPERATING SYSTEMS, OR ARCHITECTURES!!!
+> MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
+
+> ⚠️ Important
+> ### File at: [**[📜 LIBCMT/ASM/RAX.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/RAX.h)**]
+> ### Call With:
+> ```c
+> #define INCL__RAX
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| **Name**             | **Type**      | **Description**           |
+|----------------------|---------------|---------------------------|
+| `GET_RAX`, `get_rax` | `#define ()`  | Set `RAX` into a variable |
+
+## What Does It Do
+
+With these functions, you're able to move and get values from the CPU register (RAX, X0, ETC.) and stack with different data sizes and archs.
+
+> ⚠️ Note
+> 
+> On 32-BIT systems, EAX or R0 registers are used.
+
+## How To Use
+
+# HOW TO USE
+
+**Example 1: Read RAX into a variable**
+```c
+uint64_t myValue;
+
+GET_RAX(myValue);  // MOV RAX contents into myValue
+
+// myValue now holds the value from RAX
+```
+
+**Example 2: Read EAX on 32-bit system**
+```c
+unsigned int myValue32;
+
+GET_RAX(myValue32);  // MOV EAX contents into myValue32
+
+// myValue32 now holds the value from EAX
+```
+
+**Example 3: Cross-architecture ARM support**
+```c
+uint64_t armValue;
+
+GET_RAX(armValue);  // Reads X0 on ARM64 or R0 on ARM32
+
+// armValue now holds the first argument register value
 ```
 
 ----

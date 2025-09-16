@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -32,25 +32,80 @@
 |*............................................................................*|
 |*       NAME       :   TYPE    :                 DESCRIPTION                 *|
 |*..................:...........:.............................................*|
+|* OBJECT           : #define() : CREATE AN OBJECT                            *|
+|* object           :           :                                             *|
+|*..................:...........:.............................................*|
+|* I_AM_AN_OBJECT   : #define() : SET A STRCUT AS OBJECT                      *|
+|* i_am_an_object   :           :                                             *|
+|*..................:...........:.............................................*|
 |* OBJECT__TABLE    : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR      *|
 |* object__table    :           : STRUCTURE                                   *|
 |*..................:...........:.............................................*|
 |* OBJECT__CONNECT  : #define() : CONNECT A STRUCTURE INTO A FUNCTION         *|
 |* object__connect  :           :                                             *|
 |*..................:...........:.............................................*|
-|* OBJECT           : #define() : CREATE AN OBJECT                            *|
-|* object           :           :                                             *|
+|* OBJECT__INJECT   : (*F)()    : INJECT A FUNCTION WITH A POINTER ADDRESS    *|
 |*..................:...........:.............................................*|
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                                HOW TO USE                                #*|
+|*#                                  OBJECT                                  #*|
 |*############################################################################*|
+|*                                                                            *|
+|* OBJECT IS A HIGH-PERFORMANCE C/C++ LIBRARY FOR OBJECT-ORIENTED PROGRAMMING *|
+|* IN PURE C, PROVIDING DYNAMIC FUNCTION TABLES, FLEXIBLE OBJECT CREATION,    *|
+|* AND OPTIMIZED CROSS-PLATFORM FUNCTION INJECTION.                           *|
+|*                                                                            *|
+|* -------------------------------------------------------------------------- *|
+|*                                                                            *|
+|* O - FEATURES                                                               *|
+|* :                                                                          *|
+|* :.., PURE C OBJECT-ORIENTED PROGRAMMING SUPPORT.                           *|
+|* :                                                                          *|
+|* :.., DYNAMIC FUNCTION TABLES FOR RUNTIME FUNCTION BINDING.                 *|
+|* :                                                                          *|
+|* :.., OPTIMIZED ASSEMBLY-LEVEL FUNCTION INJECTION FOR INTEL AND ARM CPUS.   *|
+|* :                                                                          *|
+|* :.., SUPPORTS 32-BIT AND 64-BIT SYSTEMS.                                   *|
+|* :                                                                          *|
+|* :.., COMPATIBLE WITH TI CGT/CCS COMPILERS, GCC, AND MSVC.                  *|
+|* :                                                                          *|
+|* :.., CROSS-PLATFORM MEMORY MANAGEMENT AND EXCEPTION HANDLING SUPPORT.      *|
+|* :                                                                          *|
+|* :.., CONFIGURABLE MAXIMUM NUMBER OF FUNCTIONS PER OBJECT                   *|
+|*    : (`__OBJECT_MAX_FUNCTION_LIMIT__`).                                    *|
+|*                                                                            *|
+|* -------------------------------------------------------------------------- *|
+|*                                                                            *|
+|* O - WHY USE OBJECT?                                                        *|
+|* :                                                                          *|
+|* :.., [PERFORMANCE]                                                         *|
+|* :  :                                                                       *|
+|* :  : USES INLINE ASSEMBLY TO DIRECTLY INJECT FUNCTIONS INTO OBJECTS.       *|
+|* :                                                                          *|
+|* :.., [FLEXIBILITY]                                                         *|
+|* :  :                                                                       *|
+|* :  : DYNAMICALLY BIND FUNCTIONS AT RUNTIME WITHOUT VIRTUAL TABLES.         *|
+|* :                                                                          *|
+|* :.., [PORTABILITY]                                                         *|
+|* :  :                                                                       *|
+|* :  : SUPPORTS MULTIPLE CPU ARCHITECTURES AND OS ENVIRONMENTS.              *|
+|* :                                                                          *|
+|* :.., [MEMORY EFFICIENCY]                                                   *|
+|* :  :                                                                       *|
+|* :  : OBJECTS ONLY ALLOCATE FUNCTION TABLES ONCE.                           *|
+|* :                                                                          *|
+|* :.., [ERROR HANDLING]                                                      *|
+|*    :                                                                       *|
+|*    : COMPATIBLE WITH `TRY/CATCH`-STYLE MACROS FOR SAFE OPERATIONS.         *|
+|*                                                                            *|
+|* -------------------------------------------------------------------------- *|
 |*                                                                            *|
 |* O - SETUP                                                                  *|
 |* :                                                                          *|
-|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE DEAILNG WITH main FUNCTION BY     *|
-|* : YOURSELF WITH LIKE "#define main ..." OR "#define main(...) ..."         *|
+|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE COMPILING YOUR PROGRAM IN         *|
+|* : ARM32-BIT AND DEAILNG WITH main FUNCTION BY YOURSELF WITH LIKE           *|
+|* : "#define main ..." OR "#define main(...) ..."                            *|
 |* :                                                                          *|
 |* : ELSE, JUST SKIP THE SETUP AND JUMP TO LINE 78 AT THE BOTTOM OF THIS FILE *|
 |* :                                                                          *|
@@ -69,37 +124,109 @@
 |*    : ...                                                                   *|
 |*    : }                                                                     *|
 |*                                                                            *|
-|* :::::::::::::::::::::::::::::::: GENERAL ::::::::::::::::::::::::::::::::: *|
+|* -------------------------------------------------------------------------- *|
 |*                                                                            *|
-|* THIS LIBRARY PROVIDES AN OOP-LIKE SYSTEM FOR C, FEATURING:                 *|
-|* - IMPLICIT "this" POINTER                                                  *|
-|* - CONSTRUCTOR SUPPORT                                                      *|
-|* - FUNCTION POINTER BINDING BY INDEX                                        *|
+|* O - CONTENTS                                                               *|
+|* :                                                                          *|
+|* :.., OBJECT(NAME, VAR)                                                     *|
+|* :  :                                                                       *|
+|* :  : INSTANTIATES AN OBJECT AND BINDS ITS FUNCTION TABLE.                  *|
+|* :  :                                                                       *|
+|* :  : IF IT HAS A CONSTRUCTOR, THEN USE:                                    *|
+|* : 1|     object (s_struct, obj) (...);                                     *|
+|* :  : ELSE                                                                  *|
+|* : 1|     object (s_struct, obj);                                           *|
+|* :  :                                                                       *|
+|* :  : WE ALSO SUGGEST YOU TO USE #define FOR MAKE YOUR OBJECT MORE          *|
+|* :  : SYNTAX SAFE TO USE AND CREATE                                         *|
+|* :  :                                                                       *|
+|* : 1| #define o_struct object(VAR) (s_struct, VAR)                          *|
+|* : 2|                                                                       *|
+|* : 3| o_struct(obj) (...);                                                  *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., I_AM_AN_OBJECT                                                        *|
+|* :  :                                                                       *|
+|* :  : DECLARES THE FUNCTION POINTER STORAGE FOR AN OBJECT.                  *|
+|* :  : YOU MUST PUT THIS FLAG ON TOP OF THE STRUCT!!!                        *|
+|* :  :                                                                       *|
+|* : 1| struct s_object                                                       *|
+|* : 2| {                                                                     *|
+|* : 3|     i_am_an_object;                                                   *|
+|* : 4|     ...                                                               *|
+|* : 5| };                                                                    *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., OBJECT__TABLE(STRUCT_NAME)                                            *|
+|* :  :                                                                       *|
+|* :  : DEFINES A FUNCTION TABLE ARRAY FOR AN OBJECT TYPE.                    *|
+|* :  :                                                                       *|
+|* : 1| object__table (s_struct) =                                            *|
+|* : 2| {                                                                     *|
+|* : 3|     constructor_function,                                             *|
+|* : 4|     function_2,                                                       *|
+|* : 5|     ...                                                               *|
+|* : 6|     0 <- DO NOT FORGET TO ADD 0 AT THE END!!!!!!!                     *|
+|* : 7| };          ^^^                                                       *|
+|* :  :                                                                       *|
+|* :  : LIST ALL OF YOUR FINCTIONS ON TOP TO BOTTOM WITH CORRECT INDEXES!     *|
+|* :  :                                                                       *|
+|* : 1|     struct s_struct {                                                 *|
+|* : 2|         i_am_an_object;                                               *|
+|* : 3|                                                                       *|
+|* : 4|   +-->0 void (*function_a)();                                         *|
+|* : 5| +-|-->1 void (*function_b)();                                         *|
+|* : 6| | | };                                                                *|
+|* : 7| | |                                                                   *|
+|* : 8| | | object__table (s_struct) =                                        *|
+|* : 9| | | {                                                                 *|
+|* :10| | |     constructor_function,                                         *|
+|* :11| | +-->0 function_2, // BECAMES function_a                             *|
+|* :12| +---->1 function_1, // BECAMES function_b                             *|
+|* :13|         0                                                             *|
+|* :14|     };                                                                *|
+|* :  :                                                                       *|
+|* :  : YOU CAN ALSO EXTERN IT IF YOU ALREADY SET IT IN A C FILE              *|
+|* :  :                                                                       *|
+|* : 1| extern object__table(s_struct);                                       *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., OBJECT__CONNECT(STRUCT_NAME)                                          *|
+|*    :                                                                       *|
+|*    : CONNECTS AN OBJECT STRUCTURE POINTER (this) TO ITS INSTANCE.          *|
+|*    :                                                                       *|
+|*    : JUST PUT THIS MACRO AT THE TOP OF YOUR FUNCTION BLOCK.                *|
+|*    :                                                                       *|
+|*   1| void function_1()                                                     *|
+|*   2| {                                                                     *|
+|*   3|     object__connect(s_struct);                                        *|
+|*   4|     ...                                                               *|
+|*   5| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
-|* DEFINE YOUR STRUCTURE NORMALLY WITH FUNCTION POINTERS AT THE TOP.          *|
-|* CONNECT YOUR FUNCTIONS USING "object__table(...) = { ... }".               *|
-|* THE FIRST INDEX (0) IS ALWAYS THE CONSTRUCTOR FUNCTION.                    *|
-|* FUNCTIONS ARE BOUND TO STRUCT MEMBERS BY ORDER, NOT NAME.                  *|
-|* DON'T FORGET TO ADD 0 END OF THE: OBJECT__TABLE = {..., 0}!!!              *|
+|* -------------------------------------------------------------------------- *|
 |*                                                                            *|
-|* O - FUNCTION CONNECTION                                                    *|
+|* O - SOME EXAMPLES                                                          *|
 |* :                                                                          *|
 |* : struct test_object_type                                                  *|
 |* : {                                                                        *|
+|* :     i_am_an_object;                                                      *|
+|* :                                                                          *|
 |* :     void (*worked)(int);                                                 *|
 |* :     int value;                                                           *|
 |* : };                                                                       *|
 |* :                                                                          *|
-|* : // EVEN THOUGHT YOU DO NOTHING IN CONSTRUCTOR, YOU MUST CREATE IT ANYWAY *|
 |* : static void CONSTRUCTOR(void)                                            *|
 |* : {                                                                        *|
-|* :     object__connect (test_object_type);                                  *| 
+|* :     object__connect (test_object_type);                                  *|
+|* :                                                                          *|
 |* :     this->value = 0;                                                     *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : static void worked(int n)                                                *|
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
+|* :                                                                          *|
 |* :     this->value += n;                                                    *|
 |* : }                                                                        *|
 |* :                                                                          *|
@@ -132,6 +259,8 @@
 |* :  :                                                                       *|
 |* :  : struct test_object_type                                               *|
 |* :  : {                                                                     *|
+|* :  :     i_am_an_object;                                                   *|
+|* :  :                                                                       *|
 |* :  :     int (*FUNC1)();                                                   *|
 |* :  :     void (*FUNC2)();                                                  *|
 |* :  :     void (*FUNC3)();                                                  *|
@@ -212,21 +341,6 @@
 \******************************************************************************/
 
 /*############################################################################*\
-|*#                              WTF THAT DOES?                              #*|
-|*############################################################################*|
-|*                                                                            *|
-|* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
-|*                                                                            *|
-|* THIS HEADER CREATES A SIMPLE VERSION OF OBJECT & ORIENTED SYSTEM.          *|
-|*                                                                            *|
-|* IT'S IMPLEMENTS "this" VARIABLE INTO THE FUNCTIONS YOU CONNECTED TO YOUR   *|
-|* STRUCTURE.                                                                 *|
-|*                                                                            *|
-|* AND THIS SYTEM HAS A CONSTRUCTOR SYSTEM TOO.                               *|
-|*                                                                            *|
-\******************************************************************************/
-
-/*############################################################################*\
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
@@ -275,8 +389,8 @@
 #	 define __CPU_INTEL__
 #	 define __CPU_ARM__
 #	        */
-#	include "./ASM/PUSH_POP.h" /*
-#	 define POP_64(VAR)
+#	include "./ASM/RAX.h" /*
+#	 define GET_RAX(VAR)
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
@@ -292,94 +406,106 @@ extern "C" {
 #	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
-#	define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-		struct OBJECT_STRUCT_TYPE	*const this = \
-			(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__;
+#	define I_AM_AN_OBJECT void	*__OBJECT_FUNC_PTR__
+
+#	ifdef __CPU_ARM__
+#		define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
+			struct OBJECT_STRUCT_TYPE	*const this = \
+				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
+#	else
+#		ifdef __CPU_INTEL__
+#			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
+				register uintptr_t __THIS__;\
+				GET_RAX(__THIS__);\
+				struct OBJECT_STRUCT_TYPE	*const this = \
+					(struct OBJECT_STRUCT_TYPE *)__THIS__;
+#		endif /* __CPU_INTEL__ */
+#	endif /* __CPU_ARM__ */
 
 #	define OBJECT__TABLE(OBJECT_TYPE) \
-		void *OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__]
+		void	*OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__]
 
 #	define OBJECT(OBJECT_NAME, VARIABLE_NAME) \
 		struct OBJECT_NAME	VARIABLE_NAME;\
+		extern void			*OBJECT_NAME[__OBJECT_MAX_FUNCTION_LIMIT__];\
 		\
+		if (OBJECT_NAME)\
 		{\
-			extern void		*OBJECT_NAME[];\
 			register size_t	__OBJECT_INDEX__;\
 			void			(*FUNCTION)();\
+			register void	**FUNCTION_TABLE;\
 			\
-			__OBJECT_INDEX__ = 0;\
+			__OBJECT_INDEX__ = 1;\
+			FUNCTION_TABLE = OBJECT_NAME;\
 			\
-			while (OBJECT_NAME[__OBJECT_INDEX__])\
+			while (FUNCTION_TABLE[__OBJECT_INDEX__])\
 			{\
-				FUNCTION = \
-					(void (*)())(OBJECT_NAME[__OBJECT_INDEX__]);\
-				\
-				if (__OBJECT_INDEX__)\
-				{\
-					((long **)&(VARIABLE_NAME))[__OBJECT_INDEX__ - 1]\
-						= __TRAMPOLINE_FUNCTION__(&(VARIABLE_NAME), FUNCTION);\
-				}\
-				\
+				FUNCTION = (void (*)())(FUNCTION_TABLE[__OBJECT_INDEX__]);\
+				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__] = \
+					(uintptr_t *)FUNCTION;\
+				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__]\
+					= OBJECT__INJECT(&(VARIABLE_NAME), FUNCTION);\
 				++__OBJECT_INDEX__;\
 			}\
 		}\
 		\
-		if (*OBJECT_NAME)\
+		if (OBJECT_NAME && *OBJECT_NAME)\
 			(\
-				(void (*)())__TRAMPOLINE_FUNCTION__(\
+				(void (*)())OBJECT__INJECT(\
 					&(VARIABLE_NAME), \
 					*OBJECT_NAME)\
 			)
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#	ifdef SETUP_OBJECT
-LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
-#	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#		ifdef main
-#			undef main
-#		endif /* main */
-#		ifdef WinMain
-#			undef WinMain
-#		endif /* main */
-#		ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#			define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#		else
-#			define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES
-#		endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
-#		ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#			define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-				LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#		else
-#			define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES
-#		endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#		define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-			LOCAL void		*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
-#		define main \
-			__IDLE__TRY_CATCH; \
-			LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-			LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
-			LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-			int main
-#		define WinMain \
-			__IDLE__TRY_CATCH; \
-			LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-			LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
-			LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-			int WINAPI WinMain
-#	endif /* SETUP_OBJECT */
+#	ifdef __CPU_ARM__
+#		ifdef __SYSTEM_32_BIT__ /* BEHOLD! THE ENEMY OF THE REGISTERS!!! */
+#			ifdef SETUP_OBJECT
+LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
+#			else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
+#				ifdef main
+#					undef main
+#				endif /* main */
+#				ifdef WinMain
+#					undef WinMain
+#				endif /* main */
+#				ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#					define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
+						LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
+#				else
+#					define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES
+#				endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
+#				ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#					define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
+						LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
+#				else
+#					define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES
+#				endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
+#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
+					LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
+#				define main \
+					__IDLE__TRY_CATCH; \
+					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
+					LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
+					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
+					int main
+#				define WinMain \
+					__IDLE__TRY_CATCH; \
+					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
+					LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
+					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
+					int WINAPI WinMain
+#			endif /* SETUP_OBJECT */
+extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
+#		endif /* __SYSTEM_32_BIT__ */
+#	endif /* __CPU_ARM__ */
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
-
-/* *************************** [v] PROTOTYPES [v] *************************** */
-extern LOCAL void		*__OBJECT_STRUCTURE_POINTER__;
-/* *************************** [^] PROTOTYPES [^] *************************** */
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE void
-	*__TRAMPOLINE_FUNCTION__(void *THIS, void *TARGET)
+	*OBJECT__INJECT(void *THIS, void *TARGET)
 #	else /* K&R */
 static INLINE void
-	*__TRAMPOLINE_FUNCTION__(THIS, TARGET)
+	*OBJECT__INJECT(THIS, TARGET)
 	void	*THIS;
 	void	*TARGET;
 #	endif /* !KNR_STYLE */
@@ -420,110 +546,102 @@ static INLINE void
 #		ifdef __SYSTEM_64_BIT__
 	*_++ = 0X48; // MOV
 	*_++ = 0XB8; // RAX,
-	VALUE = (uintptr_t)THIS;
-
-	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64;
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
+	VALUE = (uintptr_t)THIS; // IMM64
+	*_++ = VALUE & 0XFF;
+	*_++ = (VALUE >> 8) & 0XFF;
+	*_++ = (VALUE >> 16) & 0XFF;
+	*_++ = (VALUE >> 24) & 0XFF;
+	*_++ = (VALUE >> 32) & 0XFF;
+	*_++ = (VALUE >> 40) & 0XFF;
+	*_++ = (VALUE >> 48) & 0XFF;
+	*_++ = (VALUE >> 56) & 0XFF;
 	*_++ = 0X53; // PUSH RBX;
 	*_++ = 0X48; // MOV
 	*_++ = 0XBB; // RBX,
-	VALUE = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
-
-	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64;
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
+	VALUE = (uintptr_t)TARGET; // IMM64
+	*_++ = VALUE & 0XFF;
+	*_++ = (VALUE >> 8) & 0XFF;
+	*_++ = (VALUE >> 16) & 0XFF;
+	*_++ = (VALUE >> 24) & 0XFF;
+	*_++ = (VALUE >> 32) & 0XFF;
+	*_++ = (VALUE >> 40) & 0XFF;
+	*_++ = (VALUE >> 48) & 0XFF;
+	*_++ = (VALUE >> 56) & 0XFF;
 	*_++ = 0X48; // MOV
-	*_++ = 0X89; // [RBX],
-	*_++ = 0X03; // RAX;
+	*_++ = 0X89; // [RAX]
+	*_++ = 0X18; // RBX;
 	*_++ = 0X5B; // POP RBX;
-	*_++ = 0X48; // MOV
-	*_++ = 0XB8; // RAX;
-	VALUE = (uintptr_t)TARGET;
-
-	for (INDEX = 0; INDEX < 8; INDEX++) // IMM64
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
 	*_++ = 0XFF; // JMP
-	*_++ = 0XE0; // RAX;
+	*_++ = 0X20; // [RAX];
 #	else
 #		ifdef __SYSTEM_32_BIT__
 	*_++ = 0XB8; // MOV EAX,
 	VALUE = (uintptr_t)THIS;
-
-	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
+	*_++ = VALUE & 0XFF;
+	*_++ = (VALUE >> 8) & 0XFF;
+	*_++ = (VALUE >> 16) & 0XFF;
+	*_++ = (VALUE >> 24) & 0XFF;
 	*_++ = 0X53; // PUSH EBX;
 	*_++ = 0XBB; // MOV EBX,
-	VALUE = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
-
-	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
-	*_++ = 0X89; // MOV [EBX],
-	*_++ = 0X03; // EAX;
-	*_++ = 0X5B; // POP EBX;
-	*_++ = 0XB8; // MOV EAX,
 	VALUE = (uintptr_t)TARGET;
+	*_++ = VALUE & 0XFF;
+	*_++ = (VALUE >> 8) & 0XFF;
+	*_++ = (VALUE >> 16) & 0XFF;
+	*_++ = (VALUE >> 24) & 0XFF;
 
-	for (INDEX = 0; INDEX < 4; INDEX++) // IMM32;
-		*_++ = (VALUE >> (INDEX * 8)) & 0XFF;
-
+	*_++ = 0X89; // MOV [EAX],
+	*_++ = 0X18; // EBX;
+	*_++ = 0X5B; // POP EBX;
 	*_++ = 0XFF; // JMP
-	*_++ = 0XE0; // EAX;
+	*_++ = 0X20; // [EAX];
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_INTEL__ */
 
-#	ifdef __CPU_ARM__
-	uintptr_t			*LITERALS;
+#ifdef __CPU_ARM__
+	uintptr_t	*LITERALS;
 
-#		ifdef __SYSTEM_64_BIT__
-	const unsigned int	INSTRUCTIONS[5] =
-		{
-			(unsigned)0X580000A0, /* LDR X0, #IMM (THIS) */
-			(unsigned)0X580000C1, /* LDR X1, #IMM (&GLOBAL) */
-			(unsigned)0XF9000020, /* STR X0, [X1] */
-			(unsigned)0X580000C0, /* LDR X0, #IMM (TARGET) */
-			(unsigned)0XD61F0000  /*  BR X0 */
-		};
-
-	for (INDEX = 0; INDEX < 5; ++INDEX)
+#	ifdef __SYSTEM_64_BIT__
+	const unsigned int	INSTRUCTIONS[4] =
 	{
-		register unsigned int	VALUE;
+		0X580000B1, /* LDR X17, #IMM (THIS) */
+		0X580000B0, /* LDR X16, #IMM (TARGET) */
+		0XF9000220, /* STR X16, [X17] */
+		0XD61F0200  /* BR X16 */
+	};
 
-		VALUE = INSTRUCTIONS[INDEX];
-		CODE[4 * INDEX + 0] = (unsigned char)(VALUE & (unsigned)0XFF);
-		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & (unsigned)0XFF);
-		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & (unsigned)0XFF);
-		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & (unsigned)0XFF);
+	for (INDEX = 0; INDEX < 4; ++INDEX)
+	{
+		const unsigned int	VALUE = INSTRUCTIONS[INDEX];
+		CODE[4 * INDEX] = (unsigned char)(VALUE & 0XFF);
+		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & 0XFF);
+		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & 0XFF);
+		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & 0XFF);
 	}
 
-	LITERALS = (uintptr_t *)(CODE + 4 * 5);
+	LITERALS = (uintptr_t *)(CODE + 4 * 4);
 	LITERALS[0] = (uintptr_t)THIS;
-	LITERALS[1] = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
-	LITERALS[2] = (uintptr_t)TARGET;
+	LITERALS[1] = (uintptr_t)TARGET;
+
 #		else
 #			ifdef __SYSTEM_32_BIT__
 	const unsigned int	INSTRUCTIONS[5] =
-		{
-			(unsigned)0XE59F000C, /* LDR R0, [PC, #12] */
-			(unsigned)0XE59F100C, /* LDR R1, [PC, #12] */
-			(unsigned)0XE5810000, /* STR R0, [R1, #0] */
-			(unsigned)0XE59F0008, /* LDR R0, [PC, #8] */
-			(unsigned)0XE12FFF10  /*  BX R0 */
-		};
+	{
+		0XE59F000C, /* LDR R0, [PC, #12] */
+		0XE59F100C, /* LDR R1, [PC, #12] */
+		0XE5810000, /* STR R0, [R1, #0] */
+		0XE59F0008, /* LDR R0, [PC, #8] */
+		0XE12FFF10  /* BX R0 */
+	};
 
 	for (INDEX = 0; INDEX < 5; ++INDEX)
 	{
-		register unsigned int	VALUE;
+		const unsigned int	VALUE = INSTRUCTIONS[INDEX];
 
-		VALUE = INSTRUCTIONS[INDEX];
-		CODE[4 * INDEX + 0] = (unsigned char)(VALUE & (unsigned)0XFF);
-		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & (unsigned)0XFF);
-		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & (unsigned)0XFF);
-		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & (unsigned)0XFF);
+		CODE[4 * INDEX] = (unsigned char)(VALUE & 0XFF);
+		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & 0XFF);
+		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & 0XFF);
+		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & 0XFF);
 	}
 
 	LITERALS = (uintptr_t *)(CODE + 20);
@@ -533,6 +651,7 @@ static INLINE void
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_ARM__ */
+
 
 #	ifdef __unix__
 #		ifndef KNR_STYLE /* STANDARD C */
@@ -547,6 +666,7 @@ static INLINE void
 }
 
 /* **************************** [v] LOWERCASE [v] *************************** */
+#	define i_am_an_object I_AM_AN_OBJECT
 #	define object__table OBJECT__TABLE
 #	define object__connect OBJECT__CONNECT
 #	define object OBJECT
