@@ -418,7 +418,8 @@ extern "C" {
 				register uintptr_t LOCALMACRO__SELF__;\
 				GET_RAX(LOCALMACRO__SELF__);\
 				struct OBJECT_STRUCT_TYPE	*const SELF = \
-					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__;
+					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__;\
+				struct OBJECT_STRUCT_TYPE	*const self = SELF;
 #		endif /* __CPU_INTEL__ */
 #	endif /* __CPU_ARM__ */
 
@@ -441,7 +442,7 @@ extern "C" {
 			while (FUNCTION_TABLE[__OBJECT_INDEX__])\
 			{\
 				FUNCTION = (void (*)())(FUNCTION_TABLE[__OBJECT_INDEX__]);\
-				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__] = \
+				((uintptr_t *)&(VARIABLE_NAME))[__OBJECT_INDEX__] = \
 					(uintptr_t)FUNCTION;\
 				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__]\
 					= OBJECT__INJECT(&(VARIABLE_NAME), (void *)FUNCTION);\
