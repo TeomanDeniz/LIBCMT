@@ -156,7 +156,7 @@ int main()
 
 > ### **`OBJECT__CONNECT(STRUCT_NAME)`**
 > 
-> Connects an object structure pointer (`this`) to its instance. Put this macro at the top of function bodies that use `this`.
+> Connects an object structure pointer (`SELF`) to its instance. Put this macro at the top of function bodies that use `SELF`.
 > 
 > ```c
 > void function_1() {
@@ -181,12 +181,12 @@ struct test_object_type {
 ```c
 static void CONSTRUCTOR(void) {
     object__connect(test_object_type);
-    this->value = 0;
+    SELF->value = 0;
 }
 
 static void worked(int n) {
     object__connect(test_object_type);
-    this->value += n;
+    SELF->value += n;
 }
 
 object__table(test_object_type) = {
@@ -199,7 +199,7 @@ object__table(test_object_type) = {
 **Usage**
 ```c
 object(test_object_type, obj) (); // constructor called
-obj.worked(42); // uses implicit `this`
+obj.worked(42); // uses implicit `SELF`
 ```
 
 **Multiple objects example**
@@ -293,7 +293,7 @@ int main(void) {
 
 - Always terminate `object__table(...)` with `0`.
 - Index 0 of the function table is the constructor.
-- Use `object__connect(TYPE)` in every function that needs `this`.
+- Use `object__connect(TYPE)` in every function that needs `SELF`.
 - `__OBJECT_MAX_FUNCTION_LIMIT__` controls the maximum number of functions per object-increase if required.
 
 ----

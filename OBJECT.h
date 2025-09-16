@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/17 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -193,7 +193,7 @@
 |* :                                                                          *|
 |* :.., OBJECT__CONNECT(STRUCT_NAME)                                          *|
 |*    :                                                                       *|
-|*    : CONNECTS AN OBJECT STRUCTURE POINTER (this) TO ITS INSTANCE.          *|
+|*    : CONNECTS AN OBJECT STRUCTURE POINTER (SELF) TO ITS INSTANCE.          *|
 |*    :                                                                       *|
 |*    : JUST PUT THIS MACRO AT THE TOP OF YOUR FUNCTION BLOCK.                *|
 |*    :                                                                       *|
@@ -220,14 +220,14 @@
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
 |* :                                                                          *|
-|* :     this->value = 0;                                                     *|
+|* :     SELF->value = 0;                                                     *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : static void worked(int n)                                                *|
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
 |* :                                                                          *|
-|* :     this->value += n;                                                    *|
+|* :     SELF->value += n;                                                    *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : object__table(test_object_type) =                                        *|
@@ -240,7 +240,7 @@
 |* O - USAGE                                                                  *|
 |* :                                                                          *|
 |* : object (test_object_type, obj) (); // CONSTRUCTOR CALLED                 *|
-|* : obj.worked(42); // uses implicit "this"                                  *|
+|* : obj.worked(42); // uses implicit "SELF"                                  *|
 |*                                                                            *|
 |* O - MULTIPLE OBJECTS EXAMPLE                                               *|
 |* :                                                                          *|
@@ -410,15 +410,15 @@ extern "C" {
 
 #	ifdef __CPU_ARM__
 #		define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-			struct OBJECT_STRUCT_TYPE	*const this = \
+			struct OBJECT_STRUCT_TYPE	*const SELF = \
 				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
 #	else
 #		ifdef __CPU_INTEL__
 #			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-				register uintptr_t __THIS__;\
-				GET_RAX(__THIS__);\
-				struct OBJECT_STRUCT_TYPE	*const this = \
-					(struct OBJECT_STRUCT_TYPE *)__THIS__;
+				register uintptr_t LOCALMACRO__SELF__;\
+				GET_RAX(LOCALMACRO__SELF__);\
+				struct OBJECT_STRUCT_TYPE	*const SELF = \
+					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__;
 #		endif /* __CPU_INTEL__ */
 #	endif /* __CPU_ARM__ */
 
@@ -442,9 +442,9 @@ extern "C" {
 			{\
 				FUNCTION = (void (*)())(FUNCTION_TABLE[__OBJECT_INDEX__]);\
 				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__] = \
-					(uintptr_t *)FUNCTION;\
+					(uintptr_t)FUNCTION;\
 				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__]\
-					= OBJECT__INJECT(&(VARIABLE_NAME), FUNCTION);\
+					= OBJECT__INJECT(&(VARIABLE_NAME), (void *)FUNCTION);\
 				++__OBJECT_INDEX__;\
 			}\
 		}\
@@ -501,12 +501,12 @@ extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 #	ifndef KNR_STYLE /* STANDARD C */
-static INLINE void
-	*OBJECT__INJECT(void *THIS, void *TARGET)
+static INLINE uintptr_t
+	*OBJECT__INJECT(void *SELF, void *TARGET)
 #	else /* K&R */
-static INLINE void
-	*OBJECT__INJECT(THIS, TARGET)
-	void	*THIS;
+static INLINE uintptr_t
+	*OBJECT__INJECT(SELF, TARGET)
+	void	*SELF;
 	void	*TARGET;
 #	endif /* !KNR_STYLE */
 {
@@ -522,7 +522,7 @@ static INLINE void
 	CODE = (unsigned char *)mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
 
 	if (CODE == ((unsigned char *) -1))
-		return ((void *)0);
+		return ((uintptr_t *)0);
 #	else
 #		ifdef _WIN32
 #			ifndef KNR_STYLE /* STANDARD C */
@@ -533,7 +533,7 @@ static INLINE void
 	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
 
 	if (!CODE)
-		return ((void *)0);
+		return ((uintptr_t *)0);
 #		endif /* _WIN32 */
 #	endif /* __unix__ */
 
@@ -546,7 +546,7 @@ static INLINE void
 #		ifdef __SYSTEM_64_BIT__
 	*_++ = 0X48; // MOV
 	*_++ = 0XB8; // RAX,
-	VALUE = (uintptr_t)THIS; // IMM64
+	VALUE = (uintptr_t)SELF; // IMM64
 	*_++ = VALUE & 0XFF;
 	*_++ = (VALUE >> 8) & 0XFF;
 	*_++ = (VALUE >> 16) & 0XFF;
@@ -576,7 +576,7 @@ static INLINE void
 #	else
 #		ifdef __SYSTEM_32_BIT__
 	*_++ = 0XB8; // MOV EAX,
-	VALUE = (uintptr_t)THIS;
+	VALUE = (uintptr_t)SELF;
 	*_++ = VALUE & 0XFF;
 	*_++ = (VALUE >> 8) & 0XFF;
 	*_++ = (VALUE >> 16) & 0XFF;
@@ -604,7 +604,7 @@ static INLINE void
 #	ifdef __SYSTEM_64_BIT__
 	const unsigned int	INSTRUCTIONS[4] =
 	{
-		0X580000B1, /* LDR X17, #IMM (THIS) */
+		0X580000B1, /* LDR X17, #IMM (SELF) */
 		0X580000B0, /* LDR X16, #IMM (TARGET) */
 		0XF9000220, /* STR X16, [X17] */
 		0XD61F0200  /* BR X16 */
@@ -620,7 +620,7 @@ static INLINE void
 	}
 
 	LITERALS = (uintptr_t *)(CODE + 4 * 4);
-	LITERALS[0] = (uintptr_t)THIS;
+	LITERALS[0] = (uintptr_t)SELF;
 	LITERALS[1] = (uintptr_t)TARGET;
 
 #		else
@@ -645,7 +645,7 @@ static INLINE void
 	}
 
 	LITERALS = (uintptr_t *)(CODE + 20);
-	LITERALS[0] = (uintptr_t)THIS;
+	LITERALS[0] = (uintptr_t)SELF;
 	LITERALS[1] = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
 	LITERALS[2] = (uintptr_t)TARGET;
 #			endif /* __SYSTEM_32_BIT__ */
@@ -662,7 +662,7 @@ static INLINE void
 	mprotect(CODE, 4096, 0X5);
 #	endif /* __unix__ */
 
-	return ((void *)CODE);
+	return ((uintptr_t *)CODE);
 }
 
 /* **************************** [v] LOWERCASE [v] *************************** */
