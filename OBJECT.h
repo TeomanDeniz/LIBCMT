@@ -35,8 +35,8 @@
 |* OBJECT           : #define() : CREATE AN OBJECT                            *|
 |* object           :           :                                             *|
 |*..................:...........:.............................................*|
-|* I_AM_AN_OBJECT   : #define() : SET A STRCUT AS OBJECT                      *|
-|* i_am_an_object   :           :                                             *|
+|* I_AM_AN_OBJECT   : #define() : DECLARES THE FUNCTION POINTER STORAGE FOR   *|
+|* i_am_an_object   :           : AN OBJECT                                   *|
 |*..................:...........:.............................................*|
 |* OBJECT__TABLE    : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR      *|
 |* object__table    :           : STRUCTURE                                   *|
