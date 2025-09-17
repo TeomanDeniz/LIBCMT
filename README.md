@@ -156,11 +156,23 @@ int main()
 
 > ### **`OBJECT__CONNECT(STRUCT_NAME)`**
 > 
-> Connects an object structure pointer (`SELF`) to its instance. Put this macro at the top of function bodies that use `SELF`.
+> Connects an object structure pointer (`self`) to its instance. Put this macro at the top of function bodies that use `self`.
 > 
 > ```c
 > void function_1() {
 >     object__connect(s_struct);
+>
+>     // self
+>     ...
+> }
+> ```
+> 
+> Or, if you use uppercase version, you'll need to use:
+> ```c
+> void function_1() {
+>     OBJECT__CONNECT(s_struct);
+>
+>     // SELF
 >     ...
 > }
 > ```
@@ -181,11 +193,11 @@ struct test_object_type {
 ```c
 static void CONSTRUCTOR(void) {
     object__connect(test_object_type);
-    SELF->value = 0;
+    self->value = 0;
 }
 
 static void worked(int n) {
-    object__connect(test_object_type);
+    OBJECT__CONNECT(test_object_type);
     SELF->value += n;
 }
 
@@ -199,7 +211,7 @@ object__table(test_object_type) = {
 **Usage**
 ```c
 object(test_object_type, obj) (); // constructor called
-obj.worked(42); // uses implicit `SELF`
+obj.worked(42); // uses implicit `self`
 ```
 
 **Multiple objects example**

@@ -117,12 +117,14 @@
 |* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
 |* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
 |* :                                                                          *|
-|* ;.., #define SETUP_OBJECT                                                  *|
-|*    : #include "LIBCMT/OBJECT.h"                                            *|
+|* ;..,                                                                       *|
+|*   1| #define SETUP_OBJECT                                                  *|
+|*   2| #include "LIBCMT/OBJECT.h"                                            *|
+|*   3|                                                                       *|
+|*   4| int main() {                                                          *|
+|*   5| ...                                                                   *|
+|*   6| }                                                                     *|
 |*    :                                                                       *|
-|*    : int main() {                                                          *|
-|*    : ...                                                                   *|
-|*    : }                                                                     *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
@@ -200,8 +202,20 @@
 |*   1| void function_1()                                                     *|
 |*   2| {                                                                     *|
 |*   3|     object__connect(s_struct);                                        *|
-|*   4|     ...                                                               *|
-|*   5| }                                                                     *|
+|*   4|                                                                       *|
+|*   5|     // self                                                           *|
+|*   6|     ...                                                               *|
+|*   7| }                                                                     *|
+|*    :                                                                       *|
+|*    : OR, IF YOU USE UPPERCASE VERSION, YOU'LL NEED TO USE:                 *|
+|*    :                                                                       *|
+|*   1| void function_1()                                                     *|
+|*   2| {                                                                     *|
+|*   3|     OBJECT__CONNECT(s_struct);                                        *|
+|*   4|                                                                       *|
+|*   5|     // SELF                                                           *|
+|*   6|     ...                                                               *|
+|*   7| }                                                                     *|
 |*    :                                                                       *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
@@ -220,14 +234,14 @@
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
 |* :                                                                          *|
-|* :     SELF->value = 0;                                                     *|
+|* :     self->value = 0;                                                     *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : static void worked(int n)                                                *|
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
 |* :                                                                          *|
-|* :     SELF->value += n;                                                    *|
+|* :     self->value += n;                                                    *|
 |* : }                                                                        *|
 |* :                                                                          *|
 |* : object__table(test_object_type) =                                        *|
@@ -412,14 +426,21 @@ extern "C" {
 #		define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
 			struct OBJECT_STRUCT_TYPE	*const SELF = \
 				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
+#		define object__connect(OBJECT_STRUCT_TYPE) \
+			struct OBJECT_STRUCT_TYPE	*const self = \
+				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
 #	else
 #		ifdef __CPU_INTEL__
 #			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
 				register uintptr_t LOCALMACRO__SELF__;\
 				GET_RAX(LOCALMACRO__SELF__);\
 				struct OBJECT_STRUCT_TYPE	*const SELF = \
-					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__;\
-				struct OBJECT_STRUCT_TYPE	*const self = SELF;
+					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
+#			define object__connect(OBJECT_STRUCT_TYPE) \
+				register uintptr_t LOCALMACRO__SELF__;\
+				GET_RAX(LOCALMACRO__SELF__);\
+				struct OBJECT_STRUCT_TYPE	*const self = \
+					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
 #		endif /* __CPU_INTEL__ */
 #	endif /* __CPU_ARM__ */
 
@@ -669,7 +690,6 @@ static INLINE uintptr_t
 /* **************************** [v] LOWERCASE [v] *************************** */
 #	define i_am_an_object I_AM_AN_OBJECT
 #	define object__table OBJECT__TABLE
-#	define object__connect OBJECT__CONNECT
 #	define object OBJECT
 /* **************************** [^] LOWERCASE [^] *************************** */
 
