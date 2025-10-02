@@ -46,12 +46,17 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| **Name**                             | **Type**    | **Description**                                     |
-| ------------------------------------ | ----------- | --------------------------------------------------- |
-| `OBJECT__TABLE`, `object__table`     | `#define()` | Connect all of the functions into your structure    |
-| `OBJECT__CONNECT`, `object__connect` | `#define()` | Connect a structure into a function                 |
-| `OBJECT`, `object`                   | `#define()` | Create an object                                    |
-| `I_AM_AN_OBJECT`, `i_am_an_object`   | `#define`   | Declares the function pointer storage for an object |
+| **Name**                               | **Type**    | **Description**                                                     |
+| -------------------------------------- | ----------- | ------------------------------------------------------------------- |
+| `NEW`, `new`                           | `#define()` | Create an object                                                    |
+| `DESTROY`, `destroy`                   | `#define()` | Destroy an object (it is necessary)                                 |
+| `OBJECT`, `object`                     | `#define`   | Struct definition                                                   |
+| `OBJECT__READY`, `object__ready`       | `#define()` | Check if object is successfully allocated; returns `(int)1` if true |
+| `I_AM_AN_OBJECT`, `i_am_an_object`     | `#define`   | Declares the function pointer storage for an object                 |
+| `OBJECT__CONNECT`, `object__connect`   | `#define()` | Connect a structure into a function                                 |
+| `OBJECT__INJECT`, `object__inject`     | `#define()` | Inject a function pointer                                           |
+| `OBJECT__INJECT_2`, `object__inject_2` | `#define()` | Inject a function pointer with a function (custom binding)          |
+| `OBJECT__INJECT_3`, `object__inject_3` | `#define()` | Inject a function pointer with a function in an object              |
 
 **OBJECT** is a high-performance C/C++ library for object-oriented programming in pure C, providing dynamic function tables, flexible object creation, and optimized cross-platform function injection.
 
@@ -62,7 +67,6 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 * Supports 32-bit and 64-bit systems.
 * Compatible with TI CGT/CCS compilers, GCC, and MSVC.
 * Cross-platform memory management and exception handling support.
-* Configurable maximum number of functions per object (\_\_OBJECT_MAX_FUNCTION_LIMIT\_\_).
 
 ## Why use OBJECT?
 > * Performance
@@ -76,9 +80,6 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > 
 > * Memory efficiency
 > Objects only allocate their function tables once.
-> 
-> * Error handling
-> Compatible with try/catch-style macros for safe operations.
 
 ## Setup
 
@@ -114,19 +115,57 @@ int main()
 }
 ```
 
-## Contents / API (quick reference)
+## Contents / API / Macros
 
-> ### **`OBJECT(NAME, VAR)`**
+> ### **`OBJECT`**
 > 
-> Instantiates an object and binds its function table.
-> * If the object has a constructor: `object(s_struct, obj) (...);`
-> * Otherwise: `object(s_struct, obj);`
+> It specifies that the structure you create is an object.
+> 
+> It performs the same function as "struct" and makes no performance changes.
+> 
+> It simply works as `#define object struct`.
+> 
+> Use it like:
+> ```c
+> object o_test
+> {
+>     i_am_an_object;
+>     ...
+> };
+
+> ### **`NEW(NAME, VAR) (...)`**
+> 
+> Instantiates an object and runs object's constructor.
+> 
+> After you created the object with `new`, don't forget to delete it with `destroy`.
+> 
+> Usage:
+> ```c
+> new (o_object_type, ObjectName) (constructor, parameters, if_have, any);
+> 
+> ObjectName.call_a_function(42);
+> 
+> destroy (ObjectName);
+> ```
 > 
 > Suggested macro for ergonomics:
 > ```c
-> #define o_struct(object_var) object(s_struct, object_var)
+> #define test(OBJECT_VAR) new (o_test, OBJECT_VAR)
 > 
-> o_struct (obj) (...);
+> test (obj) (...);
+> ```
+
+> ### **`DESTROY(OBJECT)`**
+> 
+> Clears the memory of hte created object if object is successfully created.
+> 
+> Usage:
+> ```c
+> new (o_object_type, ObjectName) (constructor, parameters, if_have, any);
+> 
+> ObjectName.call_a_function(42);
+> 
+> destroy (ObjectName);
 > ```
 
 > ### **`I_AM_AN_OBJECT`**
@@ -134,35 +173,21 @@ int main()
 > Declares the function pointer storage for an object. Place at top of the struct.
 > 
 > ```c
-> struct s_object {
+> object o_test {
 >     i_am_an_object;
 >     ...
 > };
 > ```
 
-> ### **`OBJECT__TABLE(STRUCT_NAME)`**
-> 
-> Defines the function table array for an object type.
-> 
-> ```c
-> object__table(s_struct) = {
->     constructor_function,
->     function_2,
->     ...
->     0 /* TERMINATOR - DO NOT FORGET */
-> };
-> ```
-> List functions top-to-bottom in the correct indexes. Index 0 is the constructor.
-
 > ### **`OBJECT__CONNECT(STRUCT_NAME)`**
 > 
-> Connects an object structure pointer (`self`) to its instance. Put this macro at the top of function bodies that use `self`.
+> Connects an object structure pointer (`this`) to its instance. Put this macro at the top of function bodies that use `this`.
 > 
 > ```c
 > void function_1() {
->     object__connect(s_struct);
->
->     // self
+>     object__connect(o_object);
+> 
+>     // this
 >     ...
 > }
 > ```
@@ -170,10 +195,65 @@ int main()
 > Or, if you use uppercase version, you'll need to use:
 > ```c
 > void function_1() {
->     OBJECT__CONNECT(s_struct);
->
->     // SELF
+>     OBJECT__CONNECT(o_object);
+> 
+>     // THIS
 >     ...
+> }
+> ```
+
+> ### **`OBJECT__READY(OBJECT)`**
+> 
+> Checks if object is properly allocated.
+> 
+> ```c
+> new(test_object_type, OBJ) ();
+> 
+> if (object__ready(OBJ)) {
+>     OBJ.FUNC1();
+>     OBJ.FUNC2();
+>     destroy(OBJ);
+> } else {
+>     printf("Object not ready!\n");
+> }
+> ```
+
+> ### **`OBJECT__INJECT(MEMBER)`**
+> 
+> Injects a function with same name.
+> 
+> ```c
+> void test_object_type()
+> {
+>     object__connect(test_object_type);
+>     object__inject(FUNC_A);
+>     object__inject(FUNC_B);
+> }
+> ```
+
+> ### **`OBJECT__INJECT_2(MEMBER, FUNCTION)`**
+> 
+> Injects a function with a different name.
+> 
+> ```c
+> void test_object_type()
+> {
+>     object__connect(test_object_type);
+>     object__inject_2(FUNC_A, impl_func_a);
+>     object__inject_2(FUNC_B, impl_func_b);
+> }
+> ```
+
+> ### **`OBJECT__INJECT_3(MEMBER, FUNCTION, OBJECT_PTR)`**
+> 
+> Injects a function into a specific object instance.
+> 
+> ```c
+> void test_object_type()
+> {
+>     object__connect(test_object_type);
+>     object__inject_3(FUNC_A, impl_func_a, this);
+>     object__inject_3(FUNC_B, impl_func_b, this);
 > }
 > ```
 
@@ -181,7 +261,7 @@ int main()
 
 **Basic object definition**
 ```c
-struct test_object_type {
+object test_object_type {
     i_am_an_object;
 
     void (*worked)(int);
@@ -191,33 +271,31 @@ struct test_object_type {
 
 **Functions**
 ```c
-static void CONSTRUCTOR(void) {
+extern void worked(int);
+
+static void test_object_type(void) { // Constructor
     object__connect(test_object_type);
-    self->value = 0;
+
+    object__inject(worked);
+    this->value = 0;
 }
 
-static void worked(int n) {
+void worked(int n) {
     OBJECT__CONNECT(test_object_type);
-    SELF->value += n;
+    THIS->value += n;
 }
-
-object__table(test_object_type) = {
-    CONSTRUCTOR,
-    worked,
-    0
-};
 ```
 
 **Usage**
 ```c
-object(test_object_type, obj) (); // constructor called
-obj.worked(42); // uses implicit `self`
+new (test_object_type, obj) (); // constructor called
+obj.worked(42); // uses implicit `this`
 ```
 
 **Multiple objects example**
 ```c
-object(test_object_type, test1) ();
-object(test_object_type, test2) ();
+new (test_object_type, test1) ();
+new (test_object_type, test2) ();
 
 test1.worked(42);
 test1.worked(42);
@@ -231,7 +309,7 @@ test2.worked(42);
 Type + functions + table
 
 ```c
-struct test_object_type {
+object test_object_type {
     i_am_an_object;
 
     int  (*FUNC1)();
@@ -240,34 +318,33 @@ struct test_object_type {
     int a;
 };
 
-static void CONSTRUCTOR() {
-    object__connect(test_object_type);
-    printf("0\n");
-}
+static int O_FUNC1() {
+    object__connect (test_object_type);
 
-static int FUNC1() {
-    object__connect(test_object_type);
     printf("1\n");
     return (42);
 }
 
-static void FUNC2() {
-    object__connect(test_object_type);
+static void O_FUNC2() {
+    object__connect (test_object_type);
+
     printf("2\n");
 }
 
 static void FUNC3() {
-    object__connect(test_object_type);
+    object__connect (test_object_type);
+
     printf("3\n");
 }
 
-object__table(test_object_type) = {
-    CONSTRUCTOR, /* index 0 = constructor */
-    FUNC1,
-    FUNC2,
-    FUNC3,
-    0
-};
+static void test_object_type() { // Constructor
+    object__connect (test_object_type);
+    object__inject_2 (FUNC1, O_FUNC1);
+    object__inject_2 (FUNC2, O_FUNC2);
+    object__inject (FUNC3);
+
+    printf("0\n");
+}
  ```
 
 Using objects in `main`
@@ -275,15 +352,17 @@ Using objects in `main`
 ```c
 int main(void) {
     {
-        object(test_object_type, TEST) ();
+        new (test_object_type, TEST) ();
         TEST.FUNC1();
         TEST.FUNC2();
         TEST.FUNC3();
+
+        destroy (TEST);
     }
 
     {
-        object(test_object_type, TEST1) ();
-        object(test_object_type, TEST2) ();
+        new (test_object_type, TEST1) ();
+        new (test_object_type, TEST2) ();
 
         TEST1.FUNC1();
         TEST1.FUNC2();
@@ -295,6 +374,9 @@ int main(void) {
         TEST2.FUNC1();
 
         printf("%d\n", TEST1.FUNC1());
+
+        destroy (TEST1);
+        destroy (TEST2);
     }
 
     return (0);

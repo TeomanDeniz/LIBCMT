@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -46,9 +46,9 @@
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM THE CPU      *|
-|* REGISTER (RAX, X0, ETC.) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.    *|
+|* REGISTER (RAX) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.              *|
 |*                                                                            *|
-|* NOTE: ON 32-BIT SYSTEMS, EAX OR R0 REGISTERS ARE USED.                     *|
+|* NOTE: ON 32-BIT SYSTEMS, EAX REGISTER IS USED.                             *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -72,37 +72,14 @@
 |*    ;..,                                                                    *|
 |*       : myValue32 NOW HOLDS THE VALUE FROM EAX                             *|
 |*                                                                            *|
-|* O - EXAMPLE 3: CROSS-ARCHITECTURE ARM SUPPORT                              *|
-|* :                                                                          *|
-|* ;.., uint64_t armValue;                                                    *|
-|*    :                                                                       *|
-|*    : GET_RAX(armValue); // > READS X0 ON ARM64 OR R0 ON ARM32              *|
-|*    ;..,                                                                    *|
-|*       : armValue NOW HOLDS THE FIRST ARGUMENT REGISTER VALUE               *|
-|*                                                                            *|
 \******************************************************************************/
 
 #ifndef RAX_H
 #	define RAX_H 202509 /* VERSION */
 
-/* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
-#	ifdef __TI_COMPILER_VERSION__
-#		pragma diag_push /* TI CGT CCS COMPILER DIRECTIVES */
-#		pragma CHECK_MISRA("5.4") /* TAG NAMES SHALL BE A UNIQUE IDENTIFIER */
-#		pragma CHECK_MISRA("19.3") /*
-#			THE #INCLUDE DIRECTIVE SHALL BE FOLLOWED BY EITHER A <FILENAME> OR
-#			"FILENAME" SEQUENCE
-#		*/
-#	endif /* __TI_COMPILER_VERSION__ */
-/* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
-
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include <stdint.h> /*
-#	typedef uint64_t;
-#	        */
-#	include "../ENVIRONMENTS/CPU.h" /*
+#	include "../../ENVIRONMENTS/CPU.h" /*
 #	 define __CPU_INTEL__
-#	 define __CPU_ARM__
 #	 define __CPU_AMD_X86__
 #	 define __CPU_POWERPC__
 #	 define __CPU_RISCV__
@@ -120,10 +97,10 @@
 #	 define __CPU_BLACKFIN__
 #	 define __CPU_DSP56K__
 #	        */
-#	include "../ENVIRONMENTS/ARCHITECTURE.h" /*
+#	include "../../ENVIRONMENTS/ARCHITECTURE.h" /*
 #	 define __SYSTEM_64_BIT__
 #	        */
-#	include "../CHECK_FEATURE/INLINE_ASM.h" /*
+#	include "../../CHECK_FEATURE/INLINE_ASM.h" /*
 #	 define IS__INLINE_ASM__SUPPORTED
 #	 define INLINE_ASM_TYPE__ISO
 #	        */
@@ -136,269 +113,99 @@ extern "C" {
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifndef IS__INLINE_ASM__SUPPORTED /* UH-OH ._. */
-#		error "INLINE ASM DOES NOT SUPPORTED IN YOUR COMPILER :-("
+#		define GET_RAX(_) \
+			"ERROR - INLINE ASM DOES NOT SUPPORTED IN YOUR COMPILER :-("
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
+
+#	ifndef GET_RAX
+#		ifndef __CPU_INTEL__ /* UH-OH 2 ._. */
+#			define GET_RAX(_) \
+				"ERROR - YOU'RE NOT USING AN INTEL CPU TO USE THIS COMMAND >:("
+#		endif /* !__CPU_INTEL__ */
+#	endif /* !GET_RAX */
 
 /* ************************* [v] __CPU_INTEL__ [v] ************************** */
 #	ifdef __CPU_INTEL__
 #		ifdef INLINE_ASM_TYPE__ISO
 #			ifdef __SYSTEM_64_BIT__
-#				define GET_RAX(VAR) \
-					{\
-						register uint64_t	__RAX__;\
-						\
-						__asm__ __volatile__ (\
-							"movq %%rax, %0" \
-							: "=r" (__RAX__)\
-						);\
-						(VAR) = (uint64_t)__RAX__;\
-					}
-#			else
-#				define GET_RAX(VAR) \
-					{\
-						register unsigned long	__EAX__;\
-						\
-						__asm__ __volatile__ (\
-							"movl %%eax, %0" \
-							: "=r" (__RAX__)\
-						);\
-						(VAR) = (unsigned long)__EAX__;\
-					}
+#				define LOCALMACRO__RAX_GET(__REGISTER__) \
+					__asm__ __volatile__ (\
+						"movq %%rax, %0" \
+						: "=r" (__REGISTER__)\
+					)
 #			endif /* __SYSTEM_64_BIT__ */
+#			ifdef __SYSTEM_32_BIT__
+#				define LOCALMACRO__RAX_GET(__REGISTER__) \
+					__asm__ __volatile__ (\
+						"movl %%eax, %0" \
+						: "=r" (__REGISTER__)\
+					)
+#			endif /* __SYSTEM_32_BIT__ */
 #		else
 #			ifdef __GNUC__
 #				ifdef __SYSTEM_64_BIT__
-#					define GET_RAX(VAR) \
-						{\
-							register uint64_t	__RAX__;\
-							\
-							asm volatile (\
-								"movq %%rax, %0" \
-								: "=r"(__RAX__) \
-								: \
-								: \
-							);\
-							(VAR) = (uint64_t)__RAX__;\
-						}
-#				else
-#					define GET_RAX(VAR) \
-						{\
-							register unsigned long	__EAX__;\
-							\
-							asm volatile (\
-								"movl %%eax, %0" \
-								: "=r"(__EAX__) \
-								: \
-								: \
-							);\
-							(VAR) = (unsigned long)__EAX__;\
-						}
+#					define LOCALMACRO__RAX_GET(__REGISTER__) \
+						asm volatile (\
+							"movq %%rax, %0" \
+							: "=r"(__REGISTER__) \
+							: \
+							: \
+						)
 #				endif /* __SYSTEM_64_BIT__ */
+#				ifdef __SYSTEM_32_BIT__
+#					define LOCALMACRO__RAX_GET(__REGISTER__) \
+						asm volatile (\
+							"movl %%eax, %0" \
+							: "=r"(__REGISTER__) \
+							: \
+							: \
+						)
+#				endif /* __SYSTEM_32_BIT__ */
 #			endif /* __GNUC__ */
-#			ifdef _MSC_VER
-#				ifdef __SYSTEM_64_BIT__
-#					define GET_RAX(VAR) \
-						{\
-							uint64_t	__RAX__;\
-							\
+#			ifndef LOCALMACRO__RAX_GET
+#				ifdef _MSC_VER
+#					ifdef __SYSTEM_64_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							__asm\
 							{\
-								mov rax, __RAX__\
-							};\
-							(VAR) = __RAX__;\
-						}
-#				else
-#					define GET_RAX(VAR) \
-						{\
-							unsigned long	__EAX__;\
-							\
+								mov rax, __REGISTER__\
+							}
+#					endif /* __SYSTEM_64_BIT__ */
+#					ifdef __SYSTEM_32_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							__asm\
 							{\
-								mov eax, __EAX__\
-							};\
-							(VAR) = __EAX__;\
-						}
-#				endif /* __SYSTEM_64_BIT__ */
-#			endif /* _MSC_VER */
-#			ifdef __clang__
-#				ifdef __SYSTEM_64_BIT__
-#					define GET_RAX(VAR) \
-						{\
-							register uint64_t	__RAX__;\
-							\
+								mov eax, __REGISTER__\
+							}
+#					endif /* __SYSTEM_32_BIT__ */
+#				endif /* _MSC_VER */
+#			endif /* !LOCALMACRO__RAX_GET */
+#			ifndef LOCALMACRO__RAX_GET
+#				ifdef __clang__
+#					ifdef __SYSTEM_64_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							asm volatile (\
 								"movq %%rax, %0" \
-								: "=r"(__RAX__) \
+								: "=r"(__REGISTER__) \
 								: \
 								: \
-							);\
-							(VAR) = __RAX__;\
-						}
-#				else
-#					define GET_RAX(VAR) \
-						{\
-							register unsigned long	__EAX__;\
-							\
+							)
+#					endif /* __SYSTEM_64_BIT__ */
+#					ifdef __SYSTEM_32_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							asm volatile (\
 								"movl %%rax, %0" \
-								: "=r"(__EAX__) \
+								: "=r"(__REGISTER__) \
 								: \
 								: \
-							);\
-							(VAR) = __EAX__;\
-						}
-#				endif /* __SYSTEM_64_BIT__ */
-#			endif /* __clang__ */
+							)
+#					endif /* __SYSTEM_32_BIT__ */
+#				endif /* __clang__ */
+#			endif /* !LOCALMACRO__RAX_GET */
 /* TODO: ... */
 #		endif /* INLINE_ASM_TYPE__ISO */
 #	endif /* __CPU_INTEL__ */
 /* ************************* [^] __CPU_INTEL__ [^] ************************** */
-
-/* ************************** [v] __CPU_ARM__ [v] *************************** */
-#	ifdef __CPU_ARM__
-#		ifdef INLINE_ASM_TYPE__ISO
-#			ifdef __SYSTEM_64_BIT__
-#				define GET_RAX(VAR) \
-					{\
-						register uint64_t	__RAX__;\
-						\
-						__asm__ __volatile__ (\
-							"mov %0, x0"\
-							: "=r"(__RAX__)\
-							: \
-							: \
-						);\
-						(VAR) = __RAX__;\
-					}
-#			else
-#				define GET_RAX(VAR) \
-					{\
-						register unsigned long	__EAX__;\
-						\
-						__asm__ __volatile__ (\
-							"mov %0, r0"\
-							: "=r"(__EAX__)\
-							: \
-							: \
-						);\
-						(VAR) = __EAX__;\
-					}
-#			endif /* __SYSTEM_64_BIT__ */
-#		else
-#			ifdef __CC_ARM
-#				if (__ARMCC_VERSION <= 600000) /* ARMCC V5 */
-#					ifdef __SYSTEM_64_BIT__
-#						define GET_RAX(VAR) \
-							{\
-								register uint64_t	__RAX__;\
-								\
-								__asm {\
-									MOV __RAX__, X0\
-								};\
-								(VAR) = __RAX__;\
-							}
-#					else
-#						define GET_RAX(VAR) \
-							{\
-								register unsigned long	__EAX__;\
-								\
-								__asm {\
-									MOV __EAX__, R0\
-								};\
-								(VAR) = __EAX__;\
-							}
-#					endif /* __SYSTEM_64_BIT__ */
-#				else /* __ARMCC_VERSION > 600000 */
-#					ifdef __SYSTEM_64_BIT__
-#						define GET_RAX(VAR) \
-							{\
-								register uint64_t	__RAX__;\
-								\
-								asm volatile (\
-									"mov %0, x0"\
-									: "=r"(__RAX__)\
-									: \
-									: \
-								);\
-								(VAR) = __RAX__;\
-							}
-#					else
-#						define GET_RAX(VAR) \
-							{\
-								register unsigned long	__EAX__;\
-								\
-								asm volatile (\
-									"mov %0, r0"\
-									: "=r"(__EAX__)\
-									: \
-									: \
-								);\
-								(VAR) = __EAX__;\
-							}
-#					endif /* __SYSTEM_64_BIT__ */
-#				endif /* __ARMCC_VERSION <= 600000 */
-#			endif /* __CC_ARM */
-#			ifdef __GNUC__
-#				ifdef __SYSTEM_64_BIT__
-#					define GET_RAX(VAR) \
-						{\
-							register uint64_t	__RAX__;\
-							\
-							asm volatile (\
-								"mov %0, x0"\
-								: "=r"(__RAX__)\
-								: \
-								: \
-							);\
-							(VAR) = __RAX__;\
-						}
-#				else
-#					define GET_RAX(VAR) \
-						{\
-							register unsigned long	__EAX__;\
-							\
-							asm volatile (\
-								"mov %0, r0"\
-								: "=r"(__EAX__)\
-								: \
-								: \
-							);\
-							(VAR) = __EAX__;\
-						}
-#				endif /* __SYSTEM_64_BIT__ */
-#			endif /* __GNUC__ */
-#			ifdef __clang__
-#				ifdef __SYSTEM_64_BIT__
-#					define GET_RAX(VAR) \
-						{\
-							register uint64_t	__RAX__;\
-							\
-							asm volatile (\
-								"mov %0, x0"\
-								: "=r"(__RAX__)\
-								: \
-								: \
-							);\
-							(VAR) = __RAX__;\
-						}
-#				else
-#					define GET_RAX(VAR) \
-						{\
-							register unsigned long	__EAX__;\
-							\
-							asm volatile (\
-								"mov %0, r0"\
-								: "=r"(__EAX__)\
-								: \
-								: \
-							);\
-							(VAR) = __EAX__;\
-						}
-#				endif /* __SYSTEM_64_BIT__ */
-#			endif /* __clang__ */
-#		endif /* INLINE_ASM_TYPE__ISO */
-#	endif /* __CPU_ARM__ */
-/* ************************** [^] __CPU_ARM__ [^] *************************** */
 
 /* ************************ [v] __CPU_AMD_X86__ [v] ************************* */
 #	ifdef __CPU_AMD_X86__
@@ -498,6 +305,16 @@ extern "C" {
 #	endif /* __CPU_DSP56K__ */
 /* ************************* [^] __CPU_DSP56K__ [^] ************************* */
 
+#	ifndef GET_RAX
+#		define GET_RAX(VAR) \
+			{\
+				register void	*__REGISTER__;\
+				\
+				LOCALMACRO__RAX_GET(__REGISTER__);\
+				(VAR) = __REGISTER__;\
+			}
+#	endif /* !GET_RAX */
+
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
 }
@@ -507,11 +324,5 @@ extern "C" {
 /* *************************** [v] LOWERCASE [v] **************************** */
 #	define get_rax GET_RAX
 /* *************************** [^] LOWERCASE [^] **************************** */
-
-/* ************************ [v] TI CGT CCS (POP) [v] ************************ */
-#	ifdef __TI_COMPILER_VERSION__
-#		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
-#	endif /* __TI_COMPILER_VERSION__ */
-/* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !RAX_H */

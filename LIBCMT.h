@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/16 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/09/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -17,21 +17,17 @@
 
 /* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_1 [v] ******************* */
 #	ifndef INCL__OBJECT
-#		ifndef INCL__PUSH_POP
-#			ifndef INCL__RAX
-#				ifndef INCL__FAR
-#					ifndef INCL__PACK
-#						ifndef INCL__REGPARM
-#							ifndef INCL__ARCHITECTURE
-#								ifndef INCL__CPU
-#									define LOCALMACRO_DEFINE_ALL_TRY_1
-#								endif /* !INCL__CPU */
-#							endif /* !INCL__ARCHITECTURE */
-#						endif /* !INCL__REGPARM */
-#					endif /* !INCL__PACK */
-#				endif /* !INCL__FAR */
-#			endif /* !INCL__RAX */
-#		endif /* !INCL__PUSH_POP */
+#		ifndef INCL__FAR
+#			ifndef INCL__PACK
+#				ifndef INCL__REGPARM
+#					ifndef INCL__ARCHITECTURE
+#						ifndef INCL__CPU
+#							define LOCALMACRO_DEFINE_ALL_TRY_1
+#						endif /* !INCL__CPU */
+#					endif /* !INCL__ARCHITECTURE */
+#				endif /* !INCL__REGPARM */
+#			endif /* !INCL__PACK */
+#		endif /* !INCL__FAR */
 #	endif /* !INCL__OBJECT */
 /* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_1 [^] ******************* */
 
@@ -106,8 +102,6 @@
 #		define INCL__TOKEN_PASTING
 #		define INCL__COMMA_OPERATOR
 #		define INCL__INLINE_ASM
-#		define INCL__PUSH_POP
-#		define INCL__RAX
 #	endif /* LOCALMACRO_DEFINE_ALL */
 /* *********************** [^] LIBCMT JUST CALLED [^] *********************** */
 
@@ -123,30 +117,6 @@
 #		        */
 #	endif /* INCL__OBJECT */
 /* ***************************** [^] OBJECT [^] ***************************** */
-
-/* ****************************** [v] ASM [v] ******************************* */
-#	ifdef INCL__PUSH_POP
-#		include "ASM/PUSH_POP.h" /*
-#		 define PUSH_16(VAR)
-#		 define PUSH_32(VAR)
-#		 define PUSH_64(VAR)
-#		 define POP_16(VAR)
-#		 define POP_32(VAR)
-#		 define POP_64(VAR)
-#		 define push_16
-#		 define push_32
-#		 define push_64
-#		 define pop_16
-#		 define pop_32
-#		 define pop_64
-#		        */
-#	endif /* INCL__PUSH_POP */
-#	ifdef INCL__RAX
-#		include "ASM/RAX.h" /*
-#		 define GET_RAX(VAR)
-#		        */
-#	endif /* INCL__RAX */
-/* ****************************** [^] ASM [^] ******************************* */
 
 /* *************************** [v] ATTRIBUTES [v] *************************** */
 #	ifdef INCL__FAR

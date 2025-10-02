@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/02 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -32,19 +32,32 @@
 |*............................................................................*|
 |*       NAME       :   TYPE    :                 DESCRIPTION                 *|
 |*..................:...........:.............................................*|
-|* OBJECT           : #define() : CREATE AN OBJECT                            *|
+|* NEW              : #define() : CREATE AN OBJECT                            *|
+|* new              :           :                                             *|
+|*..................:...........:.............................................*|
+|* DESTROY          : #define() : DESTROY AN OBJECT (IT IS NECESSARY)         *|
+|* destroy          : #define() :                                             *|
+|*..................:...........:.............................................*|
+|* OBJECT           : #define   : struct                                      *|
 |* object           :           :                                             *|
 |*..................:...........:.............................................*|
-|* I_AM_AN_OBJECT   : #define() : DECLARES THE FUNCTION POINTER STORAGE FOR   *|
+|* OBJECT__READY    : #define() : CHECK IF OBJECT IS SUCCESSFULLY ALLOCATED   *|
+|* object__ready    :           : RETURNS `(int)1` IF TRUE                    *|
+|*..................:...........:.............................................*|
+|* I_AM_AN_OBJECT   : #define   : DECLARES THE FUNCTION POINTER STORAGE FOR   *|
 |* i_am_an_object   :           : AN OBJECT                                   *|
 |*..................:...........:.............................................*|
-|* OBJECT__TABLE    : #define() : CONNECT ALL OF THE FUNCTIONS INTO YOUR      *|
-|* object__table    :           : STRUCTURE                                   *|
-|*..................:...........:.............................................*|
 |* OBJECT__CONNECT  : #define() : CONNECT A STRUCTURE INTO A FUNCTION         *|
-|* object__connect  :           :                                             *|
+|* object__connect  : #define() :                                             *|
 |*..................:...........:.............................................*|
-|* OBJECT__INJECT   : (*F)()    : INJECT A FUNCTION WITH A POINTER ADDRESS    *|
+|* OBJECT__INJECT   : #define() : INJECT A FUNCTION POINTER                   *|
+|* object__inject   : #define() :                                             *|
+|*..................:...........:.............................................*|
+|* OBJECT__INJECT_2 : #define() : INJECT A FUNCTION POINTER WITH A FUNCTION   *|
+|* object__inject_2 : #define() :                                             *|
+|*..................:...........:.............................................*|
+|* OBJECT__INJECT_3 : #define() : INJECT A FUNCTION POINTER WITH A FUNCTION   *|
+|* object__inject_3 : #define() : IN AN OBJECT                                *|
 |*..................:...........:.............................................*|
 \******************************************************************************/
 
@@ -71,9 +84,6 @@
 |* :.., COMPATIBLE WITH TI CGT/CCS COMPILERS, GCC, AND MSVC.                  *|
 |* :                                                                          *|
 |* :.., CROSS-PLATFORM MEMORY MANAGEMENT AND EXCEPTION HANDLING SUPPORT.      *|
-|* :                                                                          *|
-|* :.., CONFIGURABLE MAXIMUM NUMBER OF FUNCTIONS PER OBJECT                   *|
-|*    : (`__OBJECT_MAX_FUNCTION_LIMIT__`).                                    *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
@@ -130,21 +140,54 @@
 |*                                                                            *|
 |* O - CONTENTS                                                               *|
 |* :                                                                          *|
-|* :.., OBJECT(NAME, VAR)                                                     *|
+|* :.., OBJECT                                                                *|
 |* :  :                                                                       *|
-|* :  : INSTANTIATES AN OBJECT AND BINDS ITS FUNCTION TABLE.                  *|
+|* :  : IT SPECIFIES THAT THE STRUCTURE YOU CREATE IS AN OBJECT.              *|
 |* :  :                                                                       *|
-|* :  : IF IT HAS A CONSTRUCTOR, THEN USE:                                    *|
-|* : 1|     object (s_struct, obj) (...);                                     *|
-|* :  : ELSE                                                                  *|
-|* : 1|     object (s_struct, obj);                                           *|
+|* :  : IT PERFORMS THE SAME FUNCTION AS "STRUCT" AND MAKES NO PERFORMANCE    *|
+|* :  : CHANGES.                                                              *|
 |* :  :                                                                       *|
-|* :  : WE ALSO SUGGEST YOU TO USE #define FOR MAKE YOUR OBJECT MORE          *|
-|* :  : SYNTAX SAFE TO USE AND CREATE                                         *|
+|* :  : IT SIMPLY WORKS AS `#define object struct`.                           *|
 |* :  :                                                                       *|
-|* : 1| #define o_struct object(VAR) (s_struct, VAR)                          *|
+|* :  : USE IT LIKE:                                                          *|
+|* : 1| object o_test                                                         *|
+|* : 2| {                                                                     *|
+|* : 3|     i_am_an_object;                                                   *|
+|* : 4|     ...                                                               *|
+|* : 5| };                                                                    *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., NEW (NAME, VAR) (...)                                                 *|
+|* :  :                                                                       *|
+|* :  : INSTANTIATES AN OBJECT AND RUNS OBJECT'S CONSTRUCTOR.                 *|
+|* :  :                                                                       *|
+|* :  : AFTER YOU CREATED THE OBJECT WITH `new`, DON'T FORGET TO DELETE IT    *|
+|* :  : WITH `destroy`.                                                       *|
+|* :  :                                                                       *|
+|* :  : USAGE:                                                                *|
+|* : 1| new (o_object_type, ObjectName) (constructor_parameters_if_have_any); *|
 |* : 2|                                                                       *|
-|* : 3| o_struct(obj) (...);                                                  *|
+|* : 3| ObjectName.call_a_function(42);                                       *|
+|* : 4|                                                                       *|
+|* : 5| destroy (ObjectName);                                                 *|
+|* :  :                                                                       *|
+|* :  : SUGGESTED MACRO FOR ERGONOMICS:                                       *|
+|* : 1| #define test(OBJECT_VAR) new (o_test, OBJECT_VAR)                     *|
+|* : 2|                                                                       *|
+|* : 3| test (obj) (...);                                                     *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., DESTROY (OBJECT)                                                      *|
+|* :  :                                                                       *|
+|* :  : CLEARS THE MEMORY OF HTE CREATED OBJECT IF OBJECT IS SUCCESSFULLY     *|
+|* :  : CREATED.                                                              *|
+|* :  :                                                                       *|
+|* :  : USAGE:                                                                *|
+|* : 1| new (o_object_type, ObjectName) (constructor_parameters_if_have_any); *|
+|* : 2|                                                                       *|
+|* : 3| ObjectName.call_a_function(42);                                       *|
+|* : 4|                                                                       *|
+|* : 5| destroy (ObjectName);                                                 *|
 |* :  :                                                                       *|
 |* :                                                                          *|
 |* :.., I_AM_AN_OBJECT                                                        *|
@@ -159,43 +202,94 @@
 |* : 5| };                                                                    *|
 |* :  :                                                                       *|
 |* :                                                                          *|
-|* :.., OBJECT__TABLE(STRUCT_NAME)                                            *|
+|* :.., OBJECT__INJECT(MEMBER)                                                *|
 |* :  :                                                                       *|
-|* :  : DEFINES A FUNCTION TABLE ARRAY FOR AN OBJECT TYPE.                    *|
+|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A FUNCTION WITH SAME NAME. *|
+|* :  : USEFUL WHEN YOUR FUNCTION NAME MATCHES THE MEMBER NAME.               *|
 |* :  :                                                                       *|
-|* : 1| object__table (s_struct) =                                            *|
+|* :  : IT AUTOMATICALLY CONNECTS `this->MEMBER = MEMBER;`                    *|
+|* :  :                                                                       *|
+|* :  : EXAMPLE (INSIDE CONSTRUCTOR):                                         *|
+|* : 1| static void test_object_type(void)                                    *|
 |* : 2| {                                                                     *|
-|* : 3|     constructor_function,                                             *|
-|* : 4|     function_2,                                                       *|
-|* : 5|     ...                                                               *|
-|* : 6|     0 <- DO NOT FORGET TO ADD 0 AT THE END!!!!!!!                     *|
-|* : 7| };          ^^^                                                       *|
+|* : 3|     object__connect (test_object_type);                               *|
+|* : 4|                                                                       *|
+|* : 5|     object__inject (FUNC_A);                                          *|
+|* : 6|     object__inject (FUNC_B);                                          *|
+|* : 7| }                                                                     *|
 |* :  :                                                                       *|
-|* :  : LIST ALL OF YOUR FINCTIONS ON TOP TO BOTTOM WITH CORRECT INDEXES!     *|
+|* :  : MEANS:                                                                *|
+|* : 1| this->FUNC_A = FUNC_A;                                                *|
+|* : 2| this->FUNC_B = FUNC_B;                                                *|
 |* :  :                                                                       *|
-|* : 1|     struct s_struct {                                                 *|
-|* : 2|         i_am_an_object;                                               *|
-|* : 3|                                                                       *|
-|* : 4|   +-->0 void (*function_a)();                                         *|
-|* : 5| +-|-->1 void (*function_b)();                                         *|
-|* : 6| | | };                                                                *|
-|* : 7| | |                                                                   *|
-|* : 8| | | object__table (s_struct) =                                        *|
-|* : 9| | | {                                                                 *|
-|* :10| | |     constructor_function,                                         *|
-|* :11| | +-->0 function_2, // BECAMES function_a                             *|
-|* :12| +---->1 function_1, // BECAMES function_b                             *|
-|* :13|         0                                                             *|
-|* :14|     };                                                                *|
+|* :                                                                          *|
+|* :.., OBJECT__INJECT_2(MEMBER, FUNCTION)                                    *|
 |* :  :                                                                       *|
-|* :  : YOU CAN ALSO EXTERN IT IF YOU ALREADY SET IT IN A C FILE              *|
+|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A SPECIFIC FUNCTION NAME.  *|
+|* :  : USE THIS WHEN YOUR FUNCTION NAME AND MEMBER NAME ARE DIFFERENT.       *|
 |* :  :                                                                       *|
-|* : 1| extern object__table(s_struct);                                       *|
+|* :  : EXAMPLE (INSIDE CONSTRUCTOR):                                         *|
+|* : 1| static void test_object_type(void)                                    *|
+|* : 2| {                                                                     *|
+|* : 3|     object__connect (test_object_type);                               *|
+|* : 4|                                                                       *|
+|* : 5|     object__inject_2 (FUNC_A, impl_func_a);                           *|
+|* : 6|     object__inject_2 (FUNC_B, impl_func_b);                           *|
+|* : 7| }                                                                     *|
+|* :  :                                                                       *|
+|* :  : MEANS:                                                                *|
+|* : 1| this->FUNC_A = impl_func_a;                                           *|
+|* : 2| this->FUNC_B = impl_func_b;                                           *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., OBJECT__INJECT_3(MEMBER, FUNCTION, OBJECT_PTR)                        *|
+|* :  :                                                                       *|
+|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A SPECIFIC FUNCTION,       *|
+|* :  : USING A SPECIFIC OBJECT INSTANCE POINTER.                             *|
+|* :  :                                                                       *|
+|* :  : USE THIS WHEN YOU WANT TO INJECT A FUNCTION INTO A PARTICULAR OBJECT. *|
+|* :  :                                                                       *|
+|* :  : EXAMPLE (INSIDE CONSTRUCTOR OR SETUP FUNCTION):                       *|
+|* : 1| static void test_object_type(void)                                    *|
+|* : 2| {                                                                     *|
+|* : 3|     object__connect (test_object_type);                               *|
+|* : 4|                                                                       *|
+|* : 5|     object__inject_3(FUNC_A, impl_func_a, this);                      *|
+|* : 6|     object__inject_3(FUNC_B, impl_func_b, this);                      *|
+|* : 7| }                                                                     *|
+|* :  :                                                                       *|
+|* :  : MEANS:                                                                *|
+|* : 1| this->FUNC_A = impl_func_a;                                           *|
+|* : 2| this->FUNC_B = impl_func_b;                                           *|
+|* :  :                                                                       *|
+|* :                                                                          *|
+|* :.., OBJECT__READY(OBJECT)                                                 *|
+|* :  :                                                                       *|
+|* :  : SOMETIMES YOU MAY WANT TO CHECK IF AN OBJECT IS PROPERLY CREATED      *|
+|* :  : BEFORE USING IT. USE `object__ready()` FOR SAFE VALIDATION.           *|
+|* :  :                                                                       *|
+|* :  : IT RETURNS (int)1 IF OBJECT IS VALID AND ALLOCATED, ELSE 0.           *|
+|* :  :                                                                       *|
+|* :  : EXAMPLE:                                                              *|
+|* :  :                                                                       *|
+|* : 1| new (test_object_type, OBJ) ();                                       *|
+|* : 2|                                                                       *|
+|* : 3| if (object__ready(OBJ))                                               *|
+|* : 4| {                                                                     *|
+|* : 5|     OBJ.FUNC1();                                                      *|
+|* : 6|     OBJ.FUNC2();                                                      *|
+|* : 7|                                                                       *|
+|* : 8|     destroy (OBJ);                                                    *|
+|* : 9| }                                                                     *|
+|* :10| else                                                                  *|
+|* :11| {                                                                     *|
+|* :12|     printf("Object not ready!\n");                                    *|
+|* :13| }                                                                     *|
 |* :  :                                                                       *|
 |* :                                                                          *|
 |* :.., OBJECT__CONNECT(STRUCT_NAME)                                          *|
 |*    :                                                                       *|
-|*    : CONNECTS AN OBJECT STRUCTURE POINTER (SELF) TO ITS INSTANCE.          *|
+|*    : CONNECTS AN OBJECT STRUCTURE POINTER (THIS) TO ITS INSTANCE.          *|
 |*    :                                                                       *|
 |*    : JUST PUT THIS MACRO AT THE TOP OF YOUR FUNCTION BLOCK.                *|
 |*    :                                                                       *|
@@ -203,7 +297,7 @@
 |*   2| {                                                                     *|
 |*   3|     object__connect(s_struct);                                        *|
 |*   4|                                                                       *|
-|*   5|     // self                                                           *|
+|*   5|     // this                                                           *|
 |*   6|     ...                                                               *|
 |*   7| }                                                                     *|
 |*    :                                                                       *|
@@ -213,7 +307,7 @@
 |*   2| {                                                                     *|
 |*   3|     OBJECT__CONNECT(s_struct);                                        *|
 |*   4|                                                                       *|
-|*   5|     // SELF                                                           *|
+|*   5|     // THIS                                                           *|
 |*   6|     ...                                                               *|
 |*   7| }                                                                     *|
 |*    :                                                                       *|
@@ -222,7 +316,7 @@
 |*                                                                            *|
 |* O - SOME EXAMPLES                                                          *|
 |* :                                                                          *|
-|* : struct test_object_type                                                  *|
+|* : object test_object_type                                                  *|
 |* : {                                                                        *|
 |* :     i_am_an_object;                                                      *|
 |* :                                                                          *|
@@ -230,48 +324,48 @@
 |* :     int value;                                                           *|
 |* : };                                                                       *|
 |* :                                                                          *|
-|* : static void CONSTRUCTOR(void)                                            *|
+|* : extern void o_worked(int);                                               *|
+|* :                                                                          *|
+|* : static void test_object_type(void)                                       *|
+|* : {                                                                        *|
+|* :     object__connect (test_object_type);                                  *|
+|* :      object__inject (worked, o_worked);                                  *|
+|* :                                                                          *|
+|* :     this->value = 0;                                                     *|
+|* : }                                                                        *|
+|* :                                                                          *|
+|* : void o_worked(int n)                                                     *|
 |* : {                                                                        *|
 |* :     object__connect (test_object_type);                                  *|
 |* :                                                                          *|
-|* :     self->value = 0;                                                     *|
+|* :     this->value += n;                                                    *|
 |* : }                                                                        *|
-|* :                                                                          *|
-|* : static void worked(int n)                                                *|
-|* : {                                                                        *|
-|* :     object__connect (test_object_type);                                  *|
-|* :                                                                          *|
-|* :     self->value += n;                                                    *|
-|* : }                                                                        *|
-|* :                                                                          *|
-|* : object__table(test_object_type) =                                        *|
-|* : {                                                                        *|
-|* :     CONSTRUCTOR,                                                         *|
-|* :     worked,                                                              *|
-|* :     0                                                                    *|
-|* : };                                                                       *|
 |*                                                                            *|
 |* O - USAGE                                                                  *|
 |* :                                                                          *|
-|* : object (test_object_type, obj) (); // CONSTRUCTOR CALLED                 *|
-|* : obj.worked(42); // uses implicit "SELF"                                  *|
+|* : new (test_object_type, obj) (); // CONSTRUCTOR CALLED                    *|
+|* : obj.worked(42); // uses implicit "THIS"                                  *|
+|* : destroy (obj);                                                           *|
 |*                                                                            *|
 |* O - MULTIPLE OBJECTS EXAMPLE                                               *|
 |* :                                                                          *|
-|* : object (test_object_type, test1) ();                                     *|
-|* : object (test_object_type, test2) ();                                     *|
+|* : new (test_object_type, test1) ();                                        *|
+|* : new (test_object_type, test2) ();                                        *|
 |* :                                                                          *|
 |* : test1.worked(42);                                                        *|
 |* : test1.worked(42);                                                        *|
 |* : test2.worked(42);                                                        *|
 |* : test1.worked(42);                                                        *|
 |* : test2.worked(42);                                                        *|
+|* :                                                                          *|
+|* : destroy (test1);                                                         *|
+|* : destroy (test2);                                                         *|
 |*                                                                            *|
 |* O - FULL EXAMPLE                                                           *|
 |* :                                                                          *|
 |* ;.., CONNECTING YOUR OBJECT TO YOUR FUNCTIONS                              *|
 |* :  :                                                                       *|
-|* :  : struct test_object_type                                               *|
+|* :  : object test_object_type                                               *|
 |* :  : {                                                                     *|
 |* :  :     i_am_an_object;                                                   *|
 |* :  :                                                                       *|
@@ -282,14 +376,7 @@
 |* :  :     int a;                                                            *|
 |* :  : };                                                                    *|
 |* :  :                                                                       *|
-|* :  : static void CONSTRUCTOR()                                             *|
-|* :  : {                                                                     *|
-|* :  :     object__connect (test_object_type);                               *|
-|* :  :                                                                       *|
-|* :  :     printf("0\n");                                                    *|
-|* :  : }                                                                     *|
-|* :  :                                                                       *|
-|* :  : static int FUNC1()                                                    *|
+|* :  : static int O_FUNC1()                                                  *|
 |* :  : {                                                                     *|
 |* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
@@ -297,7 +384,7 @@
 |* :  :     return (42);                                                      *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
-|* :  : static void FUNC2()                                                   *|
+|* :  : static void O_FUNC2()                                                 *|
 |* :  : {                                                                     *|
 |* :  :     object__connect (test_object_type);                               *|
 |* :  :                                                                       *|
@@ -311,31 +398,33 @@
 |* :  :     printf("3\n");                                                    *|
 |* :  : }                                                                     *|
 |* :  :                                                                       *|
-|* :  : object__table (test_object_type) =                                    *|
+|* :  : static void test_object_type()                                        *|
 |* :  : {                                                                     *|
-|* :  :     CONSTRUCTOR, // INDEX 0 IS ALWAYS A CONSTRUCTOR FUNCTION          *|
+|* :  :     object__connect (test_object_type);                               *|
+|* :  :     object__inject_2 (FUNC1, O_FUNC1);                                *|
+|* :  :     object__inject_2 (FUNC2, O_FUNC2);                                *|
+|* :  :     object__inject (FUNC3);                                           *|
 |* :  :                                                                       *|
-|* :  :     FUNC1,                                                            *|
-|* :  :     FUNC2,                                                            *|
-|* :  :     FUNC3,                                                            *|
-|* :  :     0                                                                 *|
-|* :  : };                                                                    *|
+|* :  :     printf("0\n");                                                    *|
+|* :  : }                                                                     *|
 |* :                                                                          *|
 |* ;.., CREATING AND USING OBJECTS                                            *|
 |*    :                                                                       *|
 |*    : int main(void)                                                        *|
 |*    : {                                                                     *|
 |*    :     {                                                                 *|
-|*    :         object (test_object_type, TEST) ();                           *|
+|*    :         new (test_object_type, TEST) ();                              *|
 |*    :                                                                       *|
 |*    :         TEST.FUNC1();                                                 *|
 |*    :         TEST.FUNC2();                                                 *|
 |*    :         TEST.FUNC3();                                                 *|
+|*    :                                                                       *|
+|*    :         destroy (TEST);                                               *|
 |*    :     }                                                                 *|
 |*    :                                                                       *|
 |*    :     {                                                                 *|
-|*    :         object (test_object_type, TEST1) ();                          *|
-|*    :         object (test_object_type, TEST2) ();                          *|
+|*    :         new (test_object_type, TEST1) ();                             *|
+|*    :         new (test_object_type, TEST2) ();                             *|
 |*    :                                                                       *|
 |*    :         TEST1.FUNC1();                                                *|
 |*    :         TEST1.FUNC2();                                                *|
@@ -347,6 +436,9 @@
 |*    :         TEST2.FUNC1();                                                *|
 |*    :                                                                       *|
 |*    :         printf("%d\n", TEST1.FUNC1());                                *|
+|*    :                                                                       *|
+|*    :         destroy (TEST1);                                              *|
+|*    :         destroy (TEST2);                                              *|
 |*    :     }                                                                 *|
 |*    :                                                                       *|
 |*    :     return (0);                                                       *|
@@ -360,12 +452,18 @@
 |*                                                                            *|
 |* IF YOU TRY TO USE THIS SYSTEM ON DEVICES LIKE 8051, PIC, MSP430, ETC.,     *|
 |* THIS APPROACH CAN BLOAT MEMORY QUICKLY. THEREFORE, PLEASE CONSIDER USING   *|
-|* THIS SYSTEM ONLY ON DEVICES WITH MORE THAN 4KB OF RAM.                     *|
+|* THIS SYSTEM ONLY ON DEVICES WITH MORE THAN 64KB OF RAM.                    *|
 |*                                                                            *|
 \******************************************************************************/
 
+/* ****************************** [v] C++ [v] ******************************* */
+#ifdef __cplusplus /* C++ */
+#	error "PLEASE USE CLASSES IN C++!!!"
+#endif /* __cplusplus */
+/* ****************************** [^] C++ [^] ******************************* */
+
 #ifndef OBJECT_H
-#	define OBJECT_H 202509 /* VERSION */
+#	define OBJECT_H 202510 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -379,16 +477,8 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include <setjmp.h> /*
-#	 define jmp_buf
-#	 define setjmp(jmp_buf env)
-#	 define longjmp(jmp_buf env, int val)
-#	        */
 #	include <stddef.h> /*
 #	typedef size_t;
-#	        */
-#	include <stdint.h> /*
-#	typedef uintptr_t;
 #	        */
 #	include "./KEYWORDS/LOCAL.h" /*
 #	 define LOCAL
@@ -403,80 +493,178 @@
 #	 define __CPU_INTEL__
 #	 define __CPU_ARM__
 #	        */
-#	include "./ASM/RAX.h" /*
+#	include "./ENVIRONMENTS/ARCHITECTURE.h" /*
+#	 define __SYSTEM_64_BIT__
+#	 define __SYSTEM_32_BIT__
+#	        */
+#	include "./ASM//INTEL/RAX.h" /*
 #	 define GET_RAX(VAR)
+#	        */
+#	include "./ASM//ARM/X17.h" /*
+#	 define GET_X17(VAR)
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
+#	ifdef __unix__
+#		ifndef KNR_STYLE /* STANDARD C */
+extern void	*mmap(void *, size_t, int, int, int, int);
+extern int	mprotect(void *, size_t, int);
+extern int	munmap(void *, size_t); 
+#		else /* K&R */
+extern void	*mmap();
+extern int	mprotect();
+extern int	munmap();
+#		endif /* !KNR_STYLE */
+#		define LOCALMACRO__FUNCTION_AREA_ALLOCATOR(SIZE) \
+			(unsigned char *)mmap(((void *)0), SIZE, 7, 34, -1, 0)
+#		define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS) \
+			mprotect(FUNCTIONS, 4096, 5)
+#		define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)-1)
+#		define DESTROY(THE_OBJECT) \
+			munmap(\
+				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS,\
+				((size_t *)&(THE_OBJECT))[2]\
+			);\
+			(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+#	else
+#		ifdef _WIN32
+#			ifndef KNR_STYLE /* STANDARD C */
+extern void	*VirtualAlloc(void *, size_t, unsigned long, unsigned long);
+extern int	VirtualFree(void *, size_t, unsigned long);
+#			else /* K&R */
+extern void			*VirtualAlloc();
+extern unsigned int	VirtualFree();
+#			endif /* !KNR_STYLE */
+#			define LOCALMACRO__FUNCTION_AREA_ALLOCATOR(SIZE) \
+				(unsigned char *)VirtualAlloc(((void *)0), SIZE, 12288, 64)
+#			define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS)
+#			define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)0)
+#			define DESTROY(THE_OBJECT) \
+				VirtualFree(\
+					(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS,\
+					0,\
+					32768\
+				);\
+				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+#		endif /* _WIN32 */
+#	endif /* __unix__ */
 
-/* ********************** [v] CAN CHANGABLE MACRO [v] *********************** */
-#	ifndef __OBJECT_MAX_FUNCTION_LIMIT__
-#		define __OBJECT_MAX_FUNCTION_LIMIT__ 64 // <- INCREASE IF NEEDED
-#	endif /* !__OBJECT_MAX_FUNCTION_LIMIT__ */
-/* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
+#	define OBJECT struct
 
-#	define I_AM_AN_OBJECT void	*__OBJECT_FUNC_PTR__
+#	define I_AM_AN_OBJECT \
+		OBJECT __OBJECT_HEADER__\
+		{\
+			void	*TEMP;\
+			void	*FUNCTIONS;\
+			void	*SIZE;\
+		}	__OBJECT_HEADER__
+
+#	define OBJECT__READY(OBJECT_STRUCT) \
+		(*((void **)&(OBJECT_STRUCT)) != (void *)0)
 
 #	ifdef __CPU_ARM__
-#		define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-			struct OBJECT_STRUCT_TYPE	*const SELF = \
-				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
-#		define object__connect(OBJECT_STRUCT_TYPE) \
-			struct OBJECT_STRUCT_TYPE	*const self = \
-				(struct OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
+#		ifdef __SYSTEM_64_BIT__
+#			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
+				register void			*LOCALMACRO__SELF__;\
+				GET_X17(LOCALMACRO__SELF__);\
+				OBJECT OBJECT_STRUCT_TYPE	*const THIS = \
+					(OBJECT OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
+#			define object__connect(OBJECT_STRUCT_TYPE) \
+				register void			*LOCALMACRO__SELF__;\
+				GET_X17(LOCALMACRO__SELF__);\
+				OBJECT OBJECT_STRUCT_TYPE	*const this = \
+					(OBJECT OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
+#		endif /* __SYSTEM_64_BIT__ */
+#		ifdef __SYSTEM_32_BIT__
+#			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
+				OBJECT OBJECT_STRUCT_TYPE	*const THIS = \
+					(OBJECT OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
+#			define object__connect(OBJECT_STRUCT_TYPE) \
+				OBJECT OBJECT_STRUCT_TYPE	*const this = \
+					(OBJECT OBJECT_STRUCT_TYPE *)__OBJECT_STRUCTURE_POINTER__
+#		endif /* __SYSTEM_32_BIT__ */
 #	else
 #		ifdef __CPU_INTEL__
 #			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-				register uintptr_t LOCALMACRO__SELF__;\
+				register void			*LOCALMACRO__SELF__;\
 				GET_RAX(LOCALMACRO__SELF__);\
-				struct OBJECT_STRUCT_TYPE	*const SELF = \
-					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
+				OBJECT OBJECT_STRUCT_TYPE	*const THIS = \
+					(OBJECT OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
 #			define object__connect(OBJECT_STRUCT_TYPE) \
-				register uintptr_t LOCALMACRO__SELF__;\
+				register void			*LOCALMACRO__SELF__;\
 				GET_RAX(LOCALMACRO__SELF__);\
-				struct OBJECT_STRUCT_TYPE	*const self = \
-					(struct OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
+				OBJECT OBJECT_STRUCT_TYPE	*const this = \
+					(OBJECT OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
 #		endif /* __CPU_INTEL__ */
 #	endif /* __CPU_ARM__ */
 
-#	define OBJECT__TABLE(OBJECT_TYPE) \
-		void	*OBJECT_TYPE[__OBJECT_MAX_FUNCTION_LIMIT__]
-
-#	define OBJECT(OBJECT_NAME, VARIABLE_NAME) \
-		struct OBJECT_NAME	VARIABLE_NAME;\
-		extern void			*OBJECT_NAME[__OBJECT_MAX_FUNCTION_LIMIT__];\
+#	define NEW(OBJECT_NAME, VARIABLE_NAME) \
+		OBJECT OBJECT_NAME	VARIABLE_NAME;\
+		extern void			OBJECT_NAME();\
 		\
-		if (OBJECT_NAME)\
+		while (1)\
 		{\
-			register size_t	__OBJECT_INDEX__;\
-			void			(*FUNCTION)();\
-			register void	**FUNCTION_TABLE;\
+			(VARIABLE_NAME).__OBJECT_HEADER__.TEMP = (void *)(\
+				(\
+					(\
+						sizeof(OBJECT OBJECT_NAME) - \
+						(3 * sizeof(void *))\
+					) / sizeof(void *)) + 1\
+			);\
 			\
-			__OBJECT_INDEX__ = 1;\
-			FUNCTION_TABLE = OBJECT_NAME;\
-			\
-			while (FUNCTION_TABLE[__OBJECT_INDEX__])\
 			{\
-				FUNCTION = (void (*)())(FUNCTION_TABLE[__OBJECT_INDEX__]);\
-				((uintptr_t *)&(VARIABLE_NAME))[__OBJECT_INDEX__] = \
-					(uintptr_t)FUNCTION;\
-				((uintptr_t **)&(VARIABLE_NAME))[__OBJECT_INDEX__]\
-					= OBJECT__INJECT(&(VARIABLE_NAME), (void *)FUNCTION);\
-				++__OBJECT_INDEX__;\
+				register unsigned char	*FUNCTIONS;\
+				\
+				(VARIABLE_NAME).__OBJECT_HEADER__.SIZE = \
+					(VARIABLE_NAME).__OBJECT_HEADER__.TEMP;\
+				FUNCTIONS = LOCALMACRO__FUNCTION_AREA_ALLOCATOR(\
+					((size_t)(VARIABLE_NAME).__OBJECT_HEADER__.TEMP) << 12\
+				);\
+				\
+				if (FUNCTIONS == LOCALMACRO__FAILED_TO_ALLOCATE)\
+				{\
+					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+					break ;\
+				}\
+				\
+				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
+					(void *)FUNCTIONS;\
 			}\
+			\
+			break ;\
 		}\
 		\
-		if (OBJECT_NAME && *OBJECT_NAME)\
+		if ((VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS)\
 			(\
-				(void (*)())OBJECT__INJECT(\
-					&(VARIABLE_NAME), \
-					*OBJECT_NAME)\
+				(void (*)())LOCALMACRO__OBJECT_INJECTOR(\
+					&(VARIABLE_NAME),\
+					OBJECT_NAME,\
+					(void *)0\
+				)\
 			)
+
+#	define OBJECT__INJECT_3(TARGET, SOURCE, OBJECT_PTR) \
+		THIS->TARGET = LOCALMACRO__OBJECT_INJECTOR(\
+			THIS,\
+			SOURCE,\
+			(unsigned char *)&THIS->TARGET\
+		)
+#	define object__inject_3(TARGET, SOURCE, OBJECT_PTR) \
+		OBJECT_PTR->TARGET = LOCALMACRO__OBJECT_INJECTOR(\
+			OBJECT_PTR,\
+			SOURCE,\
+			(unsigned char *)&OBJECT_PTR->TARGET\
+		)
+
+#	define OBJECT__INJECT_2(TARGET, SOURCE) \
+		OBJECT__INJECT_3(TARGET, SOURCE, THIS)
+#	define object__inject_2(TARGET, SOURCE) \
+		object__inject_3(TARGET, SOURCE, this)
+
+#	define OBJECT__INJECT(TARGET, SOURCE) \
+		OBJECT__INJECT_2(TARGET, TARGET)
+#	define object__inject(TARGET) \
+		object__inject_2(TARGET, TARGET)
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #	ifdef __CPU_ARM__
@@ -523,181 +711,183 @@ extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
 /* ************************ [^] GLOBAL VARIABLES [^] ************************ */
 
 #	ifndef KNR_STYLE /* STANDARD C */
-static INLINE uintptr_t
-	*OBJECT__INJECT(void *SELF, void *TARGET)
+static INLINE void
+	*LOCALMACRO__OBJECT_INJECTOR(
+	void *SELF,
+	void *TARGET,
+	unsigned char *INDEX_ADDRESS
+)
 #	else /* K&R */
-static INLINE uintptr_t
-	*OBJECT__INJECT(SELF, TARGET)
-	void	*SELF;
-	void	*TARGET;
+static INLINE void
+	*LOCALMACRO__OBJECT_INJECTOR(SELF, TARGET, INDEX_ADDRESS)
+	void			*SELF;
+	void			*TARGET;
+	unsigned char	*INDEX_ADDRESS;
 #	endif /* !KNR_STYLE */
 {
-	register int		INDEX;
-	unsigned char		*CODE;
+	register unsigned char	*RESULT;
+	register unsigned char	*_;
 
-#	ifdef __unix__
-#		ifndef KNR_STYLE /* STANDARD C */
-	extern void	*mmap(void *, size_t, int, int, int, int);
-#		else /* K&R */
-	extern void	*mmap();
-#		endif /* !KNR_STYLE */
-	CODE = (unsigned char *)mmap(((void *)0), 4096, 0X7, 0X22, -1, 0);
+	if (INDEX_ADDRESS)
+	{
+		register unsigned int	INDEX;
 
-	if (CODE == ((unsigned char *) -1))
-		return ((uintptr_t *)0);
-#	else
-#		ifdef _WIN32
-#			ifndef KNR_STYLE /* STANDARD C */
-	extern void	*VirtualAlloc(void *, size_t, unsigned int, unsigned int);
-#			else /* K&R */
-	extern void	*VirtualAlloc();
-#			endif /* !KNR_STYLE */
-	CODE = (unsigned char *)VirtualAlloc(((void *)0), 4096, 0X00003000, 0X40);
+		INDEX = (int)(
+			(void **)(
+				INDEX_ADDRESS - (sizeof(void *) * 3)
+			) - (void **)SELF
+		) + 1;
+		_ = (unsigned char *)&(((unsigned char **)SELF)[1][INDEX << 12]);
+	}
+	else
+		_ = (unsigned char *)&(((unsigned char **)SELF)[1][0]);
 
-	if (!CODE)
-		return ((uintptr_t *)0);
-#		endif /* _WIN32 */
-#	endif /* __unix__ */
+	RESULT = _;
 
 #	ifdef __CPU_INTEL__
-	register uintptr_t	VALUE;
-	unsigned char		*_;
-
-	_ = CODE;
-
 #		ifdef __SYSTEM_64_BIT__
-	*_++ = 0X48; // MOV
-	*_++ = 0XB8; // RAX,
-	VALUE = (uintptr_t)SELF; // IMM64
-	*_++ = VALUE & 0XFF;
-	*_++ = (VALUE >> 8) & 0XFF;
-	*_++ = (VALUE >> 16) & 0XFF;
-	*_++ = (VALUE >> 24) & 0XFF;
-	*_++ = (VALUE >> 32) & 0XFF;
-	*_++ = (VALUE >> 40) & 0XFF;
-	*_++ = (VALUE >> 48) & 0XFF;
-	*_++ = (VALUE >> 56) & 0XFF;
-	*_++ = 0X53; // PUSH RBX;
-	*_++ = 0X48; // MOV
-	*_++ = 0XBB; // RBX,
-	VALUE = (uintptr_t)TARGET; // IMM64
-	*_++ = VALUE & 0XFF;
-	*_++ = (VALUE >> 8) & 0XFF;
-	*_++ = (VALUE >> 16) & 0XFF;
-	*_++ = (VALUE >> 24) & 0XFF;
-	*_++ = (VALUE >> 32) & 0XFF;
-	*_++ = (VALUE >> 40) & 0XFF;
-	*_++ = (VALUE >> 48) & 0XFF;
-	*_++ = (VALUE >> 56) & 0XFF;
-	*_++ = 0X48; // MOV
-	*_++ = 0X89; // [RAX]
-	*_++ = 0X18; // RBX;
-	*_++ = 0X5B; // POP RBX;
-	*_++ = 0XFF; // JMP
-	*_++ = 0X20; // [RAX];
+	register unsigned long long	VALUE;
+
+	_ [ 0] = 0X48; // MOVABS
+	_ [ 1] = 0XB8; // RAX,
+	VALUE = (unsigned long long)SELF; // IMM64
+	_ [ 2] = VALUE & 0XFF;
+	_ [ 3] = (VALUE >> 8) & 0XFF;
+	_ [ 4] = (VALUE >> 16) & 0XFF;
+	_ [ 5] = (VALUE >> 24) & 0XFF;
+	_ [ 6] = (VALUE >> 32) & 0XFF;
+	_ [ 7] = (VALUE >> 40) & 0XFF;
+	_ [ 8] = (VALUE >> 48) & 0XFF;
+	_ [ 9] = (VALUE >> 56) & 0XFF;
+	_ [10] = 0XC7; // MOV
+	_ [11] = 0X00; // DWORD PTR [RAX],
+	VALUE = (unsigned long long)TARGET;
+	_ [12] = VALUE & 0XFF; // IMM32;
+	_ [13] = (VALUE >> 8) & 0XFF;
+	_ [14] = (VALUE >> 16) & 0XFF;
+	_ [15] = (VALUE >> 24) & 0XFF;
+	_ [16] = 0XC7; // MOV
+	_ [17] = 0X40; // DWORD PTR [RAX
+	_ [18] = 0X04; // + 4],
+	_ [19] = (VALUE >> 32) & 0XFF; // IMM32 + 4;
+	_ [20] = (VALUE >> 40) & 0XFF;
+	_ [21] = (VALUE >> 48) & 0XFF;
+	_ [22] = (VALUE >> 56) & 0XFF;
+	_ [23] = 0XFF; // JMP
+	_ [24] = 0X20; // [RAX];
 #	else
 #		ifdef __SYSTEM_32_BIT__
-	*_++ = 0XB8; // MOV EAX,
-	VALUE = (uintptr_t)SELF;
-	*_++ = VALUE & 0XFF;
-	*_++ = (VALUE >> 8) & 0XFF;
-	*_++ = (VALUE >> 16) & 0XFF;
-	*_++ = (VALUE >> 24) & 0XFF;
-	*_++ = 0X53; // PUSH EBX;
-	*_++ = 0XBB; // MOV EBX,
-	VALUE = (uintptr_t)TARGET;
-	*_++ = VALUE & 0XFF;
-	*_++ = (VALUE >> 8) & 0XFF;
-	*_++ = (VALUE >> 16) & 0XFF;
-	*_++ = (VALUE >> 24) & 0XFF;
+	register unsigned int	VALUE;
 
-	*_++ = 0X89; // MOV [EAX],
-	*_++ = 0X18; // EBX;
-	*_++ = 0X5B; // POP EBX;
-	*_++ = 0XFF; // JMP
-	*_++ = 0X20; // [EAX];
+	_ [ 0] = 0XB8; // MOV EAX,
+	VALUE = (unsigned int)SELF;
+	_ [ 1] = VALUE & 0XFF;
+	_ [ 2] = (VALUE >> 8) & 0XFF;
+	_ [ 3] = (VALUE >> 16) & 0XFF;
+	_ [ 4] = (VALUE >> 24) & 0XFF;
+	_ [ 5] = 0XC7; // MOV,
+	_ [ 6] = 0X00; // DWORD PTR [EAX],
+	VALUE = (unsigned int)TARGET;
+	_ [ 7] = VALUE & 0XFF;
+	_ [ 8] = (VALUE >> 8) & 0XFF;
+	_ [ 9] = (VALUE >> 16) & 0XFF;
+	_ [10] = (VALUE >> 24) & 0XFF;
+	_ [11] = 0XFF; // JMP
+	_ [12] = 0X20; // [EAX];
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_INTEL__ */
 
 #ifdef __CPU_ARM__
-	uintptr_t	*LITERALS;
+	register int				INDEX;
 
 #	ifdef __SYSTEM_64_BIT__
-	const unsigned int	INSTRUCTIONS[4] =
-	{
-		0X580000B1, /* LDR X17, #IMM (SELF) */
-		0X580000B0, /* LDR X16, #IMM (TARGET) */
-		0XF9000220, /* STR X16, [X17] */
-		0XD61F0200  /* BR X16 */
-	};
+	register unsigned long long	VALUE;
 
-	for (INDEX = 0; INDEX < 4; ++INDEX)
-	{
-		const unsigned int	VALUE = INSTRUCTIONS[INDEX];
-		CODE[4 * INDEX] = (unsigned char)(VALUE & 0XFF);
-		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & 0XFF);
-		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & 0XFF);
-		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & 0XFF);
-	}
-
-	LITERALS = (uintptr_t *)(CODE + 4 * 4);
-	LITERALS[0] = (uintptr_t)SELF;
-	LITERALS[1] = (uintptr_t)TARGET;
-
+	_ [ 0] = 0XB1;
+	_ [ 1] = 0X00;
+	_ [ 2] = 0X00;
+	_ [ 3] = 0X58; // LDR X17, #IMM (SELF)
+	_ [ 4] = 0XB0;
+	_ [ 5] = 0X00;
+	_ [ 6] = 0X00;
+	_ [ 7] = 0X58; // LDR X16, #IMM (TARGET)
+	_ [ 8] = 0X00;
+	_ [ 9] = 0X02;
+	_ [10] = 0X1F;
+	_ [11] = 0XD6; // BR X16
+	VALUE = (unsigned long long)SELF; // IMM64
+	_ [12] = (VALUE & 0XFF);
+	_ [13] = (VALUE >> 8) & 0XFF;
+	_ [14] = (VALUE >> 16) & 0XFF;
+	_ [15] = (VALUE >> 24) & 0XFF;
+	_ [16] = (VALUE >> 32) & 0XFF;
+	_ [17] = (VALUE >> 40) & 0XFF;
+	_ [18] = (VALUE >> 48) & 0XFF;
+	_ [19] = (VALUE >> 56) & 0XFF;
+	VALUE = (unsigned long long)TARGET; // IMM64
+	_ [20] = (VALUE & 0XFF);
+	_ [21] = (VALUE >> 8) & 0XFF;
+	_ [22] = (VALUE >> 16) & 0XFF;
+	_ [23] = (VALUE >> 24) & 0XFF;
+	_ [24] = (VALUE >> 32) & 0XFF;
+	_ [25] = (VALUE >> 40) & 0XFF;
+	_ [26] = (VALUE >> 48) & 0XFF;
+	_ [27] = (VALUE >> 56) & 0XFF;
 #		else
 #			ifdef __SYSTEM_32_BIT__
-	const unsigned int	INSTRUCTIONS[5] =
-	{
-		0XE59F000C, /* LDR R0, [PC, #12] */
-		0XE59F100C, /* LDR R1, [PC, #12] */
-		0XE5810000, /* STR R0, [R1, #0] */
-		0XE59F0008, /* LDR R0, [PC, #8] */
-		0XE12FFF10  /* BX R0 */
-	};
+	register unsigned int	VALUE;
 
-	for (INDEX = 0; INDEX < 5; ++INDEX)
-	{
-		const unsigned int	VALUE = INSTRUCTIONS[INDEX];
-
-		CODE[4 * INDEX] = (unsigned char)(VALUE & 0XFF);
-		CODE[4 * INDEX + 1] = (unsigned char)((VALUE >> 8) & 0XFF);
-		CODE[4 * INDEX + 2] = (unsigned char)((VALUE >> 16) & 0XFF);
-		CODE[4 * INDEX + 3] = (unsigned char)((VALUE >> 24) & 0XFF);
-	}
-
-	LITERALS = (uintptr_t *)(CODE + 20);
-	LITERALS[0] = (uintptr_t)SELF;
-	LITERALS[1] = (uintptr_t)&__OBJECT_STRUCTURE_POINTER__;
-	LITERALS[2] = (uintptr_t)TARGET;
+	_ [ 0] = 0X0C;
+	_ [ 1] = 0X00;
+	_ [ 2] = 0X9F;
+	_ [ 3] = 0XE5; /* LDR R0, [PC, #12] */
+	_ [ 4] = 0X0C;
+	_ [ 5] = 0X10;
+	_ [ 6] = 0X9F;
+	_ [ 7] = 0XE5; /* LDR R1, [PC, #12] */
+	_ [ 8] = 0X00;
+	_ [ 9] = 0X00;
+	_ [10] = 0X81;
+	_ [11] = 0XE5; /* STR R0, [R1, #0] */
+	_ [12] = 0X08;
+	_ [13] = 0X00;
+	_ [14] = 0X9F;
+	_ [15] = 0XE5; /* LDR R0, [PC, #8] */
+	_ [16] = 0X10;
+	_ [17] = 0XFF;
+	_ [18] = 0X2F;
+	_ [19] = 0XE1; /* BX R0 */
+	VALUE = (unsigned int)SELF; // IMM64
+	_ [20] = (VALUE & 0XFF);
+	_ [21] = (VALUE >> 8) & 0XFF;
+	_ [22] = (VALUE >> 16) & 0XFF;
+	_ [23] = (VALUE >> 24) & 0XFF;
+	VALUE = (unsigned int)&__OBJECT_STRUCTURE_POINTER__; // IMM64
+	_ [24] = (VALUE & 0XFF);
+	_ [25] = (VALUE >> 8) & 0XFF;
+	_ [26] = (VALUE >> 16) & 0XFF;
+	_ [27] = (VALUE >> 24) & 0XFF;
+	__ = (unsigned int)TARGET; // IMM64
+	_ [28] = (VALUE & 0XFF);
+	_ [29] = (VALUE >> 8) & 0XFF;
+	_ [30] = (VALUE >> 16) & 0XFF;
+	_ [31] = (VALUE >> 24) & 0XFF;
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_ARM__ */
 
-
-#	ifdef __unix__
-#		ifndef KNR_STYLE /* STANDARD C */
-	extern int	mprotect(void *, size_t, int);
-#		else /* K&R */
-	extern int	mprotect();
-#		endif /* !KNR_STYLE */
-	mprotect(CODE, 4096, 0X5);
-#	endif /* __unix__ */
-
-	return ((uintptr_t *)CODE);
+	LOCALMACRO__PROTECT_FUNCTION_AREA(RESULT);
+	return (RESULT);
 }
 
 /* **************************** [v] LOWERCASE [v] *************************** */
 #	define i_am_an_object I_AM_AN_OBJECT
-#	define object__table OBJECT__TABLE
 #	define object OBJECT
+#	define object__ready OBJECT__READY
+#	define destroy DESTROY
+#	define new NEW
 /* **************************** [^] LOWERCASE [^] *************************** */
-
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
 
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
