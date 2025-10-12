@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/02 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/12 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -497,13 +497,32 @@
 #	 define __SYSTEM_64_BIT__
 #	 define __SYSTEM_32_BIT__
 #	        */
-#	include "./ASM//INTEL/RAX.h" /*
+#	include "./ASM/INTEL/RAX.h" /*
 #	 define GET_RAX(VAR)
 #	        */
-#	include "./ASM//ARM/X17.h" /*
+#	include "./ASM/ARM/X17.h" /*
 #	 define GET_X17(VAR)
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
+
+/* ********************** [v] CHECK FUNCTION SIZE [v] *********************** */
+#	ifdef __CPU_INTEL__
+#		ifdef __SYSTEM_64_BIT__
+#			define LOCALMACRO__FUNCTION_SIZE 25
+#		endif /* __SYSTEM_64_BIT__ */
+#		ifdef __SYSTEM_32_BIT__
+#			define LOCALMACRO__FUNCTION_SIZE 13
+#		endif /* __SYSTEM_32_BIT__ */
+#	endif /* __CPU_INTEL__ */
+#	ifdef __CPU_ARM__
+#		ifdef __SYSTEM_64_BIT__
+#			define LOCALMACRO__FUNCTION_SIZE 28
+#		endif /* __SYSTEM_64_BIT__ */
+#		ifdef __SYSTEM_32_BIT__
+#			define LOCALMACRO__FUNCTION_SIZE 32
+#		endif /* __SYSTEM_32_BIT__ */
+#	endif /* __CPU_ARM__ */
+/* ********************** [^] CHECK FUNCTION SIZE [^] *********************** */
 
 #	ifdef __unix__
 #		ifndef KNR_STYLE /* STANDARD C */
@@ -515,8 +534,8 @@ extern void	*mmap();
 extern int	mprotect();
 extern int	munmap();
 #		endif /* !KNR_STYLE */
-#		define LOCALMACRO__FUNCTION_AREA_ALLOCATOR(SIZE) \
-			(unsigned char *)mmap(((void *)0), SIZE, 7, 34, -1, 0)
+#		define LOCALMACRO__FUNCTION_AREA_ALLOCATOR \
+			(unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0)
 #		define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS) \
 			mprotect(FUNCTIONS, 4096, 5)
 #		define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)-1)
@@ -535,8 +554,8 @@ extern int	VirtualFree(void *, size_t, unsigned long);
 extern void			*VirtualAlloc();
 extern unsigned int	VirtualFree();
 #			endif /* !KNR_STYLE */
-#			define LOCALMACRO__FUNCTION_AREA_ALLOCATOR(SIZE) \
-				(unsigned char *)VirtualAlloc(((void *)0), SIZE, 12288, 64)
+#			define LOCALMACRO__FUNCTION_AREA_ALLOCATOR \
+				(unsigned char *)VirtualAlloc(((void *)0), 4096, 12288, 64)
 #			define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS)
 #			define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)0)
 #			define DESTROY(THE_OBJECT) \
@@ -617,9 +636,7 @@ extern unsigned int	VirtualFree();
 				\
 				(VARIABLE_NAME).__OBJECT_HEADER__.SIZE = \
 					(VARIABLE_NAME).__OBJECT_HEADER__.TEMP;\
-				FUNCTIONS = LOCALMACRO__FUNCTION_AREA_ALLOCATOR(\
-					((size_t)(VARIABLE_NAME).__OBJECT_HEADER__.TEMP) << 12\
-				);\
+				FUNCTIONS = LOCALMACRO__FUNCTION_AREA_ALLOCATOR;\
 				\
 				if (FUNCTIONS == LOCALMACRO__FAILED_TO_ALLOCATE)\
 				{\
@@ -737,7 +754,11 @@ static INLINE void
 				INDEX_ADDRESS - (sizeof(void *) * 3)
 			) - (void **)SELF
 		) + 1;
-		_ = (unsigned char *)&(((unsigned char **)SELF)[1][INDEX << 12]);
+		_ = (unsigned char *)&(
+			((unsigned char **)SELF)[1][
+				(INDEX * LOCALMACRO__FUNCTION_SIZE) + (INDEX != 0)
+			]
+		);
 	}
 	else
 		_ = (unsigned char *)&(((unsigned char **)SELF)[1][0]);

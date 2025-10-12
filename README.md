@@ -289,7 +289,10 @@ void worked(int n) {
 **Usage**
 ```c
 new (test_object_type, obj) (); // constructor called
+
 obj.worked(42); // uses implicit `this`
+
+destroy (obj);
 ```
 
 **Multiple objects example**
@@ -302,6 +305,9 @@ test1.worked(42);
 test2.worked(42);
 test1.worked(42);
 test2.worked(42);
+
+destroy (test1);
+destroy (test2);
 ```
 
 **Full example (compact)**
