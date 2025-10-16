@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/12 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/16 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -480,6 +480,9 @@
 #	include <stddef.h> /*
 #	typedef size_t;
 #	        */
+#	include "./ATTRIBUTES/FAR.h" /*
+#	 define FAR
+#	        */
 #	include "./KEYWORDS/LOCAL.h" /*
 #	 define LOCAL
 #	        */
@@ -513,6 +516,9 @@
 #		ifdef __SYSTEM_32_BIT__
 #			define LOCALMACRO__FUNCTION_SIZE 13
 #		endif /* __SYSTEM_32_BIT__ */
+#		ifdef __SYSTEM_16_BIT__
+#			define LOCALMACRO__FUNCTION_SIZE 9
+#		endif /* __SYSTEM_16_BIT__ */
 #	endif /* __CPU_INTEL__ */
 #	ifdef __CPU_ARM__
 #		ifdef __SYSTEM_64_BIT__
@@ -534,18 +540,23 @@ extern void	*mmap();
 extern int	mprotect();
 extern int	munmap();
 #		endif /* !KNR_STYLE */
-#		define LOCALMACRO__FUNCTION_AREA_ALLOCATOR \
-			(unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0)
-#		define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS) \
-			mprotect(FUNCTIONS, 4096, 5)
-#		define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)-1)
+#		define LOCALMACRO__UNPROTECT(MEMORY) mprotect((MEMORY), 4096, 3)
+#		define LOCALMACRO__PROTECT(MEMORY) mprotect((MEMORY), 4096, 5)
+#		define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
+			register unsigned char	*FUNCTIONS;\
+			\
+			FUNCTIONS = (unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0);\
+			\
+			if (FUNCTIONS == ((unsigned char *)-1))\
+				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+			else\
+				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)FUNCTIONS;
 #		define DESTROY(THE_OBJECT) \
-			munmap(\
-				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS,\
-				((size_t *)&(THE_OBJECT))[2]\
-			);\
+			munmap((THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS, 4096);\
 			(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
-#	else
+#	endif /* __unix__ */
+
+#	ifndef LOCALMACRO__FUNCTION_ALLOCATOR
 #		ifdef _WIN32
 #			ifndef KNR_STYLE /* STANDARD C */
 extern void	*VirtualAlloc(void *, size_t, unsigned long, unsigned long);
@@ -554,10 +565,23 @@ extern int	VirtualFree(void *, size_t, unsigned long);
 extern void			*VirtualAlloc();
 extern unsigned int	VirtualFree();
 #			endif /* !KNR_STYLE */
-#			define LOCALMACRO__FUNCTION_AREA_ALLOCATOR \
-				(unsigned char *)VirtualAlloc(((void *)0), 4096, 12288, 64)
-#			define LOCALMACRO__PROTECT_FUNCTION_AREA(FUNCTIONS)
-#			define LOCALMACRO__FAILED_TO_ALLOCATE ((unsigned char *)0)
+#			define LOCALMACRO__UNPROTECT(MEMORY)
+#			define LOCALMACRO__PROTECT(MEMORY)
+#			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
+				register unsigned char	*FUNCTIONS;\
+				\
+				FUNCTIONS = (unsigned char *)VirtualAlloc(\
+					((void *)0), \
+					4096, \
+					12288, \
+					64\
+				);\
+				\
+				if (FUNCTIONS == ((unsigned char *)0))\
+					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+				else\
+					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
+						(void *)FUNCTIONS;
 #			define DESTROY(THE_OBJECT) \
 				VirtualFree(\
 					(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS,\
@@ -566,16 +590,58 @@ extern unsigned int	VirtualFree();
 				);\
 				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
 #		endif /* _WIN32 */
-#	endif /* __unix__ */
+#	endif /* !LOCALMACRO__FUNCTION_ALLOCATOR */
+
+#	ifndef LOCALMACRO__FUNCTION_ALLOCATOR
+#		ifdef __DJGPP__
+struct S_DPMI_MEMORY_INFO
+{
+	unsigned long	HANDLE;
+	unsigned long	SIZE;
+	unsigned long	ADDRESS;
+};
+
+#			ifndef KNR_STYLE /* STANDARD C */
+extern int	__dpmi_allocate_memory(struct S_DPMI_MEMORY_INFO *);
+extern int	__dpmi_free_memory(unsigned long);
+#			else /* K&R */
+extern int	__dpmi_allocate_memory();
+extern int	__dpmi_free_memory();
+#			endif /* !KNR_STYLE */
+#			define LOCALMACRO__UNPROTECT(MEMORY)
+#			define LOCALMACRO__PROTECT(MEMORY)
+#			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
+				register unsigned char		*FUNCTIONS;\
+				struct S_DPMI_MEMORY_INFO	OBJECT_MEMORY;\
+				\
+				OBJECT_MEMORY.SIZE = (\
+					sizeof(OBJECT OBJECT_NAME) / sizeof(long)\
+				) * LOCALMACRO__FUNCTION_SIZE;\
+				OBJECT_MEMORY.HANDLE = 0;\
+				\
+				if (__dpmi_allocate_memory(&OBJECT_MEMORY))\
+					FUNCTIONS = ((unsigned char *)-1);\
+				else\
+					FUNCTIONS = (unsigned char *)OBJECT_MEMORY.ADDRESS;\
+				\
+				if (FUNCTIONS == ((unsigned char *)-1))\
+					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+				else\
+					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
+						(void *)OBJECT_MEMORY.HANDLE;
+#			define DESTROY(THE_OBJECT) \
+				__dpmi_free_memory((THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS);\
+				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+#		endif /* __DJGPP__ */
+#	endif /* !LOCALMACRO__FUNCTION_ALLOCATOR */
 
 #	define OBJECT struct
 
 #	define I_AM_AN_OBJECT \
 		OBJECT __OBJECT_HEADER__\
 		{\
-			void	*TEMP;\
-			void	*FUNCTIONS;\
-			void	*SIZE;\
+			void		*TEMP;\
+			void FAR	*FUNCTIONS;\
 		}	__OBJECT_HEADER__
 
 #	define OBJECT__READY(OBJECT_STRUCT) \
@@ -621,7 +687,6 @@ extern unsigned int	VirtualFree();
 		OBJECT OBJECT_NAME	VARIABLE_NAME;\
 		extern void			OBJECT_NAME();\
 		\
-		while (1)\
 		{\
 			(VARIABLE_NAME).__OBJECT_HEADER__.TEMP = (void *)(\
 				(\
@@ -630,30 +695,12 @@ extern unsigned int	VirtualFree();
 						(3 * sizeof(void *))\
 					) / sizeof(void *)) + 1\
 			);\
-			\
-			{\
-				register unsigned char	*FUNCTIONS;\
-				\
-				(VARIABLE_NAME).__OBJECT_HEADER__.SIZE = \
-					(VARIABLE_NAME).__OBJECT_HEADER__.TEMP;\
-				FUNCTIONS = LOCALMACRO__FUNCTION_AREA_ALLOCATOR;\
-				\
-				if (FUNCTIONS == LOCALMACRO__FAILED_TO_ALLOCATE)\
-				{\
-					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
-					break ;\
-				}\
-				\
-				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
-					(void *)FUNCTIONS;\
-			}\
-			\
-			break ;\
+			LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME);\
 		}\
 		\
 		if ((VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS)\
 			(\
-				(void (*)())LOCALMACRO__OBJECT_INJECTOR(\
+				(void FAR (*)())LOCALFUNCTION__OBJECT_INJECTOR(\
 					&(VARIABLE_NAME),\
 					OBJECT_NAME,\
 					(void *)0\
@@ -661,13 +708,13 @@ extern unsigned int	VirtualFree();
 			)
 
 #	define OBJECT__INJECT_3(TARGET, SOURCE, OBJECT_PTR) \
-		THIS->TARGET = LOCALMACRO__OBJECT_INJECTOR(\
+		THIS->TARGET = LOCALFUNCTION__OBJECT_INJECTOR(\
 			THIS,\
 			SOURCE,\
 			(unsigned char *)&THIS->TARGET\
 		)
 #	define object__inject_3(TARGET, SOURCE, OBJECT_PTR) \
-		OBJECT_PTR->TARGET = LOCALMACRO__OBJECT_INJECTOR(\
+		OBJECT_PTR->TARGET = LOCALFUNCTION__OBJECT_INJECTOR(\
 			OBJECT_PTR,\
 			SOURCE,\
 			(unsigned char *)&OBJECT_PTR->TARGET\
@@ -729,14 +776,14 @@ extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE void
-	*LOCALMACRO__OBJECT_INJECTOR(
+	*LOCALFUNCTION__OBJECT_INJECTOR(
 	void *SELF,
 	void *TARGET,
 	unsigned char *INDEX_ADDRESS
 )
 #	else /* K&R */
 static INLINE void
-	*LOCALMACRO__OBJECT_INJECTOR(SELF, TARGET, INDEX_ADDRESS)
+	*LOCALFUNCTION__OBJECT_INJECTOR(SELF, TARGET, INDEX_ADDRESS)
 	void			*SELF;
 	void			*TARGET;
 	unsigned char	*INDEX_ADDRESS;
@@ -745,14 +792,13 @@ static INLINE void
 	register unsigned char	*RESULT;
 	register unsigned char	*_;
 
+
 	if (INDEX_ADDRESS)
 	{
 		register unsigned int	INDEX;
 
 		INDEX = (int)(
-			(void **)(
-				INDEX_ADDRESS - (sizeof(void *) * 3)
-			) - (void **)SELF
+			(void **)(INDEX_ADDRESS - (sizeof(void *) << 1)) - (void **)SELF
 		) + 1;
 		_ = (unsigned char *)&(
 			((unsigned char **)SELF)[1][
@@ -764,57 +810,73 @@ static INLINE void
 		_ = (unsigned char *)&(((unsigned char **)SELF)[1][0]);
 
 	RESULT = _;
+	LOCALMACRO__UNPROTECT(((void **)SELF)[1]);
 
 #	ifdef __CPU_INTEL__
 #		ifdef __SYSTEM_64_BIT__
 	register unsigned long long	VALUE;
 
-	_ [ 0] = 0X48; // MOVABS
-	_ [ 1] = 0XB8; // RAX,
+	_ [0X00] = 0X48; // MOVABS
+	_ [0X01] = 0XB8; // RAX,
 	VALUE = (unsigned long long)SELF; // IMM64
-	_ [ 2] = VALUE & 0XFF;
-	_ [ 3] = (VALUE >> 8) & 0XFF;
-	_ [ 4] = (VALUE >> 16) & 0XFF;
-	_ [ 5] = (VALUE >> 24) & 0XFF;
-	_ [ 6] = (VALUE >> 32) & 0XFF;
-	_ [ 7] = (VALUE >> 40) & 0XFF;
-	_ [ 8] = (VALUE >> 48) & 0XFF;
-	_ [ 9] = (VALUE >> 56) & 0XFF;
-	_ [10] = 0XC7; // MOV
-	_ [11] = 0X00; // DWORD PTR [RAX],
+	_ [0X02] = VALUE & 0XFF;
+	_ [0X03] = (VALUE >> 8) & 0XFF;
+	_ [0X04] = (VALUE >> 16) & 0XFF;
+	_ [0X05] = (VALUE >> 24) & 0XFF;
+	_ [0X06] = (VALUE >> 32) & 0XFF;
+	_ [0X07] = (VALUE >> 40) & 0XFF;
+	_ [0X08] = (VALUE >> 48) & 0XFF;
+	_ [0X09] = (VALUE >> 56) & 0XFF;
+	_ [0X0A] = 0XC7; // MOV
+	_ [0X0B] = 0X00; // DWORD PTR [RAX],
 	VALUE = (unsigned long long)TARGET;
-	_ [12] = VALUE & 0XFF; // IMM32;
-	_ [13] = (VALUE >> 8) & 0XFF;
-	_ [14] = (VALUE >> 16) & 0XFF;
-	_ [15] = (VALUE >> 24) & 0XFF;
-	_ [16] = 0XC7; // MOV
-	_ [17] = 0X40; // DWORD PTR [RAX
-	_ [18] = 0X04; // + 4],
-	_ [19] = (VALUE >> 32) & 0XFF; // IMM32 + 4;
-	_ [20] = (VALUE >> 40) & 0XFF;
-	_ [21] = (VALUE >> 48) & 0XFF;
-	_ [22] = (VALUE >> 56) & 0XFF;
-	_ [23] = 0XFF; // JMP
-	_ [24] = 0X20; // [RAX];
+	_ [0X0C] = VALUE & 0XFF; // IMM32;
+	_ [0X0D] = (VALUE >> 8) & 0XFF;
+	_ [0X0E] = (VALUE >> 16) & 0XFF;
+	_ [0X0F] = (VALUE >> 24) & 0XFF;
+	_ [0X10] = 0XC7; // MOV
+	_ [0X11] = 0X40; // DWORD PTR [RAX
+	_ [0X12] = 0X04; // + 4],
+	_ [0X13] = (VALUE >> 32) & 0XFF; // IMM32 + 4;
+	_ [0X14] = (VALUE >> 40) & 0XFF;
+	_ [0X15] = (VALUE >> 48) & 0XFF;
+	_ [0X16] = (VALUE >> 56) & 0XFF;
+	_ [0X17] = 0XFF; // JMP
+	_ [0X18] = 0X20; // [RAX];
+	printf("B\n");
 #	else
 #		ifdef __SYSTEM_32_BIT__
 	register unsigned int	VALUE;
 
-	_ [ 0] = 0XB8; // MOV EAX,
+	_ [0X00] = 0XB8; // MOV EAX,
 	VALUE = (unsigned int)SELF;
-	_ [ 1] = VALUE & 0XFF;
-	_ [ 2] = (VALUE >> 8) & 0XFF;
-	_ [ 3] = (VALUE >> 16) & 0XFF;
-	_ [ 4] = (VALUE >> 24) & 0XFF;
-	_ [ 5] = 0XC7; // MOV,
-	_ [ 6] = 0X00; // DWORD PTR [EAX],
+	_ [0X01] = VALUE & 0XFF;
+	_ [0X02] = (VALUE >> 8) & 0XFF;
+	_ [0X03] = (VALUE >> 16) & 0XFF;
+	_ [0X04] = (VALUE >> 24) & 0XFF;
+	_ [0X05] = 0XC7; // MOV
+	_ [0X06] = 0X00; // DWORD PTR [EAX],
 	VALUE = (unsigned int)TARGET;
-	_ [ 7] = VALUE & 0XFF;
-	_ [ 8] = (VALUE >> 8) & 0XFF;
-	_ [ 9] = (VALUE >> 16) & 0XFF;
-	_ [10] = (VALUE >> 24) & 0XFF;
-	_ [11] = 0XFF; // JMP
-	_ [12] = 0X20; // [EAX];
+	_ [0X07] = VALUE & 0XFF;
+	_ [0X08] = (VALUE >> 8) & 0XFF;
+	_ [0X09] = (VALUE >> 16) & 0XFF;
+	_ [0X0A] = (VALUE >> 24) & 0XFF;
+	_ [0X0B] = 0XFF; // JMP
+	_ [0X0C] = 0X20; // [EAX];
+#			else
+#				ifdef __SYSTEM_16_BIT__ // PROBABLY FOR ONLY TURBO C COMPILER
+	_ [0X00] = 0XB8; // MOV AX,
+	VALUE = (unsigned int)SELF;
+	_ [0X01] = VALUE & 0XFF; // IMM16
+	_ [0X02] = (VALUE >> 8) & 0XFF;
+	_ [0X03] = 0XC7; // MOV
+	_ [0X04] = 0X00; // WORD PTR [AX],
+	VALUE = (unsigned int)TARGET;
+	_ [0X05] = VALUE & 0XFF; // IMM16
+	_ [0X06] = (VALUE >> 8) & 0XFF;
+	_ [0X07] = 0XFF; // JMP
+	_ [0X08] = 0X20; // [AX]
+#				endif /* __SYSTEM_16_BIT__ */
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_INTEL__ */
@@ -825,80 +887,80 @@ static INLINE void
 #	ifdef __SYSTEM_64_BIT__
 	register unsigned long long	VALUE;
 
-	_ [ 0] = 0XB1;
-	_ [ 1] = 0X00;
-	_ [ 2] = 0X00;
-	_ [ 3] = 0X58; // LDR X17, #IMM (SELF)
-	_ [ 4] = 0XB0;
-	_ [ 5] = 0X00;
-	_ [ 6] = 0X00;
-	_ [ 7] = 0X58; // LDR X16, #IMM (TARGET)
-	_ [ 8] = 0X00;
-	_ [ 9] = 0X02;
-	_ [10] = 0X1F;
-	_ [11] = 0XD6; // BR X16
+	_ [0X00] = 0XB1;
+	_ [0X01] = 0X00;
+	_ [0X02] = 0X00;
+	_ [0X03] = 0X58; // LDR X17, #IMM (SELF)
+	_ [0X04] = 0XB0;
+	_ [0X05] = 0X00;
+	_ [0X06] = 0X00;
+	_ [0X07] = 0X58; // LDR X16, #IMM (TARGET)
+	_ [0X08] = 0X00;
+	_ [0X09] = 0X02;
+	_ [0X0A] = 0X1F;
+	_ [0X0B] = 0XD6; // BR X16
 	VALUE = (unsigned long long)SELF; // IMM64
-	_ [12] = (VALUE & 0XFF);
-	_ [13] = (VALUE >> 8) & 0XFF;
-	_ [14] = (VALUE >> 16) & 0XFF;
-	_ [15] = (VALUE >> 24) & 0XFF;
-	_ [16] = (VALUE >> 32) & 0XFF;
-	_ [17] = (VALUE >> 40) & 0XFF;
-	_ [18] = (VALUE >> 48) & 0XFF;
-	_ [19] = (VALUE >> 56) & 0XFF;
+	_ [0X0C] = (VALUE & 0XFF);
+	_ [0X0D] = (VALUE >> 8) & 0XFF;
+	_ [0X0E] = (VALUE >> 16) & 0XFF;
+	_ [0X0F] = (VALUE >> 24) & 0XFF;
+	_ [0X10] = (VALUE >> 32) & 0XFF;
+	_ [0X11] = (VALUE >> 40) & 0XFF;
+	_ [0X12] = (VALUE >> 48) & 0XFF;
+	_ [0X13] = (VALUE >> 56) & 0XFF;
 	VALUE = (unsigned long long)TARGET; // IMM64
-	_ [20] = (VALUE & 0XFF);
-	_ [21] = (VALUE >> 8) & 0XFF;
-	_ [22] = (VALUE >> 16) & 0XFF;
-	_ [23] = (VALUE >> 24) & 0XFF;
-	_ [24] = (VALUE >> 32) & 0XFF;
-	_ [25] = (VALUE >> 40) & 0XFF;
-	_ [26] = (VALUE >> 48) & 0XFF;
-	_ [27] = (VALUE >> 56) & 0XFF;
+	_ [0X14] = (VALUE & 0XFF);
+	_ [0X15] = (VALUE >> 8) & 0XFF;
+	_ [0X16] = (VALUE >> 16) & 0XFF;
+	_ [0X17] = (VALUE >> 24) & 0XFF;
+	_ [0X18] = (VALUE >> 32) & 0XFF;
+	_ [0X19] = (VALUE >> 40) & 0XFF;
+	_ [0X1A] = (VALUE >> 48) & 0XFF;
+	_ [0X1B] = (VALUE >> 56) & 0XFF;
 #		else
 #			ifdef __SYSTEM_32_BIT__
 	register unsigned int	VALUE;
 
-	_ [ 0] = 0X0C;
-	_ [ 1] = 0X00;
-	_ [ 2] = 0X9F;
-	_ [ 3] = 0XE5; /* LDR R0, [PC, #12] */
-	_ [ 4] = 0X0C;
-	_ [ 5] = 0X10;
-	_ [ 6] = 0X9F;
-	_ [ 7] = 0XE5; /* LDR R1, [PC, #12] */
-	_ [ 8] = 0X00;
-	_ [ 9] = 0X00;
-	_ [10] = 0X81;
-	_ [11] = 0XE5; /* STR R0, [R1, #0] */
-	_ [12] = 0X08;
-	_ [13] = 0X00;
-	_ [14] = 0X9F;
-	_ [15] = 0XE5; /* LDR R0, [PC, #8] */
-	_ [16] = 0X10;
-	_ [17] = 0XFF;
-	_ [18] = 0X2F;
-	_ [19] = 0XE1; /* BX R0 */
+	_ [0X00] = 0X0C;
+	_ [0X01] = 0X00;
+	_ [0X02] = 0X9F;
+	_ [0X03] = 0XE5; /* LDR R0, [PC, #12] */
+	_ [0X04] = 0X0C;
+	_ [0X05] = 0X10;
+	_ [0X06] = 0X9F;
+	_ [0X07] = 0XE5; /* LDR R1, [PC, #12] */
+	_ [0X08] = 0X00;
+	_ [0X09] = 0X00;
+	_ [0X0A] = 0X81;
+	_ [0X0B] = 0XE5; /* STR R0, [R1, #0] */
+	_ [0X0C] = 0X08;
+	_ [0X0D] = 0X00;
+	_ [0X0E] = 0X9F;
+	_ [0X0F] = 0XE5; /* LDR R0, [PC, #8] */
+	_ [0X10] = 0X10;
+	_ [0X11] = 0XFF;
+	_ [0X12] = 0X2F;
+	_ [0X13] = 0XE1; /* BX R0 */
 	VALUE = (unsigned int)SELF; // IMM64
-	_ [20] = (VALUE & 0XFF);
-	_ [21] = (VALUE >> 8) & 0XFF;
-	_ [22] = (VALUE >> 16) & 0XFF;
-	_ [23] = (VALUE >> 24) & 0XFF;
+	_ [0X14] = (VALUE & 0XFF);
+	_ [0X15] = (VALUE >> 8) & 0XFF;
+	_ [0X16] = (VALUE >> 16) & 0XFF;
+	_ [0X17] = (VALUE >> 24) & 0XFF;
 	VALUE = (unsigned int)&__OBJECT_STRUCTURE_POINTER__; // IMM64
-	_ [24] = (VALUE & 0XFF);
-	_ [25] = (VALUE >> 8) & 0XFF;
-	_ [26] = (VALUE >> 16) & 0XFF;
-	_ [27] = (VALUE >> 24) & 0XFF;
-	__ = (unsigned int)TARGET; // IMM64
-	_ [28] = (VALUE & 0XFF);
-	_ [29] = (VALUE >> 8) & 0XFF;
-	_ [30] = (VALUE >> 16) & 0XFF;
-	_ [31] = (VALUE >> 24) & 0XFF;
+	_ [0X18] = (VALUE & 0XFF);
+	_ [0X19] = (VALUE >> 8) & 0XFF;
+	_ [0X1A] = (VALUE >> 16) & 0XFF;
+	_ [0X1B] = (VALUE >> 24) & 0XFF;
+	VALUE = (unsigned int)TARGET; // IMM64
+	_ [0X1C] = (VALUE & 0XFF);
+	_ [0X1D] = (VALUE >> 8) & 0XFF;
+	_ [0X1E] = (VALUE >> 16) & 0XFF;
+	_ [0X1F] = (VALUE >> 24) & 0XFF;
 #			endif /* __SYSTEM_32_BIT__ */
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_ARM__ */
 
-	LOCALMACRO__PROTECT_FUNCTION_AREA(RESULT);
+	LOCALMACRO__PROTECT(((void **)SELF)[1]);
 	return (RESULT);
 }
 

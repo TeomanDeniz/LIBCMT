@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -141,6 +141,13 @@ extern "C" {
 						: "=r" (__REGISTER__)\
 					)
 #			endif /* __SYSTEM_32_BIT__ */
+#			ifdef __SYSTEM_16_BIT__
+#				define LOCALMACRO__RAX_GET(__REGISTER__) \
+					__asm__ __volatile__ (\
+						"mov %%ax, %0" \
+						: "=r" (__REGISTER__)\
+					)
+#			endif /* __SYSTEM_16_BIT__ */
 #		else
 #			ifdef __GNUC__
 #				ifdef __SYSTEM_64_BIT__
@@ -161,6 +168,15 @@ extern "C" {
 							: \
 						)
 #				endif /* __SYSTEM_32_BIT__ */
+#				ifdef __SYSTEM_16_BIT__
+#					define LOCALMACRO__RAX_GET(__REGISTER__) \
+						asm volatile (\
+							"mov %%ax, %0" \
+							: "=r"(__REGISTER__) \
+							: \
+							: \
+						)
+#				endif /* __SYSTEM_16_BIT__ */
 #			endif /* __GNUC__ */
 #			ifndef LOCALMACRO__RAX_GET
 #				ifdef _MSC_VER
@@ -178,6 +194,13 @@ extern "C" {
 								mov eax, __REGISTER__\
 							}
 #					endif /* __SYSTEM_32_BIT__ */
+#					ifdef __SYSTEM_16_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
+							__asm\
+							{\
+								mov ax, __REGISTER__\
+							}
+#					endif /* __SYSTEM_16_BIT__ */
 #				endif /* _MSC_VER */
 #			endif /* !LOCALMACRO__RAX_GET */
 #			ifndef LOCALMACRO__RAX_GET
@@ -200,6 +223,15 @@ extern "C" {
 								: \
 							)
 #					endif /* __SYSTEM_32_BIT__ */
+#					ifdef __SYSTEM_16_BIT__
+#						define LOCALMACRO__RAX_GET(__REGISTER__) \
+							asm volatile (\
+								"mov %%ax, %0" \
+								: "=r"(__REGISTER__) \
+								: \
+								: \
+							)
+#					endif /* __SYSTEM_16_BIT__ */
 #				endif /* __clang__ */
 #			endif /* !LOCALMACRO__RAX_GET */
 /* TODO: ... */
