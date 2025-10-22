@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -281,7 +281,7 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* _CRAYC */
-#		ifdef __x86_64__ /* X86 / INTEL */
+#		ifdef __x86_64__ /* X64 / INTEL */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_64_BIT__
 #				define LOCALMACRO__ARCHITECTURE_FOUND

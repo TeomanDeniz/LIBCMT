@@ -60,6 +60,14 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 
 **OBJECT** is a high-performance C/C++ library for object-oriented programming in pure C, providing dynamic function tables, flexible object creation, and optimized cross-platform function injection.
 
+## Compiler & Linking Instructions
+| Compiler & Target | Link / Build Command                     |
+|-------------------|------------------------------------------|
+| GCC (Win2000)     | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (Win98)       | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (Win95)       | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (DOS)         | `gcc #.c -ldjgpp`                        |
+
 ## Features
 * Pure C object-oriented programming support.
 * Dynamic function tables for runtime function binding.
@@ -79,7 +87,7 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 > Supports multiple CPU architectures and OS environments.
 > 
 > * Memory efficiency
-> Objects only allocate their function tables once.
+> Function tables are allocated once per object.
 
 ## Setup
 

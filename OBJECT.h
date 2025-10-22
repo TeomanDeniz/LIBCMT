@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/21 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -25,6 +25,18 @@
 @@                     READ THE FUCKING MANUAL BEFORE USE                     @@
 @@                     ^    ^   ^       ^                                     @@
 \*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+/*############################################################################*\
+|*#                     COMPILER & LINKING INSTRUCTIONS                      #*|
+|*############################################################################*|
+|*............................................................................*|
+|* COMPILTER & TARGET :                 LINK / BUILD COMMAND                  *|
+|*....................:.......................................................*|
+|* GCC (WIN2000)      : GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (WIN98)        : GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (WIN95)        : GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (DOS)          : GCC #.c -ldjgpp                                       *|
+\******************************************************************************/
 
 /*############################################################################*\
 |*#                                 CONTENTS                                 #*|
@@ -102,12 +114,8 @@
 |* :  : SUPPORTS MULTIPLE CPU ARCHITECTURES AND OS ENVIRONMENTS.              *|
 |* :                                                                          *|
 |* :.., [MEMORY EFFICIENCY]                                                   *|
-|* :  :                                                                       *|
-|* :  : OBJECTS ONLY ALLOCATE FUNCTION TABLES ONCE.                           *|
-|* :                                                                          *|
-|* :.., [ERROR HANDLING]                                                      *|
 |*    :                                                                       *|
-|*    : COMPATIBLE WITH `TRY/CATCH`-STYLE MACROS FOR SAFE OPERATIONS.         *|
+|*    : FUNCTION TABLES ARE ALLOCATED ONCE PER OBJECT.                        *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
@@ -534,7 +542,7 @@
 #		ifndef KNR_STYLE /* STANDARD C */
 extern void	*mmap(void *, size_t, int, int, int, int);
 extern int	mprotect(void *, size_t, int);
-extern int	munmap(void *, size_t); 
+extern int	munmap(void *, size_t);
 #		else /* K&R */
 extern void	*mmap();
 extern int	mprotect();
@@ -558,9 +566,16 @@ extern int	munmap();
 
 #	ifndef LOCALMACRO__FUNCTION_ALLOCATOR
 #		ifdef _WIN32
+#			ifdef __GNUC__
+#				define LOCALMACRO__STDCALL __attribute__((stdcall))
+#			else
+#				define LOCALMACRO__STDCALL __stdcall
+#			endif
 #			ifndef KNR_STYLE /* STANDARD C */
-extern void	*VirtualAlloc(void *, size_t, unsigned long, unsigned long);
-extern int	VirtualFree(void *, size_t, unsigned long);
+extern void	*LOCALMACRO__STDCALL VirtualAlloc(
+	void *, size_t, unsigned long, unsigned long
+);
+extern int	LOCALMACRO__STDCALL VirtualFree(void *, size_t, unsigned long);
 #			else /* K&R */
 extern void			*VirtualAlloc();
 extern unsigned int	VirtualFree();

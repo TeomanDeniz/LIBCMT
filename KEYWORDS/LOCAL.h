@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/14 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -71,7 +71,7 @@
 \******************************************************************************/
 
 #ifndef LOCAL_H
-#	define LOCAL_H 202508 /* VERSION */
+#	define LOCAL_H 202510 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
 |* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|
@@ -113,7 +113,11 @@
 #					define LOCAL _Thread_local
 #				else
 #					ifdef __GNUC__
-#						define LOCAL __thread
+#						if (__GNUC__ < 4)
+#							define LOCAL /* THREAD-LOCAL NOT SUPPORTED FULLY */
+#						else
+#							define LOCAL __thread
+#						endif /* __GNUC__ < 4 */
 #					else
 #						ifdef __clang__
 #							define LOCAL __thread
@@ -124,7 +128,11 @@
 #				endif /* STDC >= 11 */
 #			else
 #				ifdef __GNUC__
-#					define LOCAL __thread
+#					if (__GNUC__ < 4)
+#						define LOCAL /* THREAD-LOCAL NOT SUPPORTED FULLY */
+#					else
+#						define LOCAL __thread
+#					endif /* __GNUC__ < 4 */
 #				else
 #					ifdef __clang__
 #						define LOCAL __thread

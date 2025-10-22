@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -75,7 +75,7 @@
 \******************************************************************************/
 
 #ifndef RAX_H
-#	define RAX_H 202509 /* VERSION */
+#	define RAX_H 202510 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include "../../ENVIRONMENTS/CPU.h" /*
@@ -143,39 +143,21 @@ extern "C" {
 #			endif /* __SYSTEM_32_BIT__ */
 #			ifdef __SYSTEM_16_BIT__
 #				define LOCALMACRO__RAX_GET(__REGISTER__) \
-					__asm__ __volatile__ (\
-						"mov %%ax, %0" \
-						: "=r" (__REGISTER__)\
-					)
+					__asm__ __volatile__ ("mov %%ax, %0" : "=r" (__REGISTER__))
 #			endif /* __SYSTEM_16_BIT__ */
 #		else
 #			ifdef __GNUC__
 #				ifdef __SYSTEM_64_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
-						asm volatile (\
-							"movq %%rax, %0" \
-							: "=r"(__REGISTER__) \
-							: \
-							: \
-						)
+						asm volatile ("movq %%rax, %0" : "=r"(__REGISTER__))
 #				endif /* __SYSTEM_64_BIT__ */
 #				ifdef __SYSTEM_32_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
-						asm volatile (\
-							"movl %%eax, %0" \
-							: "=r"(__REGISTER__) \
-							: \
-							: \
-						)
+						asm volatile ("movl %%eax, %0" : "=r"(__REGISTER__))
 #				endif /* __SYSTEM_32_BIT__ */
 #				ifdef __SYSTEM_16_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
-						asm volatile (\
-							"mov %%ax, %0" \
-							: "=r"(__REGISTER__) \
-							: \
-							: \
-						)
+						asm volatile ("mov %%ax, %0" : "=r"(__REGISTER__))
 #				endif /* __SYSTEM_16_BIT__ */
 #			endif /* __GNUC__ */
 #			ifndef LOCALMACRO__RAX_GET
@@ -210,8 +192,6 @@ extern "C" {
 							asm volatile (\
 								"movq %%rax, %0" \
 								: "=r"(__REGISTER__) \
-								: \
-								: \
 							)
 #					endif /* __SYSTEM_64_BIT__ */
 #					ifdef __SYSTEM_32_BIT__
@@ -219,8 +199,6 @@ extern "C" {
 							asm volatile (\
 								"movl %%rax, %0" \
 								: "=r"(__REGISTER__) \
-								: \
-								: \
 							)
 #					endif /* __SYSTEM_32_BIT__ */
 #					ifdef __SYSTEM_16_BIT__
@@ -228,8 +206,6 @@ extern "C" {
 							asm volatile (\
 								"mov %%ax, %0" \
 								: "=r"(__REGISTER__) \
-								: \
-								: \
 							)
 #					endif /* __SYSTEM_16_BIT__ */
 #				endif /* __clang__ */
