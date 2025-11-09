@@ -69,12 +69,12 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 | GCC (DOS)         | `gcc #.c -ldjgpp`                        |
 
 ## Features
-* Pure C object-oriented programming support.
-* Dynamic function tables for runtime function binding.
-* Optimized assembly-level function injection for Intel and ARM CPUs.
-* Supports 32-bit and 64-bit systems.
-* Compatible with TI CGT/CCS compilers, GCC, and MSVC.
-* Cross-platform memory management and exception handling support.
+* Pure C object-oriented programming support
+* Cleaner syntax than typical C++ alternatives
+* Assembly-level function injection for performance optimizations
+* Supports 32-bit and 64-bit systems (likely 16-bit as well)
+* Compatible with TI CGT/CCS, GCC, and MSVC compilers
+* Dynamic function tables for manual runtime binding
 
 ## Why use OBJECT?
 > * Performance
@@ -234,9 +234,15 @@ int main()
 > void test_object_type()
 > {
 >     object__connect(test_object_type);
+> 
 >     object__inject(FUNC_A);
 >     object__inject(FUNC_B);
 > }
+> ```
+> Means:
+> ```c
+> this->FUNC_A = FUNC_A;
+> this->FUNC_B = FUNC_B;
 > ```
 
 > ### **`OBJECT__INJECT_2(MEMBER, FUNCTION)`**
@@ -247,22 +253,34 @@ int main()
 > void test_object_type()
 > {
 >     object__connect(test_object_type);
+> 
 >     object__inject_2(FUNC_A, impl_func_a);
 >     object__inject_2(FUNC_B, impl_func_b);
 > }
 > ```
+> Means:
+> ```c
+> this->FUNC_A = impl_func_a;
+> this->FUNC_B = impl_func_b;
+> ```
 
-> ### **`OBJECT__INJECT_3(MEMBER, FUNCTION, OBJECT_PTR)`**
+> ### **`OBJECT__INJECT_3(OBJECT_PTR, MEMBER, FUNCTION)`**
 > 
-> Injects a function into a specific object instance.
+> Inject a function pointer with a function into a specific object instance.
 > 
 > ```c
 > void test_object_type()
 > {
 >     object__connect(test_object_type);
->     object__inject_3(FUNC_A, impl_func_a, this);
->     object__inject_3(FUNC_B, impl_func_b, this);
+> 
+>     object__inject_3(this, FUNC_A, impl_func_a);
+>     object__inject_3(this, FUNC_B, impl_func_b);
 > }
+> ```
+> Means:
+> ```c
+> this->FUNC_A = impl_func_a;
+> this->FUNC_B = impl_func_b;
 > ```
 
 ## Examples

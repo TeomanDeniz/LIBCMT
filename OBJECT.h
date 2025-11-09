@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/09 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -87,15 +87,15 @@
 |* :                                                                          *|
 |* :.., PURE C OBJECT-ORIENTED PROGRAMMING SUPPORT.                           *|
 |* :                                                                          *|
-|* :.., DYNAMIC FUNCTION TABLES FOR RUNTIME FUNCTION BINDING.                 *|
+|* :.., CLEANER SYNTAX THAN TYPICAL C++ ALTERNATIVES                          *|
 |* :                                                                          *|
-|* :.., OPTIMIZED ASSEMBLY-LEVEL FUNCTION INJECTION FOR INTEL AND ARM CPUS.   *|
+|* :.., ASSEMBLY-LEVEL FUNCTION INJECTION FOR PERFORMANCE OPTIMIZATIONS       *|
 |* :                                                                          *|
-|* :.., SUPPORTS 32-BIT AND 64-BIT SYSTEMS.                                   *|
+|* :.., SUPPORTS 32-BIT AND 64-BIT SYSTEMS (LIKELY 16-BIT AS WELL).           *|
 |* :                                                                          *|
 |* :.., COMPATIBLE WITH TI CGT/CCS COMPILERS, GCC, AND MSVC.                  *|
 |* :                                                                          *|
-|* :.., CROSS-PLATFORM MEMORY MANAGEMENT AND EXCEPTION HANDLING SUPPORT.      *|
+|* :.., DYNAMIC FUNCTION TABLES FOR MANUAL RUNTIME BINDING.                   *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
@@ -212,8 +212,7 @@
 |* :                                                                          *|
 |* :.., OBJECT__INJECT(MEMBER)                                                *|
 |* :  :                                                                       *|
-|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A FUNCTION WITH SAME NAME. *|
-|* :  : USEFUL WHEN YOUR FUNCTION NAME MATCHES THE MEMBER NAME.               *|
+|* :  : INJECTS A FUNCTION WITH SAME NAME.                                    *|
 |* :  :                                                                       *|
 |* :  : IT AUTOMATICALLY CONNECTS `this->MEMBER = MEMBER;`                    *|
 |* :  :                                                                       *|
@@ -233,8 +232,7 @@
 |* :                                                                          *|
 |* :.., OBJECT__INJECT_2(MEMBER, FUNCTION)                                    *|
 |* :  :                                                                       *|
-|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A SPECIFIC FUNCTION NAME.  *|
-|* :  : USE THIS WHEN YOUR FUNCTION NAME AND MEMBER NAME ARE DIFFERENT.       *|
+|* :  : INJECTS A FUNCTION WITH A DIFFERENT NAME.                             *|
 |* :  :                                                                       *|
 |* :  : EXAMPLE (INSIDE CONSTRUCTOR):                                         *|
 |* : 1| static void test_object_type(void)                                    *|
@@ -250,10 +248,10 @@
 |* : 2| this->FUNC_B = impl_func_b;                                           *|
 |* :  :                                                                       *|
 |* :                                                                          *|
-|* :.., OBJECT__INJECT_3(MEMBER, FUNCTION, OBJECT_PTR)                        *|
+|* :.., OBJECT__INJECT_3(OBJECT_PTR, MEMBER, FUNCTION)                        *|
 |* :  :                                                                       *|
-|* :  : BINDS AN OBJECT FUNCTION POINTER MEMBER TO A SPECIFIC FUNCTION,       *|
-|* :  : USING A SPECIFIC OBJECT INSTANCE POINTER.                             *|
+|* :  : INJECT A FUNCTION POINTER WITH A FUNCTION INTO A SPECIFIC OBJECT      *|
+|* :  : INSTANCE.                                                             *|
 |* :  :                                                                       *|
 |* :  : USE THIS WHEN YOU WANT TO INJECT A FUNCTION INTO A PARTICULAR OBJECT. *|
 |* :  :                                                                       *|
@@ -262,8 +260,8 @@
 |* : 2| {                                                                     *|
 |* : 3|     object__connect (test_object_type);                               *|
 |* : 4|                                                                       *|
-|* : 5|     object__inject_3(FUNC_A, impl_func_a, this);                      *|
-|* : 6|     object__inject_3(FUNC_B, impl_func_b, this);                      *|
+|* : 5|     object__inject_3(this, FUNC_A, impl_func_a);                      *|
+|* : 6|     object__inject_3(this, FUNC_B, impl_func_b);                      *|
 |* : 7| }                                                                     *|
 |* :  :                                                                       *|
 |* :  : MEANS:                                                                *|
@@ -722,13 +720,13 @@ extern int	__dpmi_free_memory();
 				)\
 			)
 
-#	define OBJECT__INJECT_3(TARGET, SOURCE, OBJECT_PTR) \
+#	define OBJECT__INJECT_3(OBJECT_PTR, TARGET, SOURCE) \
 		THIS->TARGET = LOCALFUNCTION__OBJECT_INJECTOR(\
 			THIS,\
 			SOURCE,\
 			(unsigned char *)&THIS->TARGET\
 		)
-#	define object__inject_3(TARGET, SOURCE, OBJECT_PTR) \
+#	define object__inject_3(OBJECT_PTR, TARGET, SOURCE) \
 		OBJECT_PTR->TARGET = LOCALFUNCTION__OBJECT_INJECTOR(\
 			OBJECT_PTR,\
 			SOURCE,\
@@ -736,9 +734,9 @@ extern int	__dpmi_free_memory();
 		)
 
 #	define OBJECT__INJECT_2(TARGET, SOURCE) \
-		OBJECT__INJECT_3(TARGET, SOURCE, THIS)
+		OBJECT__INJECT_3(THIS, TARGET, SOURCE)
 #	define object__inject_2(TARGET, SOURCE) \
-		object__inject_3(TARGET, SOURCE, this)
+		object__inject_3(this, TARGET, SOURCE)
 
 #	define OBJECT__INJECT(TARGET, SOURCE) \
 		OBJECT__INJECT_2(TARGET, TARGET)
