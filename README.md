@@ -614,7 +614,7 @@ GET_RAX(armValue); // Reads X0 on ARM64 or R0 on ARM32
 
 <summary>
     <img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/X17.gif">
-    <b>RAX</b> - Read or Write the register X17 in ARM CPU
+    <b>X17</b> - Read or Write the register X17 in ARM CPU
 </summary>
 
 > ⚠️ Important
