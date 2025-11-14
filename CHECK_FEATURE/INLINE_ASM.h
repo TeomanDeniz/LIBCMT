@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/13 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -113,86 +113,100 @@
 |*                                                                            *|
 |* O - GNU STYLE (GCC, CLANG) - EXTENDED INLINE ASSEMBLY INLINE_ASM_TYPE__GNU *|
 |* :                                                                          *|
-|* : int result;                                                              *|
-|* : asm("movl %1, %0" : "=r"(result) : "r"(input_var) : );                   *|
+|*1| int result;                                                              *|
+|*2| asm("movl %1, %0" : "=r"(result) : "r"(input_var) : );                   *|
 |*                                                                            *|
 |* O - MICROSOFT VISUAL C++ STYLE - BLOCK ASSEMBLY      INLINE_ASM_TYPE__MSVC *|
 |* :                                                                          *|
-|* : int input_var = 42;                                                      *|
-|* : __asm {                                                                  *|
-|* :     mov eax, input_var                                                   *|
-|* :     mov result, eax                                                      *|
-|* : }                                                                        *|
+|*1| int input_var = 42;                                                      *|
+|*2| __asm {                                                                  *|
+|*3|     mov eax, input_var                                                   *|
+|*4|     mov result, eax                                                      *|
+|*5| }                                                                        *|
 |*                                                                            *|
 |* O - BORLAND STYLE - SIMPLE INLINE                 INLINE_ASM_TYPE__BORLAND *|
 |* :                                                                          *|
-|* : asm mov eax, input_var                                                   *|
-|* : asm mov result, eax                                                      *|
+|*1| asm mov eax, input_var                                                   *|
+|*2| asm mov result, eax                                                      *|
 |*                                                                            *|
 |* O - AZTEC C STYLE (X86) - BLOCK WITH BRACES         INLINE_ASM_TYPE__AZTEC *|
 |* :                                                                          *|
-|* : asm {                                                                    *|
-|* :     mov ax, input_var                                                    *|
-|* :     mov result, ax                                                       *|
-|* : }                                                                        *|
+|*1| asm {                                                                    *|
+|*2|     mov ax, input_var                                                    *|
+|*3|     mov result, ax                                                       *|
+|*4| }                                                                        *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - LATTICE C STYLE (68K/AMIGA) - STRING BASED    INLINE_ASM_TYPE__LATTICE *|
 |* :                                                                          *|
-|* : asm("move.l input_var,d0");                                              *|
-|* : asm("move.l d0,result");                                                 *|
+|*1| asm("move.l input_var,d0");                                              *|
+|*2| asm("move.l d0,result");                                                 *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - INTEL C MS-STYLE - SINGLE LINE               INLINE_ASM_TYPE__INTEL_MS *|
 |* :                                                                          *|
-|* : __asm mov eax, input_var                                                 *|
-|* : __asm mov result, eax                                                    *|
+|*1| __asm mov eax, input_var                                                 *|
+|*2| __asm mov result, eax                                                    *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - WATCOM C STYLE                                 INLINE_ASM_TYPE__WATCOM *|
 |* :                                                                          *|
 |* :..O - BLOCK                                                               *|
 |* :  :                                                                       *|
-|* :  : _asm {                                                                *|
-|* :  :     mov eax, input_var                                                *|
-|* :  :     mov result, eax                                                   *|
-|* :  : }                                                                     *|
+|* : 1| _asm {                                                                *|
+|* : 2|     mov eax, input_var                                                *|
+|* : 3|     mov result, eax                                                   *|
+|* : 4| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
 |* :..O - PRAGMA                                                              *|
 |*    :                                                                       *|
-|*    : #pragma aux myhalt = "mov ax,4C00h" "int 21h";                        *|
-|*    : void myhalt(void);                                                    *|
+|*   1| #pragma aux myhalt = "mov ax,4C00h" "int 21h";                        *|
+|*   2| void myhalt(void);                                                    *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* O - ARM COMPILER STYLE - CONSTRAINTS                  INLINE_ASM_TYPE__ARM *|
 |* :                                                                          *|
-|* : __asm("mov %0,%1" : "=r"(result) : "r"(input_var));                      *|
+|*1| __asm("mov %0,%1" : "=r"(result) : "r"(input_var));                      *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - KEIL EMBEDDED STYLE - PRAGMA BLOCKS              INLINE_ASM_TYPE__KEIL *|
 |* :                                                                          *|
-|* : #pragma asm                                                              *|
-|* :     MOV A, #input_var                                                    *|
-|* :     MOV result, A                                                        *|
-|* : #pragma endasm                                                           *|
+|*1| #pragma asm                                                              *|
+|*2|     MOV A, #input_var                                                    *|
+|*3|     MOV result, A                                                        *|
+|*4| #pragma endasm                                                           *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - FREESCALE                                        INLINE_ASM_TYPE__HCCF *|
 |* :                                                                          *|
 |* :..O - SINGLE LINE                                                         *|
 |* :  :                                                                       *|
-|* :  : unsigned char result, input_var = 0X42;                               *|
+|* : 1| unsigned char result, input_var = 0X42;                               *|
+|* : 2|                                                                       *|
+|* : 3| asm LDAA input_var                                                    *|
+|* : 4| asm STAA result                                                       *|
 |* :  :                                                                       *|
-|* :  : asm LDAA input_var                                                    *|
-|* :  : asm STAA result                                                       *|
 |* :                                                                          *|
 |* :..O - PRAGMA                                                              *|
-|*    : #pragma asm                                                           *|
-|*    :     LDAA input_var                                                    *|
-|*    :     STAA result                                                       *|
-|*    : #pragma endasm                                                        *|
+|*    :                                                                       *|
+|*   1| #pragma asm                                                           *|
+|*   2|     LDAA input_var                                                    *|
+|*   3|     STAA result                                                       *|
+|*   4| #pragma endasm                                                        *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* O - ISO C STYLE - INLINE ASSEMBLY                     INLINE_ASM_TYPE__ISO *|
 |* :                                                                          *|
-|* : __asm__ __volatile__ (                                                   *|
-|* :     "movl %0, %%eax;"                                                    *|
-|* :     "movl %%eax, %1;"                                                    *|
-|* :     : "r"(input_var), "r"(result)                                        *|
-|* : );                                                                       *|
+|*1| __asm__ __volatile__ (                                                   *|
+|*2|     "movl %0, %%eax;"                                                    *|
+|*3|     "movl %%eax, %1;"                                                    *|
+|*4|     : "r"(input_var), "r"(result)                                        *|
+|*5|     : "=r"(result)   // %0                                               *|
+|*6|     : "r"(input_var) // %1                                               *|
+|*7|     : "%eax"                                                             *|
+|*8| );                                                                       *|
+|* :                                                                          *|
 |*                                                                            *|
 \******************************************************************************/
 

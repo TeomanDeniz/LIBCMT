@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -48,7 +48,10 @@
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM ARM AND      *|
 |* AARCH CPUS' REGISTER (X17) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.  *|
 |*                                                                            *|
-|* NOTE: ON 32-BIT SYSTEMS, R17 REGISTER IS USED.                             *|
+|* USING `GET_X17` OR `SET_X17` ON A NON-ARM CPU WILL CAUSE AN ERROR.         *|
+|*                                                                            *|
+|* NOTE: ON 32-BIT SYSTEMS, ALL FUNCTIONS USED FROM THIS HEADER WILL THROW AN *|
+|*       ERROR.                                                               *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -67,7 +70,7 @@
 \******************************************************************************/
 
 #ifndef X17_H
-#	define X17_H 202510 /* VERSION */
+#	define X17_H 202511 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include "../../ENVIRONMENTS/CPU.h" /*

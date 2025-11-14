@@ -17,7 +17,7 @@ To include **all features**:
 You can selectively include specific components by defining `INCL__<MODULE>` macros before the include:
 
 ```c
-#define INCL__FAR
+#define INCL__FARF
 #include "LIBCMT/LIBCMT.h" // Includes only the FAR module
 ```
 Or
@@ -61,12 +61,13 @@ If no `INCL__...` macro is defined, all modules will be automatically included b
 **OBJECT** is a high-performance C/C++ library for object-oriented programming in pure C, providing dynamic function tables, flexible object creation, and optimized cross-platform function injection.
 
 ## Compiler & Linking Instructions
+This table is for really old compilers. If you're using a modern compiler, ignore this table.
 | Compiler & Target | Link / Build Command                     |
 |-------------------|------------------------------------------|
-| GCC (Win2000)     | `gcc #.c C:\WINNT\system32\kernel32.dll` |
-| GCC (Win98)       | `gcc #.c C:\WINNT\system32\kernel32.dll` |
-| GCC (Win95)       | `gcc #.c C:\WINNT\system32\kernel32.dll` |
-| GCC (DOS)         | `gcc #.c -ldjgpp`                        |
+| GCC (Win2000) 3.0 | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (Win98) 3.0   | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (Win95) 3.0   | `gcc #.c C:\WINNT\system32\kernel32.dll` |
+| GCC (DOS) 3.0?    | `gcc #.c -ldjgpp`                        |
 
 ## Features
 * Pure C object-oriented programming support
@@ -431,7 +432,7 @@ int main(void) {
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/push_pop.gif">
-	<b>PUSH & POP</b> - Add the value to memory stack <b>(WIP)</b>
+	<b>PUSH & POP</b> - Use ASM inside C Language <b>(WIP)</b>
 </summary>
 
 > [!WARNING]  
@@ -439,53 +440,104 @@ int main(void) {
 > MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ASM/PUSH_POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH_POP.h)**]
+> ### File(s) at: [**[📜 LIBCMT/ASM/PUSH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH.h)**] [**[📜 LIBCMT/ASM/POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/POP.h)**]
 > ### Call With:
 > ```c
-> #define INCL__PUSH_POP
-> #include "LIBCMT/LIBCMT.h"
+> #include "LIBCMT/ASM/PUSH.h"
+> // ASM CODE ...
+> #include "LIBCMT/ASM/POP.h"
 > ```
 
-| **Name**             | **Type**      | **Description**                          |
-|----------------------|---------------|------------------------------------------|
-| `PUSH_16`, `push_16` | `#define ()`  | Push 2 Bytes into CPU stack.             |
-| `PUSH_32`, `push_32` | `#define ()`  | Push 4 Bytes into CPU stack.             |
-| `PUSH_64`, `push_64` | `#define ()`  | Push 8 Bytes into CPU stack if possible. |
-| `POP_16`, `pop_16`   | `#define ()`  | Pop 2 Bytes into CPU stack.              |
-| `POP_32`, `pop_32`   | `#define ()`  | Pop 4 Bytes into CPU stack.              |
-| `POP_64`, `pop_64`   | `#define ()`  | Pop 8 Bytes into CPU stack if possible.  |
+## Builtin keywords:
+| **Name**    | **Type**     | **Description**       |
+|-------------|--------------|-----------------------|
+| `SECTION`   | `#define ()` | Create a section.     |
+| `END`       | `#define`    | End of section.       |
+| `MEM`       | `#define ()` | Use memory (One arg)  |
+| `MEM_INDEX` | `#define ()` | Use memory (Two args) |
 
-## What Does It Do
+## ASM Keywords:
+### Intel X86:
+Registers:
+| **Name**                 | **Type**  | **Description**                                                                  |
+|--------------------------|-----------|----------------------------------------------------------------------------------|
+| `RSI`, `ESI`, `SI`, `AH` | `#define` | Source index, used for source pointer in string and memory operations.           |
+| `RDI`, `EDI`, `DI`, `BH` | `#define` | Destination index, used for destination pointer in string and memory operations. |
+| `RBP`, `EBP`, `BP`, `CH` | `#define` | Base pointer (frame pointer), usually points to the current stack frame base.    |
+| `RSP`, `ESP`, `SP`, `DH` | `#define` | Stack pointer, points to the top of the stack.                                   |
+| `RAX`, `EAX`, `AX`, `AL` | `#define` | Primary accumulator, often holds function return values.                         |
+| `RBX`, `EBX`, `BX`, `BL` | `#define` | Base register, general-purpose (callee-saved).                                   |
+| `RCX`, `ECX`, `CX`, `CL` | `#define` | Counter register, used for loops or argument passing.                            |
+| `RDX`, `EDX`, `DX`, `DL` | `#define` | Data register, used for I/O, arithmetic, and argument passing.                   |
 
-With these functions, you're able to move and retrieve values from the memory stack with different data sizes and architectures.
+Commands:
+| **Name** | **Type**     | **Description**                                                |
+|----------|--------------|----------------------------------------------------------------|
+| `RET`    | `#define`    | If section called via CALL, jumps back to where it is called.  |
+| `MOV8`   | `#define ()` | Moves 1 byte from the source to the destination.               |
+| `MOV16`  | `#define ()` | Moves 2 Bytes from the source to the destination.              |
+| `MOV32`  | `#define ()` | Moves 4 Bytes from the source to the destination.              |
+| `MOV64`  | `#define ()` | Moves 8 Bytes from the source to the destination.              |
+| `ADD8`   | `#define ()` | Adds 1 byte from the source to the destination.                |
+| `ADD16`  | `#define ()` | Adds 2 bytes from the source to the destination.               |
+| `ADD32`  | `#define ()` | Adds 4 bytes from the source to the destination.               |
+| `ADD64`  | `#define ()` | Adds 8 bytes from the source to the destination.               |
 
-> ⚠️ Note
-> 
-> On 32-Bit systems, PUSH_64 and POP_64 macros can maximum push 32-Bit variables. They behave like a `long` type instead of a true 64-bit value.
+**Note**: `MOV64`, `ADD64`, `@64` etc... downscale automatically on 32/16-bit modes.
 
-## How To Use
+## Overview
+This header provides a unified macro layer that lets you write inline assembly with minimal compiler-specific boilerplate.
+The system:
+- Detects compiler ASM support
+- Detects architecture: **16-bit / 32-bit / 64-bit**
+- Detects backend syntax: **AT&T**, **Intel**, or **MSVC inline asm**
+- Defines stable macro keywords so your ASM blocks stay portable
 
-Let's write a simple and probably the world's fastest swap example:
+It abstracts:
+- Register names
+- Memory addressing
+- Basic arithmetic and move operations
+- Section creation (labels)
+- Return instructions
+---
+
+## What This System Does
+* Ensures your inline ASM can compile across:
+* * GCC / Clang (AT&T syntax)
+* * ICC (AT&T or Intel depending on build)
+* * MSVC (__asm{} Intel syntax)
+* Provides stable names for registers that change size across architectures
+* Allows macro-style 8/16/32/64-bit ops without manual syntax branching
+* Provides unified memory addressing patterns
+* Enables platform-independent section creation for ASM entry points
+
+## Use Examples
 ```c
-register int	a = 42;
-register int	b = 11;
-
-PUSH_32(a); // > Added 42 to CPU stack
-a = b;      // |
-POP_32(b);  // < Removed 42 from CPU stack
-
-// b is now 42
-// a is now 11
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("example_func") // example_func:
+    MOV32(EAX, EBX)     // mov rax, ebx
+    ADD32(EAX, 1)       // add eax, 1
+    RET                 // ret
+END
+#include "LIBCMT/ASM/POP.h"
 ```
-
-For sending and geting direct values:
+Example - Byte Copy Routine
 ```c
-register int	a;
-
-PUSH_32(62); // > Added 62 to CPU stack
-POP_32(a);   // < Removed 62 from CPU stack
-
-// a is now 62
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("copy_byte")   // copy_byte: 
+    MOV8(MEM(RDI), AL) // mov byte [rdi], al
+    RET                // ret
+END
+#include "LIBCMT/ASM/POP.h"
+```
+Example - Add Value at Index
+```c
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("add_indexed")              // add_indexed
+    ADD32(MEM_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
+    RET                             // ret
+END
+#include "LIBCMT/ASM/POP.h"
 ```
 
 ----
@@ -495,7 +547,7 @@ POP_32(a);   // < Removed 62 from CPU stack
 
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/RAX.gif">
-	<b>RAX</b> - Read or Write the register RAX/X0 <b>(WIP)</b>
+	<b>RAX</b> - Read or Write the register RAX in Intel CPU <b>(WIP)</b>
 </summary>
 
 > [!WARNING]  
@@ -516,11 +568,13 @@ POP_32(a);   // < Removed 62 from CPU stack
 
 ## What Does It Do
 
-With these functions, you're able to move and get values from the CPU register (RAX, X0, ETC.) and stack with different data sizes and archs.
+With these functions, you're able to move and get values from the Intel CPU register RAX and stack with different data sizes and archs.
+
+Using `GET_RAX` or `SET_RAX` on a non-Intel CPU will cause an error.
 
 > ⚠️ Note
 > 
-> On 32-BIT systems, EAX or R0 registers are used.
+> On 32-BIT systems, EAX register is used.
 
 ## How To Use
 
@@ -530,7 +584,7 @@ With these functions, you're able to move and get values from the CPU register (
 ```c
 uint64_t myValue;
 
-GET_RAX(myValue);  // MOV RAX contents into myValue
+GET_RAX(myValue); // MOV RAX contents into myValue
 
 // myValue now holds the value from RAX
 ```
@@ -539,7 +593,7 @@ GET_RAX(myValue);  // MOV RAX contents into myValue
 ```c
 unsigned int myValue32;
 
-GET_RAX(myValue32);  // MOV EAX contents into myValue32
+GET_RAX(myValue32); // MOV EAX contents into myValue32
 
 // myValue32 now holds the value from EAX
 ```
@@ -548,9 +602,54 @@ GET_RAX(myValue32);  // MOV EAX contents into myValue32
 ```c
 uint64_t armValue;
 
-GET_RAX(armValue);  // Reads X0 on ARM64 or R0 on ARM32
+GET_RAX(armValue); // Reads X0 on ARM64 or R0 on ARM32
 
 // armValue now holds the first argument register value
+```
+
+----
+</details>
+
+<details>
+
+<summary>
+    <img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/X17.gif">
+    <b>RAX</b> - Read or Write the register X17 in ARM CPU
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 LIBCMT/ASM/X17.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/X17.h)**]
+> ### Call With:
+> ```c
+> #define INCL__X17
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| **Name**             | **Type**      | **Description**           |
+|----------------------|---------------|---------------------------|
+| `GET_X17`, `get_x17` | `#define ()`  | Set `X17` into a variable |
+
+## What Does It Do
+
+With these functions, you're able to move and get values from the ARM CPU register X17 and stack with different data sizes and archs.
+
+Using `GET_X17` or `SET_X17` on a non-Intel CPU will cause an error.
+
+> ⚠️ Note
+> 
+> On 32-BIT systems, all functions used from this header will throw an error.
+
+## How To Use
+
+# HOW TO USE
+
+**Example 1: Read X17 into a variable**
+```c
+uint64_t myValue;
+
+GET_X17(myValue); // MOV X17 contents into myValue
+
+// myValue now holds the value from X17
 ```
 
 ----
@@ -950,17 +1049,6 @@ This header detects whether the compiler supports inline assembly and, if so, id
 > #pragma endasm
 > ```
 > 
-> ### Watcom C Style - Pragma/Block - **`INLINE_ASM_TYPE__WATCOM`**
-> ```c
-> _asm {
->     mov eax, input_var
->     mov result, eax
-> }
-> // or
-> #pragma aux myhalt = "mov ax,4C00h" "int 21h";
-> void myhalt(void);
-> ```
-> 
 > ### FreeScale - HC12, HCS08, ColdFire - **`INLINE_ASM_TYPE__HCCF`**
 > ```c
 > unsigned char result, input_var = 0X42;
@@ -980,6 +1068,9 @@ This header detects whether the compiler supports inline assembly and, if so, id
 >     "movl %0, %%eax;"
 >     "movl %%eax, %1;"
 >     : "r"(input_var), "r"(result)
+>     : "=r"(result)   // %0
+>     : "r"(input_var) // %1
+>     : "%eax"
 > );
 > ```
 
@@ -1031,7 +1122,7 @@ int AB(ma, in)(void) // Expands to: int main(void)
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/cache.gif">
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ARCHITECTURE.gif">
 	<b>ARCHITECTURE</b> - You can get information about your CPU architecture.
 </summary>
 

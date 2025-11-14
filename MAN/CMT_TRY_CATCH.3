@@ -1,0 +1,97 @@
+.TH CMT_TRY_CATCH 3 "LIBCMT" "CMT_TRY_CATCH" "Function Attributes"
+
+.SH NAME
+CMT_TRY_CATCH \- Implements try, catch, and throw semantics in C
+
+.SH SYNOPSIS
+.B #define INCL__TRY_CATCH
+.br
+.B #include <LIBCMT/LIBCMT.h>
+
+.SH DESCRIPTION
+Provides macros to mimic JavaScript-like exception handling in C using
+setjmp/longjmp.
+
+.TP
+.B TRY, try
+Begins a block that may throw an error.
+
+.TP
+.B CATCH, catch
+Catches errors thrown within a preceding try block. Takes an integer argument
+to receive the error code.
+
+.TP
+.B THROW, throw
+Throws an integer error code to the nearest enclosing catch block.
+
+.SH SETUP
+Define
+.nf
+#define SETUP_TRY_CATCH
+.fi
+once in your main file before including the header to initialize internal structures.
+
+.SH USAGE
+.nf
+try {
+    if (some_condition)
+        throw(99);
+}
+catch (int err) {
+    printf("ERROR: %d\n", err);
+}
+.fi
+
+.TP
+Nested try/catch example:
+.nf
+try {
+    try {
+        throw(42);
+    }
+    catch (int e) {
+        throw(32);
+    }
+}
+catch (int e) {
+    printf("Error: %d\n", e);
+}
+.fi
+
+.TP
+From a function:
+.nf
+#include <stdio.h>
+#include "LIBCMT/KEYWORDS/TRY_CATCH.h"
+void test(void)
+{
+    throw (42);
+}
+
+int main(void)
+{
+    try
+    {
+        test();
+    }
+    catch (int err)
+    {
+        printf("ERROR: %d\n", err);
+    }
+
+    return (0);
+}
+.fi
+
+.SH NOTES
+- Only supports `int` error codes.
+- Implemented using `setjmp`/`longjmp`.
+- Avoid using `return` or `goto` inside `try` blocks; use `throw(0)` to exit.
+- For TCC, declare the catch variable outside the `catch()` parentheses.
+
+.SH SEE ALSO
+.B LIBCMT(3)
+
+.SH AUTHOR
+Teoman Deniz <te.odenizgml@gmail.com>

@@ -1,0 +1,29 @@
+.TH CMT_KNR_STYLE 3 "LIBCMT" "CMT_KNR_STYLE" "K&R Style Detection"
+
+.SH NAME
+CMT_KNR_STYLE \- Detect K&R (pre-ANSI) C compiler style
+
+.SH SYNOPSIS
+.B #define INCL__KNR_STYLE
+.br
+.B #include <LIBCMT/LIBCMT.h>
+
+.SH FILES
+LIBCMT/ENVIRONMENTS/KNR_STYLE.h
+
+.SH DESCRIPTION
+This header defines a macro indicating whether the compiler is using K&R (Kernighan & Ritchie, pre-ANSI 1989) style C syntax.
+
+.TP
+.B KNR_STYLE
+Defined if the compiler uses K&R style syntax.
+
+.SH USAGE
+Useful for writing portable code that needs to distinguish between ANSI/ISO C and older K&R compilers.
+
+.SH SEE ALSO
+.B CMT_COMMA_OPERATOR(3),
+.B LIBCMT(3)
+
+.SH AUTHOR
+Teoman Deniz <te.odenizgml@gmail.com>

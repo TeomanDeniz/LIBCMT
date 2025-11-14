@@ -1,0 +1,115 @@
+.TH LIBCMT 3 "2025-11-09" "1.0" "LIBCMT C Library Extension"
+.SH NAME
+LIBCMT \- modular and portable C library extension
+.SH SYNOPSIS
+.B \#include "LIBCMT/LIBCMT.h"
+.br
+.B \#include "LIBCMT/LIBCMT.hpp"  \- for C++
+.br
+.IP "Optional Modular Include:"
+Predefine
+.B INCL__<MODULE>
+macros before including LIBCMT.h to selectively include modules.
+.SH DESCRIPTION
+LIBCMT provides essential tools and features missing from the standard C library, fully compatible with all compilers and platforms.
+If no
+.B INCL__...
+macro is defined, all modules are included by default.
+
+.SH MODULES
+.TP
+.B OBJECT (CMT_OBJECT)
+Implements basic OOP features in C.
+.TP
+.B RAX (CMT_RAX)
+Read or write the RAX/X0 register. (WIP)
+.TP
+.B FAR (CMT_FAR)
+Handles memory chunks larger than 64 KB on 16-bit systems.
+.TP
+.B PACK (CMT_PACK)
+Packs and removes padding bytes from structures.
+.TP
+.B REGPARM (CMT_REGPARM)
+Pass arguments via CPU registers. (WIP)
+.TP
+.B COMMA OPERATOR (CMT_COMMA_OPERATOR)
+Macro defined if compiler supports comma operator.
+.TP
+.B INLINE ASM (CMT_INLINE_ASM)
+Macro defined if inline assembly is supported; specify syntax type.
+.TP
+.B TOKEN PASTNG (CMT_TOKEN_PASTNG)
+Macro defined if token pasting is supported by the compiler.
+.TP
+.B ARCHITECTURE (CMT_ARCHITECTURE)
+Retrieve CPU architecture information.
+.TP
+.B CPU (CMT_CPU)
+Retrieve CPU information at runtime.
+.TP
+.B KNR_STYLE (CMT_KNR_STYLE)
+Macro determining if compiler uses ANSI C or K&R 1989 style.
+.TP
+.B DLL (CMT_DLL)
+Cross-platform dynamic library functions.
+.TP
+.B PREFETCH (CMT_PREFETCH)
+Reduce cache-miss latency. (WIP)
+.TP
+.B READ_FILE (CMT_READ_FILE)
+Read file content. (WIP)
+.TP
+.B THREAD (CMT_THREAD)
+Manage multithreading across platforms.
+.TP
+.B IGNORE_VAR (CMT_IGNORE_VAR)
+Tag variables to ignore unused warnings.
+.TP
+.B INLINE (CMT_INLINE)
+Inline functions for supported compilers.
+.TP
+.B LOCAL (CMT_LOCAL)
+Ensure each thread has independent copy of global/static variables.
+.TP
+.B NORETURN (CMT_NORETURN)
+Optimize functions with direct exit.
+.TP
+.B TRY_CATCH (CMT_TRY_CATCH)
+Use try, catch(), throw() syntax in C (like JavaScript).
+.TP
+.B UNUSED (CMT_UNUSED)
+Tag functions to ignore unused warnings.
+.TP
+.B VA_ARGS (CMT_VA_ARGS)
+Make va_args work on older compilers (pre-C89).
+.TP
+.B Icons
+Inspired by Windows 2000 style; original creations, not affiliated with Microsoft.
+
+.SH SEE ALSO
+.B CMT_ARCHITECTURE(3),
+.B CMT_ASM(3),
+.B CMT_COMMA_OPERATOR(3),
+.B CMT_CPU(3),
+.B CMT_DLL(3),
+.B CMT_FAR(3),
+.B CMT_IGNORE_VAR(3),
+.B CMT_INLINE(3),
+.B CMT_INLINE_ASM(3),
+.B CMT_KNR_STYLE(3),
+.B CMT_LOCAL(3),
+.B CMT_NORETURN(3),
+.B CMT_OBJECT(3),
+.B CMT_PACK(3),
+.B CMT_PREFETCH(3),
+.B CMT_RAX(3),
+.B CMT_READ_FILE(3),
+.B CMT_REGPARM(3),
+.B CMT_THREAD(3),
+.B CMT_TOKEN_PASTNG(3),
+.B CMT_TRY_CATCH(3),
+.B CMT_UNUSED(3),
+.B CMT_VA_ARGS(3)
+.SH AUTHOR
+Teoman Deniz <te.odenizgml@gmail.com>

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/14 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -48,6 +48,8 @@
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM THE CPU      *|
 |* REGISTER (RAX) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.              *|
 |*                                                                            *|
+|* USING `GET_RAX` OR `SET_RAX` ON A NON-INTEL CPU WILL CAUSE AN ERROR.       *|
+|*                                                                            *|
 |* NOTE: ON 32-BIT SYSTEMS, EAX REGISTER IS USED.                             *|
 |*                                                                            *|
 \******************************************************************************/
@@ -60,7 +62,7 @@
 |* :                                                                          *|
 |* ;.., uint64_t myValue;                                                     *|
 |*    :                                                                       *|
-|*    : GET_RAX(myValue);  // > MOV RAX CONTENTS INTO myValue                 *|
+|*    : GET_RAX(myValue); // > MOV RAX CONTENTS INTO myValue                  *|
 |*    ;..,                                                                    *|
 |*       : myValue NOW HOLDS THE VALUE FROM RAX                               *|
 |*                                                                            *|
@@ -75,7 +77,7 @@
 \******************************************************************************/
 
 #ifndef RAX_H
-#	define RAX_H 202510 /* VERSION */
+#	define RAX_H 202511 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
 #	include "../../ENVIRONMENTS/CPU.h" /*

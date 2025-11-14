@@ -1,0 +1,165 @@
+.TH CMT_ASM 3 "LIBCMT" "CMT_ASM" "Portable Inline Assembly Macros"
+
+.SH NAME
+CMT_ASM \- Portable ASM macro system for C (PUSH/POP)
+
+.SH WARNING
+This subsystem is a WIP.
+It may fail on certain compilers, operating systems, or CPU architectures.
+Use at your own risk.
+
+.SH SYNOPSIS
+.B #include <LIBCMT/ASM/PUSH.h>
+.br
+ASM CODE
+.br
+.B #include <LIBCMT/ASM/POP.h>
+
+.SH FILES
+LIBCMT/ASM/PUSH.h
+LIBCMT/ASM/POP.h
+
+.SH DESCRIPTION
+CMT_ASM provides a portable macro layer for inline assembly.
+It abstracts registers, memory addressing, section creation, and basic operations.
+It automatically adapts to:
+- 16/32/64 bit architectures
+- AT&T / Intel / MSVC inline assembly syntaxes
+- GCC, Clang, ICC, MSVC, and others
+
+.SH BUILTIN MACROS
+.TP
+.B SECTION(name)
+Creates an assembly section/label.
+
+.TP
+.B END
+Marks the end of a section.
+
+.TP
+.B MEM(x)
+Memory access with one argument (e.g., [reg]).
+
+.TP
+.B MEM_INDEX(base, index)
+Memory access with two arguments (e.g., [base + index]).
+
+.SH REGISTERS (INTEL x86)
+.TP
+.B RSI, ESI, SI, AH
+Source index.
+
+.TP
+.B RDI, EDI, DI, BH
+Destination index.
+
+.TP
+.B RBP, EBP, BP, CH
+Base/frame pointer.
+
+.TP
+.B RSP, ESP, SP, DH
+Stack pointer.
+
+.TP
+.B RAX, EAX, AX, AL
+Accumulator.
+
+.TP
+.B RBX, EBX, BX, BL
+General purpose (callee-saved).
+
+.TP
+.B RCX, ECX, CX, CL
+Counter/argument register.
+
+.TP
+.B RDX, EDX, DX, DL
+Data/argument register.
+
+.SH COMMAND MACROS
+.TP
+.B RET
+Return from section.
+
+.TP
+.B MOV8(dst, src)
+Move 1 byte.
+
+.TP
+.B MOV16(dst, src)
+Move 2 bytes.
+
+.TP
+.B MOV32(dst, src)
+Move 4 bytes.
+
+.TP
+.B MOV64(dst, src)
+Move 8 bytes (downscales automatically on 32/16-bit).
+
+.TP
+.B ADD8(dst, src)
+Add 1 byte.
+
+.TP
+.B ADD16(dst, src)
+Add 2 bytes.
+
+.TP
+.B ADD32(dst, src)
+Add 4 bytes.
+
+.TP
+.B ADD64(dst, src)
+Add 8 bytes (downscales on smaller architectures).
+
+.SH OVERVIEW
+This header standardizes inline assembly across compilers by abstracting:
+- Register naming
+- Operand sizes
+- Memory addressing
+- Arithmetic ops
+- Section creation
+- Syntax differences (Intel/AT&T/MSVC)
+
+It enables cross-platform ASM blocks without rewriting for each compiler.
+
+.SH EXAMPLES
+Example: basic function
+.nf
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("example_func")
+    MOV32(EAX, EBX)
+    ADD32(EAX, 1)
+    RET
+END
+#include "LIBCMT/ASM/POP.h"
+.fi
+
+Byte copy:
+.nf
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("copy_byte")
+    MOV8(MEM(RDI), AL)
+    RET
+END
+#include "LIBCMT/ASM/POP.h"
+.fi
+
+Indexed arithmetic:
+.nf
+#include "LIBCMT/ASM/PUSH.h"
+SECTION("add_indexed")
+    ADD32(MEM_INDEX(RAX, RCX), EDX)
+    RET
+END
+#include "LIBCMT/ASM/POP.h"
+.fi
+
+.SH SEE ALSO
+.B CMT_INLINE_ASM(3),
+.B LIBCMT(3)
+
+.SH AUTHOR
+Teoman Deniz <te.odenizgml@gmail.com>
