@@ -471,7 +471,7 @@ Registers:
 | `RDX`, `EDX`, `DX`, `DL`              | Data register                       |
 | `CS`, `DS`, `SS`, `ES`, `FS`, `GS`    | Segment registers                   |
 | `R8`, `R9`, ..., `R14`, `R15`         | General-purpose extension registers |
-| `CR0`, `CR1`, ..., `CR7`, `CR8`       | Control registers                   |
+| `CR0`, `CR2`, `CR3`, `CR4`, `CR8`     | Control registers                   |
 | `DR0`, `DR1`, ..., `DR7`, `DR8`       | Debug registers                     |
 | `GDTR`, `IDTR`, `LDTR`, `TR`          | Descriptor table registers          |
 | `MM0`, `MM1`, ..., `MM6`, `MM7`       | 128-bit integer registers           |
