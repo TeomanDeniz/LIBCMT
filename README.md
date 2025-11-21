@@ -1139,6 +1139,8 @@ printf( X( i am testing something ) ); // Will return: "i am testing something" 
 ----
 </details>
 
+<details>
+
 <summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/TOKEN_PASTING.gif">
 	<b>TOKEN PASTNG</b> - Defines a macro if token pasting is supported on your compiler
