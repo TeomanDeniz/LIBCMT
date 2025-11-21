@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -220,9 +220,7 @@ extern "C" {
 /* ********************** [^] CAN CHANGABLE MACRO [^] *********************** */
 
 #	define TRY \
-		++__TRY_CATCH_INDEX__;\
-		\
-		if (!setjmp(__TRY_CATCH_BUFFER__[(__TRY_CATCH_INDEX__ - 1)]))
+		if (!setjmp(__TRY_CATCH_BUFFER__[(++__TRY_CATCH_INDEX__ - 1)]))
 
 #	define CATCH(VARIABLE_NAME) \
 		if (__TRY_CATCH_VALUE__ == 0)\
@@ -238,14 +236,18 @@ extern "C" {
 			)
 
 #	define THROW(ERROR_NO) \
-		if (__TRY_CATCH_INDEX__ != 0)\
+		do
 		{\
-			__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
-			longjmp(\
-				__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], \
-				(int)ERROR_NO\
-			);\
-		}
+			if (__TRY_CATCH_INDEX__ != 0)\
+			{\
+				__TRY_CATCH_VALUE__ = (int)ERROR_NO;\
+				longjmp(\
+					__TRY_CATCH_BUFFER__[--__TRY_CATCH_INDEX__], \
+					(int)ERROR_NO\
+				);\
+			}\
+		}\
+		while (0)
 
 /* ************************ [v] GLOBAL VARIABLES [v] ************************ */
 #	ifdef SETUP_TRY_CATCH

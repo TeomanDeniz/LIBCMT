@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -39,24 +39,23 @@
 |* TOKEN PASTING REFERS TO THE "##" OPERATOR IN MACROS, USED TO MERGE TWO     *|
 |* TOKENS INTO ONE.                                                           *|
 |*                                                                            *|
-|* EXAMPLE:                                                                   *|
-|*                                                                            *|
-|*   #define AB(A, B) A##B                                                    *|
-|*                                                                            *|
-|*   int AB(ma, in)(void) // EXPANDS TO: int main(void)                       *|
-|*   { ... }                                                                  *|
+|* O - EXAMPLE:                                                               *|
+|* :                                                                          *|
+|*1| #define AB(A, B) A##B                                                    *|
+|*2|                                                                          *|
+|*3| int AB(ma, in)(void) // EXPANDS TO: int main(void)                       *|
+|*4| { ... }                                                                  *|
+|* :                                                                          *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef CHECK_FEATURE__TOKEN_PASTING_H
-#	define CHECK_FEATURE__TOKEN_PASTING_H 202508 /* VERSION */
-#	ifndef IS__TOKEN_PASTING__SUPPORTED
-#		ifdef __STDC_VERSION__
-#			if (__STDC_VERSION__ >= 199012L) /* C89/ANSI C */
-#				define IS__TOKEN_PASTING__SUPPORTED
-#			endif /* __STDC_VERSION__ >= 199012L */
-#		endif /* __STDC_VERSION__ */
-#	endif /* !IS__TOKEN_PASTING__SUPPORTED */
+#	define CHECK_FEATURE__TOKEN_PASTING_H 202511 /* VERSION */
+#	ifdef __STDC_VERSION__
+#		if (__STDC_VERSION__ >= 199012L) /* C89/ANSI C */
+#			define IS__TOKEN_PASTING__SUPPORTED
+#		endif /* __STDC_VERSION__ >= 199012L */
+#	endif /* __STDC_VERSION__ */
 #	ifndef IS__TOKEN_PASTING__SUPPORTED
 #		ifdef __cplusplus /* C++ */
 #			if (__cplusplus >= 199711L) /* C++98 OR LATER */

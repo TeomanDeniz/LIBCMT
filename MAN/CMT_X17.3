@@ -1,12 +1,7 @@
 .TH CMT_X17 3 "LIBCMT" "CMT_X17" "Register Access Macros"
 
 .SH NAME
-CMT_X17 \- Read CPU register X17 into a variable
-
-.SH WARNING
-This subsystem is a WIP.
-It may fail on some compilers, architectures, or operating systems.
-Use at your own risk.
+CMT_X17 \- Read or write CPU register X17
 
 .SH SYNOPSIS
 .B #define INCL__X17
@@ -17,7 +12,7 @@ Use at your own risk.
 LIBCMT/ASM/X17.h
 
 .SH DESCRIPTION
-CMT_X17 provides macros that read the current value of the CPU ARM64's X17 register into a C variable.
+CMT_X17 provides macros for reading from and writing to the ARM64 X17 register.
 It supports:
 - ARM_64: X17
 
@@ -27,8 +22,12 @@ It supports:
 Moves the value from the active accumulator register into the provided variable.
 Operand size adapts automatically to architecture.
 
+.TP
+.B SET_X17(val), set_x17(val)
+Moves the provided value or variable into the X17 register.
+
 .SH NOTES
-On 32-bit systems, EAX is used.
+On 32-bit systems, it will throw an error.
 
 .SH EXAMPLES
 Read 64-bit X17:
@@ -37,8 +36,15 @@ uint64_t v;
 GET_X17(v);
 .fi
 
+Write 64-bit X17:
+.nf
+uint64_t v = 0x1234;
+SET_X17(v);
+.fi
+
 .SH SEE ALSO
 .B CMT_ARCHITECTURE(3),
+.B CMT_CPU(3),
 .B LIBCMT(3)
 
 .SH AUTHOR

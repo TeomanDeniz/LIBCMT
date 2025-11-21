@@ -44,7 +44,8 @@ Memory access with one argument (e.g., [reg]).
 .B MEM_INDEX(base, index)
 Memory access with two arguments (e.g., [base + index]).
 
-.SH REGISTERS (INTEL x86)
+.SH REGISTERS (INTEL)
+
 .TP
 .B RSI, ESI, SI, AH
 Source index.
@@ -71,11 +72,47 @@ General purpose (callee-saved).
 
 .TP
 .B RCX, ECX, CX, CL
-Counter/argument register.
+Counter / argument.
 
 .TP
 .B RDX, EDX, DX, DL
-Data/argument register.
+Data / argument.
+
+.TP
+.B CS, DS, SS, ES, FS, GS
+Segment registers.
+
+.TP
+.B R8, R9, R10, R11, R12, R13, R14, R15
+Extended general-purpose registers.
+
+.TP
+.B CR0, CR2, CR3, CR4, CR8
+Control registers (CR1, CR5–CR7 reserved).
+
+.TP
+.B DR0, DR1, DR2, DR3, DR6, DR7
+Debug registers (DR4/DR5 obsolete; no DR8).
+
+.TP
+.B GDTR, IDTR, LDTR, TR
+Descriptor-table registers.
+
+.TP
+.B MM0, MM1, MM2, MM3, MM4, MM5, MM6, MM7
+64-bit MMX registers.
+
+.TP
+.B XMM0–XMM31
+128-bit SIMD registers.
+
+.TP
+.B YMM0–YMM31
+256-bit SIMD registers (AVX).
+
+.TP
+.B ZMM0–ZMM31
+512-bit SIMD registers (AVX-512).
 
 .SH COMMAND MACROS
 .TP
@@ -129,18 +166,20 @@ It enables cross-platform ASM blocks without rewriting for each compiler.
 Example: basic function
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("example_func")
+SECTION(example_func)
     MOV32(EAX, EBX)
     ADD32(EAX, 1)
     RET
 END
 #include "LIBCMT/ASM/POP.h"
+
+extern int example_func(void); // Connect it with C
 .fi
 
 Byte copy:
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("copy_byte")
+SECTION(copy_byte)
     MOV8(MEM(RDI), AL)
     RET
 END
@@ -150,7 +189,7 @@ END
 Indexed arithmetic:
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("add_indexed")
+SECTION(add_indexed)
     ADD32(MEM_INDEX(RAX, RCX), EDX)
     RET
 END

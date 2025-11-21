@@ -1,5 +1,5 @@
 /******************************************************************************\
-# H - STOP                                       #       Maximum Tension       #
+# H - POP                                        #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -8,145 +8,192 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/11/23 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-#endif SECTION
+#ifdef ASM_PUSH_H
+#	undef ASM_PUSH_H
+#	undef __START__
+#	undef __END__
 #	undef SECTION
-#endif /* SECTION */
-#endif END
 #	undef END
-#endif /* END */
-#endif MEM
 #	undef MEM
-#endif /* MEM */
-#endif MEM_INDEX
 #	undef MEM_INDEX
-#endif /* MEM_INDEX */
-#ifdef MOV8
-#	undef MOV8
-#endif /* MOV8 */
-#ifdef MOV16
-#	undef MOV16
-#endif /* MOV16 */
-#ifdef MOV32
-#	undef MOV32
-#endif /* MOV32 */
-#ifdef MOV64
-#	undef MOV64
-#endif /* MOV64 */
-#ifdef ADD8
-#	undef ADD8
-#endif /* ADD8 */
-#ifdef ADD16
-#	undef ADD16
-#endif /* ADD16 */
-#ifdef ADD32
-#	undef ADD32
-#endif /* ADD32 */
-#ifdef ADD64
-#	undef ADD64
-#endif /* ADD64 */
-#ifdef AH
-#	undef AH
-#endif /* AH */
-#ifdef SI
-#	undef SI
-#endif /* SI */
-#ifdef ESI
-#	undef ESI
-#endif /* ESI */
-#ifdef RSI
-#	undef RSI
-#endif /* RSI */
-#ifdef BH
-#	undef BH
-#endif /* BH */
-#ifdef DI
-#	undef DI
-#endif /* DI */
-#ifdef EDI
-#	undef EDI
-#endif /* EDI */
-#ifdef RDI
-#	undef RDI
-#endif /* RDI */
-#ifdef CH
-#	undef CH
-#endif /* CH */
-#ifdef BP
-#	undef BP
-#endif /* BP */
-#ifdef EBP
-#	undef EBP
-#endif /* EBP */
-#ifdef RBP
-#	undef RBP
-#endif /* RBP */
-#ifdef DH
-#	undef DH
-#endif /* DH */
-#ifdef SP
-#	undef SP
-#endif /* SP */
-#ifdef ESP
-#	undef ESP
-#endif /* ESP */
-#ifdef RSP
-#	undef RSP
-#endif /* RSP */
-#ifdef AL
-#	undef AL
-#endif /* AL */
-#ifdef AX
-#	undef AX
-#endif /* AX */
-#ifdef EAX
-#	undef EAX
-#endif /* EAX */
-#ifdef RAX
-#	undef RAX
-#endif /* RAX */
-#ifdef BL
-#	undef BL
-#endif /* BL */
-#ifdef BX
-#	undef BX
-#endif /* BX */
-#ifdef EBX
-#	undef EBX
-#endif /* EBX */
-#ifdef RBX
-#	undef RBX
-#endif /* RBX */
-#ifdef CL
-#	undef CL
-#endif /* CL */
-#ifdef CX
-#	undef CX
-#endif /* CX */
-#ifdef ECX
-#	undef ECX
-#endif /* ECX */
-#ifdef RCX
-#	undef RCX
-#endif /* RCX */
-#ifdef DL
-#	undef DL
-#endif /* DL */
-#ifdef DX
-#	undef DX
-#endif /* DX */
-#ifdef EDX
-#	undef EDX
-#endif /* EDX */
-#ifdef RDX
-#	undef RDX
-#endif /* RDX */
-#ifdef RET
-#	undef RET
-#endif /* RET */
+
+#	ifdef __CPU_INTEL__
+#		undef IP
+#		undef EIP
+#		undef RIP
+#		undef CS
+#		undef DS
+#		undef SS
+#		undef ES
+#		undef FS
+#		undef GS
+#		undef R8
+#		undef R8D
+#		undef R8W
+#		undef R8B
+#		undef R9
+#		undef R9D
+#		undef R9W
+#		undef R9B
+#		undef R10
+#		undef R10D
+#		undef R10W
+#		undef R10B
+#		undef R11
+#		undef R11D
+#		undef R11W
+#		undef R11B
+#		undef R12
+#		undef R12D
+#		undef R12W
+#		undef R12B
+#		undef R13
+#		undef R13D
+#		undef R13W
+#		undef R13B
+#		undef R14
+#		undef R14D
+#		undef R14W
+#		undef R14B
+#		undef R15
+#		undef R15D
+#		undef R15W
+#		undef R15B
+#		undef CR0
+#		undef CR2
+#		undef CR3
+#		undef CR4
+#		undef CR8
+#		undef DR0
+#		undef DR1
+#		undef DR2
+#		undef DR3
+#		undef DR4
+#		undef DR5
+#		undef DR6
+#		undef DR7
+#		undef GDTR
+#		undef IDTR
+#		undef LDTR
+#		undef TR
+#		undef MM0
+#		undef MM1
+#		undef MM2
+#		undef MM3
+#		undef MM4
+#		undef MM5
+#		undef MM6
+#		undef MM7
+#		undef XMM0
+#		undef XMM1
+#		undef XMM2
+#		undef XMM3
+#		undef XMM4
+#		undef XMM5
+#		undef XMM6
+#		undef XMM7
+#		undef XMM8
+#		undef XMM9
+#		undef XMM10
+#		undef XMM11
+#		undef XMM12
+#		undef XMM13
+#		undef XMM14
+#		undef XMM15
+#		undef YMM0
+#		undef YMM1
+#		undef YMM2
+#		undef YMM3
+#		undef YMM4
+#		undef YMM5
+#		undef YMM6
+#		undef YMM7
+#		undef YMM8
+#		undef YMM9
+#		undef YMM10
+#		undef YMM11
+#		undef YMM12
+#		undef YMM13
+#		undef YMM14
+#		undef YMM15
+#		undef ZMM0
+#		undef ZMM1
+#		undef ZMM2
+#		undef ZMM3
+#		undef ZMM4
+#		undef ZMM5
+#		undef ZMM6
+#		undef ZMM7
+#		undef ZMM8
+#		undef ZMM9
+#		undef ZMM10
+#		undef ZMM11
+#		undef ZMM12
+#		undef ZMM13
+#		undef ZMM14
+#		undef ZMM15
+#		undef ZMM16
+#		undef ZMM17
+#		undef ZMM18
+#		undef ZMM19
+#		undef ZMM20
+#		undef ZMM21
+#		undef ZMM22
+#		undef ZMM23
+#		undef ZMM24
+#		undef ZMM25
+#		undef ZMM26
+#		undef ZMM27
+#		undef ZMM28
+#		undef ZMM29
+#		undef ZMM30
+#		undef ZMM31
+#		undef MOV8
+#		undef MOV16
+#		undef MOV32
+#		undef MOV64
+#		undef ADD8
+#		undef ADD16
+#		undef ADD32
+#		undef ADD64
+#		undef AH
+#		undef SI
+#		undef ESI
+#		undef RSI
+#		undef BH
+#		undef DI
+#		undef EDI
+#		undef RDI
+#		undef CH
+#		undef BP
+#		undef EBP
+#		undef RBP
+#		undef DH
+#		undef SP
+#		undef ESP
+#		undef RSP
+#		undef AL
+#		undef AX
+#		undef EAX
+#		undef RAX
+#		undef BL
+#		undef BX
+#		undef EBX
+#		undef RBX
+#		undef CL
+#		undef CX
+#		undef ECX
+#		undef RCX
+#		undef DL
+#		undef DX
+#		undef EDX
+#		undef RDX
+#		undef RET
+#	endif /* __CPU_INTEL__ */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
@@ -159,3 +206,4 @@
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
 #	endif /* __TI_COMPILER_VERSION__ */
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
+#endif /* ASM_PUSH_H */

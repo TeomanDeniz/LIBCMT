@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -38,6 +38,9 @@
 |* GET_RAX : #define () : SET RAX INTO A VARIABLE                             *|
 |* get_rax :            :                                                     *|
 |*.........:............:.....................................................*|
+|* SET_RAX : #define () : SET RAX                                             *|
+|* set_rax :            :                                                     *|
+|*.........:............:.....................................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -60,19 +63,32 @@
 |*                                                                            *|
 |* O - EXAMPLE 1: READ RAX INTO A VARIABLE                                    *|
 |* :                                                                          *|
-|* ;.., uint64_t myValue;                                                     *|
-|*    :                                                                       *|
-|*    : GET_RAX(myValue); // > MOV RAX CONTENTS INTO myValue                  *|
-|*    ;..,                                                                    *|
-|*       : myValue NOW HOLDS THE VALUE FROM RAX                               *|
+|*1| uint64_t myValue;                                                        *|
+|*2|                                                                          *|
+|*3| GET_RAX(myValue); // > MOV RAX CONTENTS INTO myValue                     *|
+|* :                                                                          *|
+|* : myValue NOW HOLDS THE VALUE FROM RAX                                     *|
+|* :                                                                          *|
 |*                                                                            *|
 |* O - EXAMPLE 2: READ EAX ON 32-BIT SYSTEM                                   *|
 |* :                                                                          *|
-|* ;.., unsigned int myValue32;                                               *|
-|*    :                                                                       *|
-|*    : GET_RAX(myValue32); // > MOV EAX CONTENTS INTO myValue32              *|
-|*    ;..,                                                                    *|
-|*       : myValue32 NOW HOLDS THE VALUE FROM EAX                             *|
+|*1| unsigned int myValue32;                                                  *|
+|*2|                                                                          *|
+|*3| GET_RAX(myValue32); // > MOV EAX CONTENTS INTO myValue32                 *|
+|* :                                                                          *|
+|* : myValue32 NOW HOLDS THE VALUE FROM EAX                                   *|
+|* :                                                                          *|
+|*                                                                            *|
+|* O - EXAMPLE 3: SETTING RAX                                                 *|
+|* :                                                                          *|
+|*1| uint64_t myValue64 = 42;                                                 *|
+|*2|                                                                          *|
+|*3| SET_RAX(myValue32); // > RAX IS NOW 42                                   *|
+|*4|                                                                          *|
+|*5| // OR                                                                    *|
+|*6|                                                                          *|
+|*7| SET_RAX(42); // > RAX IS NOW 42                                          *|
+|* :                                                                          *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -117,12 +133,14 @@ extern "C" {
 #	ifndef IS__INLINE_ASM__SUPPORTED /* UH-OH ._. */
 #		define GET_RAX(_) \
 			"ERROR - INLINE ASM DOES NOT SUPPORTED IN YOUR COMPILER :-("
+#		define SET_RAX(_) GET_RAX(_)
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 
 #	ifndef GET_RAX
 #		ifndef __CPU_INTEL__ /* UH-OH 2 ._. */
 #			define GET_RAX(_) \
 				"ERROR - YOU'RE NOT USING AN INTEL CPU TO USE THIS COMMAND >:("
+#			define SET_RAX(_) GET_RAX(_)
 #		endif /* !__CPU_INTEL__ */
 #	endif /* !GET_RAX */
 
@@ -135,6 +153,12 @@ extern "C" {
 						"movq %%rax, %0" \
 						: "=r" (__REGISTER__)\
 					)
+#				define LOCALMACRO__RAX_SET(__REGISTER__) \
+					__asm__ __volatile__ (\
+						"movq %0, %%rax" \
+						: \
+						: "r" (__REGISTER__)\
+					)
 #			endif /* __SYSTEM_64_BIT__ */
 #			ifdef __SYSTEM_32_BIT__
 #				define LOCALMACRO__RAX_GET(__REGISTER__) \
@@ -142,24 +166,38 @@ extern "C" {
 						"movl %%eax, %0" \
 						: "=r" (__REGISTER__)\
 					)
+#				define LOCALMACRO__RAX_SET(__REGISTER__) \
+					__asm__ __volatile__ (\
+						"movl %0, %%eax" \
+						: \
+						: "r" (__REGISTER__)\
+					)
 #			endif /* __SYSTEM_32_BIT__ */
 #			ifdef __SYSTEM_16_BIT__
 #				define LOCALMACRO__RAX_GET(__REGISTER__) \
 					__asm__ __volatile__ ("mov %%ax, %0" : "=r" (__REGISTER__))
+#				define LOCALMACRO__RAX_SET(__REGISTER__) \
+					__asm__ __volatile__ ("mov %0, %%ax" : : "r" (__REGISTER__))
 #			endif /* __SYSTEM_16_BIT__ */
 #		else
 #			ifdef __GNUC__
 #				ifdef __SYSTEM_64_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
 						asm volatile ("movq %%rax, %0" : "=r"(__REGISTER__))
+#					define LOCALMACRO__RAX_SET(__REGISTER__) \
+						asm volatile ("movq %0, %%rax" : : "r"(__REGISTER__))
 #				endif /* __SYSTEM_64_BIT__ */
 #				ifdef __SYSTEM_32_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
 						asm volatile ("movl %%eax, %0" : "=r"(__REGISTER__))
+#					define LOCALMACRO__RAX_SET(__REGISTER__) \
+						asm volatile ("movl %0, %%eax" : : "r"(__REGISTER__))
 #				endif /* __SYSTEM_32_BIT__ */
 #				ifdef __SYSTEM_16_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
 						asm volatile ("mov %%ax, %0" : "=r"(__REGISTER__))
+#					define LOCALMACRO__RAX_SET(__REGISTER__) \
+						asm volatile ("mov %0, %%ax" : : "r"(__REGISTER__))
 #				endif /* __SYSTEM_16_BIT__ */
 #			endif /* __GNUC__ */
 #			ifndef LOCALMACRO__RAX_GET
@@ -170,6 +208,11 @@ extern "C" {
 							{\
 								mov rax, __REGISTER__\
 							}
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							__asm\
+							{\
+								mov __REGISTER__, rax\
+							}
 #					endif /* __SYSTEM_64_BIT__ */
 #					ifdef __SYSTEM_32_BIT__
 #						define LOCALMACRO__RAX_GET(__REGISTER__) \
@@ -177,12 +220,22 @@ extern "C" {
 							{\
 								mov eax, __REGISTER__\
 							}
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							__asm\
+							{\
+								mov __REGISTER__, eax\
+							}
 #					endif /* __SYSTEM_32_BIT__ */
 #					ifdef __SYSTEM_16_BIT__
 #						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							__asm\
 							{\
 								mov ax, __REGISTER__\
+							}
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							__asm\
+							{\
+								mov __REGISTER__, ax\
 							}
 #					endif /* __SYSTEM_16_BIT__ */
 #				endif /* _MSC_VER */
@@ -195,12 +248,24 @@ extern "C" {
 								"movq %%rax, %0" \
 								: "=r"(__REGISTER__) \
 							)
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							asm volatile (\
+								"movq %0, %%rax" \
+								: \
+								: "r"(__REGISTER__) \
+							)
 #					endif /* __SYSTEM_64_BIT__ */
 #					ifdef __SYSTEM_32_BIT__
 #						define LOCALMACRO__RAX_GET(__REGISTER__) \
 							asm volatile (\
-								"movl %%rax, %0" \
+								"movl %%eax, %0" \
 								: "=r"(__REGISTER__) \
+							)
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							asm volatile (\
+								"movl %0, %%eax" \
+								: \
+								: "r"(__REGISTER__) \
 							)
 #					endif /* __SYSTEM_32_BIT__ */
 #					ifdef __SYSTEM_16_BIT__
@@ -208,6 +273,12 @@ extern "C" {
 							asm volatile (\
 								"mov %%ax, %0" \
 								: "=r"(__REGISTER__) \
+							)
+#						define LOCALMACRO__RAX_SET(__REGISTER__) \
+							asm volatile (\
+								"mov %0, %%ax" \
+								: \
+								: "r"(__REGISTER__) \
 							)
 #					endif /* __SYSTEM_16_BIT__ */
 #				endif /* __clang__ */
@@ -316,14 +387,27 @@ extern "C" {
 /* ************************* [^] __CPU_DSP56K__ [^] ************************* */
 
 #	ifndef GET_RAX
-#		define GET_RAX(VAR) \
+#		define GET_RAX(VARIABLE) \
+			do\
 			{\
 				register void	*__REGISTER__;\
 				\
 				LOCALMACRO__RAX_GET(__REGISTER__);\
-				(VAR) = __REGISTER__;\
-			}
+				(VARIABLE) = __REGISTER__;\
+			}\
+			while (0)
 #	endif /* !GET_RAX */
+
+#	ifndef SET_RAX
+#		define SET_RAX(VALUE) \
+			do\
+			{\
+				register void	*__REGISTER__ = (void *)(VALUE);\
+				\
+				LOCALMACRO__RAX_SET(__REGISTER__);\
+			}\
+			while (0)
+#	endif /* !SET_RAX */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */
@@ -333,6 +417,7 @@ extern "C" {
 
 /* *************************** [v] LOWERCASE [v] **************************** */
 #	define get_rax GET_RAX
+#	define set_rax SET_RAX
 /* *************************** [^] LOWERCASE [^] **************************** */
 
 #endif /* !RAX_H */

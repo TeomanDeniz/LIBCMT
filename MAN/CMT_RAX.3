@@ -1,12 +1,7 @@
 .TH CMT_RAX 3 "LIBCMT" "CMT_RAX" "Register Access Macros"
 
 .SH NAME
-CMT_RAX \- Read CPU register RAX/EAX/AX into a variable
-
-.SH WARNING
-This subsystem is a WIP.
-It may fail on some compilers, architectures, or operating systems.
-Use at your own risk.
+CMT_RAX \- Read or write CPU register RAX/EAX/AX
 
 .SH SYNOPSIS
 .B #define INCL__RAX
@@ -17,7 +12,7 @@ Use at your own risk.
 LIBCMT/ASM/RAX.h
 
 .SH DESCRIPTION
-CMT_RAX provides macros that read the current value of the CPU Intel's primary accumulator register into a C variable.
+CMT_RAX provides macros for reading from and writing to the Intel primary accumulator register.
 It supports:
 - x86_64: RAX
 - x86_32: EAX
@@ -27,6 +22,10 @@ It supports:
 .B GET_RAX(var), get_rax(var)
 Moves the value from the active accumulator register into the provided variable.
 Operand size adapts automatically to architecture.
+
+.TP
+.B SET_RAX(val), set_rax(val)
+Moves the provided value or variable into the accumulator register.
 
 .SH NOTES
 On 32-bit systems, EAX is used.
@@ -42,6 +41,12 @@ Read 32-bit EAX:
 .nf
 unsigned int v32;
 GET_RAX(v32);
+.fi
+
+Write 64/32-bit RAX/EAX:
+.nf
+uint64_t x = 0x1234;
+SET_RAX(x);
 .fi
 
 .SH SEE ALSO

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/20 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -550,20 +550,21 @@ extern void	*mmap();
 extern int	mprotect();
 extern int	munmap();
 #		endif /* !KNR_STYLE */
-#		define LOCALMACRO__UNPROTECT(MEMORY) mprotect((MEMORY), 4096, 3)
-#		define LOCALMACRO__PROTECT(MEMORY) mprotect((MEMORY), 4096, 5)
 #		define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
-			register unsigned char	*FUNCTIONS;\
+			register unsigned char	*OP_CODES;\
 			\
-			FUNCTIONS = (unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0);\
+			OP_CODES = (unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0);\
 			\
-			if (FUNCTIONS == ((unsigned char *)-1))\
-				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+			if (OP_CODES == ((unsigned char *)-1))\
+				(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)0;\
 			else\
-				(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)FUNCTIONS;
+			{\
+				mprotect(OP_CODES, 4096, 7);\
+				(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)OP_CODES;
+			}
 #		define DESTROY(THE_OBJECT) \
-			munmap((THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS, 4096);\
-			(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+			munmap((THE_OBJECT).__OBJECT_HEADER__.OP_CODES, 4096);\
+			(THE_OBJECT).__OBJECT_HEADER__.OP_CODES = (void *)0
 #	endif /* __unix__ */
 
 #	ifndef LOCALMACRO__FUNCTION_ALLOCATOR
@@ -582,30 +583,32 @@ extern int	LOCALMACRO__STDCALL VirtualFree(void *, size_t, unsigned long);
 extern void			*VirtualAlloc();
 extern unsigned int	VirtualFree();
 #			endif /* !KNR_STYLE */
-#			define LOCALMACRO__UNPROTECT(MEMORY)
-#			define LOCALMACRO__PROTECT(MEMORY)
 #			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
-				register unsigned char	*FUNCTIONS;\
+				register unsigned char	*OP_CODES;\
 				\
-				FUNCTIONS = (unsigned char *)VirtualAlloc(\
+				OP_CODES = (unsigned char *)VirtualAlloc(\
 					((void *)0), \
 					4096, \
 					12288, \
 					64\
 				);\
 				\
-				if (FUNCTIONS == ((unsigned char *)0))\
-					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+				if (OP_CODES == ((unsigned char *)0))\
+					(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)0;\
 				else\
-					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
-						(void *)FUNCTIONS;
+					(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = \
+						(void *)OP_CODES;
 #			define DESTROY(THE_OBJECT) \
-				VirtualFree(\
-					(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS,\
-					0,\
-					32768\
-				);\
-				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+				do\
+				{\
+					VirtualFree(\
+						(THE_OBJECT).__OBJECT_HEADER__.OP_CODES,\
+						0,\
+						32768\
+					);\
+					(THE_OBJECT).__OBJECT_HEADER__.OP_CODES = (void *)0;\
+				}\
+				while (0)
 #		endif /* _WIN32 */
 #	endif /* !LOCALMACRO__FUNCTION_ALLOCATOR */
 
@@ -625,30 +628,28 @@ extern int	__dpmi_free_memory(unsigned long);
 extern int	__dpmi_allocate_memory();
 extern int	__dpmi_free_memory();
 #			endif /* !KNR_STYLE */
-#			define LOCALMACRO__UNPROTECT(MEMORY)
-#			define LOCALMACRO__PROTECT(MEMORY)
 #			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
-				register unsigned char		*FUNCTIONS;\
+				register unsigned char		*OP_CODES;\
 				struct S_DPMI_MEMORY_INFO	OBJECT_MEMORY;\
 				\
 				OBJECT_MEMORY.SIZE = (\
-					sizeof(OBJECT OBJECT_NAME) / sizeof(long)\
+					sizeof(OBJECT OBJECT_NAME) / sizeof(void *)\
 				) * LOCALMACRO__FUNCTION_SIZE;\
 				OBJECT_MEMORY.HANDLE = 0;\
 				\
 				if (__dpmi_allocate_memory(&OBJECT_MEMORY))\
-					FUNCTIONS = ((unsigned char *)-1);\
+					OP_CODES = ((unsigned char *)-1);\
 				else\
-					FUNCTIONS = (unsigned char *)OBJECT_MEMORY.ADDRESS;\
+					OP_CODES = (unsigned char *)OBJECT_MEMORY.ADDRESS;\
 				\
-				if (FUNCTIONS == ((unsigned char *)-1))\
-					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = (void *)0;\
+				if (OP_CODES == ((unsigned char *)-1))\
+					(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)0;\
 				else\
-					(VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS = \
+					(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = \
 						(void *)OBJECT_MEMORY.HANDLE;
 #			define DESTROY(THE_OBJECT) \
-				__dpmi_free_memory((THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS);\
-				(THE_OBJECT).__OBJECT_HEADER__.FUNCTIONS = (void *)0
+				__dpmi_free_memory((THE_OBJECT).__OBJECT_HEADER__.OP_CODES);\
+				(THE_OBJECT).__OBJECT_HEADER__.OP_CODES = (void *)0
 #		endif /* __DJGPP__ */
 #	endif /* !LOCALMACRO__FUNCTION_ALLOCATOR */
 
@@ -658,7 +659,7 @@ extern int	__dpmi_free_memory();
 		OBJECT __OBJECT_HEADER__\
 		{\
 			void		*TEMP;\
-			void FAR	*FUNCTIONS;\
+			void FAR	*OP_CODES;\
 		}	__OBJECT_HEADER__
 
 #	define OBJECT__READY(OBJECT_STRUCT) \
@@ -715,7 +716,7 @@ extern int	__dpmi_free_memory();
 			LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME);\
 		}\
 		\
-		if ((VARIABLE_NAME).__OBJECT_HEADER__.FUNCTIONS)\
+		if ((VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES)\
 			(\
 				(void FAR (*)())LOCALFUNCTION__OBJECT_INJECTOR(\
 					&(VARIABLE_NAME),\
@@ -742,7 +743,7 @@ extern int	__dpmi_free_memory();
 #	define object__inject_2(TARGET, SOURCE) \
 		object__inject_3(this, TARGET, SOURCE)
 
-#	define OBJECT__INJECT(TARGET, SOURCE) \
+#	define OBJECT__INJECT(TARGET) \
 		OBJECT__INJECT_2(TARGET, TARGET)
 #	define object__inject(TARGET) \
 		object__inject_2(TARGET, TARGET)
@@ -827,7 +828,6 @@ static INLINE void
 		_ = (unsigned char *)&(((unsigned char **)SELF)[1][0]);
 
 	RESULT = _;
-	LOCALMACRO__UNPROTECT(((void **)SELF)[1]);
 
 #	ifdef __CPU_INTEL__
 #		ifdef __SYSTEM_64_BIT__
@@ -976,7 +976,6 @@ static INLINE void
 #		endif /* __SYSTEM_64_BIT__ */
 #	endif /* __CPU_ARM__ */
 
-	LOCALMACRO__PROTECT(((void **)SELF)[1]);
 	return (RESULT);
 }
 

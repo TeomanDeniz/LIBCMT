@@ -8,12 +8,13 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/29 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
 #ifndef LIBCMT_H
-#	define LIBCMT_H 202509 /* VERSION */
+#	define LIBCMT_H 202511 /* VERSION */
+#	define __MTLIBC__ 202511 /* VERSION */
 
 /* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_1 [v] ******************* */
 #	ifndef INCL__OBJECT
@@ -22,7 +23,11 @@
 #				ifndef INCL__REGPARM
 #					ifndef INCL__ARCHITECTURE
 #						ifndef INCL__CPU
-#							define LOCALMACRO_DEFINE_ALL_TRY_1
+#							ifdef INCL__RAX
+#								ifdef INCL__X17
+#									define LOCALMACRO_DEFINE_ALL_TRY_1
+#								endif /* INCL__X17 */
+#							endif /* INCL__RAX */
 #						endif /* !INCL__CPU */
 #					endif /* !INCL__ARCHITECTURE */
 #				endif /* !INCL__REGPARM */
@@ -33,6 +38,7 @@
 
 /* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_2 [v] ******************* */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_1
+#		undef LOCALMACRO_DEFINE_ALL_TRY_1
 #		ifndef INCL__KNR_STYLE
 #			ifndef INCL__DLL
 #				ifndef INCL__PREFETCH
@@ -49,6 +55,7 @@
 
 /* ****************** [v] LOCALMACRO_DEFINE_ALL_TRY_3 [v] ******************* */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_2
+#		undef LOCALMACRO_DEFINE_ALL_TRY_2
 #		ifndef INCL__IGNORE_VAR
 #			ifndef INCL__INLINE
 #				ifndef INCL__LOCAL
@@ -65,6 +72,7 @@
 
 /* ********************* [v] LOCALMACRO_DEFINE_ALL [v] ********************** */
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_3
+#		undef LOCALMACRO_DEFINE_ALL_TRY_3
 #		ifndef INCL__UNUSED
 #			ifndef INCL__VA_ARGS
 #				ifndef INCL__COMMA_OPERATOR
@@ -81,6 +89,9 @@
 
 /* *********************** [v] LIBCMT JUST CALLED [v] *********************** */
 #	ifdef LOCALMACRO_DEFINE_ALL
+#		undef LOCALMACRO_DEFINE_ALL
+#		define INCL__RAX
+#		define INCL__X17
 #		define INCL__OBJECT
 #		define INCL__FAR
 #		define INCL__PACK
@@ -98,7 +109,6 @@
 #		define INCL__NORETURN
 #		define INCL__TRY_CATCH
 #		define INCL__UNUSED
-#		define INCL__VA_ARGS
 #		define INCL__TOKEN_PASTING
 #		define INCL__COMMA_OPERATOR
 #		define INCL__INLINE_ASM
@@ -115,14 +125,33 @@
 #		 define OBJECT(OBJECT_NAME, VARIABLE_NAME)
 #		 define object
 #		        */
+#		undef INCL__OBJECT
 #	endif /* INCL__OBJECT */
 /* ***************************** [^] OBJECT [^] ***************************** */
+
+/* ****************************** [v] ASM [v] ******************************* */
+#	ifdef INCL__RAX
+#		include "ASM/INTEL/RAX.h" /*
+#		 define GET_RAX(VARIABLE)
+#		 define SET_RAX(VALUE)
+#		        */
+#		undef INCL__RAX
+#	endif /* INCL__RAX */
+#	ifdef INCL__X17
+#		include "ASM/ARM/X17.h" /*
+#		 define GET_X17(VARIABLE)
+#		 define SET_X17(VALUE)
+#		        */
+#		undef INCL__X17
+#	endif /* INCL__X17 */
+/* ****************************** [^] ASM [^] ******************************* */
 
 /* *************************** [v] ATTRIBUTES [v] *************************** */
 #	ifdef INCL__FAR
 #		include "ATTRIBUTES/FAR.h" /*
 #		 define FAR
 #		        */
+#		undef INCL__FAR
 #	endif /* INCL__FAR */
 #	ifdef INCL__PACK
 #		include "ATTRIBUTES/PACK.h" /*
@@ -130,11 +159,13 @@
 #		 define PRAGMA_PACK_POP
 #		 define PACK
 #		        */
+#		undef INCL__PACK
 #	endif /* INCL__PACK */
 #	ifdef INCL__REGPARM
 #		include "ATTRIBUTES/REGPARM.h" /*
 #		 define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)
 #		        */
+#		undef INCL__REGPARM
 #	endif /* INCL__REGPARM */
 /* *************************** [^] ATTRIBUTES [^] *************************** */
 
@@ -143,6 +174,7 @@
 #		include "CHECK_FEATURE/COMMA_OPERATOR.h" /*
 #		 define IS__COMMA_OPERATOR__SUPPORTED
 #		        */
+#		undef INCL__COMMA_OPERATOR
 #	endif /* INCL__COMMA_OPERATOR */
 #	ifdef INCL__INLINE_ASM
 #		include "CHECK_FEATURE/INLINE_ASM.h" /*
@@ -159,11 +191,13 @@
 #		 define INLINE_ASM_TYPE__HCCF
 #		 define INLINE_ASM_TYPE__ISO
 #		        */
+#		undef INCL__INLINE_ASM
 #	endif /* INCL__INLINE_ASM */
 #	ifdef INCL__TOKEN_PASTING
 #		include "CHECK_FEATURE/TOKEN_PASTING.h" /*
 #		 define IS__TOKEN_PASTING__SUPPORTED
 #		        */
+#		undef INCL__TOKEN_PASTING
 #	endif /* INCL__TOKEN_PASTING */
 /* ************************* [^] CHECK FEATURE [^] ************************** */
 
@@ -178,6 +212,7 @@
 #		 define __SYSTEM_16_BIT__
 #		 define __SYSTEM_8_BIT__
 #		        */
+#		undef INCL__ARCHITECTURE
 #	endif /* INCL__ARCHITECTURE */
 #	ifdef INCL__CPU
 #		include "ENVIRONMENTS/CPU.h" /*
@@ -201,11 +236,13 @@
 #		 define __CPU_DSP56K__
 #		   char *__CPU_VER__();
 #		        */
+#		undef INCL__CPU
 #	endif /* INCL__CPU */
 #	ifdef INCL__KNR_STYLE
 #		include "ENVIRONMENTS/KNR_STYLE.h" /*
 #		 define KNR_STYLE
 #		        */
+#		undef INCL__KNR_STYLE
 #	endif /* INCL__KNR_STYLE */
 /* ************************** [^] ENVIRONMENTS [^] ************************** */
 
@@ -223,6 +260,7 @@
 #		typedef DLL;
 #		typedef dll;
 #		        */
+#		undef INCL__DLL
 #	endif /* INCL__DLL */
 #	ifdef INCL__PREFETCH
 #		include "FUNCTIONS/PREFETCH.h" /*
@@ -235,6 +273,7 @@
 #		   void PREFETCH_RANGE(void *, uint);
 #		   void prefetch_range(void *, uint);
 #		        */
+#		undef INCL__PREFETCH
 #	endif /* INCL__PREFETCH */
 #	ifdef INCL__READ_FILE
 #		include "FUNCTIONS/READ_FILE.h" /*
@@ -249,6 +288,7 @@
 #		    int read_file(const std::string &, struct s_file *);
 #		C--
 #		        */
+#		undef INCL__READ_FILE
 #	endif /* INCL__READ_FILE */
 #	ifdef INCL__THREAD
 #		include "FUNCTIONS/THREAD.h" /*
@@ -271,6 +311,7 @@
 #		    int MUTEX_DESTROY(T_MUTEX);
 #		    int mutex_destroy(t_mutex);
 #		        */
+#		undef INCL__THREAD
 #	endif /* INCL__THREAD */
 /* *************************** [^] FUNCTIONS [^] **************************** */
 
@@ -280,23 +321,27 @@
 #		 define IGNORE_VAR
 #		 define ignore_var
 #		        */
+#		undef INCL__IGNORE_VAR
 #	endif /* INCL__IGNORE_VAR */
 #	ifdef INCL__INLINE
 #		include "KEYWORDS/INLINE.h" /*
 #		 define INLINE
 #		        */
+#		undef INCL__INLINE
 #	endif /* INCL__INLINE */
 #	ifdef INCL__LOCAL
 #		include "KEYWORDS/LOCAL.h" /*
 #		 define LOCAL
 #		 define local
 #		        */
+#		undef INCL__LOCAL
 #	endif /* INCL__LOCAL */
 #	ifdef INCL__NORETURN
 #		include "KEYWORDS/NORETURN.h" /*
 #		 define NORETURN
 #		 define noreturn
 #		        */
+#		undef INCL__NORETURN
 #	endif /* INCL__NORETURN */
 #	ifdef INCL__TRY_CATCH
 #		include "KEYWORDS/TRY_CATCH.h" /*
@@ -308,12 +353,14 @@
 #		 define THROW(ERROR_NO)
 #		 define throw
 #		        */
+#		undef INCL__TRY_CATCH
 #	endif /* INCL__TRY_CATCH */
 #	ifdef INCL__UNUSED
 #		include "KEYWORDS/UNUSED.h" /*
 #		 define UNUSED
 #		 define unused
 #		        */
+#		undef INCL__UNUSED
 #	endif /* INCL__UNUSED */
 /* **************************** [^] KEYWORDS [^] **************************** */
 
@@ -339,6 +386,7 @@
 #		typedef va_list;
 #		typedef VA_LIST;
 #		        */
+#		undef INCL__VA_ARGS
 #	endif /* INCL__VA_ARGS */
 /* *********************** [^] PLATFORM CROSSING [^] ************************ */
 #endif /* !LIBCMT_H */

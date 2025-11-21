@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/02 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/10/14 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -147,17 +147,22 @@ extern "C" {
 #			define __CPU_ARM__
 #			define LOCALMACRO__CPU_FOUND
 #		else
-#			ifdef __arm__
+#			ifdef __arm__ /* GNU C & REALVIEW */
 #				define __CPU_ARM__
 #				define LOCALMACRO__CPU_FOUND
 #			else
-#				ifdef _M_ARM
+#				ifdef _M_ARM /* VISUAL STUDIO */
 #					define __CPU_ARM__
 #					define LOCALMACRO__CPU_FOUND
 #				else
 #					ifdef _M_ARM64
 #						define __CPU_ARM__
 #						define LOCALMACRO__CPU_FOUND
+#					else
+#						ifdef __arm /* DIAB */
+#							define __CPU_ARM__
+#							define LOCALMACRO__CPU_FOUND
+#						endif /* __arm */
 #					endif /* _M_ARM64 */
 #				endif /* _M_ARM */
 #			endif /* __arm__ */
@@ -167,19 +172,29 @@ extern "C" {
 
 /* ************************ [v] __CPU_AMD_X86__ [v] ************************* */
 #	ifndef LOCALMACRO__CPU_FOUND
-#		ifdef __amd64__
+#		ifdef __amd64__ /* GNU C & SUN STUDIO */
 #			define __CPU_AMD_X86__
 #			define LOCALMACRO__CPU_FOUND
 #		else
-#			ifdef __x86_64__
+#			ifdef __amd64 /* GNU C & SUN STUDIO */
 #				define __CPU_AMD_X86__
 #				define LOCALMACRO__CPU_FOUND
 #			else
-#				ifdef _M_AMD64
+#				ifdef _M_AMD64 /* VISUAL STUDIO */
 #					define __CPU_AMD_X86__
 #					define LOCALMACRO__CPU_FOUND
+#				else
+#					ifdef __x86_64__ /* GNU C & SUN STUDIO */
+#						define __CPU_AMD_X86__
+#						define LOCALMACRO__CPU_FOUND
+#					else
+#						ifdef __x86_64 /* GNU C & SUN STUDIO */
+#							define __CPU_AMD_X86__
+#							define LOCALMACRO__CPU_FOUND
+#						endif /* __x86_64 */
+#					endif /* __x86_64__ */
 #				endif /* _M_AMD64 */
-#			endif /* __x86_64__ */
+#			endif /* __amd64 */
 #		endif /* __amd64__ */
 #	endif /* !LOCALMACRO__CPU_FOUND */
 /* ************************ [^] __CPU_AMD_X86__ [^] ************************* */
@@ -241,15 +256,20 @@ extern "C" {
 
 /* ************************** [v] __CPU_M68K__ [v] ************************** */
 #	ifndef LOCALMACRO__CPU_FOUND
-#		ifdef __mc68000__ /* MOTOROLA 68000 (ATARI ST, AMIGA, GENESIS, ETC.) */
-#			define __CPU_M68K__ // TODO
+#		ifdef __m68k__ /* GNU C */
+#			define __CPU_M68K__
 #			define LOCALMACRO__CPU_FOUND
 #		else
-#			ifdef __m68k__
+#			ifdef M68000 /* SAS/C */
 #				define __CPU_M68K__
 #				define LOCALMACRO__CPU_FOUND
-#			endif /* __m68k__ */
-#		endif /* __mc68000__ */
+#			else
+#				ifdef __MC68K__ /* STRATUS VOS C */
+#					define __CPU_M68K__
+#					define LOCALMACRO__CPU_FOUND
+#				endif /* __MC68K__ */
+#			endif /* M68000 */
+#		endif /* __m68k__ */
 #	endif /* !LOCALMACRO__CPU_FOUND */
 /* ************************** [^] __CPU_M68K__ [^] ************************** */
 
@@ -330,10 +350,20 @@ extern "C" {
 
 /* ************************ [v] __CPU_BLACKFIN__ [v] ************************ */
 #	ifndef LOCALMACRO__CPU_FOUND
-#		ifdef __ADSPBLACKFIN__ /* DSP - ANALOG DEVICES: BLACKFIN */
+#		ifdef __bfin /* GNU C */
 #			define __CPU_BLACKFIN__
 #			define LOCALMACRO__CPU_FOUND
-#		endif /* __ADSPBLACKFIN__ */
+#		else
+#			ifdef __BFIN__ /* GNU C */
+#				define __CPU_BLACKFIN__
+#				define LOCALMACRO__CPU_FOUND
+#			else
+#				ifdef __ADSPBLACKFIN__ /* DSP - ANALOG DEVICES: BLACKFIN */
+#					define __CPU_BLACKFIN__
+#					define LOCALMACRO__CPU_FOUND
+#				endif /* __ADSPBLACKFIN__ */
+#			endif /* __BFIN__ */
+#		endif /* __bfin */
 #	endif /* !LOCALMACRO__CPU_FOUND */
 /* ************************ [^] __CPU_BLACKFIN__ [^] ************************ */
 
@@ -1076,28 +1106,68 @@ static INLINE char
 	RESULT[1] = '6';
 	RESULT[2] = '8';
 	RESULT[3] = 'K';
-#			ifdef __mc68020__
+
+#	ifdef __mc68000__
+#		define LOCALMACRO__CPU_VERSION_FOUND
+	RESULT[4] = '0';
+#	endif /* __mc68000__ */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __MC68000__
+#			define LOCALMACRO__CPU_VERSION_FOUND
+	RESULT[4] = '0';
+#		endif /* __MC68000__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __mc68010__
+#			define LOCALMACRO__CPU_VERSION_FOUND
+	RESULT[4] = '1';
+#		endif /* __mc68010__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __mc68020__
+#			define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[4] = '2';
-	RESULT[5] = '0';
-#			else
-#				ifdef __mc68030__
+#		endif /* __mc68020__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __MC68020__
+#			define LOCALMACRO__CPU_VERSION_FOUND
+	RESULT[4] = '2';
+#		endif /* __MC68020__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __mc68030__
+#			define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[4] = '3';
-	RESULT[5] = '0';
-#				else
-#					ifdef __mc68040__
+#		endif /* __mc68030__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __MC68030__
+#			define LOCALMACRO__CPU_VERSION_FOUND
+	RESULT[4] = '3';
+#		endif /* __MC68030__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __mc68040__
+#			define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[4] = '4';
-	RESULT[5] = '0';
-#					else
-#						ifdef __mc68060__
+#		endif /* __mc68040__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+#	ifndef LOCALMACRO__CPU_VERSION_FOUND
+#		ifdef __mc68060__
+#			define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[4] = '6';
+#		endif /* __mc68060__ */
+#	endif /* !LOCALMACRO__CPU_VERSION_FOUND */
+
+#	ifdef LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[5] = '0';
-#						else
+#		undef LOCALMACRO__CPU_VERSION_FOUND
+#	else
 	RESULT[4] = '?';
 	RESULT[5] = '?';
-#						endif /* __mc68060__ */
-#					endif /* __mc68040__ */
-#				endif /* __mc68030__ */
-#			endif /* __mc68020__ */
+#	endif /* LOCALMACRO__CPU_VERSION_FOUND */
+
 	RESULT[6] = 0;
 	return (RESULT);
 }
@@ -1346,7 +1416,7 @@ static INLINE char
 	RESULT[1] = 'I';
 	RESULT[2] = '-';
 #			ifdef __MSP430__ /* TI-MSP430 MICROCONTROLLERS */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'M';
 	RESULT[4] = 'S';
 	RESULT[5] = 'P';
@@ -1356,7 +1426,7 @@ static INLINE char
 	RESULT[9] = 0;
 #			endif /* __MSP430__ */
 #			ifdef __TMS320C55X__ /* TI-CGT C5000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '5';
 	RESULT[5] = '5';
@@ -1364,7 +1434,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* __TMS320C55X__ */
 #			ifdef TMS320C55X /* TI-CGT C55X SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '5';
 	RESULT[5] = '5';
@@ -1372,7 +1442,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* TMS320C55X */
 #			ifdef __TMS320C28XX__ /* TI-CGT C2000 SERIES: C28X CORE */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '2';
 	RESULT[5] = '8';
@@ -1381,7 +1451,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* __TMS320C28XX__ */
 #			ifdef _TMS320C28X /* TI-CGT C28XX SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '2';
 	RESULT[5] = '8';
@@ -1390,8 +1460,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C28X */
 #			ifdef __TMS320C2000__ /* TI-CGT C2000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '2';
 	RESULT[5] = '0';
@@ -1400,8 +1469,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* __TMS320C2000__ */
 #			ifdef _TMS320C2XX /* TI-CGT C2000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '2';
 	RESULT[5] = '0';
@@ -1410,21 +1478,21 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C2XX */
 #			ifdef __TMS320C6X__ /* TI-CGT C6000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = 'X';
 	RESULT[6] = 0;
 #			endif /* __TMS320C6X__ */
 #			ifdef _TMS320C6X /* TI-CGT C6000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = 'X';
 	RESULT[6] = 0;
 #			endif /* _TMS320C6X */
 #			ifdef _TMS320C6740 /* TI-CGT C6740 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '7';
@@ -1433,7 +1501,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C6740 */
 #			ifdef _TMS320C6700_PLUS /* TI-CGT C6700+ SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '7';
@@ -1441,7 +1509,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* _TMS320C6700_PLUS */
 #			ifdef _TMS320C67_PLUS /* TI-CGT C6700+ SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '7';
@@ -1449,7 +1517,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* _TMS320C67_PLUS */
 #			ifdef _TMS320C6700 /* TI-CGT C6700 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '7';
@@ -1458,7 +1526,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C6700 */
 #			ifdef _TMS320C6600 /* TM C6600 CPU */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '6';
@@ -1467,7 +1535,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C6600 */
 #			ifdef _TMS320C6400_PLUS /* TI-CGT C6400+ SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '4';
@@ -1475,7 +1543,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* _TMS320C6400_PLUS */
 #			ifdef _TMS320C64_PLUS /* TI-CGT C6400+ SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '4';
@@ -1483,7 +1551,7 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* _TMS320C64_PLUS */
 #			ifdef _TMS320C6400 /* TI-CGT C6400 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '4';
@@ -1492,7 +1560,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C6400 */
 #			ifdef _TMS320C6200 /* TI-CGT C6200 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '6';
 	RESULT[5] = '2';
@@ -1501,7 +1569,7 @@ static INLINE char
 	RESULT[8] = 0;
 #			endif /* _TMS320C6200 */
 #			ifdef _TMS320C5XX /* TI-CGT C54X SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '5';
 	RESULT[5] = 'X';
@@ -1509,14 +1577,14 @@ static INLINE char
 	RESULT[7] = 0;
 #			endif /* _TMS320C6200 */
 #			ifdef _TMS320C5X /* TI-CGT C5000 SERIES */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'C';
 	RESULT[4] = '5';
 	RESULT[5] = 'X';
 	RESULT[6] = 0;
 #			endif /* _TMS320C5X */
 #			ifdef __TMS470__ /* TMS470 G4 CPU */
-#				define LOCALMACRO__TI_CPU_VERSION_FOUND
+#				define LOCALMACRO__CPU_VERSION_FOUND
 	RESULT[3] = 'T';
 	RESULT[4] = 'M';
 	RESULT[5] = 'S';
@@ -1525,12 +1593,14 @@ static INLINE char
 	RESULT[8] = '0';
 	RESULT[9] = 0;
 #			endif /* __TMS470__ */
-#			ifndef LOCALMACRO__TI_CPU_VERSION_FOUND
+#			ifdef LOCALMACRO__CPU_VERSION_FOUND
+#				undef LOCALMACRO__CPU_VERSION_FOUND
+#			else
 	RESULT[3] = 'U';
 	RESULT[4] = 'N';
 	RESULT[5] = 'K';
 	RESULT[6] = 0;
-#			endif /* !LOCALMACRO__TI_CPU_VERSION_FOUND */
+#			endif /* LOCALMACRO__CPU_VERSION_FOUND */
 	return (RESULT);
 }
 #		endif /* __CPU_TI__ */
@@ -1622,6 +1692,7 @@ static INLINE char
 }
 #		endif /* __CPU_DSP56K__ */
 /* ********************** [^] __CPU_VER__ | DSP56K [^] ********************** */
+#		undef LOCALMACRO__CPU_FOUND
 #	else
 #		ifndef KNR_STYLE /* STANDARD C */
 static INLINE const char

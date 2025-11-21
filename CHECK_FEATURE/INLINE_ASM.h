@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/13 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/19 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -273,18 +273,20 @@
 #		endif /* __WATCOMC__ */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
-#		ifdef __CODEGEARC__ /* BORLAND C++ (CODEGEAR) */
-#			define IS__INLINE_ASM__SUPPORTED
-#			define INLINE_ASM_TYPE__BORLAND
-#		endif /* __CODEGEARC__ */
-#	endif /* !IS__INLINE_ASM__SUPPORTED */
-#	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __BORLANDC__ /* BORLAND C++ */
 #			if (__BORLANDC__ >= 0X200) /* VERSION 2.0+ */
 #				define IS__INLINE_ASM__SUPPORTED
 #				define INLINE_ASM_TYPE__BORLAND
 #			endif /* __BORLANDC__ >= 0X200 */
 #		endif /* __BORLANDC__ */
+#	endif /* !IS__INLINE_ASM__SUPPORTED */
+#	ifndef IS__INLINE_ASM__SUPPORTED
+#		ifdef __CODEGEARC__ /* BORLAND C++ (CODEGEAR) */
+#			ifndef __clang__ /* BCC32C OR BCC64 DOESN'T HAVE INLINE ASM */
+#				define IS__INLINE_ASM__SUPPORTED
+#				define INLINE_ASM_TYPE__BORLAND
+#			endif /* !__clang__ */
+#		endif /* __CODEGEARC__ */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __LCC__ /* LCC */
@@ -499,10 +501,17 @@
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED
 #		ifdef __xlC__ /* IBM XL C/C++ (LEGACY VERSIONS) */
-#			if (__IBMC__ >= 0X0600) /* VERSION 6.0+ */
-#				define IS__INLINE_ASM__SUPPORTED
-#				define INLINE_ASM_TYPE__GNU
-#			endif /* __IBMC__ >= 0X0600 */
+#			ifdef __IBM_GCC_ASM /* I HOPE THIS IS DEFINED */
+#				if (__IBM_GCC_ASM == 1)
+#					define IS__INLINE_ASM__SUPPORTED
+#					define INLINE_ASM_TYPE__GNU
+#				endif /* __IBM_GCC_ASM == 1 */
+#			else
+#				if (__IBMC__ >= 0X0600) /* VERSION 6.0+ */
+#					define IS__INLINE_ASM__SUPPORTED
+#					define INLINE_ASM_TYPE__GNU /* MAY REQUIRE "-qasm=gcc" */
+#				endif /* __IBMC__ >= 0X0600 */
+#			endif /* __IBM_GCC_ASM */
 #		endif /* __xlC__ */
 #	endif /* !IS__INLINE_ASM__SUPPORTED */
 #	ifndef IS__INLINE_ASM__SUPPORTED

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -39,15 +39,15 @@
 |* THE COMMA OPERATOR REFERS TO THE "(,)" OPERATOR IN MACROS, USED TO WRITE   *|
 |* EXPRESSIONS AND PERFORM ACTIONS INSIDE PARENTHESES.                        *|
 |*                                                                            *|
-|* EXAMPLE:                                                                   *|
-|*                                                                            *|
-|*   int a = (b++, funct(), c = 42, b += c, 66); // PERFORMS ALL ACTIONS      *|
-|*                                                  AND RETURNS 66            *|
+|* O - EXAMPLE:                                                               *|
+|* :                                                                          *|
+|*1| int a = (b++, funct(), c = 42, b += c, 66); // PERFORMS ALL ACTIONS      *|
+|* :                                                AND RETURNS 66            *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef CHECK_FEATURE__COMMA_OPERATOR_H
-#	define CHECK_FEATURE__COMMA_OPERATOR_H 202508 /* VERSION */
+#	define CHECK_FEATURE__COMMA_OPERATOR_H 202511 /* VERSION */
 #	ifndef IS__COMMA_OPERATOR__SUPPORTED
 #		ifdef _ACC_ /* ACC */
 #			define IS__COMMA_OPERATOR__SUPPORTED

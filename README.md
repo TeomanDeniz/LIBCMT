@@ -457,18 +457,26 @@ int main(void) {
 | `MEM_INDEX` | `#define ()` | Use memory (Two args) |
 
 ## ASM Keywords:
-### Intel X86:
+### Intel:
 Registers:
-| **Name**                 | **Type**  | **Description**                                                                  |
-|--------------------------|-----------|----------------------------------------------------------------------------------|
-| `RSI`, `ESI`, `SI`, `AH` | `#define` | Source index, used for source pointer in string and memory operations.           |
-| `RDI`, `EDI`, `DI`, `BH` | `#define` | Destination index, used for destination pointer in string and memory operations. |
-| `RBP`, `EBP`, `BP`, `CH` | `#define` | Base pointer (frame pointer), usually points to the current stack frame base.    |
-| `RSP`, `ESP`, `SP`, `DH` | `#define` | Stack pointer, points to the top of the stack.                                   |
-| `RAX`, `EAX`, `AX`, `AL` | `#define` | Primary accumulator, often holds function return values.                         |
-| `RBX`, `EBX`, `BX`, `BL` | `#define` | Base register, general-purpose (callee-saved).                                   |
-| `RCX`, `ECX`, `CX`, `CL` | `#define` | Counter register, used for loops or argument passing.                            |
-| `RDX`, `EDX`, `DX`, `DL` | `#define` | Data register, used for I/O, arithmetic, and argument passing.                   |
+| **Name**                              | **Description**                     |
+|---------------------------------------|-------------------------------------|
+| `RSI`, `ESI`, `SI`, `AH`              | Source index register               |
+| `RDI`, `EDI`, `DI`, `BH`              | Destination index register          |
+| `RBP`, `EBP`, `BP`, `CH`              | Base pointer register               |
+| `RSP`, `ESP`, `SP`, `DH`              | Stack pointer register              |
+| `RAX`, `EAX`, `AX`, `AL`              | Primary accumulator register        |
+| `RBX`, `EBX`, `BX`, `BL`              | Base register                       |
+| `RCX`, `ECX`, `CX`, `CL`              | Counter register                    |
+| `RDX`, `EDX`, `DX`, `DL`              | Data register                       |
+| `CS`, `DS`, `SS`, `ES`, `FS`, `GS`    | Segment registers                   |
+| `R8`, `R9`, ..., `R14`, `R15`         | General-purpose extension registers |
+| `CR0`, `CR1`, ..., `CR7`, `CR8`       | Control registers                   |
+| `DR0`, `DR1`, ..., `DR7`, `DR8`       | Debug registers                     |
+| `GDTR`, `IDTR`, `LDTR`, `TR`          | Descriptor table registers          |
+| `MM0`, `MM1`, ..., `MM6`, `MM7`       | 128-bit integer registers           |
+| `YMM0`, `YMM1`, ..., `YMM14`, `YMM15` | 256-bit integer registers           |
+| `ZMM0`, `ZMM1`, ..., `ZMM30`, `ZMM31` | 512-bit integer registers           |
 
 Commands:
 | **Name** | **Type**     | **Description**                                                |
@@ -514,17 +522,19 @@ It abstracts:
 ## Use Examples
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("example_func") // example_func:
-    MOV32(EAX, EBX)     // mov rax, ebx
-    ADD32(EAX, 1)       // add eax, 1
-    RET                 // ret
+SECTION (example_func) // example_func:
+    MOV32(EAX, EBX)    // mov rax, ebx
+    ADD32(EAX, 1)      // add eax, 1
+    RET                // ret
 END
 #include "LIBCMT/ASM/POP.h"
+
+extern int example_func(void); // Connect it with C
 ```
 Example - Byte Copy Routine
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("copy_byte")   // copy_byte: 
+SECTION (copy_byte)    // copy_byte: 
     MOV8(MEM(RDI), AL) // mov byte [rdi], al
     RET                // ret
 END
@@ -533,7 +543,7 @@ END
 Example - Add Value at Index
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION("add_indexed")              // add_indexed
+SECTION (add_indexed)               // add_indexed
     ADD32(MEM_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
     RET                             // ret
 END
@@ -565,6 +575,7 @@ END
 | **Name**             | **Type**      | **Description**           |
 |----------------------|---------------|---------------------------|
 | `GET_RAX`, `get_rax` | `#define ()`  | Set `RAX` into a variable |
+| `SET_RAX`, `set_rax` | `#define ()`  | Set `RAX`                 |
 
 ## What Does It Do
 
@@ -598,13 +609,15 @@ GET_RAX(myValue32); // MOV EAX contents into myValue32
 // myValue32 now holds the value from EAX
 ```
 
-**Example 3: Cross-architecture ARM support**
+**Example 3: Setting RAX**
 ```c
-uint64_t armValue;
+uint64_t armValue = 42;
 
-GET_RAX(armValue); // Reads X0 on ARM64 or R0 on ARM32
+SET_RAX(armValue); // RAX is now 42
 
-// armValue now holds the first argument register value
+// or
+
+SET_RAX(42); // RAX is now 42
 ```
 
 ----
@@ -628,6 +641,7 @@ GET_RAX(armValue); // Reads X0 on ARM64 or R0 on ARM32
 | **Name**             | **Type**      | **Description**           |
 |----------------------|---------------|---------------------------|
 | `GET_X17`, `get_x17` | `#define ()`  | Set `X17` into a variable |
+| `SET_X17`, `set_x17` | `#define ()`  | Set `X17`                 |
 
 ## What Does It Do
 
@@ -650,6 +664,17 @@ uint64_t myValue;
 GET_X17(myValue); // MOV X17 contents into myValue
 
 // myValue now holds the value from X17
+```
+
+**Example 2: Setting X17**
+```c
+uint64_t myValue = 42;
+
+SET_X17(myValue); // X17 now 42
+
+// or
+
+SET_X17(42); // X17 now 42
 ```
 
 ----
@@ -1080,6 +1105,41 @@ This header detects whether the compiler supports inline assembly and, if so, id
 <details>
 
 <summary>
+    <img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/STRINGIFICATION.gif">
+    <b>STRINGIFICATION</b> - Defines a macro if stringification is supported on your compiler
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/STRINGIFICATION.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/STRINGIFICATION.h)**]
+> ### Call With:
+> ```c
+> #define INCL__STRINGIFICATION
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| **Name**                         | **Type**     | **Description**                                       |
+|----------------------------------|--------------|-------------------------------------------------------|
+| `IS__STRINGIFICATION__SUPPORTED` | `#define`    | Defines if stringification supported by your compiler |
+
+## What Does This Header Do
+
+Defines `IS__STRINGIFICATION__SUPPORTED` if the compiler supports the stringification (`#`) feature.
+
+## What Is The "Stringification"
+
+Stringification refers to the `#` operator in macros, used to convert pure inputs to strings.
+
+**Example**:
+```c
+#define X(A) #A
+
+printf( X( i am testing something ) ); // Will return: "i am testing something" without a new line.
+```
+
+----
+</details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/TOKEN_PASTING.gif">
 	<b>TOKEN PASTNG</b> - Defines a macro if token pasting is supported on your compiler
 </summary>
@@ -1136,6 +1196,7 @@ int AB(ma, in)(void) // Expands to: int main(void)
 
 | Name                 | Type      | Description                                   |
 | -------------------- | --------- | --------------------------------------------- |
+| `__SYSTEM_512_BIT__` | `#define` | Defined if the system also supports 512-bit   |
 | `__SYSTEM_256_BIT__` | `#define` | Defined if the system also supports 256-bit   |
 | `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128-bit   |
 | `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit               |
