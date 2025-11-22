@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/11/23 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -18,8 +18,18 @@
 #	undef __END__
 #	undef SECTION
 #	undef END
-#	undef MEM
-#	undef MEM_INDEX
+#	undef MEM8
+#	undef MEM16
+#	undef MEM32
+#	undef MEM64
+#	undef MEM8_INDEX
+#	undef MEM16_INDEX
+#	undef MEM32_INDEX
+#	undef MEM64_INDEX
+
+#	ifdef _
+#		undef _
+#	endif /* _ */
 
 #	ifdef __CPU_INTEL__
 #		undef IP

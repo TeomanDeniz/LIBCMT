@@ -449,12 +449,18 @@ int main(void) {
 > ```
 
 ## Builtin keywords:
-| **Name**    | **Type**     | **Description**       |
-|-------------|--------------|-----------------------|
-| `SECTION`   | `#define ()` | Create a section.     |
-| `END`       | `#define`    | End of section.       |
-| `MEM`       | `#define ()` | Use memory (One arg)  |
-| `MEM_INDEX` | `#define ()` | Use memory (Two args) |
+| **Name**      | **Type**     | **Description**              |
+|---------------|--------------|------------------------------|
+| `SECTION`     | `#define ()` | Create a section.            |
+| `END`         | `#define`    | End of section.              |
+| `MEM8`        | `#define ()` | Use 8-bit memory (One arg)   |
+| `MEM16`       | `#define ()` | Use 16-bit memory (One arg)  |
+| `MEM32`       | `#define ()` | Use 32-bit memory (One arg)  |
+| `MEM64`       | `#define ()` | Use 64-bit memory (One arg)  |
+| `MEM8_INDEX`  | `#define ()` | Use 8-bit memory (Two args)  |
+| `MEM16_INDEX` | `#define ()` | Use 16-bit memory (Two args) |
+| `MEM32_INDEX` | `#define ()` | Use 32-bit memory (Two args) |
+| `MEM64_INDEX` | `#define ()` | Use 64-bit memory (Two args) |
 
 ## ASM Keywords:
 ### Intel:
@@ -474,9 +480,10 @@ Registers:
 | `CR0`, `CR2`, `CR3`, `CR4`, `CR8`     | Control registers                   |
 | `DR0`, `DR1`, ..., `DR7`, `DR8`       | Debug registers                     |
 | `GDTR`, `IDTR`, `LDTR`, `TR`          | Descriptor table registers          |
-| `MM0`, `MM1`, ..., `MM6`, `MM7`       | 128-bit integer registers           |
-| `YMM0`, `YMM1`, ..., `YMM14`, `YMM15` | 256-bit integer registers           |
-| `ZMM0`, `ZMM1`, ..., `ZMM30`, `ZMM31` | 512-bit integer registers           |
+| `MM0`, `MM1`, ..., `MM6`, `MM7`       | 64-bit SIMD registers               |
+| `XMM0`, `XMM1`, ..., `XMM14`, `XMM15` | 128-bit registers                   |
+| `YMM0`, `YMM1`, ..., `YMM14`, `YMM15` | 256-bit registers                   |
+| `ZMM0`, `ZMM1`, ..., `ZMM30`, `ZMM31` | 512-bit registers                   |
 
 Commands:
 | **Name** | **Type**     | **Description**                                                |
@@ -534,18 +541,18 @@ extern int example_func(void); // Connect it with C
 Example - Byte Copy Routine
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION (copy_byte)    // copy_byte: 
-    MOV8(MEM(RDI), AL) // mov byte [rdi], al
-    RET                // ret
+SECTION (copy_byte)     // copy_byte: 
+    MOV8(MEM8(RDI), AL) // mov byte [rdi], al
+    RET                 // ret
 END
 #include "LIBCMT/ASM/POP.h"
 ```
 Example - Add Value at Index
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION (add_indexed)               // add_indexed
-    ADD32(MEM_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
-    RET                             // ret
+SECTION (add_indexed)                 // add_indexed
+    ADD32(MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
+    RET                               // ret
 END
 #include "LIBCMT/ASM/POP.h"
 ```

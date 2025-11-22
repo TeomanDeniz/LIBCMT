@@ -35,16 +35,28 @@
 |*                            ....................                            *|
 |*                            : BUILTIN KEYWORDS :                            *|
 |*............................;,,,,,,,,,,,,,,,,,,;............................*|
-|*    NAME   :    TYPE    :                   DESCRIPTION                     *|
-|*...........:............:...................................................*|
-|* SECTION   : #define () : CREATE A SECTION                                  *|
-|*...........:............:...................................................*|
-|* END       : #define    : END OF SECTION                                    *|
-|*...........:............:...................................................*|
-|* MEM       : #define () : USE MEMORY (ONE ARG)                              *|
-|*...........:............:...................................................*|
-|* MEM_INDEX : #define () : USE MEMORY (TWO ARGS)                             *|
-|*...........:............:...................................................*|
+|*     NAME    :    TYPE    :                  DESCRIPTION                    *|
+|*.............:............:.................................................*|
+|* SECTION     : #define () : CREATE A SECTION                                *|
+|*.............:............:.................................................*|
+|* END         : #define    : END OF SECTION                                  *|
+|*.............:............:.................................................*|
+|* MEM8        : #define () : USE 8-BIT MEMORY (ONE ARG)                      *|
+|*.............:............:.................................................*|
+|* MEM16       : #define () : USE 16-BIT MEMORY (ONE ARG)                     *|
+|*.............:............:.................................................*|
+|* MEM32       : #define () : USE 32-BIT MEMORY (ONE ARG)                     *|
+|*.............:............:.................................................*|
+|* MEM64       : #define () : USE 64-BIT MEMORY (ONE ARG)                     *|
+|*.............:............:.................................................*|
+|* MEM8_INDEX  : #define () : USE 8-BIT MEMORY (TWO ARGS)                     *|
+|*.............:............:.................................................*|
+|* MEM16_INDEX : #define () : USE 16-BIT MEMORY (TWO ARGS)                    *|
+|*.............:............:.................................................*|
+|* MEM32_INDEX : #define () : USE 32-BIT MEMORY (TWO ARGS)                    *|
+|*.............:............:.................................................*|
+|* MEM64_INDEX : #define () : USE 64-BIT MEMORY (TWO ARGS)                    *|
+|*.............:............:.................................................*|
 |*                                                                            *|
 |*                           .....................                            *|
 |*                           : REGISTERS (INTEL) :                            *|
@@ -77,11 +89,13 @@
 |*....................................:.......................................*|
 |*               GDTR, IDTR, LDTR, TR : DESCRIPTOR TABLE REGISTERS            *|
 |*....................................:.......................................*|
-|*          MM0, MM1, o o o, MM6, MM7 : 128-BIT INTEGER REGISTERS             *|
+|*          MM0, MM1, o o o, MM6, MM7 : 64-BIT SIMD REGISTERS                 *|
 |*....................................:.......................................*|
-|*    YMM0, YMM1, o o o, YMM14, YMM15 : 256-BIT INTEGER REGISTERS             *|
+|*    XMM0, XMM1, o o o, XMM14, XMM15 : 128-BIT REGISTERS                     *|
 |*....................................:.......................................*|
-|*    ZMM0, ZMM1, o o o, ZMM30, ZMM31 : 512-BIT INTEGER REGISTERS             *|
+|*    YMM0, YMM1, o o o, YMM14, YMM15 : 256-BIT REGISTERS                     *|
+|*....................................:.......................................*|
+|*    ZMM0, ZMM1, o o o, ZMM30, ZMM31 : 512-BIT REGISTERS                     *|
 |*....................................:.......................................*|
 |*                                                                            *|
 |*                            ....................                            *|
@@ -173,9 +187,9 @@
 |*  O EXAMPLE - BYTE COPY ROUTINE                                             *|
 |*  :                                                                         *|
 |* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
-|* 2| SECTION(copy_byte)     // copy_byte:                                    *| 
-|* 3|     MOV8(MEM(RDI), AL) // mov byte [rdi], al                            *|
-|* 4|     RET                // ret                                           *|
+|* 2| SECTION(copy_byte)      // copy_byte:                                   *| 
+|* 3|     MOV8(MEM8(RDI), AL) // mov byte [rdi], al                           *|
+|* 4|     RET                 // ret                                          *|
 |* 5| END                                                                     *|
 |* 6| #include "LIBCMT/ASM/POP.h"                                             *|
 |*  :                                                                         *|
@@ -183,9 +197,9 @@
 |*  O EXAMPLE - ADD VALUE AT INDEX                                            *|
 |*  :                                                                         *|
 |* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
-|* 2| SECTION(add_indexed)                // add_indexed                      *|
-|* 3|     ADD32(MEM_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx       *|
-|* 4|     RET                             // ret                              *|
+|* 2| SECTION(add_indexed)                  // add_indexed                    *|
+|* 3|     ADD32(MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx     *|
+|* 4|     RET                               // ret                            *|
 |* 5| END                                                                     *|
 |* 6| #include "LIBCMT/ASM/POP.h"                                             *|
 |*  :                                                                         *|
@@ -235,6 +249,7 @@ extern "C" {
 #			define LOCALMACRO_ATNT_SYNTAX_STRING
 #			define __START__
 #			define __END__ "\n"
+#			define _(X) #X
 #			define SECTION(NAME) __asm__ (".global "#NAME"\n"#NAME":\n"
 #			define END );
 #		endif /* INLINE_ASM_TYPE__GNU */
@@ -242,9 +257,10 @@ extern "C" {
 #			define LOCALMACRO_ATNT_SYNTAX_STRING
 #			define __START__
 #			define __END__ "\n"
+#			define _(X) #X
 #			define SECTION(NAME) \
 			__asm__ (".section "#NAME",\"a\"\n.global "#NAME"\n"#NAME":\n"
-#			define END ".text");	
+#			define END ".text");
 #		endif /* INLINE_ASM_TYPE__ISO */
 #		ifdef INLINE_ASM_TYPE__MSVC
 #			define LOCALMACRO_INTEL_SYNTAX_PURE
@@ -255,8 +271,14 @@ extern "C" {
 #		endif /* INLINE_ASM_TYPE__MSVC */
 #		ifdef LOCALMACRO_ATNT_SYNTAX_STRING
 #			undef LOCALMACRO_ATNT_SYNTAX_STRING
-#			define MEM(ARG) "("#ARG")"
-#			define MEM_INDEX(ARG, INDEX) "("#ARG","#INDEX")"
+#			define MEM8(ARG) "("_(ARG)")"
+#			define MEM16(ARG) MEM8(ARG)
+#			define MEM32(ARG) MEM8(ARG)
+#			define MEM64(ARG) MEM8(ARG)
+#			define MEM8_INDEX(ARG, INDEX) "("_(ARG)","_(INDEX)")"
+#			define MEM16_INDEX(ARG, INDEX) MEM8_INDEX(ARG, INDEX)
+#			define MEM32_INDEX(ARG, INDEX) MEM8_INDEX(ARG, INDEX)
+#			define MEM64_INDEX(ARG, INDEX) MEM8_INDEX(ARG, INDEX)
 #			ifdef __CPU_INTEL__
 #				define CS %cs
 #				define DS %ds
@@ -421,14 +443,14 @@ extern "C" {
 #					define ZMM31 ZMM0
 #				endif /* __SYSTEM_512_BIT__ */
 #				ifdef __SYSTEM_64_BIT__
-#					define MOV8(A, B) __START__ "movb " #B ", " #A __END__
-#					define MOV16(A, B) __START__ "movw " #B ", " #A __END__
-#					define MOV32(A, B) __START__ "movl " #B ", " #A __END__
-#					define MOV64(A, B) __START__ "movq " #B ", " #A __END__
-#					define ADD8(A, B) __START__ "addb " #B ", " #A __END__
-#					define ADD16(A, B) __START__ "addw " #B ", " #A __END__
-#					define ADD32(A, B) __START__ "addl " #B ", " #A __END__
-#					define ADD64(A, B) __START__ "addq " #B ", " #A __END__
+#					define MOV8(A, B) __START__ "movb " _(B) ", " _(A) __END__
+#					define MOV16(A, B) __START__ "movw " _(B) ", " _(A) __END__
+#					define MOV32(A, B) __START__ "movl " _(B) ", " _(A) __END__
+#					define MOV64(A, B) __START__ "movq " _(B) ", " _(A) __END__
+#					define ADD8(A, B) __START__ "addb " _(B) ", " _(A) __END__
+#					define ADD16(A, B) __START__ "addw " _(B) ", " _(A) __END__
+#					define ADD32(A, B) __START__ "addl " _(B) ", " _(A) __END__
+#					define ADD64(A, B) __START__ "addq " _(B) ", " _(A) __END__
 #					define IP %ip
 #					define EIP %eip
 #					define RIP %rip
@@ -515,13 +537,13 @@ extern "C" {
 #					define RDX %rdx
 #				endif /* __SYSTEM_64_BIT__ */
 #				ifdef __SYSTEM_32_BIT__
-#					define MOV8(A, B) __START__ "movb " #B ", " #A __END__
-#					define MOV16(A, B) __START__ "movw " #B ", " #A __END__
-#					define MOV32(A, B) __START__ "movl " #B ", " #A __END__
+#					define MOV8(A, B) __START__ "movb " _(B) ", " _(A) __END__
+#					define MOV16(A, B) __START__ "movw " _(B) ", " _(A) __END__
+#					define MOV32(A, B) __START__ "movl " _(B) ", " _(A) __END__
 #					define MOV64(A, B) MOV32(A, B)
-#					define ADD8(A, B) __START__ "addb " #B ", " #A __END__
-#					define ADD16(A, B) __START__ "addw " #B ", " #A __END__
-#					define ADD32(A, B) __START__ "addl " #B ", " #A __END__
+#					define ADD8(A, B) __START__ "addb " _(B) ", " _(A) __END__
+#					define ADD16(A, B) __START__ "addw " _(B) ", " _(A) __END__
+#					define ADD32(A, B) __START__ "addl " _(B) ", " _(A) __END__
 #					define ADD64(A, B) ADD32(A, B)
 #					define IP %ip
 #					define EIP %eip
@@ -652,12 +674,12 @@ extern "C" {
 #					define RDX EDX
 #				endif /* __SYSTEM_32_BIT__ */
 #				ifdef __SYSTEM_16_BIT__
-#					define MOV8(A, B) __START__ "movb " #B ", " #A __END__
-#					define MOV16(A, B) __START__ "movw " #B ", " #A __END__
+#					define MOV8(A, B) __START__ "movb " _(B) ", " _(A) __END__
+#					define MOV16(A, B) __START__ "movw " _(B) ", " _(A) __END__
 #					define MOV32(A, B) MOV16(A, B)
 #					define MOV64(A, B) MOV16(A, B)
-#					define ADD8(A, B) __START__ "addb " #B ", " #A __END__
-#					define ADD16(A, B) __START__ "addw " #B ", " #A __END__
+#					define ADD8(A, B) __START__ "addb " _(B) ", " _(A) __END__
+#					define ADD16(A, B) __START__ "addw " _(B) ", " _(A) __END__
 #					define ADD32(A, B) ADD16(A, B)
 #					define ADD64(A, B) ADD16(A, B)
 #					define IP %ip
@@ -713,13 +735,19 @@ extern "C" {
 #					define EDX DX
 #					define RDX DX
 #				endif /* __SYSTEM_16_BIT__ */
-#				define RET ret\n
+#				define RET "ret\n"
 #			endif /* __CPU_INTEL__ */
 #		endif /* LOCALMACRO_ATNT_SYNTAX_STRING */
 #		ifdef LOCALMACRO_INTEL_SYNTAX_PURE
 #			undef LOCALMACRO_INTEL_SYNTAX_PURE
-#			define MEM(ARG) ptr [ARG]
-#			define MEM_INDEX(ARG, INDEX) ptr [ARG + INDEX]
+#			define MEM8(ARG) byte ptr [ARG]
+#			define MEM16(ARG) word ptr [ARG]
+#			define MEM32(ARG) dword ptr [ARG]
+#			define MEM64(ARG) qword ptr [ARG]
+#			define MEM8_INDEX(ARG, INDEX) byte ptr [ARG + INDEX]
+#			define MEM16_INDEX(ARG, INDEX) word ptr [ARG + INDEX]
+#			define MEM32_INDEX(ARG, INDEX) dword ptr [ARG + INDEX]
+#			define MEM64_INDEX(ARG, INDEX) qword ptr [ARG + INDEX]
 #			ifdef __CPU_INTEL__
 #				define CS cs
 #				define DS ds
@@ -728,14 +756,14 @@ extern "C" {
 #				define FS fs
 #				define GS gs
 #				ifdef __MMX__
-#					define MM0 %mm0
-#					define MM1 %mm1
-#					define MM2 %mm2
-#					define MM3 %mm3
-#					define MM4 %mm4
-#					define MM5 %mm5
-#					define MM6 %mm6
-#					define MM7 %mm7
+#					define MM0 mm0
+#					define MM1 mm1
+#					define MM2 mm2
+#					define MM3 mm3
+#					define MM4 mm4
+#					define MM5 mm5
+#					define MM6 mm6
+#					define MM7 mm7
 #				else
 #					define MM0 ERROR__MMX_DOES_NOT_SUPPORTED
 #					define MM1 MM0
@@ -884,14 +912,14 @@ extern "C" {
 #					define ZMM31 ZMM0
 #				endif /* __SYSTEM_512_BIT__ */
 #				ifdef __SYSTEM_64_BIT__
-#					define MOV8(A, B) __START__ mov byte A, B __END__
-#					define MOV16(A, B) __START__ mov word A, B __END__
-#					define MOV32(A, B) __START__ mov dword A, B __END__
-#					define MOV64(A, B) __START__ mov qword A, B __END__
-#					define ADD8(A, B) __START__ add byte A, B __END__
-#					define ADD16(A, B) __START__ add word A, B __END__
-#					define ADD32(A, B) __START__ add dword A, B __END__
-#					define ADD64(A, B) __START__ add qword A, B __END__
+#					define MOV8(A, B) __START__ mov A, B __END__
+#					define MOV16(A, B) __START__ mov A, B __END__
+#					define MOV32(A, B) __START__ mov A, B __END__
+#					define MOV64(A, B) __START__ mov A, B __END__
+#					define ADD8(A, B) __START__ add A, B __END__
+#					define ADD16(A, B) __START__ add A, B __END__
+#					define ADD32(A, B) __START__ add A, B __END__
+#					define ADD64(A, B) __START__ add A, B __END__
 #					define IP ip
 #					define EIP eip
 #					define RIP rip
