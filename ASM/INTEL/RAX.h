@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -48,6 +48,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM THE CPU      *|
 |* REGISTER (RAX) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.              *|
 |*                                                                            *|
@@ -61,34 +62,34 @@
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* O - EXAMPLE 1: READ RAX INTO A VARIABLE                                    *|
-|* :                                                                          *|
-|*1| uint64_t myValue;                                                        *|
-|*2|                                                                          *|
-|*3| GET_RAX(myValue); // > MOV RAX CONTENTS INTO myValue                     *|
-|* :                                                                          *|
-|* : myValue NOW HOLDS THE VALUE FROM RAX                                     *|
-|* :                                                                          *|
+|*  O - EXAMPLE 1: READ RAX INTO A VARIABLE                                   *|
+|*  :                                                                         *|
+|* 1| uint64_t myValue;                                                       *|
+|* 2|                                                                         *|
+|* 3| GET_RAX(myValue); // > MOV RAX CONTENTS INTO myValue                    *|
+|*  :                                                                         *|
+|*  : myValue NOW HOLDS THE VALUE FROM RAX                                    *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* O - EXAMPLE 2: READ EAX ON 32-BIT SYSTEM                                   *|
-|* :                                                                          *|
-|*1| unsigned int myValue32;                                                  *|
-|*2|                                                                          *|
-|*3| GET_RAX(myValue32); // > MOV EAX CONTENTS INTO myValue32                 *|
-|* :                                                                          *|
-|* : myValue32 NOW HOLDS THE VALUE FROM EAX                                   *|
-|* :                                                                          *|
+|*  O - EXAMPLE 2: READ EAX ON 32-BIT SYSTEM                                  *|
+|*  :                                                                         *|
+|* 1| unsigned int myValue32;                                                 *|
+|* 2|                                                                         *|
+|* 3| GET_RAX(myValue32); // > MOV EAX CONTENTS INTO myValue32                *|
+|*  :                                                                         *|
+|*  : myValue32 NOW HOLDS THE VALUE FROM EAX                                  *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* O - EXAMPLE 3: SETTING RAX                                                 *|
-|* :                                                                          *|
-|*1| uint64_t myValue64 = 42;                                                 *|
-|*2|                                                                          *|
-|*3| SET_RAX(myValue32); // > RAX IS NOW 42                                   *|
-|*4|                                                                          *|
-|*5| // OR                                                                    *|
-|*6|                                                                          *|
-|*7| SET_RAX(42); // > RAX IS NOW 42                                          *|
-|* :                                                                          *|
+|*  O - EXAMPLE 3: SETTING RAX                                                *|
+|*  :                                                                         *|
+|* 1| uint64_t myValue64 = 42;                                                *|
+|* 2|                                                                         *|
+|* 3| SET_RAX(myValue32); // > RAX IS NOW 42                                  *|
+|* 4|                                                                         *|
+|* 5| // OR                                                                   *|
+|* 6|                                                                         *|
+|* 7| SET_RAX(42); // > RAX IS NOW 42                                         *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -120,6 +121,7 @@
 #	        */
 #	include "../../CHECK_FEATURE/INLINE_ASM.h" /*
 #	 define IS__INLINE_ASM__SUPPORTED
+#	 define INLINE_ASM_TYPE__GNU
 #	 define INLINE_ASM_TYPE__ISO
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -180,7 +182,7 @@ extern "C" {
 					__asm__ __volatile__ ("mov %0, %%ax" : : "r" (__REGISTER__))
 #			endif /* __SYSTEM_16_BIT__ */
 #		else
-#			ifdef __GNUC__
+#			ifdef INLINE_ASM_TYPE__GNU
 #				ifdef __SYSTEM_64_BIT__
 #					define LOCALMACRO__RAX_GET(__REGISTER__) \
 						asm volatile ("movq %%rax, %0" : "=r"(__REGISTER__))
@@ -199,7 +201,7 @@ extern "C" {
 #					define LOCALMACRO__RAX_SET(__REGISTER__) \
 						asm volatile ("mov %0, %%ax" : : "r"(__REGISTER__))
 #				endif /* __SYSTEM_16_BIT__ */
-#			endif /* __GNUC__ */
+#			endif /* INLINE_ASM_TYPE__GNU */
 #			ifndef LOCALMACRO__RAX_GET
 #				ifdef _MSC_VER
 #					ifdef __SYSTEM_64_BIT__
@@ -421,3 +423,8 @@ extern "C" {
 /* *************************** [^] LOWERCASE [^] **************************** */
 
 #endif /* !RAX_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

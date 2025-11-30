@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -39,13 +39,13 @@
 |* TOKEN PASTING REFERS TO THE "##" OPERATOR IN MACROS, USED TO MERGE TWO     *|
 |* TOKENS INTO ONE.                                                           *|
 |*                                                                            *|
-|* O - EXAMPLE:                                                               *|
-|* :                                                                          *|
-|*1| #define AB(A, B) A##B                                                    *|
-|*2|                                                                          *|
-|*3| int AB(ma, in)(void) // EXPANDS TO: int main(void)                       *|
-|*4| { ... }                                                                  *|
-|* :                                                                          *|
+|*  O - EXAMPLE:                                                              *|
+|*  :                                                                         *|
+|* 1| #define AB(A, B) A##B                                                   *|
+|* 2|                                                                         *|
+|* 3| int AB(ma, in)(void) // EXPANDS TO: int main(void)                      *|
+|* 4| { ... }                                                                 *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -613,3 +613,8 @@
 #		endif /* __ZTC__ */
 #	endif /* !IS__TOKEN_PASTING__SUPPORTED */
 #endif /* !CHECK_FEATURE__TOKEN_PASTING_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

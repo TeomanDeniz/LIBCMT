@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/07/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -39,10 +39,10 @@
 |* THE COMMA OPERATOR REFERS TO THE "(,)" OPERATOR IN MACROS, USED TO WRITE   *|
 |* EXPRESSIONS AND PERFORM ACTIONS INSIDE PARENTHESES.                        *|
 |*                                                                            *|
-|* O - EXAMPLE:                                                               *|
-|* :                                                                          *|
-|*1| int a = (b++, funct(), c = 42, b += c, 66); // PERFORMS ALL ACTIONS      *|
-|* :                                                AND RETURNS 66            *|
+|*  O - EXAMPLE:                                                              *|
+|*  :                                                                         *|
+|* 1| int a = (b++, funct(), c = 42, b += c, 66); // PERFORMS ALL ACTIONS     *|
+|*  :                                                AND RETURNS 66           *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -511,3 +511,8 @@
 #		endif /* __ZTC__ */
 #	endif /* !IS__COMMA_OPERATOR__SUPPORTED */
 #endif /* !CHECK_FEATURE__COMMA_OPERATOR_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

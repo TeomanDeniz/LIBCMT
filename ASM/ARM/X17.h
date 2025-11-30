@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -48,6 +48,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* WITH THESE FUNCTIONS, YOU'RE ABLE TO MOVE AND GET VALUES FROM ARM AND      *|
 |* AARCH CPUS' REGISTER (X17) AND STACK WITH DIFFERENT DATA SIZES AND ARCHS.  *|
 |*                                                                            *|
@@ -62,24 +63,24 @@
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* O - EXAMPLE 1: READ X17 INTO A VARIABLE                                    *|
-|* :                                                                          *|
-|*1| uint64_t myValue;                                                        *|
-|*2|                                                                          *|
-|*3| GET_X17(myValue); // > MOV X17 CONTENTS INTO myValue                     *|
-|* :                                                                          *|
-|* : myValue NOW HOLDS THE VALUE FROM X17                                     *|
+|*  O - EXAMPLE 1: READ X17 INTO A VARIABLE                                   *|
+|*  :                                                                         *|
+|* 1| uint64_t myValue;                                                       *|
+|* 2|                                                                         *|
+|* 3| GET_X17(myValue); // > MOV X17 CONTENTS INTO myValue                    *|
+|*  :                                                                         *|
+|*  : myValue NOW HOLDS THE VALUE FROM X17                                    *|
 |*                                                                            *|
-|* O - EXAMPLE 2: SETTING X17                                                 *|
-|* :                                                                          *|
-|*1| uint64_t myValue = 42;                                                   *|
-|*2|                                                                          *|
-|*3| SET_X17(myValue); // > X17 IS NOW 42                                     *|
-|*4|                                                                          *|
-|*5| // OR                                                                    *|
-|*6|                                                                          *|
-|*7| SET_X17(42); // > X17 IS NOW 42                                          *|
-|* :                                                                          *|
+|*  O - EXAMPLE 2: SETTING X17                                                *|
+|*  :                                                                         *|
+|* 1| uint64_t myValue = 42;                                                  *|
+|* 2|                                                                         *|
+|* 3| SET_X17(myValue); // > X17 IS NOW 42                                    *|
+|* 4|                                                                         *|
+|* 5| // OR                                                                   *|
+|* 6|                                                                         *|
+|* 7| SET_X17(42); // > X17 IS NOW 42                                         *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -237,3 +238,8 @@ extern "C" {
 /* *************************** [^] LOWERCASE [^] **************************** */
 
 #endif /* !X17_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

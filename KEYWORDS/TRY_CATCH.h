@@ -69,23 +69,29 @@
 |* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
 |* : THE MACRO AGAIN. ALL OTHER FILES WILL ONLY SEE "extern" DECLARATIONS.    *|
 |* :                                                                          *|
-|* ;.., #define SETUP_TRY_CATCH                                               *|
-|*    : #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
+|* ;..,                                                                       *|
 |*    :                                                                       *|
-|*    : int main() {                                                          *|
-|*    : ...                                                                   *|
-|*    : }                                                                     *|
+|*   1| #define SETUP_TRY_CATCH                                               *|
+|*   2| #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
+|*   3|                                                                       *|
+|*   4| int main() {                                                          *|
+|*   5| ...                                                                   *|
+|*   6| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
-|* ;.., try                                                                   *|
-|* :  : {                                                                     *|
-|* :  :     if (1) throw(99);                                                 *|
-|* :  : }                                                                     *|
-|* :  : catch(int err)                                                        *|
-|* :  : {                                                                     *|
-|* :  :     printf("ERROR: %d\n", err);                                       *|
-|* :  : }                                                                     *|
+|* ;..,                                                                       *|
+|* :  :                                                                       *|
+|* : 1| try                                                                   *|
+|* : 2| {                                                                     *|
+|* : 3|     if (1) throw(99);                                                 *|
+|* : 4| }                                                                     *|
+|* : 5| catch(int err)                                                        *|
+|* : 6| {                                                                     *|
+|* : 7|     printf("ERROR: %d\n", err);                                       *|
+|* : 8| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
 |* ;.., FOR COMPILERS LIKE TCC (TINY C COMPILER), YOU MUST DECLARE YOUR       *|
 |* :  : "int err" VARIABLE OUTSIDE OF THE "catch()" SCOPE.                    *|
@@ -96,51 +102,55 @@
 |* :  :                                                                       *|
 |* :  : FOR EXAMPLE:                                                          *|
 |* :  ;..,                                                                    *|
-|* :     : int err;                                                           *|
 |* :     :                                                                    *|
-|* :     : try                                                                *|
-|* :     : {                                                                  *|
-|* :     :     if (1) throw (99);                                             *|
-|* :     : }                                                                  *|
-|* :     : catch (err)                                                        *|
-|* :     : {                                                                  *|
-|* :     :     printf("ERROR: %d\n", err);                                    *|
-|* :     : }                                                                  *|
+|* :    1| int err;                                                           *|
+|* :    2|                                                                    *|
+|* :    3| try                                                                *|
+|* :    4| {                                                                  *|
+|* :    5|     if (1) throw (99);                                             *|
+|* :    6| }                                                                  *|
+|* :    7| catch (err)                                                        *|
+|* :    8| {                                                                  *|
+|* :    9|     printf("ERROR: %d\n", err);                                    *|
+|* :   10| }                                                                  *|
+|* :     :                                                                    *|
 |* :                                                                          *|
-|* ;.., TRY/CATCH INSIDE A CALLED FUNCTION:                                   *|
-|* :  :                                                                       *|
-|* :  : void test(void)                                                       *|
-|* :  : {                                                                     *|
-|* :  :     throw (42);                                                       *|
-|* :  : }                                                                     *|
-|* :  :                                                                       *|
-|* :  : try                                                                   *|
-|* :  : {                                                                     *|
-|* :  :     test();                                                           *|
-|* :  : }                                                                     *|
-|* :  : catch (int err)                                                       *|
-|* :  : {                                                                     *|
-|* :  :     printf("ERROR: %d\n", err);                                       *|
-|* :  : }                                                                     *|
+|* ;..., TRY/CATCH INSIDE A CALLED FUNCTION:                                  *|
+|* :   :                                                                      *|
+|* :  1| void test(void)                                                      *|
+|* :  2| {                                                                    *|
+|* :  3|     throw (42);                                                      *|
+|* :  4| }                                                                    *|
+|* :  5|                                                                      *|
+|* :  6| try                                                                  *|
+|* :  7| {                                                                    *|
+|* :  8|     test();                                                          *|
+|* :  9| }                                                                    *|
+|* : 10| catch (int err)                                                      *|
+|* : 11| {                                                                    *|
+|* : 12|     printf("ERROR: %d\n", err);                                      *|
+|* : 13| }                                                                    *|
+|* :   :                                                                      *|
 |* :                                                                          *|
 |* ;.., TRY/CATCH WITH A NESTED STATEMENT:                                    *|
 |*    :                                                                       *|
-|*    : try                                                                   *|
-|*    : {                                                                     *|
-|*    :     try                                                               *|
-|*    :     {                                                                 *|
-|*    :         throw (42);                                                   *|
-|*    :     }                                                                 *|
-|*    :     catch (int error)                                                 *|
-|*    :     {                                                                 *|
-|*    :         printf("err_1: %d\n", error);                                 *|
-|*    :         throw (32);                                                   *|
-|*    :     }                                                                 *|
-|*    : }                                                                     *|
-|*    : catch (int error)                                                     *|
-|*    : {                                                                     *|
-|*    :     printf("err_2: %d\n", error);                                     *|
-|*    : }                                                                     *|
+|*   1| try                                                                   *|
+|*   2| {                                                                     *|
+|*   3|     try                                                               *|
+|*   4|     {                                                                 *|
+|*   5|         throw (42);                                                   *|
+|*   6|     }                                                                 *|
+|*   7|     catch (int error)                                                 *|
+|*   8|     {                                                                 *|
+|*   9|         printf("err_1: %d\n", error);                                 *|
+|*  10|         throw (32);                                                   *|
+|*  11|     }                                                                 *|
+|*  12| }                                                                     *|
+|*  13| catch (int error)                                                     *|
+|*  14| {                                                                     *|
+|*  15|     printf("err_2: %d\n", error);                                     *|
+|*  16| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -183,7 +193,7 @@
 \******************************************************************************/
 
 #ifndef TRY_CATCH_H
-#	define TRY_CATCH_H 202510 /* VERSION */
+#	define TRY_CATCH_H 202511 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -311,3 +321,8 @@ extern LOCAL int			__TRY_CATCH_VALUE__;
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !TRY_CATCH_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

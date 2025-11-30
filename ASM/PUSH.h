@@ -130,6 +130,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: OVERVIEW :::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* THIS HEADER PROVIDES A UNIFIED MACRO LAYER THAT LETS YOU WRITE INLINE      *|
 |* ASSEMBLY WITH MINIMAL COMPILER-SPECIFIC BOILERPLATE.                       *|
 |*                                                                            *|
@@ -257,7 +258,11 @@ extern "C" {
 #			define __START__
 #			define __END__ "\n"
 #			define _(X) #X
-#			define VALUE(NUMBER) $##NUMBER
+#			ifndef __TINYC__
+#				define VALUE(NUMBER) $##NUMBER
+#			else
+#				define VALUE(NUMBER) NUMBER
+#			endif
 #			define SECTION(NAME) __asm__ (".global "#NAME"\n"#NAME":\n"
 #			define END );
 #		endif /* INLINE_ASM_TYPE__GNU */
@@ -1221,3 +1226,8 @@ extern "C" {
 #		error "INLINE ASM DOES NOT SUPPORTED IN THIS COMPILER"
 #	endif /* IS__INLINE_ASM__SUPPORTED */
 #endif /* !ASM_PUSH_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

@@ -223,3 +223,8 @@ static char
 
 #	endif /* !__cplusplus */
 #endif /* !VA_ARG_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

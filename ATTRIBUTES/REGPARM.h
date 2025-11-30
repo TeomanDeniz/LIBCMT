@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -38,29 +38,40 @@
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
-|* ;.., void REGPARM(1) function(int b)	{                                     *|
-|* :  :     . . .                                                             *|
-|* :  : }                                                                     *|
+|* ;..,                                                                       *|
+|* :  :                                                                       *|
+|* : 1| void REGPARM(1) function(int b)	{                                     *|
+|* : 2|     . . .                                                             *|
+|* : 3| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
-|* ;.., void REGPARM(2) function(int a, int b)                                *|
-|* :  : {                                                                     *|
-|* :  :     . . .                                                             *|
-|* :  : }                                                                     *|
+|* ;..,                                                                       *|
+|* :  :                                                                       *|
+|* : 1| void REGPARM(2) function(int a, int b)                                *|
+|* : 2| {                                                                     *|
+|* : 3|     . . .                                                             *|
+|* : 4| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
-|* ;.., void regparm(4) function(int a, float b, long c, char *d)             *|
-|* :  : {                                                                     *|
-|* :  :     . . .                                                             *|
-|* :  : }                                                                     *|
+|* ;..,                                                                       *|
+|* :  :                                                                       *|
+|* : 1| void regparm(4) function(int a, float b, long c, char *d)             *|
+|* : 2| {                                                                     *|
+|* : 3|     . . .                                                             *|
+|* : 4| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
 |* ;.., FOR THE MOST EFFECTIVE:                                               *|
-|*    : void regparm(2) function(                                             *|
-|*    :     register int a,                                                   *|
-|*    :     register float b,                                                 *|
-|*    :     register char *c                                                  *|
-|*    : )                                                                     *|
-|*    : {                                                                     *|
-|*    :     . . .                                                             *|
-|*    : }                                                                     *|
+|*    :                                                                       *|
+|*   1| void regparm(2) function(                                             *|
+|*   2|     register int a,                                                   *|
+|*   3|     register float b,                                                 *|
+|*   4|     register char *c                                                  *|
+|*   5| )                                                                     *|
+|*   6| {                                                                     *|
+|*   7|     . . .                                                             *|
+|*   8| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -69,6 +80,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* USING THIS KEYWORD IN YOUR FUNCTION LETS YOU HOLD A VALUE DIRECTLY IN A    *|
 |* CPU REGISTER, ALLOWING DIRECT ACCESS - SIMILAR TO C++ REFERENCES, BUT      *|
 |* WITHOUT USING POINTERS.                                                    *|
@@ -81,10 +93,12 @@
 |* THE VALUE.                                                                 *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: NOTE :::::::::::::::::::::::::::::::::: *|
-|* O - YOU MUST ALSO USE REGPARM IN THE FUNCTION'S PROTOTYPE, IF PRESENT!     *|
-|* :                                                                          *|
-|* ;.., void REGPARM(2) FUNCT(int A, int B) { ... } <-- FUNCTION DEFINITION   *|
-|*    : extern void REGPARM(2) FUNCT(int A, int B); <-- FUNCTION PROTOTYPE    *|
+|*                                                                            *|
+|*  O - YOU MUST ALSO USE REGPARM IN THE FUNCTION'S PROTOTYPE, IF PRESENT!    *|
+|*  :                                                                         *|
+|* 1| void REGPARM(2) FUNCT(int A, int B) { ... } <-- FUNCTION DEFINITION     *|
+|* 2| extern void REGPARM(2) FUNCT(int A, int B); <-- FUNCTION PROTOTYPE      *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -158,3 +172,8 @@ extern "C" {
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !REGPARM_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

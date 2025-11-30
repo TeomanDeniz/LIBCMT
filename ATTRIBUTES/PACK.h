@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/11 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -33,26 +33,32 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: IMPORTANT :::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* YOU MUST USE BOTH "PACK" AND "PRAGMA_PACK_..." MACROS ON A STRUCT IF YOU   *|
 |* WANT TO PACK IT. THIS IS REQUIRED TO UNLOCK THE FULL SYNTAX SUPPORT FOR    *|
 |* THIS FEATURE.                                                              *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: HOW TO USE ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
-|* :  : struct test                                                           *|
-|* :  : {                                                                     *|
-|* :  :     ...                                                               *|
-|* :  : } PACK;                                                               *|
-|* :  : PRAGMA_PACK_POP                                                       *|
+|* :  :                                                                       *|
+|* : 1| struct test                                                           *|
+|* : 2| {                                                                     *|
+|* : 3|     . . .                                                             *|
+|* : 4| } PACK;                                                               *|
+|* : 5| PRAGMA_PACK_POP                                                       *|
+|* :  :                                                                       *|
 |* :                                                                          *|
 |* ;.., PRAGMA_PACK_PUSH                                                      *|
-|*    : typedef struct test                                                   *|
-|*    : {                                                                     *|
-|*    :     ...                                                               *|
-|*    : } PACK t_test;                                                        *|
-|*    : PRAGMA_PACK_POP                                                       *|
+|*    :                                                                       *|
+|*   1| typedef struct test                                                   *|
+|*   2| {                                                                     *|
+|*   3|     . . .                                                             *|
+|*   4| } PACK t_test;                                                        *|
+|*   5| PRAGMA_PACK_POP                                                       *|
+|*    :                                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -61,6 +67,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* [PACK] REMOVES PADDING BYTES FROM YOUR STRUCT TO TIGHTLY PACK ITS FIELDS.  *|
 |*                                                                            *|
 |* UNLESS YOU ARE DEALING WITH A VERY LARGE STRUCT OR LOW-LEVEL BINARY DATA,  *|
@@ -69,40 +76,49 @@
 |* REMOVING PADDING CAN CAUSE PERFORMANCE PENALTIES ON SOME SYSTEMS.          *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: HOW? :::::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* WHEN THE CPU ACCESSES STRUCT FIELDS, IT RELIES ON MEMORY ALIGNMENT RULES.  *|
 |* ALIGNMENT USUALLY FOLLOWS POWERS OF TWO (1, 2, 4, 8, 16, ...).             *|
 |* TO MAINTAIN THIS, COMPILERS AUTOMATICALLY ADD PADDING BYTES.               *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
-|* ;.., struct test                                                           *|
-|* :  : {                                                                     *|
-|* :  :     int a;                                                            *|
-|* :  : };                                                                    *|
+|* ;.., EXAMPLE 1                                                             *|
+|* :  :                                                                       *|
+|* : 1| struct test                                                           *|
+|* : 2| {                                                                     *|
+|* : 3|     int a;                                                            *|
+|* : 4| };                                                                    *|
+|* :  :                                                                       *|
 |* :  ;... SIZEOF = 4 BYTES                                                   *|
 |* :                                                                          *|
-|* ;.., struct test                                                           *|
-|* :  : {                                                                     *|
-|* :  :     int a;                                                            *|
-|* :  :     char b;                                                           *|
-|* :  : };                                                                    *|
+|* ;.., EXAMPLE 2                                                             *|
+|* :  :                                                                       *|
+|* : 1| struct test                                                           *|
+|* : 2| {                                                                     *|
+|* : 3|     int a;                                                            *|
+|* : 4|     char b;                                                           *|
+|* : 5| };                                                                    *|
+|* :  :                                                                       *|
 |* :  ;.., SIZEOF = 8 BYTES                                                   *|
 |* :     :                                                                    *|
-|* :     ;.., WHERE DID THE EXTRA 3 BYTES GO?                                 *|
-|* :        : ANSWER: THEY ARE PADDING BYTES ADDED FOR ALIGNMENT.             *|
-|* :        : THIS HELPS THE CPU READ THE STRUCT FASTER.                      *|
+|* :     : WHERE DID THE EXTRA 3 BYTES GO?                                    *|
+|* :     : ANSWER: THEY ARE PADDING BYTES ADDED FOR ALIGNMENT.                *|
+|* :     : THIS HELPS THE CPU READ THE STRUCT FASTER.                         *|
+|* :     :                                                                    *|
 |* :                                                                          *|
 |* ;.., PACKING THE STRUCT:                                                   *|
 |*    :                                                                       *|
-|*    ;.., PRAGMA_PACK_PUSH                                                   *|
-|*    :  : struct test                                                        *|
-|*    :  : {                                                                  *|
-|*    :  :     int a;                                                         *|
-|*    :  :     char b;                                                        *|
-|*    :  : } PACK;                                                            *|
-|*    :  : PRAGMA_PACK_POP                                                    *|
+|*   1| PRAGMA_PACK_PUSH                                                      *|
+|*   2| struct test                                                           *|
+|*   3| {                                                                     *|
+|*   4|     int a;                                                            *|
+|*   5|     char b;                                                           *|
+|*   6| } PACK;                                                               *|
+|*   7| PRAGMA_PACK_POP                                                       *|
 |*    :                                                                       *|
-|*    ;... NOW SIZEOF = 5 BYTES                                               *|
+|*    : NOW SIZEOF = 5 BYTES                                                  *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* PADDING WORKS BY FILLING STRUCTS WITH EXTRA BYTES TO ALIGN THEIR FIELDS.   *|
 |* WITHOUT IT, YOU RISK OVERREAD/OVERFLOW OR UNALIGNED ACCESS.                *|
@@ -114,7 +130,7 @@
 \******************************************************************************/
 
 #ifndef PACK_H
-#	define PACK_H 202508 /* VERSION */
+#	define PACK_H 202511 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -176,3 +192,8 @@ extern "C" {
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !PACK_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

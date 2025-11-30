@@ -544,3 +544,8 @@
 #	endif /* INCL__VA_ARGS */
 /* **************************** [^] KEYWORDS [^] **************************** */
 #endif /* !LIBCMT_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

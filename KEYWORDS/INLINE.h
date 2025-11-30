@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/09 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/08/27 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -27,15 +27,17 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::::: INLINE ::::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* JUST PUT THIS TAG AT THE BEGINNING OF THE FUNCTION.                        *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::::: SHOW TIME :::::::::::::::::::::::::::::::: *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* ;.., INLINE void function(void)                                            *|
-|*    : {                                                                     *|
-|*    :     . . .                                                             *|
-|*    : }                                                                     *|
+|*  O - EXAMPLE                                                               *|
+|*  :                                                                         *|
+|* 1| INLINE void function(void)                                              *|
+|* 2| {                                                                       *|
+|* 3|     . . .                                                               *|
+|* 4| }                                                                       *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -51,58 +53,68 @@
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // THIS MAKES YOUR FUNCTION JUST A STATIC:                            *|
-|*    : static INLINE int test(void)                                          *|
-|*    : {                                                                     *|
-|*    :     return (15 + 42);                                                 *|
-|*    : }                                                                     *|
+|* ;.., THIS MAKES YOUR FUNCTION JUST A STATIC:                               *|
+|*    :                                                                       *|
+|*   1| static INLINE int test(void)                                          *|
+|*   2| {                                                                     *|
+|*   3|     return (15 + 42);                                                 *|
+|*   4| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* (2) DO NOT USE "GOTO" KEYWORD INSIDE INLINE LIBRARY! IT'S TECHNICALLY      *|
 |* ALLOWED BUT MAY CAUSE SOME SERIOUS OPTIMISATION PROBLEMS!                  *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // THIS IS WRONG... THIS FEELS SO WRONG:                              *|
-|*    : INLINE int test(void)                                                 *|
-|*    : {                                                                     *|
-|*    :     LAYER:                                                            *|
-|*    :     . . .                                                             *|
-|*    :     GOTO LAYER;                                                       *|
-|*    : }                                                                     *|
+|* ;.., THIS IS WRONG... THIS FEELS SO WRONG:                                 *|
+|*    :                                                                       *|
+|*   1| INLINE int test(void)                                                 *|
+|*   2| {                                                                     *|
+|*   3|     LAYER:                                                            *|
+|*   4|     . . .                                                             *|
+|*   5|     GOTO LAYER;                                                       *|
+|*   6| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* (3) YOU CAN'T USE STATIC VARIABLES INSIDE INLINE FUNCTIONS!                *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // WHAT DA DOG DOING?                                                 *|
-|*    : INLINE void test(void)                                                *|
-|*    : {                                                                     *|
-|*    :     static int dog;                                                   *|
-|*    :     . . .                                                             *|
-|*    : }                                                                     *|
+|* ;.., WHAT DA DOG DOING?                                                    *|
+|*    :                                                                       *|
+|*   1| INLINE void test(void)                                                *|
+|*   2| {                                                                     *|
+|*   3|     static int dog;                                                   *|
+|*   4|     . . .                                                             *|
+|*   5| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* (4) YOU CAN'T CALL THE FUNCTION ITSELF INSIDE AN INLINE FUNCTION           *|
 |*     SO, NO RECURSION                                                       *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // YOU CAN'T CALL SOMETHING THAT DOESN'T EXIST IN THE BINARY.         *|
-|*    : INLINE void inline_test(int a)                                        *|
-|*    : {                                                                     *|
-|*    :     inline_test(a + 1);                                               *|
-|*    :     . . .                                                             *|
-|*    : }                                                                     *|
+|* ;.., YOU CAN'T CALL SOMETHING THAT DOESN'T EXIST IN THE BINARY.            *|
+|*    :                                                                       *|
+|*   1| INLINE void inline_test(int a)                                        *|
+|*   2| {                                                                     *|
+|*   3|     inline_test(a + 1);                                               *|
+|*   4|     . . .                                                             *|
+|*   5| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* (5) YOU CAN'T USE "va_list", "va_arg" (OR ...) IN INLINE FUNCTIONS!        *|
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // NO, DON'T!                                                         *|
-|*    : INLINE void inline_test(int a, ...)                                   *|
-|*    : {                                                                     *|
-|*    :     va_list list;                                                     *|
-|*    :     . . .                                                             *|
-|*    : }                                                                     *|
+|* ;.., NO, DON'T!                                                            *|
+|*    :                                                                       *|
+|*   1| INLINE void inline_test(int a, ...)                                   *|
+|*   2| {                                                                     *|
+|*   3|     va_list list;                                                     *|
+|*   4|     . . .                                                             *|
+|*   5| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -116,25 +128,31 @@
 |*                                                                            *|
 |* O - EXAMPLE                                                                *|
 |* :                                                                          *|
-|* ;.., // LET'S IMAGINE WE HAVE AN INLINE FUNCTION:                          *|
-|* :  : INLINE int test(void)                                                 *|
-|* :  : {                                                                     *|
-|* :  :     return (15 + 42);                                                 *|
-|* :  : }                                                                     *|
+|* ;.., LET'S IMAGINE WE HAVE AN INLINE FUNCTION:                             *|
+|* :  :                                                                       *|
+|* : 1| INLINE int test(void)                                                 *|
+|* : 2| {                                                                     *|
+|* : 3|     return (15 + 42);                                                 *|
+|* : 4| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
-|* ;.., // LET'S IMAGINE IT IS USED IN OUR MAIN FUNCTION:                     *|
-|* :  : int main(void)                                                        *|
-|* :  : {                                                                     *|
-|* :  :     printf("%d", test());                                             *|
-|* :  :     return (0);                                                       *|
-|* :  : }                                                                     *|
+|* ;.., LET'S IMAGINE IT IS USED IN OUR MAIN FUNCTION:                        *|
+|* :  :                                                                       *|
+|* : 1| int main(void)                                                        *|
+|* : 2| {                                                                     *|
+|* : 3|     printf("%d", test());                                             *|
+|* : 4|     return (0);                                                       *|
+|* : 5| }                                                                     *|
+|* :  :                                                                       *|
 |* :                                                                          *|
-|* ;.., // AND THAT MAKES THE MAIN FUNCTION DURING COMPILING PROCESS:         *|
-|*    : int main(void)                                                        *|
-|*    : {                                                                     *|
-|*    :     printf("%d", (15 + 42));                                          *|
-|*    :     return (0);                                                       *|
-|*    : }                                                                     *|
+|* ;.., AND THAT MAKES THE MAIN FUNCTION DURING COMPILING PROCESS:            *|
+|*    :                                                                       *|
+|*   1| int main(void)                                                        *|
+|*   2| {                                                                     *|
+|*   3|     printf("%d", (15 + 42));                                          *|
+|*   4|     return (0);                                                       *|
+|*   5| }                                                                     *|
+|*    :                                                                       *|
 |*                                                                            *|
 |* IT WAS JUST AN EXAMPLE. FEEL FREE TO FILL YOUR FUNCTION AS MUCH AS YOU     *|
 |* CAN. BUT PLEASE BE AWARE OF WHAT NOT TO DO INSIDE OF AN INLINE FUNCTION BY *|
@@ -241,3 +259,8 @@ extern "C" {
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !INLINE_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC
