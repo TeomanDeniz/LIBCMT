@@ -28,42 +28,49 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: FAR ::::::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* IT DEFINES THE MEMORY ACCESS TYPE BASED ON COMPILER AND PLATFORM.          *|
 |* IN 16-BIT SYSTEMS, IT EXPANDS TO A FAR POINTER KEYWORD                     *|
 |* ("far", "_far", etc.) IN MODERN SYSTEMS, IT MAY BE EMPTY OR NOT USED.      *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: EXAMPLES :::::::::::::::::::::::::::::::: *|
-|* O - EXAMPLE 1 (VARIABLES)                                                  *|
-|* :                                                                          *|
-|* ;.., FAR int far_var;                                                      *|
-|* :  : far_var = 42;                                                         *|
-|* :                                                                          *|
-|* ;... THIS CREATES AN INTEGER VARIABLE THAT USES A FAR MEMORY POINTER.      *|
 |*                                                                            *|
-|* O - EXAMPLE 2 (POINTERS)                                                   *|
-|* :                                                                          *|
-|* ;.., FAR char *far_ptr;                                                    *|
-|* :  : far_ptr = "Hello, world!";                                            *|
-|* :                                                                          *|
-|* ;... A STRING POINTER STORED IN FAR MEMORY SPACE.                          *|
+|*  O - EXAMPLE 1 (VARIABLES)                                                 *|
+|*  :                                                                         *|
+|* 1| FAR int far_var;                                                        *|
+|* 2| far_var = 42;                                                           *|
+|*  :                                                                         *|
+|*  : THIS CREATES AN INTEGER VARIABLE THAT USES A FAR MEMORY POINTER.        *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* O - EXAMPLE 3 (STRUCTS)                                                    *|
-|* :                                                                          *|
-|* ;.., struct FAR far_struct                                                 *|
-|* :  : {                                                                     *|
-|* :  :     int id;                                                           *|
-|* :  :     char name[20];                                                    *|
-|* :  : };                                                                    *|
-|* :                                                                          *|
-|* ;... A STRUCT THAT IS STORED IN FAR MEMORY.                                *|
+|*  O - EXAMPLE 2 (POINTERS)                                                  *|
+|*  :                                                                         *|
+|* 1| FAR char *far_ptr;                                                      *|
+|* 2| far_ptr = "Hello, world!";                                              *|
+|*  :                                                                         *|
+|*  : A STRING POINTER STORED IN FAR MEMORY SPACE.                            *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* O - EXAMPLE 4 (FUNCTION POINTERS)                                          *|
-|* :                                                                          *|
-|* ;.., FAR void (*far_function)(void);                                       *|
-|* :                                                                          *|
-|* ;... A FUNCTION POINTER IN FAR MEMORY.                                     *|
+|*  O - EXAMPLE 3 (STRUCTS)                                                   *|
+|*  :                                                                         *|
+|* 1| struct FAR far_struct                                                   *|
+|* 2| {                                                                       *|
+|* 3|     int id;                                                             *|
+|* 4|     char name[20];                                                      *|
+|* 5| };                                                                      *|
+|*  :                                                                         *|
+|*  : A STRUCT THAT IS STORED IN FAR MEMORY.                                  *|
+|*  :                                                                         *|
+|*                                                                            *|
+|*  O - EXAMPLE 4 (FUNCTION POINTERS)                                         *|
+|*  :                                                                         *|
+|* 1| FAR void (*far_function)(void);                                         *|
+|*  :                                                                         *|
+|*  : A FUNCTION POINTER IN FAR MEMORY.                                       *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: PRO-TIP ::::::::::::::::::::::::::::::::  *|
+|*                                                                            *|
 |* - CHECK YOUR COMPILER DOCUMENTATION FOR MEMORY MODELS AND POINTER TYPES.   *|
 |*                                                                            *|
 |* FOR SUPPORT REALLY OLD COMPILERS: I STRICTLY AVOID USING #IF IN THIS FILE. *|
@@ -75,6 +82,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: EXPLANATION ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* [FAR] IS A MEMORY QUALIFIER USED TO ACCESS MEMORY LOCATIONS THAT ARE FAR   *|
 |* FROM THE CODE SEGMENT IN 16-BIT ARCHITECTURES.                             *|
 |*                                                                            *|
@@ -82,6 +90,7 @@
 |* NEAR (WITHIN A SINGLE SEGMENT) OR FAR (CROSSING SEGMENTS).                 *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: HOW? :::::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* MEMORY SEGMENTATION IN 16-BIT SYSTEMS WORKS WITH 64KB SEGMENTS.            *|
 |* A NEAR POINTER IS 16-BITS (OFFSET ONLY), WHILE A FAR POINTER IS 32-BITS    *|
 |* (SEGMENT:OFFSET).                                                          *|
@@ -105,6 +114,7 @@
 |* ;... "far_func" CAN CALL FUNCTIONS IN DIFFERENT SEGMENTS.                  *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::: PRO-TIPS ::::::::::::::::::::::::::::::::::::  *|
+|*                                                                            *|
 |* - IN MODERN SYSTEMS (32/64-BIT), FAR POINTERS ARE NOT NEEDED.              *|
 |* - ON MODERN COMPILERS, "FAR" IS USUALLY DEFINED AS EMPTY ("#define FAR").  *|
 |* - FAR POINTERS ARE SLOWER BECAUSE THEY REQUIRE SEGMENT SWITCHING.          *|
@@ -113,7 +123,7 @@
 \******************************************************************************/
 
 #ifndef FAR_H
-#	define FAR_H 202508 /* VERSION */
+#	define FAR_H 202511 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -174,6 +184,7 @@
 
 /* *************************** [v] DEFINE FAR [v] *************************** */
 #		ifdef LOCALMACRO__FAR_MODE_IS_TRUE
+#			undef LOCALMACRO__FAR_MODE_IS_TRUE
 #			ifndef FAR
 #				ifdef _MSC_VER
 #					define FAR _far
@@ -219,4 +230,4 @@
 #ifdef __EOF__
 #	undef __EOF__
 #endif /* __EOF__ */
-#define __EOF__ /*  FOR DOS, CP/M, ETC */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC
