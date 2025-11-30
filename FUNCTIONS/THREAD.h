@@ -56,14 +56,15 @@
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* ;.., void *my_thread(void *arg)                                            *|
-|*    : {                                                                     *|
-|*    :     // ...                                                            *|
-|*    :     return 0;                                                         *|
-|*    : }                                                                     *|
-|*    :                                                                       *|
-|*    : t_thread thread = thread_create(my_thread, NULL);                     *|
-|*    : if (!thread) { handle error }                                         *|
+|*1| void *my_thread(void *arg)                                               *|
+|*2| {                                                                        *|
+|*3|     // ...                                                               *|
+|*4|     return 0;                                                            *|
+|*5| }                                                                        *|
+|*6|                                                                          *|
+|*7| t_thread thread = thread_create(my_thread, NULL);                        *|
+|*8| if (!thread) { handle error }                                            *|
+|* :                                                                          *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: THREAD_JOIN ::::::::::::::::::::::::::::::: *|
 |* WAITS FOR A THREAD TO FINISH AND FREES ITS HANDLE.                         *|
@@ -72,8 +73,9 @@
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* : void *ret;                                                               *|
-|* : thread_join(thread, &ret);                                               *|
+|*1| void *ret;                                                               *|
+|*2| thread_join(thread, &ret);                                               *|
+|* :                                                                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_CREATE ::::::::::::::::::::::::::::::: *|
 |* ALLOCATES AND INITIALIZES A MUTEX. RETURNS A MUTEX HANDLE (T_MUTEX).       *|
@@ -81,8 +83,9 @@
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* : t_mutex mutex = mutex_create();                                          *|
-|* : if (!mutex) { handle error }                                             *|
+|*1| t_mutex mutex = mutex_create();                                          *|
+|*2| if (!mutex) { handle error }                                             *|
+|* :                                                                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_DESTROY :::::::::::::::::::::::::::::: *|
 |* DESTROYS AND FREES A MUTEX CREATED WITH MUTEX_CREATE.                      *|
@@ -90,21 +93,24 @@
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* : mutex_destroy(mutex);                                                    *|
+|*1| mutex_destroy(mutex);                                                    *|
+|* :                                                                          *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: MUTEX_LOCK :::::::::::::::::::::::::::::::: *|
 |* LOCKS A MUTEX. MACRO AROUND pthread_mutex_lock.                            *|
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* : mutex_lock(mutex);                                                       *|
+|*1| mutex_lock(mutex);                                                       *|
+|* :                                                                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_UNLOCK ::::::::::::::::::::::::::::::: *|
 |* UNLOCKS A MUTEX. MACRO AROUND pthread_mutex_unlock.                        *|
 |*                                                                            *|
 |* O - EXAMPLE CODE                                                           *|
 |* :                                                                          *|
-|* : mutex_unlock(mutex);                                                     *|
+|*1| mutex_unlock(mutex);                                                     *|
+|* :                                                                          *|
 |*                                                                            *|
 |* FOR ACTUALY INFORMATIONS AND EXAMPLE ABOUT THESE FUNCTIONS: PLEASE JUST    *|
 |* READ pthreads (AKA: POSIX THREADS) DOCUMENTATIONS.                         *|

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/02 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/19 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/28 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -90,7 +90,7 @@
 \******************************************************************************/
 
 #ifndef CPU_H
-#	define CPU_H 202508 /* VERSION */
+#	define CPU_H 202511 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -109,11 +109,40 @@ extern "C" {
 #	endif /* __cplusplus */
 /* *************************** [^] C++ (PUSH) [^] *************************** */
 
-/* ************************* [v] __CPU_INTEL__ [v] ************************** */
-#	ifdef __x86_64__
+/* ************************ [v] __CPU_AMD_X86__ [v] ************************* */
+#	ifdef __amd64__ /* GNU C & SUN STUDIO */
+#		define __CPU_AMD_X86__
 #		define __CPU_INTEL__
 #		define LOCALMACRO__CPU_FOUND
 #	else
+#		ifdef __amd64 /* GNU C & SUN STUDIO */
+#			define __CPU_AMD_X86__
+#			define __CPU_INTEL__
+#			define LOCALMACRO__CPU_FOUND
+#		else
+#			ifdef _M_AMD64 /* VISUAL STUDIO */
+#				define __CPU_AMD_X86__
+#				define __CPU_INTEL__
+#				define LOCALMACRO__CPU_FOUND
+#			else
+#				ifdef __x86_64__ /* GNU C & SUN STUDIO */
+#					define __CPU_AMD_X86__
+#					define __CPU_INTEL__
+#					define LOCALMACRO__CPU_FOUND
+#				else
+#					ifdef __x86_64 /* GNU C & SUN STUDIO */
+#						define __CPU_AMD_X86__
+#						define __CPU_INTEL__
+#						define LOCALMACRO__CPU_FOUND
+#					endif /* __x86_64 */
+#				endif /* __x86_64__ */
+#			endif /* _M_AMD64 */
+#		endif /* __amd64 */
+#	endif /* __amd64__ */
+/* ************************ [^] __CPU_AMD_X86__ [^] ************************* */
+
+/* ************************* [v] __CPU_INTEL__ [v] ************************** */
+#	ifndef LOCALMACRO__CPU_FOUND
 #		ifdef __i386__
 #			define __CPU_INTEL__
 #			define LOCALMACRO__CPU_FOUND
@@ -133,12 +162,27 @@ extern "C" {
 #						ifdef __i386
 #							define __CPU_INTEL__
 #							define LOCALMACRO__CPU_FOUND
+#						else
+#							ifdef __INTEL__
+#								define __CPU_INTEL__
+#								define LOCALMACRO__CPU_FOUND
+#							else
+#								ifdef __386
+#									define __CPU_INTEL__
+#									define LOCALMACRO__CPU_FOUND
+#								else
+#									ifdef __I86__
+#										define __CPU_INTEL__
+#										define LOCALMACRO__CPU_FOUND
+#									endif /* __I86__ */
+#								endif /* __386 */
+#							endif /* __INTEL__ */
 #						endif /* __i386 */
 #					endif /* i386 */
 #				endif /* _M_IX86 */
 #			endif /* _M_X64 */
 #		endif /* __i386__ */
-#	endif /* __x86_64__ */
+#	endif /* !LOCALMACRO__CPU_FOUND */
 /* ************************* [^] __CPU_INTEL__ [^] ************************** */
 
 /* ************************** [v] __CPU_ARM__ [v] *************************** */
@@ -169,35 +213,6 @@ extern "C" {
 #		endif /* __aarch64__ */
 #	endif /* !LOCALMACRO__CPU_FOUND */
 /* ************************** [^] __CPU_ARM__ [^] *************************** */
-
-/* ************************ [v] __CPU_AMD_X86__ [v] ************************* */
-#	ifndef LOCALMACRO__CPU_FOUND
-#		ifdef __amd64__ /* GNU C & SUN STUDIO */
-#			define __CPU_AMD_X86__
-#			define LOCALMACRO__CPU_FOUND
-#		else
-#			ifdef __amd64 /* GNU C & SUN STUDIO */
-#				define __CPU_AMD_X86__
-#				define LOCALMACRO__CPU_FOUND
-#			else
-#				ifdef _M_AMD64 /* VISUAL STUDIO */
-#					define __CPU_AMD_X86__
-#					define LOCALMACRO__CPU_FOUND
-#				else
-#					ifdef __x86_64__ /* GNU C & SUN STUDIO */
-#						define __CPU_AMD_X86__
-#						define LOCALMACRO__CPU_FOUND
-#					else
-#						ifdef __x86_64 /* GNU C & SUN STUDIO */
-#							define __CPU_AMD_X86__
-#							define LOCALMACRO__CPU_FOUND
-#						endif /* __x86_64 */
-#					endif /* __x86_64__ */
-#				endif /* _M_AMD64 */
-#			endif /* __amd64 */
-#		endif /* __amd64__ */
-#	endif /* !LOCALMACRO__CPU_FOUND */
-/* ************************ [^] __CPU_AMD_X86__ [^] ************************* */
 
 /* ************************ [v] __CPU_POWERPC__ [v] ************************* */
 #	ifndef LOCALMACRO__CPU_FOUND
@@ -901,142 +916,6 @@ static INLINE char
 }
 #		endif /* __CPU_POWERPC__ */
 /* ********************* [^] __CPU_VER__ | POWERPC [^] ********************** */
-
-/* ********************* [v] __CPU_VER__ | AMD_X86 [v] ********************** */
-#		ifdef __CPU_AMD_X86__
-#			ifdef IS__INLINE_ASM__SUPPORTED
-#				ifdef INLINE_ASM_TYPE__MSVC
-#					define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-						{\
-							int	REGS[4];\
-							\
-							__cpuid(REGS, (int)(LEAF));\
-							(EAX) = REGS[0];\
-							(EBX) = REGS[1];\
-							(ECX) = REGS[2];\
-							(EDX) = REGS[3];\
-						}
-#				endif /* INLINE_ASM_TYPE__MSVC */
-#				ifdef INLINE_ASM_TYPE__GNU
-#					ifdef __i386__ /* X86_32 */
-#						ifdef __PIC__ /* POSITION-INDEPENDENT CODE */
-#							define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-								asm("xchg{l} %%ebx, %1\n\t" \
-									"cpuid\n\t" \
-									"xchg{l} %%ebx, %1\n\t" \
-									: \
-										"=a"(EAX), \
-										"=&r"(EBX), \
-										"=c"(ECX), \
-										"=d"(EDX) \
-									: "a"(LEAF)\
-								)
-#						else
-#							define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-								asm("cpuid" \
-									: \
-										"=a" (EAX), \
-										"=b" (EBX), \
-										"=c" (ECX), \
-										"=d" (EDX) \
-									: "a" (LEAF)\
-								)
-#						endif /* __PIC__ */
-#					else /* X86_64 */
-#						define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-							asm("cpuid" \
-								: \
-									"=a" (EAX), \
-									"=b" (EBX), \
-									"=c" (ECX), \
-									"=d" (EDX) \
-								: "a" (LEAF)\
-							)
-#					endif /* __i386__ */
-#				endif /* INLINE_ASM_TYPE__GNU */
-#				ifdef INLINE_ASM_TYPE__ISO
-#					ifdef __i386__
-#						ifdef __PIC__ /* POSITION-INDEPENDENT CODE */
-#							define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-								__asm__ __volatile__("xchg{l} %%ebx, %1\n\t" \
-									"cpuid\n\t" \
-									"xchg{l} %%ebx, %1\n\t" \
-									: \
-										"=a"(EAX), \
-										"=&r"(EBX), \
-										"=c"(ECX), \
-										"=d"(EDX) \
-									: "a"(LEAF)\
-								)
-#						else
-#							define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-								__asm__ __volatile__("cpuid"\
-									:\
-										"=a" (EAX),\
-										"=b" (EBX),\
-										"=c" (ECX),\
-										"=d" (EDX)\
-									: "a" (LEAF)\
-								)
-#						endif /* __PIC__ */
-#					else /* X86_64 */
-#						define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-							__asm__ __volatile__("cpuid" \
-								: \
-									"=a" (EAX), \
-									"=b" (EBX), \
-									"=c" (ECX), \
-									"=d" (EDX) \
-								: "a" (LEAF)\
-							)
-#					endif /* __i386__ */
-#				endif /* INLINE_ASM_TYPE__ISO */
-#			else
-#				define CPUID_AMD(LEAF, EAX, EBX, ECX, EDX) \
-					EAX = 0;\
-					EAX = 0;\
-					ECX = 0;\
-					EDX = 0;
-#			endif /* IS__INLINE_ASM__SUPPORTED */
-#			ifndef KNR_STYLE /* STANDARD C */
-static INLINE const char
-	*__CPU_VER__(void)
-#			else /* K&R */
-static INLINE char
-	*__CPU_VER__()
-#			endif /* !KNR_STYLE */
-{
-	static char				RESULT[32];
-	register unsigned int	EAX;
-	register unsigned int	EBX;
-	register unsigned int	ECX;
-	register unsigned int	EDX;
-
-	CPUID_AMD(0, EAX, EBX, ECX, EDX);
-	((unsigned int *)RESULT)[0] = EBX;
-	((unsigned int *)RESULT)[1] = EDX;
-	((unsigned int *)RESULT)[2] = ECX;
-	CPUID_AMD(1, EAX, EBX, ECX, EDX);
-	RESULT[12] = ' ';
-	RESULT[13] = 'F';
-	RESULT[14] = 'A';
-	RESULT[15] = 'M';
-	RESULT[16] = (char)('0' + ((EAX >> 8) & 0XF));
-	RESULT[17] = '-';
-	RESULT[18] = 'M';
-	RESULT[19] = 'O';
-	RESULT[20] = 'D';
-	RESULT[21] = (char)('0' + ((EAX >> 4) & 0XF));
-	RESULT[22] = '-';
-	RESULT[23] = 'S';
-	RESULT[24] = 'T';
-	RESULT[25] = 'P';
-	RESULT[26] = (char)('0' + (EAX & 0XF));
-	RESULT[27] = 0;
-	return (RESULT);
-}
-#		endif /* __CPU_AMD_X86__ */
-/* ********************* [^] __CPU_VER__ | AMD_X86 [^] ********************** */
 
 /* *********************** [v] __CPU_VER__ | HCCF [v] *********************** */
 #		ifdef INLINE_ASM_TYPE__HCCF

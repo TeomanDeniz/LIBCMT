@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/20 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -33,13 +33,13 @@
 |*  THIS TABLE IS FOR REALLY OLD COMPILERS. IGNORE THIS TABLE IF YOU'RE IN A  *|
 |*                              MODERN COMPILER                               *|
 |*                                                                            *|
-|*............................................................................*|
-|* COMPILTER & TARGET :                 LINK / BUILD COMMAND                  *|
-|*....................:.......................................................*|
-|* GCC (WIN2000) 3.0  : GCC #.c C:\WINNT\system32\kernel32.dll                *|
-|* GCC (WIN98) 3.0    : GCC #.c C:\WINNT\system32\kernel32.dll                *|
-|* GCC (WIN95) 3.0    : GCC #.c C:\WINNT\system32\kernel32.dll                *|
-|* GCC (DOS) 3.0?     : GCC #.c -ldjgpp                                       *|
+|*____________________________________________________________________________*|
+|* COMPILTER & TARGET |                 LINK / BUILD COMMAND                  *|
+|*____________________|_______________________________________________________*|
+|* GCC (WIN2000) 3.0  | GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (WIN98) 3.0    | GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (WIN95) 3.0    | GCC #.c C:\WINNT\system32\kernel32.dll                *|
+|* GCC (DOS) 3.0?     | GCC #.c -ldjgpp                                       *|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -140,6 +140,7 @@
 |* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
 |* :                                                                          *|
 |* ;..,                                                                       *|
+|*    :                                                                       *|
 |*   1| #define SETUP_OBJECT                                                  *|
 |*   2| #include "LIBCMT/OBJECT.h"                                            *|
 |*   3|                                                                       *|
@@ -273,29 +274,29 @@
 |* : 2| this->FUNC_B = impl_func_b;                                           *|
 |* :  :                                                                       *|
 |* :                                                                          *|
-|* :.., OBJECT__READY(OBJECT)                                                 *|
-|* :  :                                                                       *|
-|* :  : SOMETIMES YOU MAY WANT TO CHECK IF AN OBJECT IS PROPERLY CREATED      *|
-|* :  : BEFORE USING IT. USE `object__ready()` FOR SAFE VALIDATION.           *|
-|* :  :                                                                       *|
-|* :  : IT RETURNS (int)1 IF OBJECT IS VALID AND ALLOCATED, ELSE 0.           *|
-|* :  :                                                                       *|
-|* :  : EXAMPLE:                                                              *|
-|* :  :                                                                       *|
-|* : 1| new (test_object_type, OBJ) ();                                       *|
-|* : 2|                                                                       *|
-|* : 3| if (object__ready(OBJ))                                               *|
-|* : 4| {                                                                     *|
-|* : 5|     OBJ.FUNC1();                                                      *|
-|* : 6|     OBJ.FUNC2();                                                      *|
-|* : 7|                                                                       *|
-|* : 8|     destroy (OBJ);                                                    *|
-|* : 9| }                                                                     *|
-|* :10| else                                                                  *|
-|* :11| {                                                                     *|
-|* :12|     printf("Object not ready!\n");                                    *|
-|* :13| }                                                                     *|
-|* :  :                                                                       *|
+|* :..., OBJECT__READY(OBJECT)                                                *|
+|* :   :                                                                      *|
+|* :   : SOMETIMES YOU MAY WANT TO CHECK IF AN OBJECT IS PROPERLY CREATED     *|
+|* :   : BEFORE USING IT. USE `object__ready()` FOR SAFE VALIDATION.          *|
+|* :   :                                                                      *|
+|* :   : IT RETURNS (int)1 IF OBJECT IS VALID AND ALLOCATED, ELSE 0.          *|
+|* :   :                                                                      *|
+|* :   : EXAMPLE:                                                             *|
+|* :   :                                                                      *|
+|* :  1| new (test_object_type, OBJ) ();                                      *|
+|* :  2|                                                                      *|
+|* :  3| if (object__ready(OBJ))                                              *|
+|* :  4| {                                                                    *|
+|* :  5|     OBJ.FUNC1();                                                     *|
+|* :  6|     OBJ.FUNC2();                                                     *|
+|* :  7|                                                                      *|
+|* :  8|     destroy (OBJ);                                                   *|
+|* :  9| }                                                                    *|
+|* : 10| else                                                                 *|
+|* : 11| {                                                                    *|
+|* : 12|     printf("Object not ready!\n");                                   *|
+|* : 13| }                                                                    *|
+|* :   :                                                                      *|
 |* :                                                                          *|
 |* :.., OBJECT__CONNECT(STRUCT_NAME)                                          *|
 |*    :                                                                       *|
@@ -324,135 +325,140 @@
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
-|* O - SOME EXAMPLES                                                          *|
-|* :                                                                          *|
-|* : object test_object_type                                                  *|
-|* : {                                                                        *|
-|* :     i_am_an_object;                                                      *|
-|* :                                                                          *|
-|* :     void (*worked)(int);                                                 *|
-|* :     int value;                                                           *|
-|* : };                                                                       *|
-|* :                                                                          *|
-|* : extern void o_worked(int);                                               *|
-|* :                                                                          *|
-|* : static void test_object_type(void)                                       *|
-|* : {                                                                        *|
-|* :     object__connect (test_object_type);                                  *|
-|* :      object__inject (worked, o_worked);                                  *|
-|* :                                                                          *|
-|* :     this->value = 0;                                                     *|
-|* : }                                                                        *|
-|* :                                                                          *|
-|* : void o_worked(int n)                                                     *|
-|* : {                                                                        *|
-|* :     object__connect (test_object_type);                                  *|
-|* :                                                                          *|
-|* :     this->value += n;                                                    *|
-|* : }                                                                        *|
+|*   O - SOME EXAMPLES                                                        *|
+|*   :                                                                        *|
+|*  1| object test_object_type                                                *|
+|*  2| {                                                                      *|
+|*  3|     i_am_an_object;                                                    *|
+|*  4|                                                                        *|
+|*  5|     void (*worked)(int);                                               *|
+|*  6|     int value;                                                         *|
+|*  7| };                                                                     *|
+|*  8|                                                                        *|
+|*  9| extern void o_worked(int);                                             *|
+|* 10|                                                                        *|
+|* 11| static void test_object_type(void)                                     *|
+|* 12| {                                                                      *|
+|* 13|     object__connect (test_object_type);                                *|
+|* 14|      object__inject (worked, o_worked);                                *|
+|* 15|                                                                        *|
+|* 16|     this->value = 0;                                                   *|
+|* 17| }                                                                      *|
+|* 18|                                                                        *|
+|* 19| void o_worked(int n)                                                   *|
+|* 20| {                                                                      *|
+|* 21|     object__connect (test_object_type);                                *|
+|* 22|                                                                        *|
+|* 23|     this->value += n;                                                  *|
+|* 24| }                                                                      *|
+|*   :                                                                        *|
 |*                                                                            *|
-|* O - USAGE                                                                  *|
-|* :                                                                          *|
-|* : new (test_object_type, obj) (); // CONSTRUCTOR CALLED                    *|
-|* : obj.worked(42); // uses implicit "THIS"                                  *|
-|* : destroy (obj);                                                           *|
+|*  O - USAGE                                                                 *|
+|*  :                                                                         *|
+|* 1| new (test_object_type, obj) (); // CONSTRUCTOR CALLED                   *|
+|* 2| obj.worked(42); // uses implicit "THIS"                                 *|
+|* 3| destroy (obj);                                                          *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* O - MULTIPLE OBJECTS EXAMPLE                                               *|
-|* :                                                                          *|
-|* : new (test_object_type, test1) ();                                        *|
-|* : new (test_object_type, test2) ();                                        *|
-|* :                                                                          *|
-|* : test1.worked(42);                                                        *|
-|* : test1.worked(42);                                                        *|
-|* : test2.worked(42);                                                        *|
-|* : test1.worked(42);                                                        *|
-|* : test2.worked(42);                                                        *|
-|* :                                                                          *|
-|* : destroy (test1);                                                         *|
-|* : destroy (test2);                                                         *|
+|*   O - MULTIPLE OBJECTS EXAMPLE                                             *|
+|*   :                                                                        *|
+|*  1| new (test_object_type, test1) ();                                      *|
+|*  2| new (test_object_type, test2) ();                                      *|
+|*  3|                                                                        *|
+|*  4| test1.worked(42);                                                      *|
+|*  5| test1.worked(42);                                                      *|
+|*  6| test2.worked(42);                                                      *|
+|*  7| test1.worked(42);                                                      *|
+|*  8| test2.worked(42);                                                      *|
+|*  9|                                                                        *|
+|* 10| destroy (test1);                                                       *|
+|* 11| destroy (test2);                                                       *|
+|*   :                                                                        *|
 |*                                                                            *|
 |* O - FULL EXAMPLE                                                           *|
 |* :                                                                          *|
-|* ;.., CONNECTING YOUR OBJECT TO YOUR FUNCTIONS                              *|
-|* :  :                                                                       *|
-|* :  : object test_object_type                                               *|
-|* :  : {                                                                     *|
-|* :  :     i_am_an_object;                                                   *|
-|* :  :                                                                       *|
-|* :  :     int (*FUNC1)();                                                   *|
-|* :  :     void (*FUNC2)();                                                  *|
-|* :  :     void (*FUNC3)();                                                  *|
-|* :  :                                                                       *|
-|* :  :     int a;                                                            *|
-|* :  : };                                                                    *|
-|* :  :                                                                       *|
-|* :  : static int O_FUNC1()                                                  *|
-|* :  : {                                                                     *|
-|* :  :     object__connect (test_object_type);                               *|
-|* :  :                                                                       *|
-|* :  :     printf("1\n");                                                    *|
-|* :  :     return (42);                                                      *|
-|* :  : }                                                                     *|
-|* :  :                                                                       *|
-|* :  : static void O_FUNC2()                                                 *|
-|* :  : {                                                                     *|
-|* :  :     object__connect (test_object_type);                               *|
-|* :  :                                                                       *|
-|* :  :     printf("2\n");                                                    *|
-|* :  : }                                                                     *|
-|* :  :                                                                       *|
-|* :  : static void FUNC3()                                                   *|
-|* :  : {                                                                     *|
-|* :  :     object__connect (test_object_type);                               *|
-|* :  :                                                                       *|
-|* :  :     printf("3\n");                                                    *|
-|* :  : }                                                                     *|
-|* :  :                                                                       *|
-|* :  : static void test_object_type()                                        *|
-|* :  : {                                                                     *|
-|* :  :     object__connect (test_object_type);                               *|
-|* :  :     object__inject_2 (FUNC1, O_FUNC1);                                *|
-|* :  :     object__inject_2 (FUNC2, O_FUNC2);                                *|
-|* :  :     object__inject (FUNC3);                                           *|
-|* :  :                                                                       *|
-|* :  :     printf("0\n");                                                    *|
-|* :  : }                                                                     *|
+|* ;..., CONNECTING YOUR OBJECT TO YOUR FUNCTIONS                             *|
+|* :   :                                                                      *|
+|* :  1| object test_object_type                                              *|
+|* :  2| {                                                                    *|
+|* :  3|     i_am_an_object;                                                  *|
+|* :  4|                                                                      *|
+|* :  5|     int (*FUNC1)();                                                  *|
+|* :  6|     void (*FUNC2)();                                                 *|
+|* :  7|     void (*FUNC3)();                                                 *|
+|* :  8|                                                                      *|
+|* :  9|     int a;                                                           *|
+|* : 10| };                                                                   *|
+|* : 11|                                                                      *|
+|* : 12| static int O_FUNC1()                                                 *|
+|* : 13| {                                                                    *|
+|* : 14|     object__connect (test_object_type);                              *|
+|* : 15|                                                                      *|
+|* : 16|     printf("1\n");                                                   *|
+|* : 17|     return (42);                                                     *|
+|* : 18| }                                                                    *|
+|* : 19|                                                                      *|
+|* : 20| static void O_FUNC2()                                                *|
+|* : 21| {                                                                    *|
+|* : 22|     object__connect (test_object_type);                              *|
+|* : 23|                                                                      *|
+|* : 24|     printf("2\n");                                                   *|
+|* : 25| }                                                                    *|
+|* : 26|                                                                      *|
+|* : 27| static void FUNC3()                                                  *|
+|* : 28| {                                                                    *|
+|* : 29|     object__connect (test_object_type);                              *|
+|* : 30|                                                                      *|
+|* : 31|     printf("3\n");                                                   *|
+|* : 32| }                                                                    *|
+|* : 33|                                                                      *|
+|* : 34| static void test_object_type()                                       *|
+|* : 35| {                                                                    *|
+|* : 36|     object__connect (test_object_type);                              *|
+|* : 37|     object__inject_2 (FUNC1, O_FUNC1);                               *|
+|* : 38|     object__inject_2 (FUNC2, O_FUNC2);                               *|
+|* : 39|     object__inject (FUNC3);                                          *|
+|* : 40|                                                                      *|
+|* : 41|     printf("0\n");                                                   *|
+|* : 42| }                                                                    *|
+|* :   :                                                                      *|
 |* :                                                                          *|
 |* ;.., CREATING AND USING OBJECTS                                            *|
 |*    :                                                                       *|
-|*    : int main(void)                                                        *|
-|*    : {                                                                     *|
-|*    :     {                                                                 *|
-|*    :         new (test_object_type, TEST) ();                              *|
+|*   1| int main(void)                                                        *|
+|*   2| {                                                                     *|
+|*   3|     {                                                                 *|
+|*   4|         new (test_object_type, TEST) ();                              *|
+|*   5|                                                                       *|
+|*   6|         TEST.FUNC1();                                                 *|
+|*   7|         TEST.FUNC2();                                                 *|
+|*   8|         TEST.FUNC3();                                                 *|
+|*   9|                                                                       *|
+|*  10|         destroy (TEST);                                               *|
+|*  11|     }                                                                 *|
+|*  12|                                                                       *|
+|*  13|     {                                                                 *|
+|*  14|         new (test_object_type, TEST1) ();                             *|
+|*  15|         new (test_object_type, TEST2) ();                             *|
+|*  16|                                                                       *|
+|*  17|         TEST1.FUNC1();                                                *|
+|*  18|         TEST1.FUNC2();                                                *|
+|*  19|                                                                       *|
+|*  20|         TEST2.FUNC1();                                                *|
+|*  21|         TEST2.FUNC2();                                                *|
+|*  22|                                                                       *|
+|*  23|         TEST1.FUNC1();                                                *|
+|*  24|         TEST2.FUNC1();                                                *|
+|*  25|                                                                       *|
+|*  26|         printf("%d\n", TEST1.FUNC1());                                *|
+|*  27|                                                                       *|
+|*  28|         destroy (TEST1);                                              *|
+|*  29|         destroy (TEST2);                                              *|
+|*  30|     }                                                                 *|
+|*  31|                                                                       *|
+|*  32|     return (0);                                                       *|
+|*  33| }                                                                     *|
 |*    :                                                                       *|
-|*    :         TEST.FUNC1();                                                 *|
-|*    :         TEST.FUNC2();                                                 *|
-|*    :         TEST.FUNC3();                                                 *|
-|*    :                                                                       *|
-|*    :         destroy (TEST);                                               *|
-|*    :     }                                                                 *|
-|*    :                                                                       *|
-|*    :     {                                                                 *|
-|*    :         new (test_object_type, TEST1) ();                             *|
-|*    :         new (test_object_type, TEST2) ();                             *|
-|*    :                                                                       *|
-|*    :         TEST1.FUNC1();                                                *|
-|*    :         TEST1.FUNC2();                                                *|
-|*    :                                                                       *|
-|*    :         TEST2.FUNC1();                                                *|
-|*    :         TEST2.FUNC2();                                                *|
-|*    :                                                                       *|
-|*    :         TEST1.FUNC1();                                                *|
-|*    :         TEST2.FUNC1();                                                *|
-|*    :                                                                       *|
-|*    :         printf("%d\n", TEST1.FUNC1());                                *|
-|*    :                                                                       *|
-|*    :         destroy (TEST1);                                              *|
-|*    :         destroy (TEST2);                                              *|
-|*    :     }                                                                 *|
-|*    :                                                                       *|
-|*    :     return (0);                                                       *|
-|*    : }                                                                     *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -689,7 +695,7 @@ extern int	__dpmi_free_memory();
 #	else
 #		ifdef __CPU_INTEL__
 #			define OBJECT__CONNECT(OBJECT_STRUCT_TYPE) \
-				register void			*LOCALMACRO__SELF__;\
+				register void				*LOCALMACRO__SELF__;\
 				GET_RAX(LOCALMACRO__SELF__);\
 				OBJECT OBJECT_STRUCT_TYPE	*const THIS = \
 					(OBJECT OBJECT_STRUCT_TYPE *)LOCALMACRO__SELF__
@@ -760,12 +766,6 @@ LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
 #				ifdef WinMain
 #					undef WinMain
 #				endif /* main */
-#				ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#					define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
-						LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#				else
-#					define LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES
-#				endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
 #				ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
 #					define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
 						LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
@@ -777,13 +777,11 @@ LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
 #				define main \
 					__IDLE__TRY_CATCH; \
 					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-					LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
 					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
 					int main
 #				define WinMain \
 					__IDLE__TRY_CATCH; \
 					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-					LOCALMACRO__OBJECT__VA_ARGS_GLOBAL_VARIABLES \
 					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
 					int WINAPI WinMain
 #			endif /* SETUP_OBJECT */

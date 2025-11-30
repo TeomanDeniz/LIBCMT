@@ -37,6 +37,10 @@ Creates an assembly section/label.
 Marks the end of a section.
 
 .TP
+.B VALUE
+Use a direct value.
+
+.TP
 .B MEM8
 Use 8-bit memory (One arg)
 
@@ -190,9 +194,9 @@ It enables cross-platform ASM blocks without rewriting for each compiler.
 Example: basic function
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION(example_func)
-    MOV32(EAX, EBX)
-    ADD32(EAX, 1)
+SECTION (example_func)
+    MOV32 (EAX, EBX)
+    ADD32 (EAX, 1)
     RET
 END
 #include "LIBCMT/ASM/POP.h"
@@ -203,8 +207,8 @@ extern int example_func(void); // Connect it with C
 Byte copy:
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION(copy_byte)
-    MOV8(MEM8(RDI), AL)
+SECTION (copy_byte)
+    MOV8 (MEM8(RDI), AL)
     RET
 END
 #include "LIBCMT/ASM/POP.h"
@@ -213,8 +217,18 @@ END
 Indexed arithmetic:
 .nf
 #include "LIBCMT/ASM/PUSH.h"
-SECTION(add_indexed)
-    ADD32(MEM32_INDEX(RAX, RCX), EDX)
+SECTION (add_indexed)
+    ADD32 (MEM32_INDEX(RAX, RCX), EDX)
+    RET
+END
+#include "LIBCMT/ASM/POP.h"
+.fi
+
+Setting a direct value to a register:
+.nf
+#include "LIBCMT/ASM/PUSH.h"
+SECTION (add_indexed)
+    MOV64 (RAX, VALUE(42))
     RET
 END
 #include "LIBCMT/ASM/POP.h"

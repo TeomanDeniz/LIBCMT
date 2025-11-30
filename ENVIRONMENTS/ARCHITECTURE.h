@@ -8,34 +8,56 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/21 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/29 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
 /******************************************************************************\
 |*                                  CONTENTS                                  *|
 |******************************************************************************|
-|*............................................................................*|
+|*    ....................................................................    *|
+|*  .'                     CPU ARCHITECTURE WORD SIZE                     '.  *|
+|*.:........................................................................:.*|
+|*       NAME        :   TYPE  :                 DESCRIPTION                  *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_64_BIT__ : #define : DEFINED IF THE SYSTEM IS 64-BIT              *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_32_BIT__ : #define : DEFINED IF THE SYSTEM IS 32-BIT              *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_31_BIT__ : #define : DEFINED IF THE SYSTEM ALSO 31-BIT            *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_16_BIT__ : #define : DEFINED IF THE SYSTEM IS 16-BIT              *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_8_BIT__  : #define : DEFINED IF THE SYSTEM IS 8-BIT               *|
+|*...................:.........:..............................................*|
+|* __SYSTEM_BIT__    : #define : MACRO INDICATING THE SYSTEM BIT-WIDTH        *|
+|*...................:.........:..............................................*|
+|*                                                                            *|
+|*    ....................................................................    *|
+|*  .'         FORCED / COMPILER-SUPPORTED EXTENDED INTEGER SIZES         '.  *|
+|*.:........................................................................:.*|
 |*        NAME        :   TYPE  :                 DESCRIPTION                 *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_512_BIT__ : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 512-BIT *|
+|* __HAS_128_BIT__    : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 128-BIT *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_256_BIT__ : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 256-BIT *|
+|* __HAS_64_BIT__     : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 64-BIT  *|
+|*                    :         : (FOR 32/16-BIT SYSTEMS)                     *|
 |*....................:.........:.............................................*|
-|* __SYSTEM_128_BIT__ : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 128-BIT *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_64_BIT__  : #define : DEFINED IF THE SYSTEM IS 64-BIT             *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_32_BIT__  : #define : DEFINED IF THE SYSTEM IS 32-BIT             *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_31_BIT__  : #define : DEFINED IF THE SYSTEM ALSO SUPPORTS 31-BIT  *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_16_BIT__  : #define : DEFINED IF THE SYSTEM IS 16-BIT             *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_8_BIT__   : #define : DEFINED IF THE SYSTEM IS 8-BIT              *|
-|*....................:.........:.............................................*|
-|* __SYSTEM_BIT__     : #define : MACRO INDICATING THE SYSTEM BIT-WIDTH       *|
-|*....................:.........:.............................................*|
+|*                                                                            *|
+|*    ....................................................................    *|
+|*  .'                       VECTOR REGISTER SIZES                        '.  *|
+|*.:........................................................................:.*|
+|*          NAME          :  TYPE   :               DESCRIPTION               *|
+|*........................:.........:.........................................*|
+|* __HAS_512_BIT_VECTOR__ : #define : DEFINED IF THE SYSTEM SUPPORTS 512-BIT  *|
+|*                        :         : VECTOR REGISTERS                        *|
+|*........................:.........:.........................................*|
+|* __HAS_256_BIT_VECTOR__ : #define : DEFINED IF THE SYSTEM SUPPORTS 256-BIT  *|
+|*                        :         : VECTOR REGISTERS                        *|
+|*........................:.........:.........................................*|
+|* __HAS_128_BIT_VECTOR__ : #define : DEFINED IF THE SYSTEM SUPPORTS 128-BIT  *|
+|*                        :         : VECTOR REGISTERS                        *|
+|*........................:.........:.........................................*|
 \******************************************************************************/
 
 /*############################################################################*\
@@ -51,12 +73,12 @@
 |*#                                SIDE NOTES                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* TO SUPPORT VERY OLD COMPILERS, THIS FILE STRICTLY AVOIDS USING #IF.        *|
+|* TO SUPPORT VERY OLD COMPILERS, THIS FILE STRICTLY AVOIDS USING #if & #elif *|
 |*                                                                            *|
 \******************************************************************************/
 
 #ifndef ARCHITECTURE_H
-#	define ARCHITECTURE_H 202508 /* VERSION */
+#	define ARCHITECTURE_H 202511 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -86,66 +108,6 @@ extern "C" {
 #		endif /* CONFIG_L1_CACHE_SHIFT */
 #	endif /* CONFIG_ARC_CACHE_LINE_SHIFT */
 /* *************************** [^] ARC CONFIG [^] *************************** */
-
-/* **************************** [v] 512-BITS [v] **************************** */
-#	ifdef __AVX512F__ /* (512-BIT ADVANCED VECTOR EXTENSIONS) */
-#		define __SYSTEM_512_BIT__
-#	endif /* __AVX2__ */
-#	ifndef __SYSTEM_512_BIT__
-#		ifdef __ARM_FEATURE_SVE /* SCALABLE VECTOR EXTENSION */
-#			ifdef __ARM_FEATURE_SVE_BITS
-#				if (__ARM_FEATURE_SVE_BITS >= 512)
-#					define __SYSTEM_512_BIT__
-#				endif /* __ARM_FEATURE_SVE_BITS >= 512 */
-#			endif /* __ARM_FEATURE_SVE_BITS */
-#		endif /* __ARM_FEATURE_SVE */
-#	endif /* !__SYSTEM_512_BIT__ */
-/* **************************** [^] 512-BITS [^] **************************** */
-
-/* **************************** [v] 256-BITS [v] **************************** */
-#	ifdef __AVX2__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) V2 */
-#		define __SYSTEM_256_BIT__
-#	else
-#		ifdef __AVX__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) */
-#			define __SYSTEM_256_BIT__
-#		endif /* __AVX__ */
-#	endif /* __AVX2__ */
-#	ifndef __SYSTEM_256_BIT__
-#		ifdef __ARM_FEATURE_SVE /* SCALABLE VECTOR EXTENSION */
-#			ifdef __ARM_FEATURE_SVE_BITS
-#				if (__ARM_FEATURE_SVE_BITS >= 256)
-#					define __SYSTEM_256_BIT__
-#				endif /* __ARM_FEATURE_SVE_BITS >= 256 */
-#			endif /* __ARM_FEATURE_SVE_BITS */
-#		endif /* __ARM_FEATURE_SVE */
-#	endif /* !__SYSTEM_256_BIT__ */
-/* **************************** [^] 256-BITS [^] **************************** */
-
-/* **************************** [v] 128-BITS [v] **************************** */
-#	ifdef __SSE3__ /* INTEL SIMD (128-BIT VECTOR REGISTERS) */
-#		define __SYSTEM_128_BIT__
-#	endif /* __SSE3__ */
-#	ifndef __SYSTEM_128_BIT__
-#		ifdef __SSE2__ /* INTEL SIMD (128-BIT VECTOR REGISTERS) */
-#			define __SYSTEM_128_BIT__
-#		endif /* __SSE2__ */
-#	endif /* !__SYSTEM_128_BIT__ */
-#	ifndef __SYSTEM_128_BIT__
-#		ifdef __SSE__ /* INTEL SIMD (128-BIT VECTOR REGISTERS) */
-#			define __SYSTEM_128_BIT__
-#		endif /* __SSE__ */
-#	endif /* !__SYSTEM_128_BIT__ */
-#	ifndef __SYSTEM_128_BIT__
-#		ifdef __ARM_NEON__ /* ARM NEON SIMD (128-BIT VECTOR REGISTERS) */
-#			define __SYSTEM_128_BIT__
-#		endif /* __ARM_NEON__ */
-#	endif /* !__SYSTEM_128_BIT__ */
-#	ifndef __SYSTEM_128_BIT__
-#		ifdef __ARM_NEON /* ARM NEON SIMD (128-BIT VECTOR REGISTERS) */
-#			define __SYSTEM_128_BIT__
-#		endif /* __ARM_NEON */
-#	endif /* !__SYSTEM_128_BIT__ */
-/* **************************** [^] 128-BITS [^] **************************** */
 
 /* **************************** [v] 64-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
@@ -354,6 +316,24 @@ extern "C" {
 #				define LOCALMACRO__ARCHITECTURE_FOUND
 #			endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
 #		endif /* __PIC32__ */
+#		ifdef __WIN32__ /* BORLAND C++ */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __WIN32__ */
+#		ifdef _WIN32_WCE /* EMBEDDED VISUAL STUDIO C++ */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* _WIN32_WCE */
+#		ifdef __SYMBIAN32__ /* SYMBIAN OS */
+#			ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#				define __SYSTEM_32_BIT__
+#				define LOCALMACRO__ARCHITECTURE_FOUND
+#			endif /* !LOCALMACRO__ARCHITECTURE_FOUND */
+#		endif /* __SYMBIAN32__ */
 #		ifdef __CC_ARM /* ARM COMPILER (KEIL ARMCC) */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_32_BIT__
@@ -734,6 +714,10 @@ extern "C" {
 
 /* **************************** [v] 16-BITS [v] ***************************** */
 #	ifndef LOCALMACRO__ARCHITECTURE_FOUND
+#		ifdef _WIN16 /* WINDOWS 16-BIT */
+#			define __SYSTEM_16_BIT__
+#			define LOCALMACRO__ARCHITECTURE_FOUND
+#		endif /* _WIN16 */
 #		ifdef __C166__ /* KEIL C166 (ARM) */
 #			ifndef LOCALMACRO__ARCHITECTURE_FOUND
 #				define __SYSTEM_16_BIT__
@@ -1007,6 +991,86 @@ extern "C" {
 #		endif /* __SYSTEM_32_BIT__ */
 #	endif /* __SYSTEM_64_BIT__ */
 /* ************************* [^] __SYSTEM_BIT__ [^] ************************* */
+
+/* ********************* [v] __HAS_512_BIT_VECTOR__ [v] ********************* */
+#	ifdef __AVX512F__ /* (512-BIT ADVANCED VECTOR EXTENSIONS) */
+#		define __HAS_512_BIT_VECTOR__
+#	else
+#		ifdef __ARM_FEATURE_SVE /* SCALABLE VECTOR EXTENSION */
+#			ifdef __ARM_FEATURE_SVE_BITS
+#				if (__ARM_FEATURE_SVE_BITS >= 512)
+#					define __HAS_512_BIT_VECTOR__
+#				endif /* __ARM_FEATURE_SVE_BITS >= 512 */
+#			endif /* __ARM_FEATURE_SVE_BITS */
+#		endif /* __ARM_FEATURE_SVE */
+#	endif /* __AVX512F__ */
+/* ********************* [^] __HAS_512_BIT_VECTOR__ [^] ********************* */
+
+/* ********************* [v] __HAS_256_BIT_VECTOR__ [v] ********************* */
+#	ifdef __AVX2__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) V2 */
+#		define __HAS_256_BIT_VECTOR__
+#	else
+#		ifdef __AVX__ /* (256-BIT ADVANCED VECTOR EXTENSIONS) */
+#			define __HAS_256_BIT_VECTOR__
+#		else
+#			ifdef __ARM_FEATURE_SVE /* SCALABLE VECTOR EXTENSION */
+#				ifdef __ARM_FEATURE_SVE_BITS
+#					if (__ARM_FEATURE_SVE_BITS >= 256)
+#						define __HAS_256_BIT_VECTOR__
+#					endif /* __ARM_FEATURE_SVE_BITS >= 256 */
+#				endif /* __ARM_FEATURE_SVE_BITS */
+#			endif /* __ARM_FEATURE_SVE */
+#		endif /* __AVX__ */
+#	endif /* __AVX2__ */
+/* ********************* [^] __HAS_256_BIT_VECTOR__ [^] ********************* */
+
+/* ********************* [v] __HAS_128_BIT_VECTOR__ [v] ********************* */
+#	ifdef __SSE3__ /* INTEL SIMD */
+#		define __HAS_128_BIT_VECTOR__
+#	else
+#		ifdef __SSE2__ /* INTEL SIMD */
+#			define __HAS_128_BIT_VECTOR__
+#		else
+#			ifdef __SSE__ /* INTEL SIMD */
+#				define __HAS_128_BIT_VECTOR__
+#			else
+#				ifdef __ARM_NEON__ /* ARM NEON SIMD */
+#					define __HAS_128_BIT_VECTOR__
+#				else
+#					ifdef __ARM_NEON /* ARM NEON SIMD */
+#						define __HAS_128_BIT_VECTOR__
+#					endif /* __ARM_NEON */
+#				endif /* __ARM_NEON__ */
+#			endif /* __SSE__ */
+#		endif /* __SSE2__ */
+#	endif /* __SSE3__ */
+/* ********************* [^] __HAS_128_BIT_VECTOR__ [^] ********************* */
+
+/* ************************ [v] __HAS_128_BIT__ [v] ************************* */
+#	ifdef __SIZEOF_INT128__
+#		if (__SIZEOF_INT128__ == 16)
+#			define __HAS_128_BIT__
+#		endif /* __SIZEOF_INT128__ == 16 */
+#	endif /* __SIZEOF_INT128__ */
+/* ************************ [^] __HAS_128_BIT__ [^] ************************* */
+
+/* ************************* [v] __HAS_64_BIT__ [v] ************************* */
+#	ifdef __SYSTEM_32_BIT__
+#		ifdef __STDC_VERSION__
+#			if (__STDC_VERSION__ >= 199901L)
+#				define __HAS_64_BIT__
+#			endif /* __STDC_VERSION__ >= 199901L */
+#		endif /* __STDC_VERSION__ */
+#	else
+#		ifdef __SYSTEM_16_BIT__
+#			ifdef __STDC_VERSION__
+#				if (__STDC_VERSION__ >= 199901L)
+#					define __HAS_64_BIT__
+#				endif /* __STDC_VERSION__ >= 199901L */
+#			endif /* __STDC_VERSION__ */
+#		endif /* __SYSTEM_16_BIT__ */
+#	endif /* __SYSTEM_32_BIT__ */
+/* ************************* [^] __HAS_64_BIT__ [^] ************************* */
 
 /* *************************** [v] C++ (POP) [v] **************************** */
 #	ifdef __cplusplus /* C++ */

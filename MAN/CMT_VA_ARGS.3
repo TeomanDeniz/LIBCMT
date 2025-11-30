@@ -1,7 +1,7 @@
 .TH CMT_VA_ARGS 3 "LIBCMT" "CMT_VA_ARGS" "Function Attributes"
 
 .SH NAME
-CMT_VA_ARGS \- Under maintenance: variable arguments support for older compilers
+CMT_VA_ARGS \- Variable arguments support for older compilers
 
 .SH SYNOPSIS
 .B #define INCL__VA_ARGS
@@ -9,17 +9,80 @@ CMT_VA_ARGS \- Under maintenance: variable arguments support for older compilers
 .B #include <LIBCMT/LIBCMT.h>
 
 .SH DESCRIPTION
-This section is currently under maintenance. The macros and typedefs for supporting 
-variable argument functions on pre-C89 compilers are temporarily unavailable.
+This library provides support for variable argument functions on **pre-C89** compilers.
+It defines macros and typedefs to work with `va_args`-style arguments, as an alternative
+to `...` in function definitions.
+
+.SH MACROS AND TYPES
+.TP
+.B \`va_list\`, \`VA_LIST\`
+Typedef for creating your argument list.
+.TP
+.B \`va_arg\`, \`VA_ARG\`
+Macro to get a variable from your `va_list` in your function.
+.TP
+.B \`va_copy\`, \`VA_COPY\`
+Macro to copy a `va_list` address.
+.TP
+.B \`va_start\`, \`VA_START\`
+Macro to get the address pointer of your argument list.
+.TP
+.B \`va_args\`, \`VA_ARGS\`
+Macro to tell the compiler the function accepts varargs (`...`).
+.TP
+.B \`va_end\`, \`VA_END\`
+Macro to end a `va_list` pointer.
 
 .SH USAGE
-Refer to the library documentation or source code for updates and examples once the feature is restored.
+Example:
+
+.nf
+.c
+void test(int, va_args); // PROTOTYPE
+
+int main(void)
+{
+    test(42, 42.0, "Hello world");
+    return (0);
+}
+
+extern int printf(const char *, va_args); // PROTOTYPE
+
+void test(int start, va_args)
+{
+    va_list x;
+    va_list y;
+    va_start(x, start);
+    va_copy(y, x);
+    printf("%d\nx:%f\n", start, va_arg(x, double));
+    va_end(x);
+    printf("y:%f\n", va_arg(y, double));
+    printf("y:%s\n", va_arg(y, char *));
+    va_end(y);
+}
+.fi
 
 .SH NOTES
-- Intended for providing `va_args` functionality similar to `<stdarg.h>` on legacy compilers.
-- All related macros (`VA_ADD`, `VA_PUSH`, `VA_POP`, `VA_ARG`, etc.) are currently disabled or not fully supported.
+- Use `VA_ARGS` or `va_args` instead of `...` on older compilers.
+- Provides functionality similar to `<stdarg.h>` for legacy systems.
+
+.SH EXAMPLE
+Instead of:
+
+.nf
+.c
+printf(const char *, ...);
+.fi
+
+Use:
+
+.nf
+.c
+printf(const char *, va_args);
+.fi
 
 .SH SEE ALSO
+.B CMT_KNR_STYLE(3),
 .B LIBCMT(3)
 
 .SH AUTHOR

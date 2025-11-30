@@ -18,11 +18,31 @@ This header defines a macro indicating whether the compiler is using K&R (Kernig
 .B KNR_STYLE
 Defined if the compiler uses K&R style syntax.
 
+.TP
+.B void
+Redefined under K&R‐only compilers.
+
+.TP
+.B const
+Redefined under K&R‐only compilers.
+
+.TP
+.B volatile
+Redefined under K&R‐only compilers.
+
+.TP
+.B signed
+Redefined under K&R‐only compilers.
+
+.TP
+.B unsigned
+Redefined when using Microsoft C Compiler version 1.0 or 2.0.
+
 .SH USAGE
 Useful for writing portable code that needs to distinguish between ANSI/ISO C and older K&R compilers.
 
 .SH SEE ALSO
-.B CMT_COMMA_OPERATOR(3),
+.B CMT_VA_ARGS(3),
 .B LIBCMT(3)
 
 .SH AUTHOR

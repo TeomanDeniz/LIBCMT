@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -261,12 +261,6 @@ LOCAL int			__TRY_CATCH_VALUE__ = 0;
 #		ifdef WinMain
 #			undef WinMain
 #		endif /* main */
-#		ifdef LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#			define LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
-				LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES
-#		else
-#			define LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES
-#		endif /* LOCALMACRO__VA_ARGS_GLOBAL_VARIABLES */
 #		ifdef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
 #			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
 				LOCALMACRO__OBJECT_GLOBAL_VARIABLES
@@ -282,13 +276,11 @@ LOCAL int			__TRY_CATCH_VALUE__ = 0;
 #		define main \
 			__IDLE__TRY_CATCH; \
 			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
-			LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
 			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 			int main
 #		define WinMain \
 			__IDLE__TRY_CATCH; \
 			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
-			LOCALMACRO__TRY_CATCH__VA_ARGS_GLOBAL_VARIABLES \
 			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
 			int WINAPI WinMain
 #	endif /* SETUP_TRY_CATCH */

@@ -7,9 +7,9 @@ LIBCMT is a modular and portable C library extension designed to provide essenti
 To include **all features**:
 
 ```c
-#include "LIBCMT/LIBCMT.h"    // For C
+#include "LIBCMT/LIBCMT.h" // For C
 // or
-#include "LIBCMT/LIBCMT.hpp"  // For C++
+#include "LIBCMT/LIBCMT.hpp" // For C++
 ```
 
 ## Modular Include (Optional)
@@ -17,17 +17,185 @@ To include **all features**:
 You can selectively include specific components by defining `INCL__<MODULE>` macros before the include:
 
 ```c
-#define INCL__FARF
+#define INCL__FAR
 #include "LIBCMT/LIBCMT.h" // Includes only the FAR module
 ```
 Or
 ```c
-#define INCL__FAR
+#define INCL__INLINE
 #define INCL__OBJECT
-#include "LIBCMT/LIBCMT.h" // Includes FAR and OBJECT modules only
+#include "LIBCMT/LIBCMT.h" // Includes INLINE and OBJECT modules only
 ```
 
+## Sectional Include (Optional)
+
+You can selectively include a specific whole section by defining `INCL__<SECTION>` macros before the include:
+```c
+#define INCL__KEYWORDS
+#include "LIBCMT/LIBCMT.h" // Includes everything in KEYWORDS
+```
+or
+```c
+#define INCL__ATTRIBUTES
+#define INCL__KEYWORDS
+#define INCL__RAX
+#include "LIBCMT/LIBCMT.h" // Includes RAX, All KEYWORDS, and All ATTRIBUTES
+```
+
+So far, we have these macros for including sections:
+- **`INCL__ASM`**
+- **`INCL__ATTRIBUTES`**
+- **`INCL__CHECK_FEATURE`**
+- **`INCL__ENVIRONMENTS`**
+- **`INCL__FUNCTIONS`**
+- **`INCL__KEYWORDS`**
+
 If no `INCL__...` macro is defined, all modules will be automatically included by default.
+
+Note: Defining an `INCL__<MODULE>` that belongs to a section already included via `INCL__<SECTION>` will not produce any errors or warnings.
+
+# Show off
+
+An example script that made by using this library Tested and worked on both Win2000 GCC Version 3.2, Debian-6 32-bit GCC, Debian-13 64-bit GCC and Win11 GCC 8.1.0:
+```c
+#include <stdio.h> /* For printf() */
+
+#define INCL__OBJECT
+#define INCL__TRY_CATCH
+#define INCL__TYPES
+#include "LIBCMT/LIBCMT.h"
+/* If not anything defined to specifically include anything, everything will be included
+
+or user can just do
+
+#include "LIBCMT/OBJECT.h"
+#include "LIBCMT/KEYWORDS/TRY_CATCH.h"
+#include "LIBCMT/KEYWORDS/TYPES.h"
+
+Ooor user can laso do:
+
+#define INCL__OBJECT
+#define INCL__KEYWORDS
+#include "LIBCMT/LIBCMT.h"
+*/
+
+// User MUST use different commands depends on the CPU type.
+// For architectures, RCX or RAX like registers automatically downs to ECX or EAX but no alterantive exist,
+// compiler will throw an error when an unexisting command is used on a certain CPU architecture, type, or version.
+#include "LIBCMT/ASM/PUSH.h" // Works on ALL compilers who supports inline assembly without an error or warning by using inline assembly.
+
+extern var ASD(var, var);
+
+#if defined(__unix__)
+SECTION (ASD)
+	ADD64 (RDI, RSI)
+	MOV64 (RAX, RDI)
+	RET
+END
+#elif defined(_WIN64)
+SECTION (ASD)
+	ADD64 (RCX, RDX)
+	MOV64 (RAX, RCX)
+	RET
+END
+#endif
+
+extern var return_42(void);
+
+SECTION (return_42)
+	MOV64 (RAX, VALUE(42))
+	RET
+END
+
+#include "LIBCMT/ASM/POP.h"
+
+object o_class // Can be also "struct s_class" too but constructore function have to be "void s_class(...)" then
+{
+	i_am_an_object; // Necessary and must be at the top
+
+	void (*print)();
+	void (*add)(bit32);
+	bit32 value;
+};
+
+void print()
+{
+	object__connect (o_class); // Needed for defining "this"
+
+	printf("[%d]\n", this->value);
+
+	throw (this->value); // Will do nothing if it's not inside a try {...};
+}
+
+void add_class(bit32 value)
+{
+	OBJECT__CONNECT (o_class);
+
+	THIS->value += value;
+}
+
+void o_class(bit32 start_value) // Constructor. Automatically works if object is created
+{
+	object__connect (o_class);
+
+	object__inject_2 (add, add_class); // this->add = add_class
+	object__inject (print); // As you see, manual injection is needed for per function in the object.
+	// Because, You may need to detect if a needed DLL file exist, and then get the needed function from it and use it in here.
+	// Otherwise, you can just use your default function.
+
+	this->value = start_value;
+}
+
+int main(void)
+{
+	new (o_class, asd) (42);
+	new (o_class, asd2) (0);
+
+/*
+	or instead, you can also do:
+
+	#define CLASS(object_name) new (o_class, object_name)
+
+	so you can use it as:
+
+	CLASS (asd) (42);
+
+	which works like namespace in C++ or smthing idk
+*/
+
+	asd.add(33); // asd.value is now 84
+
+	try
+	{
+		int error;
+
+		try
+		{
+			asd.print();
+		}
+		catch (error)
+		{
+			printf("ERROR_1: %d\n", error);
+			throw (-2);
+		}
+	}
+	catch (int error2) // May create error on older compilers, so create error2 at the top like I did in the top try-catch
+	{
+		printf("ERROR_2: %d\n", error2);
+	}
+
+	asd2.print();
+
+	destroy (asd);
+	destroy (asd2); // destroys are needed
+
+	var test = 42;
+
+	printf("ASD: %d\n", ASD(test, 12));
+	printf("return_42: %d\n", return_42());
+	return (0);
+}
+```
 
 # Contents
 
@@ -453,6 +621,7 @@ int main(void) {
 |---------------|--------------|------------------------------|
 | `SECTION`     | `#define ()` | Create a section.            |
 | `END`         | `#define`    | End of section.              |
+| `VALUE`       | `#define ()` | Use a direct value.          |
 | `MEM8`        | `#define ()` | Use 8-bit memory (One arg)   |
 | `MEM16`       | `#define ()` | Use 16-bit memory (One arg)  |
 | `MEM32`       | `#define ()` | Use 32-bit memory (One arg)  |
@@ -530,8 +699,8 @@ It abstracts:
 ```c
 #include "LIBCMT/ASM/PUSH.h"
 SECTION (example_func) // example_func:
-    MOV32(EAX, EBX)    // mov rax, ebx
-    ADD32(EAX, 1)      // add eax, 1
+    MOV32 (EAX, EBX)   // mov rax, ebx
+    ADD32 (EAX, 1)     // add eax, 1
     RET                // ret
 END
 #include "LIBCMT/ASM/POP.h"
@@ -541,18 +710,28 @@ extern int example_func(void); // Connect it with C
 Example - Byte Copy Routine
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION (copy_byte)     // copy_byte: 
-    MOV8(MEM8(RDI), AL) // mov byte [rdi], al
-    RET                 // ret
+SECTION (copy_byte)      // copy_byte:
+    MOV8 (MEM8(RDI), AL) // mov byte [rdi], al
+    RET                  // ret
 END
 #include "LIBCMT/ASM/POP.h"
 ```
 Example - Add Value at Index
 ```c
 #include "LIBCMT/ASM/PUSH.h"
-SECTION (add_indexed)                 // add_indexed
-    ADD32(MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
-    RET                               // ret
+SECTION (add_indexed)                  // add_indexed:
+    ADD32 (MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
+    RET                                // ret
+END
+#include "LIBCMT/ASM/POP.h"
+```
+
+Example - Setting a direct value to a register
+```c
+#include "LIBCMT/ASM/PUSH.h"
+SECTION (return_42)        // return_42:
+    MOV64 (RAX, VALUE(42)) // add rax, 42
+    RET                    // ret
 END
 #include "LIBCMT/ASM/POP.h"
 ```
@@ -1203,17 +1382,28 @@ int AB(ma, in)(void) // Expands to: int main(void)
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| Name                 | Type      | Description                                   |
-| -------------------- | --------- | --------------------------------------------- |
-| `__SYSTEM_512_BIT__` | `#define` | Defined if the system also supports 512-bit   |
-| `__SYSTEM_256_BIT__` | `#define` | Defined if the system also supports 256-bit   |
-| `__SYSTEM_128_BIT__` | `#define` | Defined if the system also supports 128-bit   |
-| `__SYSTEM_64_BIT__`  | `#define` | Defined if the system is 64-bit               |
-| `__SYSTEM_32_BIT__`  | `#define` | Defined if the system is 32-bit               |
-| `__SYSTEM_31_BIT__`  | `#define` | Defined if the system also supports 31-bit    |
-| `__SYSTEM_16_BIT__`  | `#define` | Defined if the system is 16-bit               |
-| `__SYSTEM_8_BIT__`   | `#define` | Defined if the system is 8-bit                |
-| `__SYSTEM_BIT__`     | `#define` | Macro indicating the system bit-width.        |
+## CPU Architecture Word Size
+| Name                | Type      | Description                           |
+| ------------------- | --------- | ------------------------------------- |
+| `__SYSTEM_64_BIT__` | `#define` | Defined if the system is 64-bit       |
+| `__SYSTEM_32_BIT__` | `#define` | Defined if the system is 32-bit       |
+| `__SYSTEM_31_BIT__` | `#define` | Defined if the system also 31-bit     |
+| `__SYSTEM_16_BIT__` | `#define` | Defined if the system is 16-bit       |
+| `__SYSTEM_8_BIT__`  | `#define` | Defined if the system is 8-bit        |
+| `__SYSTEM_BIT__`    | `#define` | Macro indicating the system bit-width |
+
+## Forced / Compiler-Supported Extended Integer Sizes
+| Name              | Type      | Description                                                        |
+| ----------------- | --------- | ------------------------------------------------------------------ |
+| `__HAS_128_BIT__` | `#define` | Defined if the system also supports 128-bit                        |
+| `__HAS_64_BIT__`  | `#define` | Defined if the system also supports 64-bit (for 32/16-bit systems) |
+
+## Vector Register Sizes
+| Name                     | Type      | Description                                             |
+| ------------------------ | --------- | ------------------------------------------------------- |
+| `__HAS_512_BIT_VECTOR__` | `#define` | Defined if the system supports 512-bit vector registers |
+| `__HAS_256_BIT_VECTOR__` | `#define` | Defined if the system supports 256-bit vector registers |
+| `__HAS_128_BIT_VECTOR__` | `#define` | Defined if the system supports 128-bit vector registers |
 
 These defines indicate the bit-width supported or used by the system.
 
@@ -1289,9 +1479,14 @@ Purpose: Allows any codebase to get a consistent CPU identification string witho
 > #include "LIBCMT/LIBCMT.h"
 > ```
 
-| Name        | Type      | Description                                    |
-| ----------- | --------- | ---------------------------------------------- |
-| `KNR_STYLE` | `#define` | Defined if compiler is using K&R style syntax. |
+| Name        | Type      | Description                                        |
+| ----------- | --------- | -------------------------------------------------- |
+| `KNR_STYLE` | `#define` | Defined if compiler is using K&R style syntax.     |
+| `void`      | `#define` | Defined if in K&R.                                 |
+| `const`     | `#define` | Defined if in K&R.                                 |
+| `volatile`  | `#define` | Defined if in K&R.                                 |
+| `signed`    | `#define` | Defined if in K&R.                                 |
+| `unsigned`  | `#define` | Defined if in Microsoft C Compiler Version 1.0/2.0 |
 
 Defines a macro if your compiler is using K&R style syntax or not.
 
@@ -2124,6 +2319,63 @@ throw (0); // to completely exit the try block
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/plaltform_corssing.gif">
+	<b>TYPES</b> - Standard and fixed-size types with support macros for portability
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 LIBCMT/KEYWORDS/TYPES.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TYPES.h)**]
+> ### Call With:
+> ```c
+> #define INCL__TYPES
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+## Standard Types
+| Name           | Type    | Description                                       |
+|----------------|---------|---------------------------------------------------|
+| `BYTE`, `byte` | typedef | 8-bit storage unit (char)                         |
+| `LET`, `let`   | typedef | Type for array indexing and sizes (like `size_t`) |
+| `VAR`, `var`   | typedef | Type capable of holding maximum addressable value |
+| `PTR`, `ptr`   | typedef | Generic pointer type                              |
+
+## Types with Fixed Sizes
+| Name               | Type    | Description                                       |
+|--------------------|---------|---------------------------------------------------|
+| `BIT8`, `bit8`     | typedef | 8-bit unsigned or signed integer                  |
+| `BIT16`, `bit16`   | typedef | 16-bit unsigned or signed integer                 |
+| `BIT32`, `bit32`   | typedef | 32-bit unsigned or signed integer                 |
+| `BIT64`, `bit64`   | typedef | 64-bit unsigned or signed integer                 |
+| `BIT128`, `bit128` | typedef | 128-bit unsigned or signed integer (if supported) |
+
+## Floating-Point Types
+| Name                   | Type    | Description                               |
+|------------------------|---------|-------------------------------------------|
+| `FLOAT32`, `float32`   | typedef | 32-bit single-precision floating-point    |
+| `FLOAT64`, `float64`   | typedef | 64-bit double-precision floating-point    |
+| `FLOAT128`, `float128` | typedef | 128-bit extended-precision floating-point |
+
+## Macros to Check Support of Types
+| Name                  | Type    | Description                                |
+|-----------------------|---------|--------------------------------------------|
+| `SUPPORTED__BIT64`    | #define | Defined if compiler supports BIT64 type    |
+| `SUPPORTED__BIT128`   | #define | Defined if compiler supports BIT128 type   |
+| `SUPPORTED__FLOAT64`  | #define | Defined if compiler supports FLOAT64 type  |
+| `SUPPORTED__FLOAT128` | #define | Defined if compiler supports FLOAT128 type |
+
+> **Note:**  
+> Some types may not be defined if the platform or compiler does not support them.  
+> For example, `FLOAT64` may not be available if the native `double` type is only 32 bits on your system.  
+> Similarly, `FLOAT128` and `BIT128` are only defined if the compiler and architecture support 128-bit values.  
+>
+> Users should check the corresponding macros (e.g., `SUPPORTED__FLOAT64`, `SUPPORTED__FLOAT128`, `SUPPORTED__BIT128`) before using these types to ensure portability and correctness.
+
+----
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/unused.gif">
 	<b>UNUSED</b> - Tag the functions that may not used in the project. (For ignore warnings)
 </summary>
@@ -2166,17 +2418,15 @@ If unused, the compiler ignores this function and continues compiling the progra
 ----
 </details>
 
-# ![](https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/plaltform_corssing.gif) Platform Crossing
-
 <details>
 
 <summary>
-	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/va_args.gif">
-	<b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
+    <img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/va_args.gif">
+    <b>VA_ARGS</b> - Make "va_args" system work on older compilers (For before C89)
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/PLATFORM_CROSSING/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/PLATFORM_CROSSING/VA_ARGS.h)**]
+> ### File at: [**[📜 LIBCMT/KEYWORDS/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/VA_ARGS.h)**]
 > ### Call With:
 > ```c
 > #define INCL__VA_ARGS
@@ -2186,80 +2436,35 @@ If unused, the compiler ignores this function and continues compiling the progra
 | Name                   | Type        | Description                                            |
 | ---------------------- | ----------- | ------------------------------------------------------ |
 | `va_list`, `VA_LIST`   | `typedef`   | A type for creating your argument list                 |
-| `va_add`, `VA_ADD`     | `#define()` | Add a variable to your `va_list` in your function      |
 | `va_arg`, `VA_ARG`     | `#define()` | Get a variable from your `va_list` in your function    |
 | `va_copy`, `VA_COPY`   | `#define()` | Copy your `va_list` address                            |
-| `va_push`, `VA_PUSH`   | `#define`   | Open the argument list to send arguments               |
-| `va_pop`, `VA_POP`     | `#define`   | Close the argument list after sending arguments        |
 | `va_start`, `VA_START` | `#define()` | Get the address pointer of your argument list          |
 | `va_args`, `VA_ARGS`   | `#define`   | Tell the compiler the function accepts varargs (`...`) |
 | `va_end`, `VA_END`     | `#define()` | End a `va_list` pointer                                |
 
-## Setup
-
-> ### ⚠️ Note
-> 
-> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
-> ```c
-> #define main ...
-> // or
-> #define main(...) ...
-> ```
-> Otherwise, skip this section and go directly to usage examples below.
-
-Before using this library, you **must define** the macro `SETUP_VA_ARGS` **once**, typically in your `main.c` or entry point file.
-
-This ensures internal global variables are defined properly.
-
-Other files should **not** define it again - they'll only see `extern` declarations.
-
-**Example**:
-```c
-#define SETUP_VA_ARGS
-#include "LIBCMT/PLATFORM_CROSSING/VA_ARGS.h"
-```
-Or
-```c
-#define SETUP_VA_ARGS
-#define INCL__VA_ARGS
-#include "LIBCMT/LIBCMT.h"
-
-```
-
 ## How To Use
 
 ```c
-void test(int, va_args); // Prototype
+void test(int, va_args); // PROTOTYPE
 
 int main(void)
 {
-	test(42,
-		va_push
-			va_add(double, 42.0)
-			va_add(char *, "Hello world")
-			va_add(int, 0X44800000) // Float: 1024.0
-		va_pop
-	);
-	return 0;
+	test(42, 42.0, "Hello world");
+	return (0);
 }
 
-extern int	printf(const char *, ...); // Prototype
+extern int printf(const char *, va_args); // PROTOTYPE
 
 void test(int start, va_args)
 {
 	va_list x;
 	va_list y;
-
 	va_start(x, start);
 	va_copy(y, x);
-
 	printf("%d\nx:%f\n", start, va_arg(x, double));
 	va_end(x);
-
 	printf("y:%f\n", va_arg(y, double));
 	printf("y:%s\n", va_arg(y, char *));
-	printf("y:%f\n", va_arg(y, float)); // Yes, this works
-
 	va_end(y);
 }
 ```
@@ -2268,26 +2473,17 @@ void test(int start, va_args)
 
 This library allows use of `va_args`-style variable argument functions on **pre-C89** compilers.
 
-It mimics `<stdarg.h>` but requires a little extra setup.
+You must use `VA_ARGS` or `va_args` instead of `...` to use this feature in functions.
 
-**Required Macros:**
-+ Use `VA_PUSH` and `VA_POP` to wrap arguments.
-+ Use `va_add(type, value)` to add arguments.
-+ Replace `...` with `va_args` in function signatures.
+### For example:
 
-**Examples**:
-
-Using the function:
 ```c
-printf("%d %d", va_push va_add(int, 42) va_add(char, 'a') va_pop);
+printf(const char *, ...);
 ```
-
-Creating the function:
+becomes
 ```c
-void printf(const char *, va_args);
+printf(const char *, va_args);
 ```
-
-**Side Note:** On **64-bit architectures**, retrieving 32-, 16-, or 8-bit values using this mechanism may result in an **"Illegal instruction"** error, depending on how the architecture and calling convention handle type promotion and memory. This behavior is __not a flaw__ in this implementation, but a known limitation that's intentionally left unsupported to maintain consistency and stability.
 
 ----
 </details>

@@ -16,32 +16,42 @@ This header provides macros for determining the target system's architecture bit
 
 .SH MACROS
 .TP
-.B __SYSTEM_512_BIT__
-Defined if the system supports 512-bit.
-.TP
-.B __SYSTEM_256_BIT__
-Defined if the system supports 256-bit.
-.TP
-.B __SYSTEM_128_BIT__
-Defined if the system supports 128-bit.
-.TP
 .B __SYSTEM_64_BIT__
-Defined if targeting a 64-bit architecture.
+Defined if the system is 64-bit.
 .TP
 .B __SYSTEM_32_BIT__
-Defined if targeting a 32-bit architecture.
+Defined if the system is 32-bit.
 .TP
 .B __SYSTEM_31_BIT__
-Defined if the system supports 31-bit.
+Defined if the system also supports 31-bit.
 .TP
 .B __SYSTEM_16_BIT__
-Defined if targeting a 16-bit architecture.
+Defined if the system is 16-bit.
 .TP
 .B __SYSTEM_8_BIT__
-Defined if targeting an 8-bit architecture.
+Defined if the system is 8-bit.
 .TP
 .B __SYSTEM_BIT__
-Evaluates to the detected bit-width (8, 16, 32, 64, 128, or 256).
+Macro indicating the system bit-width.
+
+.SH EXTENDED INTEGER SIZES
+.TP
+.B __HAS_128_BIT__
+Defined if the system supports 128-bit integers.
+.TP
+.B __HAS_64_BIT__
+Defined if the system supports 64-bit integers (for 32/16-bit systems).
+
+.SH VECTOR REGISTER SIZES
+.TP
+.B __HAS_512_BIT_VECTOR__
+Defined if the system supports 512-bit vector registers.
+.TP
+.B __HAS_256_BIT_VECTOR__
+Defined if the system supports 256-bit vector registers.
+.TP
+.B __HAS_128_BIT_VECTOR__
+Defined if the system supports 128-bit vector registers.
 
 .SH DETAILS
 These macros allow compile-time selection of behavior depending on the underlying CPU or compiler-targeted architecture.

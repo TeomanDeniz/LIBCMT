@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/02/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -40,6 +40,8 @@
 |* SECTION     : #define () : CREATE A SECTION                                *|
 |*.............:............:.................................................*|
 |* END         : #define    : END OF SECTION                                  *|
+|*.............:............:.................................................*|
+|* VALUE       : #define () : USE A DIRECT VALUE                              *|
 |*.............:............:.................................................*|
 |* MEM8        : #define () : USE 8-BIT MEMORY (ONE ARG)                      *|
 |*.............:............:.................................................*|
@@ -148,18 +150,13 @@
 |*                                                                            *|
 |* :::::::::::::::::::::::::::: WHAT IS IT DOES? :::::::::::::::::::::::::::: *|
 |*                                                                            *|
-|* * ENSURES YOUR INLINE ASM CAN COMPILE ACROSS:                              *|
-|* :                                                                          *|
-|* :.. GCC / CLANG (AT&T SYNTAX)                                              *|
-|* :                                                                          *|
-|* :.. ICC (AT&T OR INTEL DEPENDING ON BUILD)                                 *|
-|* :                                                                          *|
-|* :.. MSVC (__asm{} INTEL SYNTAX)                                            *|
+|* * ENSURES YOUR INLINE ASM CAN COMPILE ACROSS COMPILERS                     *|
 |*                                                                            *|
 |* * PROVIDES STABLE NAMES FOR REGISTERS THAT CHANGE SIZE ACROSS              *|
 |*   ARCHITECTURES                                                            *|
 |*                                                                            *|
 |* * ALLOWS MACRO-STYLE 8/16/32/64-BIT OPS WITHOUT MANUAL SYNTAX BRANCHING    *|
+|*   FOR INTEL CPUS                                                           *|
 |*                                                                            *|
 |* * PROVIDES UNIFIED MEMORY ADDRESSING PATTERNS                              *|
 |*                                                                            *|
@@ -174,10 +171,10 @@
 |*  O A RANDOM EXAMPLE                                                        *|
 |*  :                                                                         *|
 |* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
-|* 2| SECTION(example_func) // example_func:                                  *|
-|* 3|     MOV32(EAX, EBX)   // mov rax, ebx                                   *|
-|* 4|     ADD32(EAX, 1)     // add eax, 1                                     *|
-|* 5|     RET               // ret                                            *|
+|* 2| SECTION (example_func) // example_func:                                 *|
+|* 3|     MOV32 (EAX, EBX)   // mov rax, ebx                                  *|
+|* 4|     ADD32 (EAX, 1)     // add eax, 1                                    *|
+|* 5|     RET                // ret                                           *|
 |* 6| END                                                                     *|
 |* 7| #include "LIBCMT/ASM/POP.h"                                             *|
 |* 8|                                                                         *|
@@ -187,9 +184,9 @@
 |*  O EXAMPLE - BYTE COPY ROUTINE                                             *|
 |*  :                                                                         *|
 |* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
-|* 2| SECTION(copy_byte)      // copy_byte:                                   *| 
-|* 3|     MOV8(MEM8(RDI), AL) // mov byte [rdi], al                           *|
-|* 4|     RET                 // ret                                          *|
+|* 2| SECTION (copy_byte)      // copy_byte:                                  *| 
+|* 3|     MOV8 (MEM8(RDI), AL) // mov byte [rdi], al                          *|
+|* 4|     RET                  // ret                                         *|
 |* 5| END                                                                     *|
 |* 6| #include "LIBCMT/ASM/POP.h"                                             *|
 |*  :                                                                         *|
@@ -197,9 +194,19 @@
 |*  O EXAMPLE - ADD VALUE AT INDEX                                            *|
 |*  :                                                                         *|
 |* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
-|* 2| SECTION(add_indexed)                  // add_indexed                    *|
-|* 3|     ADD32(MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx     *|
-|* 4|     RET                               // ret                            *|
+|* 2| SECTION (add_indexed)                  // add_indexed:                  *|
+|* 3|     ADD32 (MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx    *|
+|* 4|     RET                                // ret                           *|
+|* 5| END                                                                     *|
+|* 6| #include "LIBCMT/ASM/POP.h"                                             *|
+|*  :                                                                         *|
+|*                                                                            *|
+|*  O EXAMPLE - SETTING A DIRECT VALUE TO A REGISTER                          *|
+|*  :                                                                         *|
+|* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
+|* 2| SECTION (return_42)        // return_42:                                *|
+|* 3|     MOV64 (RAX, VALUE(42)) // mov rax, 42                               *|
+|* 4|     RET                    // ret                                       *|
 |* 5| END                                                                     *|
 |* 6| #include "LIBCMT/ASM/POP.h"                                             *|
 |*  :                                                                         *|
@@ -250,6 +257,7 @@ extern "C" {
 #			define __START__
 #			define __END__ "\n"
 #			define _(X) #X
+#			define VALUE(NUMBER) $##NUMBER
 #			define SECTION(NAME) __asm__ (".global "#NAME"\n"#NAME":\n"
 #			define END );
 #		endif /* INLINE_ASM_TYPE__GNU */
@@ -258,6 +266,7 @@ extern "C" {
 #			define __START__
 #			define __END__ "\n"
 #			define _(X) #X
+#			define VALUE(NUMBER) $##NUMBER
 #			define SECTION(NAME) \
 			__asm__ (".section "#NAME",\"a\"\n.global "#NAME"\n"#NAME":\n"
 #			define END ".text");
@@ -266,6 +275,7 @@ extern "C" {
 #			define LOCALMACRO_INTEL_SYNTAX_PURE
 #			define __START__
 #			define __END__
+#			define VALUE(NUMBER) NUMBER
 #			define SECTION(NAME) __declspec(naked) int NAME(void){__asm {
 #			define END }}
 #		endif /* INLINE_ASM_TYPE__MSVC */
