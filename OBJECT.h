@@ -479,7 +479,7 @@
 /* ****************************** [^] C++ [^] ******************************* */
 
 #ifndef OBJECT_H
-#	define OBJECT_H 202510 /* VERSION */
+#	define OBJECT_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

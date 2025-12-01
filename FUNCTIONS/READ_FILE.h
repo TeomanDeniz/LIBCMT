@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/22 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -33,16 +33,17 @@
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* ;.., struct s_file file_content;                                           *|
-|*    :                                                                       *|
-|*    : if (!read_file("file_name.txt", &file_content))                       *|
-|*    :     printf("%d - [%s]\n", content.size, content.data);                *|
-|*    : else                                                                  *|
-|*    :     printf("Failed to open file.\n");                                 *|
-|*    :                                                                       *|
-|*    : free(file_content.data); // <-- DON'T FORGET THAT :D                  *|
+|*  O - EXAMPLE                                                               *|
+|*  :                                                                         *|
+|* 1| struct s_file file_content;                                             *|
+|* 2|                                                                         *|
+|* 3| if (!read_file("file_name.txt", &file_content))                         *|
+|* 4|     printf("%d - [%s]\n", content.size, content.data);                  *|
+|* 5| else                                                                    *|
+|* 6|     printf("Failed to open file.\n");                                   *|
+|* 7|                                                                         *|
+|* 8| free(file_content.data); // <-- DON'T FORGET THAT :D                    *|
+|*  :                                                                         *|
 |*                                                                            *|
 |*                              ................                              *|
 |*                            .:: ERROR LEVELS ::.                            *|
@@ -84,7 +85,7 @@
 \******************************************************************************/
 
 #ifndef READ_FILE_H
-#	define READ_FILE_H 202508 /* VERSION */
+#	define READ_FILE_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -324,3 +325,8 @@ static INLINE int
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !READ_FILE_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

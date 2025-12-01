@@ -1,8 +1,27 @@
 <IMG SRC="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/refs/heads/main/images/repo_projects/libcmt/HEADER2.png" ALT="Header" STYLE="WIDTH: 100%;"/>
 
-LIBCMT is a modular and portable C library extension designed to provide essential tools and features missing from the standard C library fully compatible with all compilers and platforms.
+# LIBCMT
+
+**LIBCMT** is a modular, portable C library extension that fills in gaps left by the standard C library.  
+It is fully compatible with all major compilers and platforms.
+
+## Clone
+
+```sh
+git clone --recurse-submodules --depth 1 "git@github.com:TeomanDeniz/LIBCMT.git"
+```
+
+Cloning with `--depth 1` avoids downloading the full repository history.
 
 ## Usage
+
+Place the cloned `LIBCMT` folder inside your project and include the header:
+
+```c
+#include "LIBCMT/LIBCMT.h"
+```
+
+LIBCMT is header-only. No additional setup required.
 
 To include **all features**:
 
@@ -12,7 +31,7 @@ To include **all features**:
 #include "LIBCMT/LIBCMT.hpp" // For C++
 ```
 
-## Modular Include (Optional)
+### Modular Include (Optional)
 
 You can selectively include specific components by defining `INCL__<MODULE>` macros before the include:
 
@@ -27,7 +46,7 @@ Or
 #include "LIBCMT/LIBCMT.h" // Includes INLINE and OBJECT modules only
 ```
 
-## Sectional Include (Optional)
+### Sectional Include (Optional)
 
 You can selectively include a specific whole section by defining `INCL__<SECTION>` macros before the include:
 ```c
@@ -57,6 +76,8 @@ Note: Defining an `INCL__<MODULE>` that belongs to a section already included vi
 # Show off
 
 An example script that made by using this library Tested and worked on both Win2000 GCC Version 3.2, Debian-6 32-bit GCC, Debian-13 64-bit GCC and Win11 GCC 8.1.0:
+
+## Main Header:
 ```c
 #include <stdio.h> /* For printf() */
 
@@ -64,20 +85,6 @@ An example script that made by using this library Tested and worked on both Win2
 #define INCL__TRY_CATCH
 #define INCL__TYPES
 #include "LIBCMT/LIBCMT.h"
-/* If not anything defined to specifically include anything, everything will be included
-
-or user can just do
-
-#include "LIBCMT/OBJECT.h"
-#include "LIBCMT/KEYWORDS/TRY_CATCH.h"
-#include "LIBCMT/KEYWORDS/TYPES.h"
-
-Ooor user can laso do:
-
-#define INCL__OBJECT
-#define INCL__KEYWORDS
-#include "LIBCMT/LIBCMT.h"
-*/
 
 // User MUST use different commands depends on the CPU type.
 // For architectures, RCX or RAX like registers automatically downs to ECX or EAX but no alterantive exist,
@@ -108,8 +115,11 @@ SECTION (return_42)
 END
 
 #include "LIBCMT/ASM/POP.h"
+```
 
-object o_class // Can be also "struct s_class" too but constructore function have to be "void s_class(...)" then
+## Object Creation:
+```c
+object o_class // Can be also "struct o_class" if you want
 {
 	i_am_an_object; // Necessary and must be at the top
 
@@ -145,7 +155,10 @@ void o_class(bit32 start_value) // Constructor. Automatically works if object is
 
 	this->value = start_value;
 }
+```
 
+## Main:
+```c
 int main(void)
 {
 	new (o_class, asd) (42);
@@ -154,11 +167,11 @@ int main(void)
 /*
 	or instead, you can also do:
 
-	#define CLASS(object_name) new (o_class, object_name)
+	#define my_class(object_name) new (o_class, object_name)
 
 	so you can use it as:
 
-	CLASS (asd) (42);
+	my_class (asd) (42);
 
 	which works like namespace in C++ or smthing idk
 */

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/11/30 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -42,33 +42,31 @@
 |*#                                HOW TO USE                                #*|
 |*############################################################################*|
 |*                                                                            *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* ;..,                                                                       *|
-|*    :                                                                       *|
-|*   1| void test(int, va_args); // PROTOTYPE                                 *|
-|*   2| int main(void)                                                        *|
-|*   3|                                                                       *|
-|*   4| {                                                                     *|
-|*   5|     test(42, 42.0, "Hello world");                                    *|
-|*   6|     return (0);                                                       *|
-|*   7| }                                                                     *|
-|*   8|                                                                       *|
-|*   9| extern int printf(const char *, va_args); // PROTOTYPE                *|
-|*  10|                                                                       *|
-|*  11| void test(int start, va_args)                                         *|
-|*  12| {                                                                     *|
-|*  13|     va_list x;                                                        *|
-|*  14|     va_list y;                                                        *|
-|*  15|     va_start(x, start);                                               *|
-|*  16|     va_copy(y, x);                                                    *|
-|*  17|     printf("%d\nx:%f\n", start, va_arg(x, double));                   *|
-|*  18|     va_end(x);                                                        *|
-|*  19|     printf("y:%f\n", va_arg(y, double));                              *|
-|*  20|     printf("y:%s\n", va_arg(y, char *));                              *|
-|*  21|     va_end(y);                                                        *|
-|*  22| }                                                                     *|
-|*    :                                                                       *|
+|*   O - EXAMPLE                                                              *|
+|*   :                                                                        *|
+|*  1| void test(int, va_args); // PROTOTYPE                                  *|
+|*  2| int main(void)                                                         *|
+|*  3|                                                                        *|
+|*  4| {                                                                      *|
+|*  5|     test(42, 42.0, "Hello world");                                     *|
+|*  6|     return (0);                                                        *|
+|*  7| }                                                                      *|
+|*  8|                                                                        *|
+|*  9| extern int printf(const char *, va_args); // PROTOTYPE                 *|
+|* 10|                                                                        *|
+|* 11| void test(int start, va_args)                                          *|
+|* 12| {                                                                      *|
+|* 13|     va_list x;                                                         *|
+|* 14|     va_list y;                                                         *|
+|* 15|     va_start(x, start);                                                *|
+|* 16|     va_copy(y, x);                                                     *|
+|* 17|     printf("%d\nx:%f\n", start, va_arg(x, double));                    *|
+|* 18|     va_end(x);                                                         *|
+|* 19|     printf("y:%f\n", va_arg(y, double));                               *|
+|* 20|     printf("y:%s\n", va_arg(y, char *));                               *|
+|* 21|     va_end(y);                                                         *|
+|* 22| }                                                                      *|
+|*   :                                                                        *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -90,7 +88,7 @@
 \******************************************************************************/
 
 #ifndef VA_ARG_H
-#	define VA_ARG_H 202511 /* VERSION */
+#	define VA_ARG_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__

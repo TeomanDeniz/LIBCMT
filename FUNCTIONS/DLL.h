@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/03/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -40,51 +40,55 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::: CREATING A DLL FILE ::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* FOR CREATING DYNAMIC LINK LIBRARIES, YOU MUST COMPILE YOUR .c FILE WITH    *|
 |* [-c] FLAG FIRST TO COMPILE IT AS A STATIC LINK LIBRARY. THEN COMPILE YOUR  *|
 |* .o FILE WITH [-shared] FLAG.                                               *|
 |*                                                                            *|
-|* O - my_dll.c                                                               *|
-|* :                                                                          *|
-|* ;.., void dynamic my_write(void)                                           *|
-|*    : {                                                                     *|
-|*    :     printf("TEST\n");                                                 *|
-|*    : }                                                                     *|
+|*  O - my_dll.c                                                              *|
+|*  :                                                                         *|
+|* 1| void dynamic my_write(void)                                             *|
+|* 2| {                                                                       *|
+|* 3|     printf("TEST\n");                                                   *|
+|* 4| }                                                                       *|
+|*  :                                                                         *|
 |*                                                                            *|
-|* .........................................................................  *|
-|* : CMD                                                            _ [] X :  *|
-|* :.......................................................................:  *|
-|* :                                                                       :  *|
-|* : $> gcc -c my_dll.c -o my_sll.o                                        :  *|
-|* : ...                                                                   :  *|
-|* :                                                                       :  *|
-|* : $> gcc -shared  my_sll.o -o my_dll.dll                                :  *|
-|* :                                                                       :  *|
-|* :.......................................................................:  *|
+|*  _______________________________________________________________________   *|
+|* | CMD                                                            _ [] X |  *|
+|* |_______________________________________________________________________|  *|
+|* |                                                                       |  *|
+|* | $> gcc -c my_dll.c -o my_sll.o                                        |  *|
+|* | ...                                                                   |  *|
+|* |                                                                       |  *|
+|* | $> gcc -shared  my_sll.o -o my_dll.dll                                |  *|
+|* |                                                                       |  *|
+|* |_______________________________________________________________________|  *|
 |*                                                                            *|
 |* THEN CONGRATS! YOU NOW CREATED A DYNAMIC LINK LIBRARY!                     *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: CONNECT DLL ::::::::::::::::::::::::::::::: *|
-|* O - use_dll.c                                                              *|
-|* :                                                                          *|
-|* ;.., dll dll_file;                                                         *|
-|*    :                                                                       *|
-|*    : dll_file = open_dll("my_dll.dll");                                    *|
-|*    :                                                                       *|
-|*    : if (!dll_file) // DO SOMETHING IF DLL FILE COULD'T OPEN               *|
-|*    :     exit(1);                                                          *|
-|*    :                                                                       *|
-|*    : void (*my_write)(); // FUNCTION POINTER                               *|
-|*    : my_write = ((*)()) read_dll(dll_file, "my_write");                    *|
-|*    :                                                                       *|
-|*    : if (!my_write) // DO SOMETHING IF FUNCTION DOESN'T EXIST FROM DLL     *|
-|*    :     exit(1);                                                          *|
-|*    :                                                                       *|
-|*    : my_write();                                                           *|
-|*    : close_dll(dll_file);                                                  *|
-|*    :                                                                       *|
-|*    ;.., DO NOT CLOSE THE DLL FILE BEFORE USING A FUNCTION FROM IT!!!       *|
-|*       : IT WILL CAUSE A SEGMENTATION ERROR!                                *|
+|*                                                                            *|
+|*   O - use_dll.c                                                            *|
+|*   :                                                                        *|
+|*  1| dll dll_file;                                                          *|
+|*  2|                                                                        *|
+|*  3| dll_file = open_dll("my_dll.dll");                                     *|
+|*  4|                                                                        *|
+|*  5| if (!dll_file) // DO SOMETHING IF DLL FILE COULD'T OPEN                *|
+|*  6|     exit(1);                                                           *|
+|*  7|                                                                        *|
+|*  8| void (*my_write)(); // FUNCTION POINTER                                *|
+|*  9| my_write = ((*)()) read_dll(dll_file, "my_write");                     *|
+|* 10|                                                                        *|
+|* 11| if (!my_write) // DO SOMETHING IF FUNCTION DOESN'T EXIST FROM DLL      *|
+|* 12|     exit(1);                                                           *|
+|* 13|                                                                        *|
+|* 14| my_write();                                                            *|
+|* 15| close_dll(dll_file);                                                   *|
+|*   :                                                                        *|
+|*   : DO NOT CLOSE THE DLL FILE BEFORE USING A FUNCTION FROM IT!!!           *|
+|*   : IT WILL CAUSE A SEGMENTATION ERROR!                                    *|
+|*   :                                                                        *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -93,6 +97,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::::: DLL ::::::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* DYNAMIC LINK LIBRARIES ARE SEPARATE FILES FROM EXECUTABLES THAT NEED       *|
 |* FUNCTIONS/VARIABLES FROM THEM.                                             *|
 |*                                                                            *|
@@ -102,6 +107,7 @@
 |* YOUR ~40KB EXE FILES WILL BECOME ~100 BYTES. CRAZY, RIGHT?                 *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: THIS LIBRARY :::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* YOU CAN GET A FUNCTION POINTER FROM A DLL FILE AND USE IT DIRECTLY.        *|
 |*                                                                            *|
 |* BUT THIS LIBRARY JUST HANDLES CROSS-PLATFORM KEYWORDS FOR THAT.            *|
@@ -120,7 +126,7 @@
 \*############################################################################*/
 
 #ifndef DLL_H
-#	define DLL_H 202509 /* VERSION */
+#	define DLL_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ *\
 |* *   IT'S WORTH NOTING THAT TI COMPILERS MAY HAVE UNIQUE BEHAVIORS WHEN   * *|
@@ -491,3 +497,8 @@ typedef DLL	dll;
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !DLL_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

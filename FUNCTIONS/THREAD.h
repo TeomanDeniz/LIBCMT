@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/05 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/30 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -51,66 +51,72 @@
 |*############################################################################*|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: THREAD_CREATE :::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* CREATES A NEW THREAD. TAKES A FUNCTION POINTER AND ARGUMENT FOR THAT FUNC. *|
 |* RETURNS A THREAD HANDLE (T_THREAD), OR NULL ON FAILURE.                    *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| void *my_thread(void *arg)                                               *|
-|*2| {                                                                        *|
-|*3|     // ...                                                               *|
-|*4|     return 0;                                                            *|
-|*5| }                                                                        *|
-|*6|                                                                          *|
-|*7| t_thread thread = thread_create(my_thread, NULL);                        *|
-|*8| if (!thread) { handle error }                                            *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| void *my_thread(void *arg)                                              *|
+|* 2| {                                                                       *|
+|* 3|     // ...                                                              *|
+|* 4|     return 0;                                                           *|
+|* 5| }                                                                       *|
+|* 6|                                                                         *|
+|* 7| t_thread thread = thread_create(my_thread, NULL);                       *|
+|* 8| if (!thread) { handle error }                                           *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: THREAD_JOIN ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* WAITS FOR A THREAD TO FINISH AND FREES ITS HANDLE.                         *|
 |* TAKES THE THREAD HANDLE AND A VOID** FOR RETURN VALUE (CAN BE NULL).       *|
 |* RETURNS 0 ON SUCCESS.                                                      *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| void *ret;                                                               *|
-|*2| thread_join(thread, &ret);                                               *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| void *ret;                                                              *|
+|* 2| thread_join(thread, &ret);                                              *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_CREATE ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* ALLOCATES AND INITIALIZES A MUTEX. RETURNS A MUTEX HANDLE (T_MUTEX).       *|
 |* RETURNS NULL ON FAILURE.                                                   *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| t_mutex mutex = mutex_create();                                          *|
-|*2| if (!mutex) { handle error }                                             *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| t_mutex mutex = mutex_create();                                         *|
+|* 2| if (!mutex) { handle error }                                            *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_DESTROY :::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* DESTROYS AND FREES A MUTEX CREATED WITH MUTEX_CREATE.                      *|
 |* RETURNS 0 ON SUCCESS.                                                      *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| mutex_destroy(mutex);                                                    *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| mutex_destroy(mutex);                                                   *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::: MUTEX_LOCK :::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* LOCKS A MUTEX. MACRO AROUND pthread_mutex_lock.                            *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| mutex_lock(mutex);                                                       *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| mutex_lock(mutex);                                                      *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: MUTEX_UNLOCK ::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* UNLOCKS A MUTEX. MACRO AROUND pthread_mutex_unlock.                        *|
 |*                                                                            *|
-|* O - EXAMPLE CODE                                                           *|
-|* :                                                                          *|
-|*1| mutex_unlock(mutex);                                                     *|
-|* :                                                                          *|
+|*  O - EXAMPLE CODE                                                          *|
+|*  :                                                                         *|
+|* 1| mutex_unlock(mutex);                                                    *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* FOR ACTUALY INFORMATIONS AND EXAMPLE ABOUT THESE FUNCTIONS: PLEASE JUST    *|
 |* READ pthreads (AKA: POSIX THREADS) DOCUMENTATIONS.                         *|
@@ -192,7 +198,7 @@
 \******************************************************************************/
 
 #ifndef THREAD_H
-#	define THREAD_H 202509 /* VERSION */
+#	define THREAD_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -1668,3 +1674,8 @@ static INLINE int
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* THREAD_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/09/11 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -37,23 +37,27 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: PREFETCH :::::::::::::::::::::::::::::::: *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* ;.., int variable[9471];                                                   *|
-|*    : int number = 42;                                                      *|
-|*    :                                                                       *|
-|*    : PREFETCH(variable[0]);                                                *|
-|*    : // OR                                                                 *|
-|*    : prefetch(number);                                                     *|
+|*                                                                            *|
+|*  O - EXAMPLE                                                               *|
+|*  :                                                                         *|
+|* 1| int variable[9471];                                                     *|
+|* 2| int number = 42;                                                        *|
+|* 3|                                                                         *|
+|* 4| PREFETCH(variable[0]);                                                  *|
+|* 5| // OR                                                                   *|
+|* 6| prefetch(number);                                                       *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: PREFETCH_RANGE ::::::::::::::::::::::::::::: *|
-|* O - EXAMPLE                                                                *|
-|* :                                                                          *|
-|* ;.., int variable[9471];                                                   *|
-|*    :                                                                       *|
-|*    : PREFETCH_RANGE(variable, sizeof(variable));                           *|
-|*    : // OR                                                                 *|
-|*    : prefetch_range(variable, 100);                                        *|
+|*                                                                            *|
+|*  O - EXAMPLE                                                               *|
+|*  :                                                                         *|
+|* 1| int variable[9471];                                                     *|
+|* 2|                                                                         *|
+|* 3| PREFETCH_RANGE(variable, sizeof(variable));                             *|
+|* 4| // OR                                                                   *|
+|* 5| prefetch_range(variable, 100);                                          *|
+|*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
 
@@ -62,6 +66,7 @@
 |*############################################################################*|
 |*                                                                            *|
 |* :::::::::::::::::::::::::::::::: PREFETCH :::::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* YOU'RE TELLING THE CPU TO LOAD A SPECIFIC MEMORY LOCATION INTO ITS CACHE   *|
 |* **BEFORE** IT'S ACTUALLY NEEDED.                                           *|
 |*   ^^^^^^                                                                   *|
@@ -72,6 +77,7 @@
 |* IT'S A PERFORMANCE HINT, NOT A GUARANTEED ACTION.                          *|
 |*                                                                            *|
 |* ::::::::::::::::::::::::::::: PREFETCH_RANGE ::::::::::::::::::::::::::::: *|
+|*                                                                            *|
 |* THE "PREFETCH" FUNCTION ONLY WORKS FOR A SINGLE VARIABLE.                  *|
 |*                                                                            *|
 |* "PREFETCH_RANGE" ALLOWS YOU TO PREFETCH MULTIPLE VARIABLES OR A WHOLE      *|
@@ -96,7 +102,7 @@
 \******************************************************************************/
 
 #ifndef PREFETCH_H
-#	define PREFETCH_H 202508 /* VERSION */
+#	define PREFETCH_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -345,3 +351,8 @@ static INLINE void
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #endif /* !PREFETCH_H */
+
+#ifdef __EOF__
+#	undef __EOF__
+#endif /* __EOF__ */
+#define __EOF__ //  <- FOR DOS, CP/M, ETC
