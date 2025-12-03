@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/12 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -91,12 +91,6 @@
 #		*/
 #	endif /* __TI_COMPILER_VERSION__ */
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
-
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 /* *************************** [v] ARC CONFIG [v] *************************** */
 #	ifdef CONFIG_ARC_CACHE_LINE_SHIFT
@@ -1073,12 +1067,6 @@ extern "C" {
 #	endif /* __SYSTEM_32_BIT__ */
 /* ************************* [^] __HAS_64_BIT__ [^] ************************* */
 
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
-
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
@@ -1093,7 +1081,11 @@ extern "C" {
 
 #endif /* !ARCHITECTURE_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //

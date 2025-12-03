@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -586,8 +586,8 @@ extern void	*LOCALMACRO__STDCALL VirtualAlloc(
 );
 extern int	LOCALMACRO__STDCALL VirtualFree(void *, size_t, unsigned long);
 #			else /* K&R */
-extern void			*VirtualAlloc();
-extern unsigned int	VirtualFree();
+extern void	*LOCALMACRO__STDCALL VirtualAlloc();
+extern int	 LOCALMACRO__STDCALL VirtualFree();
 #			endif /* !KNR_STYLE */
 #			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
 				register unsigned char	*OP_CODES;\
@@ -993,7 +993,11 @@ static INLINE void
 
 #endif /* !OBJECT_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //

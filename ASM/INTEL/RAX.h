@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -125,12 +125,6 @@
 #	 define INLINE_ASM_TYPE__ISO
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
-
-/* *************************** [v] C++ (PUSH) [v] *************************** */
-#	ifdef __cplusplus /* C++ */
-extern "C" {
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (PUSH) [^] *************************** */
 
 #	ifndef IS__INLINE_ASM__SUPPORTED /* UH-OH ._. */
 #		define GET_RAX(_) \
@@ -411,20 +405,17 @@ extern "C" {
 			while (0)
 #	endif /* !SET_RAX */
 
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
-
 /* *************************** [v] LOWERCASE [v] **************************** */
 #	define get_rax GET_RAX
 #	define set_rax SET_RAX
 /* *************************** [^] LOWERCASE [^] **************************** */
-
 #endif /* !RAX_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //

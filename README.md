@@ -2170,6 +2170,52 @@ This is used for optimisation purposes.
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/STDCALL.gif">
+	<b>STDCALL</b> - A calling convention (mainly on Windows) where the callee cleans the stack and parameters are passed right-to-left
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 LIBCMT/KEYWORDS/STDCALL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/STDCALL.h)**]
+> ### Call With:
+> ```c
+> #define INCL__STDCALL
+> #include "LIBCMT/LIBCMT.h"
+> ```
+
+| **Name**  | **Type**   | **Description**                        |
+|-----------|------------|----------------------------------------|
+| `STDCALL` | `#define`  | Optimise the function to OS ABI rules. |
+
+## How To Use
+
+```c
+int STDCALL	WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, ...)
+{
+	. . .
+}
+```
+
+## What Does It Do
+
+Defines a calling convention where arguments are passed on the stack, the callee cleans the stack, and (on 32-bit systems) the function name may be decorated.
+
+Primarily associated with Windows APIs but supported by multiple compilers for binary-interface compatibility.
+
+## Side Notes
+
+Yes, you must use the `STDCALL` keyword in your function prototypes:
+
+```c
+extern STDCALL int WinMain(...);
+//     ^^^^^^^
+```
+
+----
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/try_catch.gif">
 	<b>TRY_CATCH</b> - Use original "try", "catch()", and "throw()" keywords in C Language like in JavaScript.
 </summary>

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/11/23 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -206,12 +206,6 @@
 #		undef RET
 #	endif /* __CPU_INTEL__ */
 
-/* *************************** [v] C++ (POP) [v] **************************** */
-#	ifdef __cplusplus /* C++ */
-}
-#	endif /* __cplusplus */
-/* *************************** [^] C++ (POP) [^] **************************** */
-
 /* ************************ [v] TI CGT CCS (POP) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
 #		pragma diag_pop /* TI CGT CCS COMPILER DIRECTIVES */
@@ -219,7 +213,11 @@
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 #endif /* ASM_PUSH_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //

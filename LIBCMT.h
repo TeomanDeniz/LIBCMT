@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -26,7 +26,9 @@
 #						ifndef INCL__CPU
 #							ifdef INCL__RAX
 #								ifdef INCL__X17
-#									define LOCALMACRO_DEFINE_ALL_TRY_1
+#									ifdef INCL__STDCALL
+#										define LOCALMACRO_DEFINE_ALL_TRY_1
+#									endif /* INCL__STDCALL */
 #								endif /* INCL__X17 */
 #							endif /* INCL__RAX */
 #						endif /* !INCL__CPU */
@@ -227,6 +229,9 @@
 #		ifndef INCL__VA_ARGS
 #			define INCL__VA_ARGS
 #		endif /* !INCL__VA_ARGS */
+#		ifndef INCL__STDCALL
+#			define INCL__STDCALL
+#		endif /* !INCL__STDCALL */
 #	endif /* INCL__KEYWORDS */
 /* **************************** [^] KEYWORDS [^] **************************** */
 
@@ -473,6 +478,12 @@
 #		 define noreturn
 #		        */
 #	endif /* INCL__NORETURN */
+#	ifdef INCL__INCL__STDCALL
+#		undef INCL__INCL__STDCALL
+#		include "KEYWORDS/STDCALL.h" /*
+#		 define STDCALL
+#		        */
+#	endif /* INCL__INCL__STDCALL */
 #	ifdef INCL__TRY_CATCH
 #		undef INCL__TRY_CATCH
 #		include "KEYWORDS/TRY_CATCH.h" /*
@@ -545,7 +556,11 @@
 /* **************************** [^] KEYWORDS [^] **************************** */
 #endif /* !LIBCMT_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //

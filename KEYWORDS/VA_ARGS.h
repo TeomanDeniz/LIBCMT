@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/01 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -44,15 +44,15 @@
 |*                                                                            *|
 |*   O - EXAMPLE                                                              *|
 |*   :                                                                        *|
-|*  1| void test(int, va_args); // PROTOTYPE                                  *|
-|*  2| int main(void)                                                         *|
-|*  3|                                                                        *|
+|*  1| void test(); // PROTOTYPE                                              *|
+|*  2|                                                                        *|
+|*  3| int main()                                                             *|
 |*  4| {                                                                      *|
 |*  5|     test(42, 42.0, "Hello world");                                     *|
 |*  6|     return (0);                                                        *|
 |*  7| }                                                                      *|
 |*  8|                                                                        *|
-|*  9| extern int printf(const char *, va_args); // PROTOTYPE                 *|
+|*  9| extern int printf();                                                   *|
 |* 10|                                                                        *|
 |* 11| void test(int start, va_args)                                          *|
 |* 12| {                                                                      *|
@@ -87,8 +87,8 @@
 |*                                                                            *|
 \******************************************************************************/
 
-#ifndef VA_ARG_H
-#	define VA_ARG_H 202512 /* VERSION */
+#ifndef VA_ARGS_H
+#	define VA_ARGS_H 202512 /* VERSION */
 
 /* *********************** [v] TI CGT CCS (PUSH) [v] ************************ */
 #	ifdef __TI_COMPILER_VERSION__
@@ -205,7 +205,7 @@ static char
 #	endif /* KNR_STYLE */
 
 /* **************************** [v] UPPERCASE [v] *************************** */
-#		define VA_LIST va_list
+typedef va_list	VA_LIST;
 #		define VA_ARG va_arg
 #		define VA_COPY va_copy
 #		define VA_START va_start
@@ -220,9 +220,13 @@ static char
 /* ************************ [^] TI CGT CCS (POP) [^] ************************ */
 
 #	endif /* !__cplusplus */
-#endif /* !VA_ARG_H */
+#endif /* !VA_ARGS_H */
 
-#ifdef __EOF__
-#	undef __EOF__
-#endif /* __EOF__ */
-#define __EOF__ //  <- FOR DOS, CP/M, ETC
+/* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
+ * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
+ * *                       FILE IN DOS, CP/M SYSTEMS                        * *
+ * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
+ * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
+\* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
+#undef __LIBCMT__END_OF_FILE__
+#define __LIBCMT__END_OF_FILE__ //
