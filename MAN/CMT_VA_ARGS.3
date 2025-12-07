@@ -38,17 +38,18 @@ Example:
 
 .nf
 .c
-void test(int, va_args); // PROTOTYPE
+test(); // PROTOTYPE
 
-int main(void)
+int main()
 {
     test(42, 42.0, "Hello world");
     return (0);
 }
 
-extern int printf(const char *, va_args); // PROTOTYPE
+extern int printf(); // PROTOTYPE
 
-void test(int start, va_args)
+test(start)
+    int start;
 {
     va_list x;
     va_list y;

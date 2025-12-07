@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/05 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -141,12 +141,8 @@
 |* :                                                                          *|
 |* ;..,                                                                       *|
 |*    :                                                                       *|
-|*   1| #define SETUP_OBJECT                                                  *|
+|*   1| #define LIBCMT_SETUP                                                  *|
 |*   2| #include "LIBCMT/OBJECT.h"                                            *|
-|*   3|                                                                       *|
-|*   4| int main() {                                                          *|
-|*   5| ...                                                                   *|
-|*   6| }                                                                     *|
 |*    :                                                                       *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
@@ -522,6 +518,9 @@
 #	include "./ASM/ARM/X17.h" /*
 #	 define GET_X17(VAR)
 #	        */
+#	include "./KEYWORDS/STDCALL.h" /*
+#	 define STDCALL
+#	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 /* ********************** [v] CHECK FUNCTION SIZE [v] *********************** */
@@ -575,19 +574,12 @@ extern int	munmap();
 
 #	ifndef LOCALMACRO__FUNCTION_ALLOCATOR
 #		ifdef _WIN32
-#			ifdef __GNUC__
-#				define LOCALMACRO__STDCALL __attribute__((stdcall))
-#			else
-#				define LOCALMACRO__STDCALL __stdcall
-#			endif
 #			ifndef KNR_STYLE /* STANDARD C */
-extern void	*LOCALMACRO__STDCALL VirtualAlloc(
-	void *, size_t, unsigned long, unsigned long
-);
-extern int	LOCALMACRO__STDCALL VirtualFree(void *, size_t, unsigned long);
+extern void	*STDCALL VirtualAlloc(void *, size_t, unsigned long, unsigned long);
+extern int	STDCALL VirtualFree(void *, size_t, unsigned long);
 #			else /* K&R */
-extern void	*LOCALMACRO__STDCALL VirtualAlloc();
-extern int	 LOCALMACRO__STDCALL VirtualFree();
+extern char	*STDCALL VirtualAlloc();
+extern int	 STDCALL VirtualFree();
 #			endif /* !KNR_STYLE */
 #			define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
 				register unsigned char	*OP_CODES;\
@@ -754,41 +746,37 @@ extern int	__dpmi_free_memory();
 #	define object__inject(TARGET) \
 		object__inject_2(TARGET, TARGET)
 
-/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
+/**@@@@@@@@@@@@@@@@@@@@@@@@@@@ [v] OTO-LINKER [v] @@@@@@@@@@@@@@@@@@@@@@@@@@@**\
+|**@    HEADER-ONLY AUTO-INITIALIZER: NO MAKEFILES, NO .C FILES REQUIRED    @**|
+|**@      INJECTS ALL NEEDED DEFINITIONS AND SETUP LOGIC AUTOMATICALLY      @**|
+\**@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ OTO-LINKER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@**/
 #	ifdef __CPU_ARM__
 #		ifdef __SYSTEM_32_BIT__ /* BEHOLD! THE ENEMY OF THE REGISTERS!!! */
-#			ifdef SETUP_OBJECT
-LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
-#			else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#				ifdef main
-#					undef main
-#				endif /* main */
-#				ifdef WinMain
-#					undef WinMain
-#				endif /* main */
-#				ifdef LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#					define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-						LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES
-#				else
-#					define LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES
-#				endif /* LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES */
-#				define LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-					LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0;
-#				define main \
-					__IDLE__TRY_CATCH; \
-					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-					int main
-#				define WinMain \
-					__IDLE__TRY_CATCH; \
-					LOCALMACRO__OBJECT__TRY_CATCH_GLOBAL_VARIABLES \
-					LOCALMACRO__OBJECT_GLOBAL_VARIABLES \
-					int WINAPI WinMain
-#			endif /* SETUP_OBJECT */
+/* *************************** [v] PROTOTYPES [v] *************************** */
 extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
+/* *************************** [^] PROTOTYPES [^] *************************** */
+#			define LIBCMT_LOCAL__OBJECT \
+				LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0
+#			ifdef LIBCMT_SETUP
+LIBCMT_LOCAL__OBJECT;
+#			else
+#				ifndef LIBCMT_GLOBAL__TRY_CATCH
+#					define LIBCMT_GLOBAL__TRY_CATCH
+#				endif /* !LIBCMT_GLOBAL__TRY_CATCH */
+#				undef main
+#				undef WinMain
+#				undef LIBCMT_OTO_LINKER
+#				undef LIBCMT_GLOBAL__OBJECT
+#				define LIBCMT_GLOBAL__OBJECT LIBCMT_LOCAL__OBJECT
+#				define LIBCMT_OTO_LINKER __LIBCMT_JAILBREAK_VARIABLE__;\
+					LIBCMT_GLOBAL__OBJECT;\
+					LIBCMT_GLOBAL__TRY_CATCH;
+#				define main LIBCMT_OTO_LINKER int main
+#				define WinMain LIBCMT_OTO_LINKER int STDCALL WinMain
+#			endif /* LIBCMT_SETUP */
 #		endif /* __SYSTEM_32_BIT__ */
 #	endif /* __CPU_ARM__ */
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@ [^] OTO-LINKER [^] @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 #	ifndef KNR_STYLE /* STANDARD C */
 static INLINE void

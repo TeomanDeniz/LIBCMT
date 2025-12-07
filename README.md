@@ -275,37 +275,29 @@ This table is for really old compilers. If you're using a modern compiler, ignor
 
 > ### ⚠️ Note
 > 
-> **Setup** The setup section is optional if you handle main in ARM 32-bit CPUs. If you want the library to define internal global variables automatically, define SETUP_OBJECT once in one C file (typically your main.c / entry point). And also, if you're not using `#define main ...` or `#define main() ...`, you don't have to setup OBJECT either. It will automatically settle everything up by itself.
+> The setup section is optional **if you are compiling for ARM 32-bit** and **never include this addon in a C file that has a `main()` function**.
+> 
+> Otherwise, skip setup and jump to **Contents** at the bottom. You don't have to do Setup process.
 
-Before using this library, you **must define** the macro `SETUP_OBJECT` **once**, typically in your `main.c` or entry point file.
+If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `LIBCMT_SETUP`**.
 
-This ensures internal global variables are defined properly.
+This ensures that any global variables or link-exposed functions are properly defined.
 
-Other files should **not** define it again - they'll only see `extern` declarations.
+After doing this once, you can include this header anywhere else **without defining the macro again**; other files will only see the extern declarations.
 
 **Example**:
 ```c
-#define SETUP_OBJECT
+#define LIBCMT_SETUP
 #include "LIBCMT/OBJECT.h"
-
-int main()
-{
-	// ...
-}
 ```
 Or
 ```c
-#define SETUP_OBJECT
+#define LIBCMT_SETUP
 #define INCL__OBJECT
 #include "LIBCMT/LIBCMT.h"
-
-int main()
-{
-	// ...
-}
 ```
 
-## Contents / API / Macros
+## Contents
 
 > ### **`OBJECT`**
 > 
@@ -2238,31 +2230,26 @@ extern STDCALL int WinMain(...);
 
 > ### ⚠️ Note
 > 
-> **Setup** is _optional_ or _unnecessary_ unless if you're redefining `main` manually via:
-> ```c
-> #define main ...
-> // or
-> #define main(...) ...
-> ```
-> Otherwise, skip this section and go directly to usage examples below.
+> The setup section is optional **if you are compiling for ARM 32-bit** and **never include this addon in a C file that has a `main()` function**.
+> 
+> Otherwise, skip setup and jump to **Contents** at the bottom. You don't have to do Setup process.
 
-Before using this library, you **must define** the macro `SETUP_TRY_CATCH` **once**, typically in your `main.c` or entry point file.
+If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `LIBCMT_SETUP`**.
 
-This ensures internal global variables are defined properly.
+This ensures that any global variables or link-exposed functions are properly defined.
 
-Other files should **not** define it again - they'll only see `extern` declarations.
+After doing this once, you can include this header anywhere else **without defining the macro again**; other files will only see the extern declarations.
 
 **Example**:
 ```c
-#define SETUP_TRY_CATCH
+#define LIBCMT_SETUP
 #include "LIBCMT/KEYWORDS/TRY_CATCH.h"
 ```
 Or
 ```c
-#define SETUP_TRY_CATCH
+#define LIBCMT_SETUP
 #define INCL__TRY_CATCH
 #include "LIBCMT/LIBCMT.h"
-
 ```
 
 ## How To Use
@@ -2504,17 +2491,18 @@ If unused, the compiler ignores this function and continues compiling the progra
 ## How To Use
 
 ```c
-void test(int, va_args); // PROTOTYPE
+test(); // PROTOTYPE
 
-int main(void)
+int main()
 {
 	test(42, 42.0, "Hello world");
 	return (0);
 }
 
-extern int printf(const char *, va_args); // PROTOTYPE
+extern int printf(); // PROTOTYPE
 
-void test(int start, va_args)
+test(start)
+	int	start;
 {
 	va_list x;
 	va_list y;

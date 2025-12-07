@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/07 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -59,28 +59,25 @@
 |*                                                                            *|
 |* THROWS AN ERROR CODE AND JUMPS TO THE NEAREST "catch" BLOCK.               *|
 |*                                                                            *|
-|* O - SETUP                                                                  *|
-|* :                                                                          *|
-|* : NOTE: SETUP IS OPTIONAL IF YOU’RE HANDLING THE main FUNCTION YOURSELF    *|
-|* : WITH LIKE "#define main ..." OR "#define main(...) ..."                  *|
-|* :                                                                          *|
-|* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_TRY_CATCH"   *|
-|* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
-|* :                                                                          *|
-|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE PROPERLY DEFINED.      *|
-|* :                                                                          *|
-|* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
-|* : THE MACRO AGAIN. ALL OTHER FILES WILL ONLY SEE "extern" DECLARATIONS.    *|
-|* :                                                                          *|
-|* ;..,                                                                       *|
-|*    :                                                                       *|
-|*   1| #define SETUP_TRY_CATCH                                               *|
-|*   2| #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                *|
-|*   3|                                                                       *|
-|*   4| int main() {                                                          *|
-|*   5| ...                                                                   *|
-|*   6| }                                                                     *|
-|*    :                                                                       *|
+|*  O - SETUP                                                                 *|
+|*  :                                                                         *|
+|*  : NOTE: SETUP PART IS OPTIONAL IF YOU'RE COMPILING YOUR PROGRAM IN        *|
+|*  : ARM 32-BIT AND NEVER USED THIS ADDON IN A C FILE THAT HAS "main()"      *|
+|*  : FUNCTION. OTHERWISE, SKIP THE SETUP AND JUMP TO LINE 148 AT THE         *|
+|*  : BOTTOM OF THIS FILE.                                                    *|
+|*  :                                                                         *|
+|*  : IF THE FILE DOES NOT CONTAIN main(), AND YOU STILL USE THE LIBRARY,     *|
+|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "LIBCMT_SETUP"               *|
+|*  :                                                                         *|
+|*  : THIS ENSURES GLOBAL VARIABLES OR FUNCTIONS THAT ARE EXPOSED FOR LINKING *|
+|*  : PROPERLY DEFINED.                                                       *|
+|*  :                                                                         *|
+|*  : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING  *|
+|*  : THE MACRO AGAIN; OTHER FILES WILL ONLY SEE EXTERN DECLARATIONS.         *|
+|*  :                                                                         *|
+|* 1| #define LIBCMT_SETUP                                                    *|
+|* 2| #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                  *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
 |* :                                                                          *|
@@ -212,13 +209,27 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
+#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	 define KNR_STYLE
+#	        */
+#	ifdef KNR_STYLE
+#		include "../FUNCTIONS/LONGJMP.h" /*
+#		typedef jmp_buf
+#		 define setjmp(env)
+#		 define longjmp(env, val)
+#		        */
+#	else
+#		include <setjmp.h> /*
+#		 define jmp_buf
+#		 define setjmp(env)
+#		 define longjmp(env, val)
+#		        */
+#	endif /* KNR_STYLE */
 #	include "LOCAL.h" /*
 #	 define LOCAL
 #	        */
-#	include <setjmp.h> /*
-#	 define jmp_buf
-#	 define setjmp(jmp_buf env)
-#	 define longjmp(jmp_buf env, int val)
+#	include "../KEYWORDS/STDCALL.h" /*
+#	 define STDCALL
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
@@ -264,48 +275,37 @@ extern "C" {
 		}\
 		while (0)
 
-/* ************************ [v] GLOBAL VARIABLES [v] ************************ */
-#	ifdef SETUP_TRY_CATCH
-LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
-LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;
-LOCAL int			__TRY_CATCH_VALUE__ = 0;
-#	else /* CREATE GLOBAL VARIABLES AUTOMATICALLY */
-#		ifdef main
-#			undef main
-#		endif /* main */
-#		ifdef WinMain
-#			undef WinMain
-#		endif /* main */
-#		ifdef LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
-				LOCALMACRO__OBJECT_GLOBAL_VARIABLES
-#		else
-#			define LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES
-#		endif /* LOCALMACRO__OBJECT_GLOBAL_VARIABLES */
-#		define LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
-			LOCAL jmp_buf		__TRY_CATCH_BUFFER__[\
-				__TRY_CATCH_BUFFER_SIZE__\
-			];\
-			LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;\
-			LOCAL int			__TRY_CATCH_VALUE__ = 0;
-#		define main \
-			__IDLE__TRY_CATCH; \
-			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
-			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
-			int main
-#		define WinMain \
-			__IDLE__TRY_CATCH; \
-			LOCALMACRO__TRY_CATCH__OBJECT_GLOBAL_VARIABLES \
-			LOCALMACRO__TRY_CATCH_GLOBAL_VARIABLES \
-			int WINAPI WinMain
-#	endif /* SETUP_TRY_CATCH */
-/* ************************ [^] GLOBAL VARIABLES [^] ************************ */
-
+/**@@@@@@@@@@@@@@@@@@@@@@@@@@@ [v] OTO-LINKER [v] @@@@@@@@@@@@@@@@@@@@@@@@@@@**\
+|**@    HEADER-ONLY AUTO-INITIALIZER: NO MAKEFILES, NO .C FILES REQUIRED    @**|
+|**@      INJECTS ALL NEEDED DEFINITIONS AND SETUP LOGIC AUTOMATICALLY      @**|
+\**@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ OTO-LINKER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@**/
 /* *************************** [v] PROTOTYPES [v] *************************** */
 extern LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
 extern LOCAL unsigned int	__TRY_CATCH_INDEX__;
 extern LOCAL int			__TRY_CATCH_VALUE__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
+#	define LIBCMT_LOCAL__TRY_CATCH \
+		LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];\
+		LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;\
+		LOCAL int			__TRY_CATCH_VALUE__ = 0
+#	ifdef LIBCMT_SETUP
+LIBCMT_LOCAL__TRY_CATCH;
+#	else
+#		ifndef LIBCMT_GLOBAL__OBJECT
+#			define LIBCMT_GLOBAL__OBJECT
+#		endif /* !LIBCMT_GLOBAL__OBJECT */
+#		undef main
+#		undef WinMain
+#		undef LIBCMT_OTO_LINKER
+#		undef LIBCMT_GLOBAL__TRY_CATCH
+#		define LIBCMT_GLOBAL__TRY_CATCH LIBCMT_LOCAL__TRY_CATCH
+#		define LIBCMT_OTO_LINKER __LIBCMT_JAILBREAK_VARIABLE__;\
+			LIBCMT_GLOBAL__OBJECT;\
+			LIBCMT_GLOBAL__TRY_CATCH;
+#		define main LIBCMT_OTO_LINKER int main
+#		define WinMain LIBCMT_OTO_LINKER int STDCALL WinMain
+#	endif /* LIBCMT_SETUP */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@ [^] OTO-LINKER [^] @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
 #	ifdef __cplusplus /* C++ */
