@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/05 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/17 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -123,27 +123,25 @@
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
-|* O - SETUP                                                                  *|
-|* :                                                                          *|
-|* : NOTE: SETUP PART IS OPTIONAL IF YOU'RE COMPILING YOUR PROGRAM IN         *|
-|* : ARM32-BIT AND DEAILNG WITH main FUNCTION BY YOURSELF WITH LIKE           *|
-|* : "#define main ..." OR "#define main(...) ..."                            *|
-|* :                                                                          *|
-|* : ELSE, JUST SKIP THE SETUP AND JUMP TO LINE 78 AT THE BOTTOM OF THIS FILE *|
-|* :                                                                          *|
-|* : BEFORE USING THIS LIBRARY, YOU MUST DEFINE THE MACRO "SETUP_OBJECT"      *|
-|* : ONCE, IN ONE C FILE (TYPICALLY YOUR "main.c" OR ENTRY POINT).            *|
-|* :                                                                          *|
-|* : THIS ENSURES GLOBAL VARIABLES USED INTERNALLY ARE PROPERLY DEFINED.      *|
-|* :                                                                          *|
-|* : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING   *|
-|* : THE MACRO AGAIN. ALL OTHER FILES WILL JUST SEE "extern" DECLS.           *|
-|* :                                                                          *|
-|* ;..,                                                                       *|
-|*    :                                                                       *|
-|*   1| #define LIBCMT_SETUP                                                  *|
-|*   2| #include "LIBCMT/OBJECT.h"                                            *|
-|*    :                                                                       *|
+|*  O - SETUP                                                                 *|
+|*  :                                                                         *|
+|*  : NOTE: SETUP PART IS OPTIONAL IF YOU'RE COMPILING YOUR PROGRAM IN        *|
+|*  : ARM 32-BIT AND NEVER USED THIS ADDON IN A C FILE THAT HAS "main()"      *|
+|*  : FUNCTION. OTHERWISE, SKIP THE SETUP AND JUMP TO LINE 148 AT THE         *|
+|*  : BOTTOM OF THIS FILE.                                                    *|
+|*  :                                                                         *|
+|*  : IF THE FILE DOES NOT CONTAIN main(), AND YOU STILL USE THE LIBRARY,     *|
+|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "LIBCMT_SETUP"               *|
+|*  :                                                                         *|
+|*  : THIS ENSURES GLOBAL VARIABLES OR FUNCTIONS THAT ARE EXPOSED FOR LINKING *|
+|*  : PROPERLY DEFINED.                                                       *|
+|*  :                                                                         *|
+|*  : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING  *|
+|*  : THE MACRO AGAIN; OTHER FILES WILL ONLY SEE EXTERN DECLARATIONS.         *|
+|*  :                                                                         *|
+|* 1| #define LIBCMT_SETUP                                                    *|
+|* 2| #include "LIBCMT/OBJECT.h"                                              *|
+|*  :                                                                         *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
 |*                                                                            *|
@@ -545,6 +543,17 @@
 #	endif /* __CPU_ARM__ */
 /* ********************** [^] CHECK FUNCTION SIZE [^] *********************** */
 
+/* ***************************** [v] STRUCT [v] ***************************** */
+struct __OBJECT_HEADER__
+{
+	void	*TEMP;
+	void	*OP_CODES;
+#	ifdef __unix__
+	void	*SIZE;
+#	endif /* __unix__ */
+};
+/* ***************************** [^] STRUCT [^] ***************************** */
+
 #	ifdef __unix__
 #		ifndef KNR_STYLE /* STANDARD C */
 extern void	*mmap(void *, size_t, int, int, int, int);
@@ -558,17 +567,40 @@ extern int	munmap();
 #		define LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME) \
 			register unsigned char	*OP_CODES;\
 			\
-			OP_CODES = (unsigned char *)mmap(((void *)0), 4096, 7, 34, -1, 0);\
+			(VARIABLE_NAME).__OBJECT_HEADER__.SIZE = \
+				(void *)(\
+					(\
+						(\
+							sizeof(struct OBJECT_NAME) -\
+							sizeof(struct __OBJECT_HEADER__)\
+						) / sizeof(void *)\
+					) * LOCALMACRO__FUNCTION_SIZE\
+				);\
+			OP_CODES = (unsigned char *)mmap(\
+				((void *)0),\
+				(size_t)(VARIABLE_NAME).__OBJECT_HEADER__.SIZE,\
+				7,\
+				34,\
+				-1,\
+				0\
+			);\
 			\
 			if (OP_CODES == ((unsigned char *)-1))\
 				(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)0;\
 			else\
 			{\
-				mprotect(OP_CODES, 4096, 7);\
-				(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)OP_CODES;
+				mprotect(\
+					OP_CODES,\
+					(size_t)(VARIABLE_NAME).__OBJECT_HEADER__.SIZE,\
+					7\
+				);\
+				(VARIABLE_NAME).__OBJECT_HEADER__.OP_CODES = (void *)OP_CODES;\
 			}
 #		define DESTROY(THE_OBJECT) \
-			munmap((THE_OBJECT).__OBJECT_HEADER__.OP_CODES, 4096);\
+			munmap(\
+				(THE_OBJECT).__OBJECT_HEADER__.OP_CODES,\
+				(size_t)(THE_OBJECT).__OBJECT_HEADER__.SIZE\
+			);\
 			(THE_OBJECT).__OBJECT_HEADER__.OP_CODES = (void *)0
 #	endif /* __unix__ */
 
@@ -585,9 +617,14 @@ extern int	 STDCALL VirtualFree();
 				register unsigned char	*OP_CODES;\
 				\
 				OP_CODES = (unsigned char *)VirtualAlloc(\
-					((void *)0), \
-					4096, \
-					12288, \
+					((void *)0),\
+					(\
+						(\
+							sizeof(struct OBJECT_NAME) -\
+							sizeof(struct __OBJECT_HEADER__)\
+						) / sizeof(void *)\
+					) * LOCALMACRO__FUNCTION_SIZE,\
+					12288,\
 					64\
 				);\
 				\
@@ -631,7 +668,9 @@ extern int	__dpmi_free_memory();
 				struct S_DPMI_MEMORY_INFO	OBJECT_MEMORY;\
 				\
 				OBJECT_MEMORY.SIZE = (\
-					sizeof(OBJECT OBJECT_NAME) / sizeof(void *)\
+					(
+						sizeof(OBJECT OBJECT_NAME) - sizeof(__OBJECT_HEADER__)
+					) / sizeof(void *)\
 				) * LOCALMACRO__FUNCTION_SIZE;\
 				OBJECT_MEMORY.HANDLE = 0;\
 				\
@@ -652,14 +691,7 @@ extern int	__dpmi_free_memory();
 #	endif /* !LOCALMACRO__FUNCTION_ALLOCATOR */
 
 #	define OBJECT struct
-
-#	define I_AM_AN_OBJECT \
-		OBJECT __OBJECT_HEADER__\
-		{\
-			void		*TEMP;\
-			void FAR	*OP_CODES;\
-		}	__OBJECT_HEADER__
-
+#	define I_AM_AN_OBJECT struct __OBJECT_HEADER__	__OBJECT_HEADER__
 #	define OBJECT__READY(OBJECT_STRUCT) \
 		(*((void **)&(OBJECT_STRUCT)) != (void *)0)
 
@@ -707,8 +739,7 @@ extern int	__dpmi_free_memory();
 			(VARIABLE_NAME).__OBJECT_HEADER__.TEMP = (void *)(\
 				(\
 					(\
-						sizeof(OBJECT OBJECT_NAME) - \
-						(3 * sizeof(void *))\
+						sizeof(OBJECT OBJECT_NAME) - (3 * sizeof(void *))\
 					) / sizeof(void *)) + 1\
 			);\
 			LOCALMACRO__FUNCTION_ALLOCATOR(VARIABLE_NAME, OBJECT_NAME);\

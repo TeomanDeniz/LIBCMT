@@ -9,7 +9,7 @@ CMT_VA_ARGS \- Variable arguments support for older compilers
 .B #include <LIBCMT/LIBCMT.h>
 
 .SH DESCRIPTION
-This library provides support for variable argument functions on **pre-C89** compilers.
+This library provides support for variable argument functions on **pre-C89** compilers.     
 It defines macros and typedefs to work with `va_args`-style arguments, as an alternative
 to `...` in function definitions.
 
@@ -26,9 +26,6 @@ Macro to copy a `va_list` address.
 .TP
 .B \`va_start\`, \`VA_START\`
 Macro to get the address pointer of your argument list.
-.TP
-.B \`va_args\`, \`VA_ARGS\`
-Macro to tell the compiler the function accepts varargs (`...`).
 .TP
 .B \`va_end\`, \`VA_END\`
 Macro to end a `va_list` pointer.
@@ -61,25 +58,6 @@ test(start)
     printf("y:%s\n", va_arg(y, char *));
     va_end(y);
 }
-.fi
-
-.SH NOTES
-- Use `VA_ARGS` or `va_args` instead of `...` on older compilers.
-- Provides functionality similar to `<stdarg.h>` for legacy systems.
-
-.SH EXAMPLE
-Instead of:
-
-.nf
-.c
-printf(const char *, ...);
-.fi
-
-Use:
-
-.nf
-.c
-printf(const char *, va_args);
 .fi
 
 .SH SEE ALSO

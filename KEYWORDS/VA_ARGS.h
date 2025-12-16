@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/05 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/09 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -29,9 +29,6 @@
 |*..........:............:....................................................*|
 |* va_start : #define () : THE THE ADDRESS POINTER OF YOUR ARGUMENT LIST      *|
 |* VA_START :            :                                                    *|
-|*..........:............:....................................................*|
-|* va_args  : #define    : TELL THE COMPILER THAT THE FUNCTION IS GONNA HAVE  *|
-|* VA_ARGS  :            : __VA_ARGS__ (AKA: ...) ARGUMENTS                   *|
 |*..........:............:....................................................*|
 |* va_end   : #define () : END A VA_LIST POINTER                              *|
 |* VA_END   :            :                                                    *|
@@ -78,14 +75,6 @@
 |* THIS LIBRARY'S PURPOSE IS USING VA_ARG FEATURE ON OLDER COMPILERS. FOR     *|
 |* EXAMPLE, BEFORE C89 VERSIONS.                                              *|
 |*                                                                            *|
-|* YOU MUST USE 'VA_ARGS' OR 'va_args' INSTEAD OF '...' FOR USE THOS FEATURE  *|
-|* IN FUNCTIONS.                                                              *|
-|*                                                                            *|
-|* FOR EXAMPLE:                                                               *|
-|*     printf(const char *, ...);                                             *|
-|*  BECOMES                                                                   *|
-|*     printf(const char *, va_args);                                         *|
-|*                                                                            *|
 \******************************************************************************/
 
 #ifndef VA_ARGS_H
@@ -122,8 +111,6 @@
 /* **************************** [v] TYPEDEFS [v] **************************** */
 typedef char	*va_list;
 /* **************************** [^] TYPEDEFS [^] **************************** */
-
-#		define va_args char *__va_mt_args__
 
 #		ifdef __SYSTEM_32_BIT__
 static char
@@ -202,7 +189,6 @@ static char
 #			   void va_end(va_list);
 #			        */
 #		endif /* __cplusplus */
-#		define va_args ...
 #	endif /* KNR_STYLE */
 
 /* **************************** [v] UPPERCASE [v] *************************** */
@@ -210,7 +196,6 @@ typedef va_list	VA_LIST;
 #		define VA_ARG va_arg
 #		define VA_COPY va_copy
 #		define VA_START va_start
-#		define VA_ARGS va_args
 #		define VA_END va_end
 /* **************************** [^] UPPERCASE [^] *************************** */
 

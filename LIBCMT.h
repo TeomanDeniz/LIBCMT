@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/12 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -478,12 +478,12 @@
 #		 define noreturn
 #		        */
 #	endif /* INCL__NORETURN */
-#	ifdef INCL__INCL__STDCALL
-#		undef INCL__INCL__STDCALL
+#	ifdef INCL__STDCALL
+#		undef INCL__STDCALL
 #		include "KEYWORDS/STDCALL.h" /*
 #		 define STDCALL
 #		        */
-#	endif /* INCL__INCL__STDCALL */
+#	endif /* INCL__STDCALL */
 #	ifdef INCL__TRY_CATCH
 #		undef INCL__TRY_CATCH
 #		include "KEYWORDS/TRY_CATCH.h" /*

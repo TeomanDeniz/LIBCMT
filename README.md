@@ -2485,7 +2485,6 @@ If unused, the compiler ignores this function and continues compiling the progra
 | `va_arg`, `VA_ARG`     | `#define()` | Get a variable from your `va_list` in your function    |
 | `va_copy`, `VA_COPY`   | `#define()` | Copy your `va_list` address                            |
 | `va_start`, `VA_START` | `#define()` | Get the address pointer of your argument list          |
-| `va_args`, `VA_ARGS`   | `#define`   | Tell the compiler the function accepts varargs (`...`) |
 | `va_end`, `VA_END`     | `#define()` | End a `va_list` pointer                                |
 
 ## How To Use
@@ -2519,18 +2518,6 @@ test(start)
 ## What Does This Do?
 
 This library allows use of `va_args`-style variable argument functions on **pre-C89** compilers.
-
-You must use `VA_ARGS` or `va_args` instead of `...` to use this feature in functions.
-
-### For example:
-
-```c
-printf(const char *, ...);
-```
-becomes
-```c
-printf(const char *, va_args);
-```
 
 ----
 </details>
