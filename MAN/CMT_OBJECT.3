@@ -1,15 +1,15 @@
-.TH CMT_OBJECT 3 "LIBCMT" "CMT_OBJECT" "Object-Oriented Macros for C"
+.TH CMT_OBJECT 3 "CMT" "CMT_OBJECT" "Object-Oriented Macros for C"
 .SH NAME
-CMT_OBJECT \- OBJECT / OBJECT.h OOP macro system for C
+CMT_OBJECT \- OBJECT / OBJECT.H OOP macro system for C
 
 .SH SYNOPSIS
 .B #define INCL__OBJECT
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 .br
 or
 .br
-.B #include <LIBCMT/OBJECT.h>
+.B #include <CMT/OBJECT.H>
 
 .SH DESCRIPTION
 The OBJECT subsystem provides lightweight object-oriented programming constructs for C.  
@@ -64,7 +64,7 @@ internal globals automatically.
 Example:
 .nf
     #define SETUP_OBJECT
-    #include <LIBCMT/OBJECT.h>
+    #include <CMT/OBJECT.H>
 .fi
 
 This is optional when using ARM 32-bit environments or when main is redefined.
@@ -127,11 +127,11 @@ destroy(B);
 - __OBJECT_MAX_FUNCTION_LIMIT__ controls maximum functions per object  
 
 .SH FILES
-LIBCMT/OBJECT.h  
-LIBCMT/LIBCMT.h
+CMT/OBJECT.H  
+CMT/CMT.H
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

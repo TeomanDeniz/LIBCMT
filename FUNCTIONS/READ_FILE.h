@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/03/29 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -120,7 +120,7 @@
 #		include <fstream> /*
 #		  class std::ifstream;
 #		        */
-#		include	"../KEYWORDS/INLINE.h" /*
+#		include	"../KEYWORDS/INLINE.H" /*
 #		 define INLINE
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -207,13 +207,13 @@ static INLINE int
 extern void	*malloc();
 extern void	free();
 #		endif /* !KNR_STYLE */
-#		include "../KEYWORDS/INLINE.h" /*
+#		include "../KEYWORDS/INLINE.H" /*
 #		 define INLINE
 #		        */
-#		include "../ATTRIBUTES/FAR.h" /*
+#		include "../ATTRIBUTES/FAR.H" /*
 #		 define FAR
 #		        */
-#		include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#		include "../ENVIRONMENTS/KNR_STYLE.H" /*
 #		 define KNR_STYLE
 #		        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -332,5 +332,5 @@ static INLINE int
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

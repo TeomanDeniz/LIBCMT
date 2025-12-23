@@ -1,4 +1,4 @@
-.TH STDCALL 3 "LIBCMT" "STDCALL" "Calling Conventions"
+.TH STDCALL 3 "CMT" "STDCALL" "Calling Conventions"
 
 .SH NAME
 STDCALL \- Optimises functions to follow OS ABI calling-convention rules
@@ -6,7 +6,10 @@ STDCALL \- Optimises functions to follow OS ABI calling-convention rules
 .SH SYNOPSIS
 .B #define INCL__STDCALL
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
+
+.SH FILES
+CMT/KEYWORDS/STDCALL.H
 
 .SH DESCRIPTION
 Defines a calling convention where function arguments are passed right-to-left on the stack and the callee is responsible for cleaning the stack.  
@@ -31,7 +34,7 @@ extern STDCALL int WinMain(...);
 - Common in Win32 API interface layers.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

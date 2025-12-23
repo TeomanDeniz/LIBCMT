@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/05 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -212,13 +212,13 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../KEYWORDS/IGNORE_VAR.h" /*
+#	include "../KEYWORDS/IGNORE_VAR.H" /*
 #	 define IGNORE_VAR
 #	        */
-#	include "../KEYWORDS/INLINE.h" /*
+#	include "../KEYWORDS/INLINE.H" /*
 #	 define INLINE
 #	        */
-#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	include "../ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define KNR_STYLE
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -1681,5 +1681,5 @@ static INLINE int
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

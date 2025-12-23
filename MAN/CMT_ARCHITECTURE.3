@@ -1,4 +1,4 @@
-.TH CMT_ARCHITECTURE 3 "LIBCMT" "CMT_ARCHITECTURE" "CPU Architecture Detection"
+.TH CMT_ARCHITECTURE 3 "CMT" "CMT_ARCHITECTURE" "CPU Architecture Detection"
 
 .SH NAME
 CMT_ARCHITECTURE \- Detect CPU and compiler target bit-width
@@ -6,10 +6,10 @@ CMT_ARCHITECTURE \- Detect CPU and compiler target bit-width
 .SH SYNOPSIS
 .B #define INCL__ARCHITECTURE
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ENVIRONMENTS/ARCHITECTURE.h
+CMT/ENVIRONMENTS/ARCHITECTURE.H
 
 .SH DESCRIPTION
 This header provides macros for determining the target system's architecture bit-width as detected by the compiler.
@@ -58,7 +58,7 @@ These macros allow compile-time selection of behavior depending on the underlyin
 
 .SH SEE ALSO
 .B CMT_CPU(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

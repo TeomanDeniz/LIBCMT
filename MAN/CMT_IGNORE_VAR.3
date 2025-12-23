@@ -1,4 +1,4 @@
-.TH CMT_IGNORE_VAR 3 "LIBCMT" "CMT_IGNORE_VAR" "Ignore Unused Variables"
+.TH CMT_IGNORE_VAR 3 "CMT" "CMT_IGNORE_VAR" "Ignore Unused Variables"
 
 .SH NAME
 CMT_IGNORE_VAR \- Tag variables to ignore unused warnings
@@ -6,10 +6,10 @@ CMT_IGNORE_VAR \- Tag variables to ignore unused warnings
 .SH SYNOPSIS
 .B #define INCL__IGNORE_VAR
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/KEYWORDS/IGNORE_VAR.h
+CMT/KEYWORDS/IGNORE_VAR.H
 
 .SH DESCRIPTION
 Provides a macro to mark variables that may not be used, preventing compiler warnings.
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
 .SH SEE ALSO
 .B CMT_UNUSED(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

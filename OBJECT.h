@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/05/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/17 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/22 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -131,7 +131,7 @@
 |*  : BOTTOM OF THIS FILE.                                                    *|
 |*  :                                                                         *|
 |*  : IF THE FILE DOES NOT CONTAIN main(), AND YOU STILL USE THE LIBRARY,     *|
-|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "LIBCMT_SETUP"               *|
+|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "CMT_SETUP"                  *|
 |*  :                                                                         *|
 |*  : THIS ENSURES GLOBAL VARIABLES OR FUNCTIONS THAT ARE EXPOSED FOR LINKING *|
 |*  : PROPERLY DEFINED.                                                       *|
@@ -139,8 +139,8 @@
 |*  : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING  *|
 |*  : THE MACRO AGAIN; OTHER FILES WILL ONLY SEE EXTERN DECLARATIONS.         *|
 |*  :                                                                         *|
-|* 1| #define LIBCMT_SETUP                                                    *|
-|* 2| #include "LIBCMT/OBJECT.h"                                              *|
+|* 1| #define CMT_SETUP                                                       *|
+|* 2| #include "CMT/OBJECT.H"                                                 *|
 |*  :                                                                         *|
 |*                                                                            *|
 |* -------------------------------------------------------------------------- *|
@@ -490,33 +490,33 @@
 #	include <stddef.h> /*
 #	typedef size_t;
 #	        */
-#	include "./ATTRIBUTES/FAR.h" /*
+#	include "./ATTRIBUTES/FAR.H" /*
 #	 define FAR
 #	        */
-#	include "./KEYWORDS/LOCAL.h" /*
+#	include "./KEYWORDS/LOCAL.H" /*
 #	 define LOCAL
 #	        */
-#	include "./KEYWORDS/INLINE.h" /*
+#	include "./KEYWORDS/INLINE.H" /*
 #	 define INLINE
 #	        */
-#	include "./ENVIRONMENTS/KNR_STYLE.h" /*
+#	include "./ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define KNR_STYLE
 #	        */
-#	include "./ENVIRONMENTS/CPU.h" /*
+#	include "./ENVIRONMENTS/CPU.H" /*
 #	 define __CPU_INTEL__
 #	 define __CPU_ARM__
 #	        */
-#	include "./ENVIRONMENTS/ARCHITECTURE.h" /*
+#	include "./ENVIRONMENTS/ARCHITECTURE.H" /*
 #	 define __SYSTEM_64_BIT__
 #	 define __SYSTEM_32_BIT__
 #	        */
-#	include "./ASM/INTEL/RAX.h" /*
+#	include "./ASM/INTEL/RAX.H" /*
 #	 define GET_RAX(VAR)
 #	        */
-#	include "./ASM/ARM/X17.h" /*
+#	include "./ASM/ARM/X17.H" /*
 #	 define GET_X17(VAR)
 #	        */
-#	include "./KEYWORDS/STDCALL.h" /*
+#	include "./KEYWORDS/STDCALL.H" /*
 #	 define STDCALL
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -786,25 +786,25 @@ extern int	__dpmi_free_memory();
 /* *************************** [v] PROTOTYPES [v] *************************** */
 extern LOCAL void	*__OBJECT_STRUCTURE_POINTER__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
-#			define LIBCMT_LOCAL__OBJECT \
+#			define CMT_LOCAL__OBJECT \
 				LOCAL void	*__OBJECT_STRUCTURE_POINTER__ = (void *)0
-#			ifdef LIBCMT_SETUP
-LIBCMT_LOCAL__OBJECT;
+#			ifdef CMT_SETUP
+CMT_LOCAL__OBJECT;
 #			else
-#				ifndef LIBCMT_GLOBAL__TRY_CATCH
-#					define LIBCMT_GLOBAL__TRY_CATCH
-#				endif /* !LIBCMT_GLOBAL__TRY_CATCH */
+#				ifndef CMT_GLOBAL__TRY_CATCH
+#					define CMT_GLOBAL__TRY_CATCH
+#				endif /* !CMT_GLOBAL__TRY_CATCH */
 #				undef main
 #				undef WinMain
-#				undef LIBCMT_OTO_LINKER
-#				undef LIBCMT_GLOBAL__OBJECT
-#				define LIBCMT_GLOBAL__OBJECT LIBCMT_LOCAL__OBJECT
-#				define LIBCMT_OTO_LINKER __LIBCMT_JAILBREAK_VARIABLE__;\
-					LIBCMT_GLOBAL__OBJECT;\
-					LIBCMT_GLOBAL__TRY_CATCH;
-#				define main LIBCMT_OTO_LINKER int main
-#				define WinMain LIBCMT_OTO_LINKER int STDCALL WinMain
-#			endif /* LIBCMT_SETUP */
+#				undef CMT_OTO_LINKER
+#				undef CMT_GLOBAL__OBJECT
+#				define CMT_GLOBAL__OBJECT CMT_LOCAL__OBJECT
+#				define CMT_OTO_LINKER __CMT_JAILBREAK_VARIABLE__;\
+					CMT_GLOBAL__OBJECT;\
+					CMT_GLOBAL__TRY_CATCH;
+#				define main CMT_OTO_LINKER int main
+#				define WinMain CMT_OTO_LINKER int STDCALL WinMain
+#			endif /* CMT_SETUP */
 #		endif /* __SYSTEM_32_BIT__ */
 #	endif /* __CPU_ARM__ */
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@ [^] OTO-LINKER [^] @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -1018,5 +1018,5 @@ static INLINE void
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

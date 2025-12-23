@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/11/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -20,7 +20,7 @@
 |*.:........................................................................:.*|
 |* NAME :  TYPE   :                        DESCRIPTION                        *|
 |*......:.........:...........................................................*|
-|* BYTE : typedef : 8-BIT STORAGE UNIT (CHAR)                                 *|
+|* BYTE : typedef : UNSIGNED ONE BYTE STORAGE UNIT (CHAR)                     *|
 |* byte :         :                                                           *|
 |*......:.........:...........................................................*|
 |* LET  : typedef : TYPE FOR ARRAY INDEXING AND SIZES (LIKE size_t)           *|
@@ -103,7 +103,7 @@
 #	define TYPES_H 202512 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../ENVIRONMENTS/ARCHITECTURE.h" /*
+#	include "../ENVIRONMENTS/ARCHITECTURE.H" /*
 #	 define __HAS_128_BIT__
 #	 define __HAS_64_BIT__
 #	 define __SYSTEM_64_BIT__
@@ -111,7 +111,7 @@
 #	 define __SYSTEM_16_BIT__
 #	 define __SYSTEM_8_BIT__
 #	        */
-#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	include "../ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define void
 #	 define unsigned
 #	        */
@@ -123,7 +123,7 @@ typedef unsigned char	LET;
 typedef char			BIT8;
 typedef short			BIT16;
 typedef long			BIT32;
-typedef char			BYTE;
+typedef unsigned char	BYTE;
 typedef float			FLOAT32;
 typedef VAR				var;
 typedef LET				let;
@@ -157,7 +157,7 @@ typedef unsigned int	LET;
 typedef char			BIT8;
 typedef int				BIT16;
 typedef long			BIT32;
-typedef char			BYTE;
+typedef unsigned char	BYTE;
 typedef float			FLOAT32;
 typedef VAR				var;
 typedef LET				let;
@@ -194,7 +194,7 @@ typedef unsigned int	LET;
 typedef int				BIT32;
 typedef short			BIT16;
 typedef char			BIT8;
-typedef char			BYTE;
+typedef unsigned char	BYTE;
 typedef float			FLOAT32;
 typedef VAR				var;
 typedef LET				let;
@@ -233,7 +233,7 @@ typedef long long			BIT64;
 typedef int					BIT32;
 typedef short				BIT16;
 typedef char				BIT8;
-typedef char				BYTE;
+typedef unsigned char		BYTE;
 typedef float				FLOAT32;
 typedef double				FLOAT64;
 typedef VAR					var;
@@ -301,5 +301,5 @@ typedef long double	FLOAT128;
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/06/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/09 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -94,14 +94,14 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	include "../ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define KNR_STYLE
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
 
 #	ifdef KNR_STYLE /* COMPILER DOES NOT SUPPORTS VA_ARG */
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include "../ENVIRONMENTS/ARCHITECTURE.h" /*
+#		include "../ENVIRONMENTS/ARCHITECTURE.H" /*
 #		 define __SYSTEM_32_BIT__
 #		 define __SYSTEM_16_BIT__
 #		 define __SYSTEM_8_BIT__
@@ -214,5 +214,5 @@ typedef va_list	VA_LIST;
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

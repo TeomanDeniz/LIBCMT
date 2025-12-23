@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2023/07/08 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -127,13 +127,13 @@ extern "C" {
 #		   void	_mm_prefetch(void *, enum _mm_hint);
 #		        */
 #	endif /* _MSC_VER */
-#	include	"../KEYWORDS/INLINE.h" /*
+#	include	"../KEYWORDS/INLINE.H" /*
 #	 define INLINE
 #	        */
-#	include	"../KEYWORDS/IGNORE_VAR.h" /*
+#	include	"../KEYWORDS/IGNORE_VAR.H" /*
 #	 define IGNORE_VAR
 #	        */
-#	include	"../ENVIRONMENTS/KNR_STYLE.h" /*
+#	include	"../ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define KNR_STYLE
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -358,5 +358,5 @@ static INLINE void
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

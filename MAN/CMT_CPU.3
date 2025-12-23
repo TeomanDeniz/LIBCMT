@@ -1,4 +1,4 @@
-.TH CMT_CPU 3 "LIBCMT" "CMT_CPU" "CPU Information Detection"
+.TH CMT_CPU 3 "CMT" "CMT_CPU" "CPU Information Detection"
 
 .SH NAME
 CMT_CPU \- Detect CPU architecture and runtime vendor/version
@@ -6,10 +6,10 @@ CMT_CPU \- Detect CPU architecture and runtime vendor/version
 .SH SYNOPSIS
 .B #define INCL__CPU
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ENVIRONMENTS/CPU.h
+CMT/ENVIRONMENTS/CPU.H
 
 .SH DESCRIPTION
 Provides compile-time and runtime CPU detection for multiple architectures.
@@ -98,7 +98,7 @@ Function returning a static C-string with CPU vendor, model, and version at runt
 
 .SH EXAMPLES
 .nf
-#include "LIBCMT/LIBCMT.h"
+#include "CMT/CMT.H"
 
 #ifdef __CPU_INTEL__
 printf("Running on Intel CPU\n");
@@ -109,7 +109,7 @@ printf("CPU Info: %s\n", __CPU_VER__());
 
 .SH SEE ALSO
 .B CMT_ARCHITECTURE(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

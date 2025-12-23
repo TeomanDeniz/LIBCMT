@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2024/02/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/09 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -171,45 +171,45 @@
 |*                                                                            *|
 |*  O A RANDOM EXAMPLE                                                        *|
 |*  :                                                                         *|
-|* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
+|* 1| #include "CMT/ASM/PUSH.H"                                               *|
 |* 2| SECTION (example_func) // example_func:                                 *|
 |* 3|     MOV32 (EAX, EBX)   // mov rax, ebx                                  *|
 |* 4|     ADD32 (EAX, 1)     // add eax, 1                                    *|
 |* 5|     RET                // ret                                           *|
 |* 6| END                                                                     *|
-|* 7| #include "LIBCMT/ASM/POP.h"                                             *|
+|* 7| #include "CMT/ASM/POP.H"                                                *|
 |* 8|                                                                         *|
 |* 9| extern int example_func(void); // Connect it with C                     *|
 |*  :                                                                         *|
 |*                                                                            *|
 |*  O EXAMPLE - BYTE COPY ROUTINE                                             *|
 |*  :                                                                         *|
-|* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
+|* 1| #include "CMT/ASM/PUSH.H"                                               *|
 |* 2| SECTION (copy_byte)      // copy_byte:                                  *| 
 |* 3|     MOV8 (MEM8(RDI), AL) // mov byte [rdi], al                          *|
 |* 4|     RET                  // ret                                         *|
 |* 5| END                                                                     *|
-|* 6| #include "LIBCMT/ASM/POP.h"                                             *|
+|* 6| #include "CMT/ASM/POP.H"                                                *|
 |*  :                                                                         *|
 |*                                                                            *|
 |*  O EXAMPLE - ADD VALUE AT INDEX                                            *|
 |*  :                                                                         *|
-|* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
+|* 1| #include "CMT/ASM/PUSH.H"                                               *|
 |* 2| SECTION (add_indexed)                  // add_indexed:                  *|
 |* 3|     ADD32 (MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx    *|
 |* 4|     RET                                // ret                           *|
 |* 5| END                                                                     *|
-|* 6| #include "LIBCMT/ASM/POP.h"                                             *|
+|* 6| #include "CMT/ASM/POP.H"                                                *|
 |*  :                                                                         *|
 |*                                                                            *|
 |*  O EXAMPLE - SETTING A DIRECT VALUE TO A REGISTER                          *|
 |*  :                                                                         *|
-|* 1| #include "LIBCMT/ASM/PUSH.h"                                            *|
+|* 1| #include "CMT/ASM/PUSH.H"                                               *|
 |* 2| SECTION (return_42)        // return_42:                                *|
 |* 3|     MOV64 (RAX, VALUE(42)) // mov rax, 42                               *|
 |* 4|     RET                    // ret                                       *|
 |* 5| END                                                                     *|
-|* 6| #include "LIBCMT/ASM/POP.h"                                             *|
+|* 6| #include "CMT/ASM/POP.H"                                                *|
 |*  :                                                                         *|
 |*                                                                            *|
 \******************************************************************************/
@@ -218,14 +218,14 @@
 #	define ASM_PUSH_H 202512 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../CHECK_FEATURE/INLINE_ASM.h" /*
+#	include "../CHECK_FEATURE/INLINE_ASM.H" /*
 #	 define IS__INLINE_ASM__SUPPORTED
 #	 define INLINE_ASM_TYPE__GNU
 #	         */
-#	include "../ENVIRONMENTS/CPU.h" /*
+#	include "../ENVIRONMENTS/CPU.H" /*
 #	 define __CPU_INTEL__
 #	        */
-#	include "../ENVIRONMENTS/ARCHITECTURE.h" /*
+#	include "../ENVIRONMENTS/ARCHITECTURE.H" /*
 #	 define __SYSTEM_512_BIT__
 #	 define __SYSTEM_256_BIT__
 #	 define __SYSTEM_128_BIT__
@@ -1227,5 +1227,5 @@
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

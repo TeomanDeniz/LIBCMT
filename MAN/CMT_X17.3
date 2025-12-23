@@ -1,4 +1,4 @@
-.TH CMT_X17 3 "LIBCMT" "CMT_X17" "Register Access Macros"
+.TH CMT_X17 3 "CMT" "CMT_X17" "Register Access Macros"
 
 .SH NAME
 CMT_X17 \- Read or write CPU register X17
@@ -6,10 +6,10 @@ CMT_X17 \- Read or write CPU register X17
 .SH SYNOPSIS
 .B #define INCL__X17
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ASM/X17.h
+CMT/ASM/X17.H
 
 .SH DESCRIPTION
 CMT_X17 provides macros for reading from and writing to the ARM64 X17 register.
@@ -45,7 +45,7 @@ SET_X17(v);
 .SH SEE ALSO
 .B CMT_ARCHITECTURE(3),
 .B CMT_CPU(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

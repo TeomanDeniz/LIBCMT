@@ -1,4 +1,4 @@
-.TH CMT_TYPES 3 "LIBCMT" "CMT_TYPES" "Type Definitions and Support Macros"
+.TH CMT_TYPES 3 "CMT" "CMT_TYPES" "Type Definitions and Support Macros"
 
 .SH NAME
 CMT_TYPES \- Standard and fixed-size types with support macros for portability
@@ -6,10 +6,10 @@ CMT_TYPES \- Standard and fixed-size types with support macros for portability
 .SH SYNOPSIS
 .B #define INCL__TYPES
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/KEYWORDS/TYPES.h
+CMT/KEYWORDS/TYPES.H
 
 .SH DESCRIPTION
 Provides standard types, fixed-size types, floating-point types, and macros to check 
@@ -18,7 +18,7 @@ support for platform-dependent types. Useful for portable code across compilers 
 .SH STANDARD TYPES
 .TP
 .B BYTE, byte
-8-bit storage unit (char)
+Unsigned one byte storage unit (char)
 .TP
 .B LET, let
 Type for array indexing and sizes (like \fIsize_t\fR)
@@ -78,7 +78,7 @@ Defined if compiler supports FLOAT128 type
 - Users should check the corresponding macros (e.g., SUPPORTED__FLOAT64, SUPPORTED__FLOAT128, SUPPORTED__BIT128) before using these types to ensure portability and correctness.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

@@ -1,25 +1,25 @@
-.TH LIBCMT 3 "2025-11-30" "1.0" "LIBCMT C Library Extension"
+.TH CMT 3 "2025-11-30" "1.0" "Maximum Tension C Library Extension"
 
 .SH NAME
-LIBCMT \- modular and portable C library extension
+CMT \- modular and portable C library extension
 
 .SH SYNOPSIS
-.B #include "LIBCMT/LIBCMT.h"
+.B #include "CMT/CMT.H"
 .br
-.B #include "LIBCMT/LIBCMT.hpp" \- for C++
+.B #include "CMT/CMT.HPP" \- for C++
 
 .IP "Optional Modular Include:"
 Predefine
 .B INCL__<MODULE>
-macros before including `LIBCMT.h` to selectively include specific modules:
+macros before including `CMT.H` to selectively include specific modules:
 
 .nf
 #define INCL__FAR
-#include "LIBCMT/LIBCMT.h" // Includes only the FAR module
+#include "CMT/CMT.H" // Includes only the FAR module
 
 #define INCL__INLINE
 #define INCL__OBJECT
-#include "LIBCMT/LIBCMT.h" // Includes INLINE and OBJECT modules only
+#include "CMT/CMT.H" // Includes INLINE and OBJECT modules only
 .fi
 
 .IP "Optional Sectional Include:"
@@ -29,12 +29,12 @@ macros to include entire sections:
 
 .nf
 #define INCL__KEYWORDS
-#include "LIBCMT/LIBCMT.h" // Includes all KEYWORDS
+#include "CMT/CMT.H" // Includes all KEYWORDS
 
 #define INCL__ATTRIBUTES
 #define INCL__KEYWORDS
 #define INCL__RAX
-#include "LIBCMT/LIBCMT.h" // Includes RAX, all KEYWORDS, and all ATTRIBUTES
+#include "CMT/CMT.H" // Includes RAX, all KEYWORDS, and all ATTRIBUTES
 .fi
 
 .SH SECTIONS AND MODULES
@@ -60,7 +60,7 @@ Includes standard library extensions
 Includes all custom keywords
 
 .SH DESCRIPTION
-LIBCMT provides essential tools and features missing from the standard C library, fully compatible with all compilers and platforms.  
+CMT provides essential tools and features missing from the standard C library, fully compatible with all compilers and platforms.  
 If no
 .B INCL__...
 macro is defined, all modules and sections are automatically included by default.

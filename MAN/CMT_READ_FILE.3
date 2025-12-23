@@ -1,4 +1,4 @@
-.TH CMT_READ_FILE 3 "LIBCMT" "CMT_READ_FILE" "Read File Function"
+.TH CMT_READ_FILE 3 "CMT" "CMT_READ_FILE" "Read File Function"
 
 .SH NAME
 CMT_READ_FILE \- Reads a file into memory and returns its content
@@ -6,10 +6,10 @@ CMT_READ_FILE \- Reads a file into memory and returns its content
 .SH SYNOPSIS
 .B #define INCL__READ_FILE
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/FUNCTIONS/READ_FILE.h
+CMT/FUNCTIONS/READ_FILE.H
 
 .SH DESCRIPTION
 Provides functions to read the entire contents of a file into memory.
@@ -60,7 +60,7 @@ if(result == 0) {
 - Reads the entire file into memory; not suitable for extremely large files.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

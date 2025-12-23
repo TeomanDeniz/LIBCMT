@@ -1,4 +1,4 @@
-.TH CMT_FAR 3 "LIBCMT" "CMT_FAR" "FAR Memory Attribute"
+.TH CMT_FAR 3 "CMT" "CMT_FAR" "FAR Memory Attribute"
 
 .SH NAME
 CMT_FAR \- FAR pointer/memory qualifier for 16-bit segmented systems
@@ -6,10 +6,10 @@ CMT_FAR \- FAR pointer/memory qualifier for 16-bit segmented systems
 .SH SYNOPSIS
 .B #define INCL__FAR
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ATTRIBUTES/FAR.h
+CMT/ATTRIBUTES/FAR.H
 
 .SH DESCRIPTION
 CMT_FAR provides the FAR qualifier used on 16-bit architectures to access memory beyond the current 64KB segment.
@@ -63,7 +63,7 @@ int FAR far_ptr;
 - This file avoids conditional compilation to maximize compatibility with older toolchains.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

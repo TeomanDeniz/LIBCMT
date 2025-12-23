@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/02 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -394,13 +394,13 @@ extern "C" {
 
 #	ifdef LOCALMACRO__CPU_FOUND
 /* **************************** [v] INCLUDES [v] **************************** */
-#		include "./KNR_STYLE.h" /*
+#		include "./KNR_STYLE.H" /*
 #		 define KNR_STYLE
 #		        */
-#		include "../KEYWORDS/INLINE.h" /*
+#		include "../KEYWORDS/INLINE.H" /*
 #		 define INLINE
 #		        */
-#		include "../CHECK_FEATURE/INLINE_ASM.h" /*
+#		include "../CHECK_FEATURE/INLINE_ASM.H" /*
 #		 define INLINE_ASM_TYPE__GNU
 #		 define INLINE_ASM_TYPE__MSVC
 #		 define INLINE_ASM_TYPE__BORLAND
@@ -1620,5 +1620,5 @@ static INLINE char
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

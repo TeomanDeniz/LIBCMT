@@ -1,4 +1,4 @@
-.TH CMT_INLINE_ASM 3 "LIBCMT" "CMT_INLINE_ASM" "Inline Assembly Detection"
+.TH CMT_INLINE_ASM 3 "CMT" "CMT_INLINE_ASM" "Inline Assembly Detection"
 
 .SH NAME
 CMT_INLINE_ASM \- Detect compiler inline assembly support and syntax type
@@ -6,10 +6,10 @@ CMT_INLINE_ASM \- Detect compiler inline assembly support and syntax type
 .SH SYNOPSIS
 .B #define INCL__INLINE_ASM
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/CHECK_FEATURE/INLINE_ASM.h
+CMT/CHECK_FEATURE/INLINE_ASM.H
 
 .SH DESCRIPTION
 This header determines whether inline assembly is supported and identifies the syntax format used by the compiler.
@@ -148,7 +148,7 @@ __asm__ __volatile__(
 .fi
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

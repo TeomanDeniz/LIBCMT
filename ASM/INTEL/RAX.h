@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/09/15 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -97,7 +97,7 @@
 #	define RAX_H 202512 /* VERSION */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../../ENVIRONMENTS/CPU.h" /*
+#	include "../../ENVIRONMENTS/CPU.H" /*
 #	 define __CPU_INTEL__
 #	 define __CPU_AMD_X86__
 #	 define __CPU_POWERPC__
@@ -116,10 +116,10 @@
 #	 define __CPU_BLACKFIN__
 #	 define __CPU_DSP56K__
 #	        */
-#	include "../../ENVIRONMENTS/ARCHITECTURE.h" /*
+#	include "../../ENVIRONMENTS/ARCHITECTURE.H" /*
 #	 define __SYSTEM_64_BIT__
 #	        */
-#	include "../../CHECK_FEATURE/INLINE_ASM.h" /*
+#	include "../../CHECK_FEATURE/INLINE_ASM.H" /*
 #	 define IS__INLINE_ASM__SUPPORTED
 #	 define INLINE_ASM_TYPE__GNU
 #	 define INLINE_ASM_TYPE__ISO
@@ -417,5 +417,5 @@
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

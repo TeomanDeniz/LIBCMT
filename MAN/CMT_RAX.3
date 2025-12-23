@@ -1,4 +1,4 @@
-.TH CMT_RAX 3 "LIBCMT" "CMT_RAX" "Register Access Macros"
+.TH CMT_RAX 3 "CMT" "CMT_RAX" "Register Access Macros"
 
 .SH NAME
 CMT_RAX \- Read or write CPU register RAX/EAX/AX
@@ -6,10 +6,10 @@ CMT_RAX \- Read or write CPU register RAX/EAX/AX
 .SH SYNOPSIS
 .B #define INCL__RAX
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ASM/RAX.h
+CMT/ASM/RAX.H
 
 .SH DESCRIPTION
 CMT_RAX provides macros for reading from and writing to the Intel primary accumulator register.
@@ -51,7 +51,7 @@ SET_RAX(x);
 
 .SH SEE ALSO
 .B CMT_ARCHITECTURE(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

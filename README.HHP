@@ -7,10 +7,10 @@ Default topic=PREFACE.htm
 Display compile progress=No
 Index file=2.HHK
 Language=0x409 Ýngilizce (Amerikan)
-Title=LIBCMT Manual
+Title=CMT Manual
 
 [WINDOWS]
-WINDOW="LIBCMT Manual","1.HHC","2.HHK","PREFACE.htm",,,,,,0x2120,,0x3006,[106,95,776,591],,,,,,,0
+WINDOW="CMT Manual","1.HHC","2.HHK","PREFACE.htm",,,,,,0x2120,,0x3006,[106,95,776,591],,,,,,,0
 
 
 [INFOTYPES]

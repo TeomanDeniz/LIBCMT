@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/08/10 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/03 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -102,7 +102,7 @@
 |*#                                IMPORTANT                                 #*|
 |*############################################################################*|
 |*                                                                            *|
-|* PLEASE CHECK THE TABLE AT LIBCMT/INLINE_ASM_TABLE.md FOR INFORMATION ABOUT *|
+|*  PLEASE CHECK THE TABLE AT CMT/INLINE_ASM_TABLE.md FOR INFORMATION ABOUT   *|
 |*                          SUPPORTED ARCHITECTURES                           *|
 |*                                                                            *|
 \******************************************************************************/
@@ -989,5 +989,5 @@
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

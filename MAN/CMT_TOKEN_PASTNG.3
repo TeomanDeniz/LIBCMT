@@ -1,4 +1,4 @@
-.TH CMT_TOKEN_PASTING 3 "LIBCMT" "CMT_TOKEN_PASTING" "Token Pasting Support Check"
+.TH CMT_TOKEN_PASTING 3 "CMT" "CMT_TOKEN_PASTING" "Token Pasting Support Check"
 
 .SH NAME
 CMT_TOKEN_PASTING \- Detect compiler support for the token pasting operator
@@ -6,10 +6,10 @@ CMT_TOKEN_PASTING \- Detect compiler support for the token pasting operator
 .SH SYNOPSIS
 .B #define INCL__TOKEN_PASTING
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/CHECK_FEATURE/TOKEN_PASTING.h
+CMT/CHECK_FEATURE/TOKEN_PASTING.H
 
 .SH DESCRIPTION
 This header defines a macro indicating whether the compiler supports the token pasting operator (`##`).
@@ -34,7 +34,7 @@ int AB(ma, in)(void) // → int main(void)
 
 .SH SEE ALSO
 .B CMT_STRINGIFICATION(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

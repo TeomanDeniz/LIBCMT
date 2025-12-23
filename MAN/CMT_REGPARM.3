@@ -1,4 +1,4 @@
-.TH CMT_REGPARM 3 "LIBCMT" "CMT_REGPARM" "Register-Passing Attribute"
+.TH CMT_REGPARM 3 "CMT" "CMT_REGPARM" "Register-Passing Attribute"
 
 .SH NAME
 CMT_REGPARM \- Pass function arguments through CPU registers
@@ -6,10 +6,10 @@ CMT_REGPARM \- Pass function arguments through CPU registers
 .SH SYNOPSIS
 .B #define INCL__REGPARM
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/ATTRIBUTES/REGPARM.h
+CMT/ATTRIBUTES/REGPARM.H
 
 .SH DESCRIPTION
 REGPARM applies a compiler attribute that forces a function to receive its parameters through CPU registers instead of stack memory.
@@ -75,7 +75,7 @@ extern void REGPARM(2) FUNCT(int A, int B);
 - Mark prototypes and definitions consistently.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com> 

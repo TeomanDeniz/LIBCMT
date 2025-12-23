@@ -1,4 +1,4 @@
-.TH CMT_THREAD 3 "LIBCMT" "CMT_THREAD" "Thread and Mutex Management"
+.TH CMT_THREAD 3 "CMT" "CMT_THREAD" "Thread and Mutex Management"
 
 .SH NAME
 CMT_THREAD \- Cross-platform thread and mutex management
@@ -6,10 +6,10 @@ CMT_THREAD \- Cross-platform thread and mutex management
 .SH SYNOPSIS
 .B #define INCL__THREAD
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/FUNCTIONS/THREAD.h
+CMT/FUNCTIONS/THREAD.H
 
 .SH DESCRIPTION
 Provides a unified interface for creating and managing threads and mutexes across platforms.
@@ -92,7 +92,7 @@ void *my_thread(void *arg) {
 | TI-RTOS        | THREAD_JOIN not supported                                      |
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

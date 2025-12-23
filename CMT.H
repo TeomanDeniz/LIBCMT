@@ -1,5 +1,5 @@
 /******************************************************************************\
-# H - LIBCMT                                     #       Maximum Tension       #
+# H - CMT                                        #       Maximum Tension       #
 ################################################################################
 #                                                #      -__            __-     #
 # Teoman Deniz                                   #  :    :!1!-_    _-!1!:    : #
@@ -8,11 +8,11 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/12 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
-#ifndef LIBCMT_H
+#ifndef CMT_H
 #	ifndef __MTLIBC__
 #		define __MTLIBC__ 202512 /* VERSION */
 #	endif /* !__MTLIBC__ */
@@ -111,10 +111,10 @@
 #	endif /* LOCALMACRO_DEFINE_ALL_TRY_3 */
 /* ********************* [^] LOCALMACRO_DEFINE_ALL [^] ********************** */
 
-/* *********************** [v] LIBCMT JUST CALLED [v] *********************** */
+/* ************************ [v] CMT JUST CALLED [v] ************************* */
 #	ifdef LOCALMACRO_DEFINE_ALL
 #		undef LOCALMACRO_DEFINE_ALL
-#		define LIBCMT_H __MTLIBC__
+#		define CMT_H __MTLIBC__
 #		ifndef __cplusplus /* PLEASE USE CLASSES IN C++ */
 #			define INCL__OBJECT
 #		endif /* !__cplusplus */
@@ -125,7 +125,7 @@
 #		define INCL__FUNCTIONS
 #		define INCL__KEYWORDS
 #	endif /* LOCALMACRO_DEFINE_ALL */
-/* *********************** [^] LIBCMT JUST CALLED [^] *********************** */
+/* ************************ [^] CMT JUST CALLED [^] ************************* */
 
 /* ****************************** [v] ASM [v] ******************************* */
 #	ifdef INCL__ASM
@@ -238,7 +238,7 @@
 /* ***************************** [v] OBJECT [v] ***************************** */
 #	ifdef INCL__OBJECT
 #		undef INCL__OBJECT
-#		include "OBJECT.h" /*
+#		include "OBJECT.H" /*
 #		 define OBJECT_FUNCTIONS(OBJECT_NAME)
 #		 define object_functions
 #		 define OBJECT_FROM(OBJECT_STRUCT_NAME)
@@ -252,14 +252,14 @@
 /* ****************************** [v] ASM [v] ******************************* */
 #	ifdef INCL__RAX
 #		undef INCL__RAX
-#		include "ASM/INTEL/RAX.h" /*
+#		include "ASM/INTEL/RAX.H" /*
 #		 define GET_RAX(VARIABLE)
 #		 define SET_RAX(VALUE)
 #		        */
 #	endif /* INCL__RAX */
 #	ifdef INCL__X17
 #		undef INCL__X17
-#		include "ASM/ARM/X17.h" /*
+#		include "ASM/ARM/X17.H" /*
 #		 define GET_X17(VARIABLE)
 #		 define SET_X17(VALUE)
 #		        */
@@ -269,13 +269,13 @@
 /* *************************** [v] ATTRIBUTES [v] *************************** */
 #	ifdef INCL__FAR
 #		undef INCL__FAR
-#		include "ATTRIBUTES/FAR.h" /*
+#		include "ATTRIBUTES/FAR.H" /*
 #		 define FAR
 #		        */
 #	endif /* INCL__FAR */
 #	ifdef INCL__PACK
 #		undef INCL__PACK
-#		include "ATTRIBUTES/PACK.h" /*
+#		include "ATTRIBUTES/PACK.H" /*
 #		 define PRAGMA_PACK_PUSH
 #		 define PRAGMA_PACK_POP
 #		 define PACK
@@ -283,7 +283,7 @@
 #	endif /* INCL__PACK */
 #	ifdef INCL__REGPARM
 #		undef INCL__REGPARM
-#		include "ATTRIBUTES/REGPARM.h" /*
+#		include "ATTRIBUTES/REGPARM.H" /*
 #		 define REGPARM(__REGPARM_NUMBER_OF_VARIABLES__)
 #		        */
 #	endif /* INCL__REGPARM */
@@ -292,13 +292,13 @@
 /* ************************* [v] CHECK FEATURE [v] ************************** */
 #	ifdef INCL__COMMA_OPERATOR
 #		undef INCL__COMMA_OPERATOR
-#		include "CHECK_FEATURE/COMMA_OPERATOR.h" /*
+#		include "CHECK_FEATURE/COMMA_OPERATOR.H" /*
 #		 define IS__COMMA_OPERATOR__SUPPORTED
 #		        */
 #	endif /* INCL__COMMA_OPERATOR */
 #	ifdef INCL__INLINE_ASM
 #		undef INCL__INLINE_ASM
-#		include "CHECK_FEATURE/INLINE_ASM.h" /*
+#		include "CHECK_FEATURE/INLINE_ASM.H" /*
 #		 define IS__INLINE_ASM__SUPPORTED
 #		 define INLINE_ASM_TYPE__GNU
 #		 define INLINE_ASM_TYPE__MSVC
@@ -315,13 +315,13 @@
 #	endif /* INCL__INLINE_ASM */
 #	ifdef INCL__STRINGIFICATION
 #		undef INCL__STRINGIFICATION
-#		include "CHECK_FEATURE/STRINGIFICATION.h" /*
+#		include "CHECK_FEATURE/STRINGIFICATION.H" /*
 #		 define IS__STRINGIFICATION__SUPPORTED
 #		        */
 #	endif /* INCL__STRINGIFICATION */
 #	ifdef INCL__TOKEN_PASTING
 #		undef INCL__TOKEN_PASTING
-#		include "CHECK_FEATURE/TOKEN_PASTING.h" /*
+#		include "CHECK_FEATURE/TOKEN_PASTING.H" /*
 #		 define IS__TOKEN_PASTING__SUPPORTED
 #		        */
 #	endif /* INCL__TOKEN_PASTING */
@@ -330,7 +330,7 @@
 /* ************************** [v] ENVIRONMENTS [v] ************************** */
 #	ifdef INCL__ARCHITECTURE
 #		undef INCL__ARCHITECTURE
-#		include "ENVIRONMENTS/ARCHITECTURE.h" /*
+#		include "ENVIRONMENTS/ARCHITECTURE.H" /*
 #		 define __SYSTEM_64_BIT__
 #		 define __SYSTEM_32_BIT__
 #		 define __SYSTEM_31_BIT__
@@ -346,7 +346,7 @@
 #	endif /* INCL__ARCHITECTURE */
 #	ifdef INCL__CPU
 #		undef INCL__CPU
-#		include "ENVIRONMENTS/CPU.h" /*
+#		include "ENVIRONMENTS/CPU.H" /*
 #		 define __CPU_INTEL__
 #		 define __CPU_ARM__
 #		 define __CPU_AMD_X86__
@@ -370,7 +370,7 @@
 #	endif /* INCL__CPU */
 #	ifdef INCL__KNR_STYLE
 #		undef INCL__KNR_STYLE
-#		include "ENVIRONMENTS/KNR_STYLE.h" /*
+#		include "ENVIRONMENTS/KNR_STYLE.H" /*
 #		 define KNR_STYLE
 #		 define void
 #		 define const
@@ -384,7 +384,7 @@
 /* *************************** [v] FUNCTIONS [v] **************************** */
 #	ifdef INCL__DLL
 #		undef INCL__DLL
-#		include "FUNCTIONS/DLL.h" /*
+#		include "FUNCTIONS/DLL.H" /*
 #		 define OPEN_DLL(DLL_FILE)
 #		 define open_dll
 #		 define READ_DLL(THE_DLL, FUNCTION_NAME)
@@ -399,7 +399,7 @@
 #	endif /* INCL__DLL */
 #	ifdef INCL__PREFETCH
 #		undef INCL__PREFETCH
-#		include "FUNCTIONS/PREFETCH.h" /*
+#		include "FUNCTIONS/PREFETCH.H" /*
 #		 define PREFETCH(__PREFETCH_VARIABLE__)
 #		 define prefetch
 #		 define PREFETCHW(__PREFETCHW_VARIABLE__)
@@ -412,7 +412,7 @@
 #	endif /* INCL__PREFETCH */
 #	ifdef INCL__READ_FILE
 #		undef INCL__READ_FILE
-#		include "FUNCTIONS/READ_FILE.h" /*
+#		include "FUNCTIONS/READ_FILE.H" /*
 #		 struct S_FILE;
 #		 struct s_file;
 #		typedef T_FILE;
@@ -427,7 +427,7 @@
 #	endif /* INCL__READ_FILE */
 #	ifdef INCL__THREAD
 #		undef INCL__THREAD
-#		include "FUNCTIONS/THREAD.h" /*
+#		include "FUNCTIONS/THREAD.H" /*
 #		 define MUTEX_LOCK(__MUTEX_LOCK__)
 #		 define mutex_lock(__mutex_lock__)
 #		 define MUTEX_UNLOCK(__MUTEX_UNLOCK__)
@@ -453,40 +453,40 @@
 /* **************************** [v] KEYWORDS [v] **************************** */
 #	ifdef INCL__IGNORE_VAR
 #		undef INCL__IGNORE_VAR
-#		include "KEYWORDS/IGNORE_VAR.h" /*
+#		include "KEYWORDS/IGNORE_VAR.H" /*
 #		 define IGNORE_VAR
 #		 define ignore_var
 #		        */
 #	endif /* INCL__IGNORE_VAR */
 #	ifdef INCL__INLINE
 #		undef INCL__INLINE
-#		include "KEYWORDS/INLINE.h" /*
+#		include "KEYWORDS/INLINE.H" /*
 #		 define INLINE
 #		        */
 #	endif /* INCL__INLINE */
 #	ifdef INCL__LOCAL
 #		undef INCL__LOCAL
-#		include "KEYWORDS/LOCAL.h" /*
+#		include "KEYWORDS/LOCAL.H" /*
 #		 define LOCAL
 #		 define local
 #		        */
 #	endif /* INCL__LOCAL */
 #	ifdef INCL__NORETURN
 #		undef INCL__NORETURN
-#		include "KEYWORDS/NORETURN.h" /*
+#		include "KEYWORDS/NORETURN.H" /*
 #		 define NORETURN
 #		 define noreturn
 #		        */
 #	endif /* INCL__NORETURN */
 #	ifdef INCL__STDCALL
 #		undef INCL__STDCALL
-#		include "KEYWORDS/STDCALL.h" /*
+#		include "KEYWORDS/STDCALL.H" /*
 #		 define STDCALL
 #		        */
 #	endif /* INCL__STDCALL */
 #	ifdef INCL__TRY_CATCH
 #		undef INCL__TRY_CATCH
-#		include "KEYWORDS/TRY_CATCH.h" /*
+#		include "KEYWORDS/TRY_CATCH.H" /*
 #		 define __TRY_CATCH_BUFFER_SIZE__
 #		 define TRY
 #		 define try
@@ -498,7 +498,7 @@
 #	endif /* INCL__TRY_CATCH */
 #	ifdef INCL__TYPES
 #		undef INCL__TYPES
-#		include "KEYWORDS/TYPES.h" /*
+#		include "KEYWORDS/TYPES.H" /*
 #		 define SUPPORTED__BIT64
 #		 define SUPPORTED__BIT128
 #		 define SUPPORTED__FLOAT64
@@ -531,14 +531,14 @@
 #	endif /* INCL__TYPES */
 #	ifdef INCL__UNUSED
 #		undef INCL__UNUSED
-#		include "KEYWORDS/UNUSED.h" /*
+#		include "KEYWORDS/UNUSED.H" /*
 #		 define UNUSED
 #		 define unused
 #		        */
 #	endif /* INCL__UNUSED */
 #	ifdef INCL__VA_ARGS
 #		undef INCL__VA_ARGS
-#		include "KEYWORDS/VA_ARGS.h" /*
+#		include "KEYWORDS/VA_ARGS.H" /*
 #		 define va_arg(A, B)
 #		 define VA_ARG
 #		 define va_copy(A, B)
@@ -554,7 +554,7 @@
 #		        */
 #	endif /* INCL__VA_ARGS */
 /* **************************** [^] KEYWORDS [^] **************************** */
-#endif /* !LIBCMT_H */
+#endif /* !CMT_H */
 
 /* * * * * * * * * * * /!\ AUTOMATIC EOF TREATMENT! /!\ * * * * * * * * * * * *\
  * * AT THE ALL END OF FILES, I AM ADDING A SPECIAL BYTE <0X1A> TO END THE  * *
@@ -562,5 +562,5 @@
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //

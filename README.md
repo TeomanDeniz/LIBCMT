@@ -1,34 +1,34 @@
 <IMG SRC="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/refs/heads/main/images/repo_projects/libcmt/HEADER2.png" ALT="Header" STYLE="WIDTH: 100%;"/>
 
-# LIBCMT
+# CMT
 
-**LIBCMT** is a modular, portable C library extension that fills in gaps left by the standard C library.  
+**CMT** is a modular, portable C library extension that fills in gaps left by the standard C library.  
 It is fully compatible with all major compilers and platforms.
 
 ## Clone
 
 ```sh
-git clone --recurse-submodules --depth 1 "git@github.com:TeomanDeniz/LIBCMT.git"
+git clone --recurse-submodules --depth 1 "git@github.com:TeomanDeniz/CMT.git"
 ```
 
 Cloning with `--depth 1` avoids downloading the full repository history.
 
 ## Usage
 
-Place the cloned `LIBCMT` folder inside your project and include the header:
+Place the cloned `CMT` folder inside your project and include the header:
 
 ```c
-#include "LIBCMT/LIBCMT.h"
+#include "CMT/CMT.H"
 ```
 
-LIBCMT is header-only. No additional setup required.
+CMT is header-only. No additional setup required.
 
 To include **all features**:
 
 ```c
-#include "LIBCMT/LIBCMT.h" // For C
+#include "CMT/CMT.H" // For C
 // or
-#include "LIBCMT/LIBCMT.hpp" // For C++
+#include "CMT/CMT.HPP" // For C++
 ```
 
 ### Modular Include (Optional)
@@ -37,13 +37,13 @@ You can selectively include specific components by defining `INCL__<MODULE>` mac
 
 ```c
 #define INCL__FAR
-#include "LIBCMT/LIBCMT.h" // Includes only the FAR module
+#include "CMT/CMT.H" // Includes only the FAR module
 ```
 Or
 ```c
 #define INCL__INLINE
 #define INCL__OBJECT
-#include "LIBCMT/LIBCMT.h" // Includes INLINE and OBJECT modules only
+#include "CMT/CMT.H" // Includes INLINE and OBJECT modules only
 ```
 
 ### Sectional Include (Optional)
@@ -51,14 +51,14 @@ Or
 You can selectively include a specific whole section by defining `INCL__<SECTION>` macros before the include:
 ```c
 #define INCL__KEYWORDS
-#include "LIBCMT/LIBCMT.h" // Includes everything in KEYWORDS
+#include "CMT/CMT.H" // Includes everything in KEYWORDS
 ```
 or
 ```c
 #define INCL__ATTRIBUTES
 #define INCL__KEYWORDS
 #define INCL__RAX
-#include "LIBCMT/LIBCMT.h" // Includes RAX, All KEYWORDS, and All ATTRIBUTES
+#include "CMT/CMT.H" // Includes RAX, All KEYWORDS, and All ATTRIBUTES
 ```
 
 So far, we have these macros for including sections:
@@ -84,12 +84,12 @@ An example script that made by using this library Tested and worked on both Win2
 #define INCL__OBJECT
 #define INCL__TRY_CATCH
 #define INCL__TYPES
-#include "LIBCMT/LIBCMT.h"
+#include "CMT/CMT.H"
 
 // User MUST use different commands depends on the CPU type.
 // For architectures, RCX or RAX like registers automatically downs to ECX or EAX but no alterantive exist,
 // compiler will throw an error when an unexisting command is used on a certain CPU architecture, type, or version.
-#include "LIBCMT/ASM/PUSH.h" // Works on ALL compilers who supports inline assembly without an error or warning by using inline assembly.
+#include "CMT/ASM/PUSH.H" // Works on ALL compilers who supports inline assembly without an error or warning by using inline assembly.
 
 extern var ASD(var, var);
 
@@ -114,7 +114,7 @@ SECTION (return_42)
 	RET
 END
 
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 ```
 
 ## Object Creation:
@@ -125,7 +125,7 @@ object o_class // Can be also "struct o_class" if you want
 
 	void (*print)();
 	void (*add)(bit32);
-	bit32 value;
+	bit32	value;
 };
 
 void print()
@@ -220,11 +220,11 @@ int main(void)
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/OBJECT.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/OBJECT.h)**]
+> ### File at: [**[📜 CMT/OBJECT.H](https://github.com/TeomanDeniz/CMT/blob/main/OBJECT.H)**]
 > ### Call With:
 > ```c
 > #define INCL__OBJECT
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                               | **Type**    | **Description**                                                     |
@@ -279,7 +279,7 @@ This table is for really old compilers. If you're using a modern compiler, ignor
 > 
 > Otherwise, skip setup and jump to **Contents** at the bottom. You don't have to do Setup process.
 
-If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `LIBCMT_SETUP`**.
+If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `CMT_SETUP`**.
 
 This ensures that any global variables or link-exposed functions are properly defined.
 
@@ -287,14 +287,14 @@ After doing this once, you can include this header anywhere else **without defin
 
 **Example**:
 ```c
-#define LIBCMT_SETUP
-#include "LIBCMT/OBJECT.h"
+#define CMT_SETUP
+#include "CMT/OBJECT.H"
 ```
 Or
 ```c
-#define LIBCMT_SETUP
+#define CMT_SETUP
 #define INCL__OBJECT
-#include "LIBCMT/LIBCMT.h"
+#include "CMT/CMT.H"
 ```
 
 ## Contents
@@ -613,12 +613,12 @@ int main(void) {
 > MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
 
 > ⚠️ Important
-> ### File(s) at: [**[📜 LIBCMT/ASM/PUSH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/PUSH.h)**] [**[📜 LIBCMT/ASM/POP.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/POP.h)**]
+> ### File(s) at: [**[📜 CMT/ASM/PUSH.H](https://github.com/TeomanDeniz/CMT/blob/main/ASM/PUSH.H)**] [**[📜 CMT/ASM/POP.H](https://github.com/TeomanDeniz/CMT/blob/main/ASM/POP.H)**]
 > ### Call With:
 > ```c
-> #include "LIBCMT/ASM/PUSH.h"
+> #include "CMT/ASM/PUSH.H"
 > // ASM CODE ...
-> #include "LIBCMT/ASM/POP.h"
+> #include "CMT/ASM/POP.H"
 > ```
 
 ## Builtin keywords:
@@ -702,43 +702,43 @@ It abstracts:
 
 ## Use Examples
 ```c
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (example_func) // example_func:
     MOV32 (EAX, EBX)   // mov rax, ebx
     ADD32 (EAX, 1)     // add eax, 1
     RET                // ret
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 
 extern int example_func(void); // Connect it with C
 ```
 Example - Byte Copy Routine
 ```c
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (copy_byte)      // copy_byte:
     MOV8 (MEM8(RDI), AL) // mov byte [rdi], al
     RET                  // ret
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 ```
 Example - Add Value at Index
 ```c
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (add_indexed)                  // add_indexed:
     ADD32 (MEM32_INDEX(RAX, RCX), EDX) // add dword [rax + rcx], edx
     RET                                // ret
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 ```
 
 Example - Setting a direct value to a register
 ```c
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (return_42)        // return_42:
     MOV64 (RAX, VALUE(42)) // add rax, 42
     RET                    // ret
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 ```
 
 ----
@@ -756,11 +756,11 @@ END
 > MAJOR MAINTENANCE IS PLANNED! USE IT AT YOUR OWN **RISK**
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ASM/RAX.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/RAX.h)**]
+> ### File at: [**[📜 CMT/ASM/RAX.H](https://github.com/TeomanDeniz/CMT/blob/main/ASM/RAX.H)**]
 > ### Call With:
 > ```c
 > #define INCL__RAX
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**             | **Type**      | **Description**           |
@@ -822,11 +822,11 @@ SET_RAX(42); // RAX is now 42
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ASM/X17.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ASM/X17.h)**]
+> ### File at: [**[📜 CMT/ASM/X17.H](https://github.com/TeomanDeniz/CMT/blob/main/ASM/X17.H)**]
 > ### Call With:
 > ```c
 > #define INCL__X17
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**             | **Type**      | **Description**           |
@@ -881,11 +881,11 @@ SET_X17(42); // X17 now 42
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ATTRIBUTES/FAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/FAR.h)**]
+> ### File at: [**[📜 CMT/ATTRIBUTES/FAR.H](https://github.com/TeomanDeniz/CMT/blob/main/ATTRIBUTES/FAR.H)**]
 > ### Call With:
 > ```c
 > #define INCL__FAR
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name** | **Type**   | **Description**                                                               |
@@ -969,11 +969,11 @@ FAR void (*far_func)(void); // can call functions in different segments.
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ATTRIBUTES/PACK.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/PACK.h)**]
+> ### File at: [**[📜 CMT/ATTRIBUTES/PACK.H](https://github.com/TeomanDeniz/CMT/blob/main/ATTRIBUTES/PACK.H)**]
 > ### Call With:
 > ```c
 > #define INCL__PACK
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**            | **Type**   | **Description**                                                   |
@@ -1057,11 +1057,11 @@ Now `sizeof` is **5 bytes**, but access may be slower or unaligned on some syste
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ATTRIBUTES/REGPARM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ATTRIBUTES/REGPARM.h)**]
+> ### File at: [**[📜 CMT/ATTRIBUTES/REGPARM.H](https://github.com/TeomanDeniz/CMT/blob/main/ATTRIBUTES/REGPARM.H)**]
 > ### Call With:
 > ```c
 > #define INCL__REGPARM
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**              | **Type**      | **Description**                                                                                              |
@@ -1134,11 +1134,11 @@ extern void REGPARM(2) FUNCT(int A, int B); // Function prototype
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/COMMA_OPERATOR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.h)**]
+> ### File at: [**[📜 CMT/CHECK_FEATURE/COMMA_OPERATOR.H](https://github.com/TeomanDeniz/CMT/blob/main/CHECK_FEATURE/COMMA_OPERATOR.H)**]
 > ### Call With:
 > ```c
 > #define INCL__COMMA_OPERATOR
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                        | **Type**     | **Description**                                      |
@@ -1169,11 +1169,11 @@ int a = (b++, funct(), c = 42, b += c, 66); // Performs all actions and returns 
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/INLINE_ASM.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/INLINE_ASM.h)**]
+> ### File at: [**[📜 CMT/CHECK_FEATURE/INLINE_ASM.H](https://github.com/TeomanDeniz/CMT/blob/main/CHECK_FEATURE/INLINE_ASM.H)**]
 > ### Call With:
 > ```c
 > #define INCL__INLINE_ASM
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name                         | Type      | Description                                                |
@@ -1196,7 +1196,7 @@ This header detects whether the compiler supports inline assembly and, if so, id
 
 > ⚠️ Important
 > 
-> **PLEASE CHECK THE TABLE AT [[`📜 LIBCMT/INLINE_ASM_TABLE.md`](https://github.com/TeomanDeniz/LIBCMT/blob/main/INLINE_ASM_TABLE.md)] FOR INFORMATION ABOUT SUPPORTED ARCHITECTURES.**
+> **PLEASE CHECK THE TABLE AT [[`📜 CMT/INLINE_ASM_TABLE.md`](https://github.com/TeomanDeniz/CMT/blob/main/INLINE_ASM_TABLE.md)] FOR INFORMATION ABOUT SUPPORTED ARCHITECTURES.**
 
 > ## Supported Syntax Types & Examples
 > ### GNU Style (GCC, Clang) - Extended Inline Assembly - **`INLINE_ASM_TYPE__GNU`**
@@ -1301,11 +1301,11 @@ This header detects whether the compiler supports inline assembly and, if so, id
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/STRINGIFICATION.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/STRINGIFICATION.h)**]
+> ### File at: [**[📜 CMT/CHECK_FEATURE/STRINGIFICATION.H](https://github.com/TeomanDeniz/CMT/blob/main/CHECK_FEATURE/STRINGIFICATION.H)**]
 > ### Call With:
 > ```c
 > #define INCL__STRINGIFICATION
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                         | **Type**     | **Description**                                       |
@@ -1338,11 +1338,11 @@ printf( X( i am testing something ) ); // Will return: "i am testing something" 
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/CHECK_FEATURE/TOKEN_PASTING.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.h)**]
+> ### File at: [**[📜 CMT/CHECK_FEATURE/TOKEN_PASTING.H](https://github.com/TeomanDeniz/CMT/blob/main/CHECK_FEATURE/TOKEN_PASTING.H)**]
 > ### Call With:
 > ```c
 > #define INCL__TOKEN_PASTING
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                       | **Type**     | **Description**                                     |
@@ -1380,11 +1380,11 @@ int AB(ma, in)(void) // Expands to: int main(void)
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/ARCHITECTURE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/ARCHITECTURE.h)**]
+> ### File at: [**[📜 CMT/ENVIRONMENTS/ARCHITECTURE.H](https://github.com/TeomanDeniz/CMT/blob/main/ENVIRONMENTS/ARCHITECTURE.H)**]
 > ### Call With:
 > ```c
 > #define INCL__ARCHITECTURE
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 ## CPU Architecture Word Size
@@ -1425,11 +1425,11 @@ These defines indicate the bit-width supported or used by the system.
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/CPU.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/CPU.h)**]
+> ### File at: [**[📜 CMT/ENVIRONMENTS/CPU.H](https://github.com/TeomanDeniz/CMT/blob/main/ENVIRONMENTS/CPU.H)**]
 > ### Call With:
 > ```c
 > #define INCL__CPU
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name               | Type      | Description                                                                                                            |
@@ -1474,14 +1474,14 @@ Purpose: Allows any codebase to get a consistent CPU identification string witho
 	<b>KNR_STYLE</b> - Creates a macro that determines whether the compiler uses the STD ANSI C standard or the K&R substandard 1989.
 </summary>
 
-# **[📜 ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**
+# **[📜 ENVIRONMENTS/KNR_STYLE.H](https://github.com/TeomanDeniz/CMT/blob/main/ENVIRONMENTS/KNR_STYLE.H)**
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/ENVIRONMENTS/KNR_STYLE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/ENVIRONMENTS/KNR_STYLE.h)**]
+> ### File at: [**[📜 CMT/ENVIRONMENTS/KNR_STYLE.H](https://github.com/TeomanDeniz/CMT/blob/main/ENVIRONMENTS/KNR_STYLE.H)**]
 > ### Call With:
 > ```c
 > #define INCL__KNR_STYLE
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name        | Type      | Description                                        |
@@ -1508,11 +1508,11 @@ Defines a macro if your compiler is using K&R style syntax or not.
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/FUNCTIONS/DLL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/DLL.h)**]
+> ### File at: [**[📜 CMT/FUNCTIONS/DLL.H](https://github.com/TeomanDeniz/CMT/blob/main/FUNCTIONS/DLL.H)**]
 > ### Call With:
 > ```c
 > #define INCL__DLL
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | NAME                     | TYPE         | DESCRIPTION                                       |
@@ -1602,11 +1602,11 @@ Your ~40KB `.exe` files will become ~100 bytes. Crazy, right?
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/FUNCTIONS/PREFETCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/PREFETCH.h)**]
+> ### File at: [**[📜 CMT/FUNCTIONS/PREFETCH.H](https://github.com/TeomanDeniz/CMT/blob/main/FUNCTIONS/PREFETCH.H)**]
 > ### Call With:
 > ```c
 > #define INCL__PREFETCH
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name                                       | Type         | Description                                                  |
@@ -1670,11 +1670,11 @@ Use this when working with large buffers or arrays to minimize cache misses befo
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/FUNCTIONS/READ_FILE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/READ_FILE.h)**]
+> ### File at: [**[📜 CMT/FUNCTIONS/READ_FILE.H](https://github.com/TeomanDeniz/CMT/blob/main/FUNCTIONS/READ_FILE.H)**]
 > ### Call With:
 > ```c
 > #define INCL__READ_FILE
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | NAME                     | TYPE      | DESCRIPTION                              |
@@ -1721,11 +1721,11 @@ Yes, you **must** free the `"data"` field of the structure when you're done.
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/FUNCTIONS/THREAD.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/FUNCTIONS/THREAD.h)**]
+> ### File at: [**[📜 CMT/FUNCTIONS/THREAD.H](https://github.com/TeomanDeniz/CMT/blob/main/FUNCTIONS/THREAD.H)**]
 > ### Call With:
 > ```c
 > #define INCL__THREAD
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                         | **Type**  | **Description**                                          |
@@ -1862,11 +1862,11 @@ If your OS is not listed, these features may not be supported on your device, OS
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/IGNORE_VAR.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/IGNORE_VAR.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/IGNORE_VAR.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/IGNORE_VAR.H)**]
 > ### Call With:
 > ```c
 > #define INCL__IGNORE_VAR
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                    | **Type**   | **Description**                                    |
@@ -1913,11 +1913,11 @@ If unused, the compiler ignores this variable and continues compiling the progra
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/INLINE.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/INLINE.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/INLINE.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/INLINE.H)**]
 > ### Call With:
 > ```c
 > #define INCL__INLINE
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name** | **Type**  | **Description**                                       |
@@ -2054,11 +2054,11 @@ This was just an example. You’re free to write whatever you want inside the fu
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/LOCAL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/LOCAL.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/LOCAL.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/LOCAL.H)**]
 > ### Call With:
 > ```c
 > #define INCL__LOCAL
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**         | **Type**   | **Description**                                     |
@@ -2110,11 +2110,11 @@ Add that if you're trying to access your global variable using the `extern` keyw
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/NORETURN.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/NORETURN.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/NORETURN.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/NORETURN.H)**]
 > ### Call With:
 > ```c
 > #define INCL__NORETURN
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**                | **Type**   | **Description**                                                |
@@ -2167,11 +2167,11 @@ This is used for optimisation purposes.
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/STDCALL.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/STDCALL.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/STDCALL.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/STDCALL.H)**]
 > ### Call With:
 > ```c
 > #define INCL__STDCALL
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**  | **Type**   | **Description**                        |
@@ -2213,11 +2213,11 @@ extern STDCALL int WinMain(...);
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/TRY_CATCH.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TRY_CATCH.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/TRY_CATCH.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/TRY_CATCH.H)**]
 > ### Call With:
 > ```c
 > #define INCL__TRY_CATCH
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name             | Type        | Description                                         |
@@ -2234,7 +2234,7 @@ extern STDCALL int WinMain(...);
 > 
 > Otherwise, skip setup and jump to **Contents** at the bottom. You don't have to do Setup process.
 
-If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `LIBCMT_SETUP`**.
+If a source file **does not contain `main()`**, and you **still use the library**, then one source file **must define `CMT_SETUP`**.
 
 This ensures that any global variables or link-exposed functions are properly defined.
 
@@ -2242,14 +2242,14 @@ After doing this once, you can include this header anywhere else **without defin
 
 **Example**:
 ```c
-#define LIBCMT_SETUP
-#include "LIBCMT/KEYWORDS/TRY_CATCH.h"
+#define CMT_SETUP
+#include "CMT/KEYWORDS/TRY_CATCH.H"
 ```
 Or
 ```c
-#define LIBCMT_SETUP
+#define CMT_SETUP
 #define INCL__TRY_CATCH
-#include "LIBCMT/LIBCMT.h"
+#include "CMT/CMT.H"
 ```
 
 ## How To Use
@@ -2299,7 +2299,7 @@ So, declare `int err;` outside the `catch()` scope:
 ### Try/Catch Inside a Called Function
 ```cpp
 #include <stdio.h>
-#include "LIBCMT/KEYWORDS/TRY_CATCH.h"
+#include "CMT/KEYWORDS/TRY_CATCH.H"
 
 void test(void)
 {
@@ -2370,17 +2370,17 @@ throw (0); // to completely exit the try block
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/TYPES.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/TYPES.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/TYPES.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/TYPES.H)**]
 > ### Call With:
 > ```c
 > #define INCL__TYPES
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 ## Standard Types
 | Name           | Type    | Description                                       |
 |----------------|---------|---------------------------------------------------|
-| `BYTE`, `byte` | typedef | 8-bit storage unit (char)                         |
+| `BYTE`, `byte` | typedef | Unsigned one byte storage unit (char)             |
 | `LET`, `let`   | typedef | Type for array indexing and sizes (like `size_t`) |
 | `VAR`, `var`   | typedef | Type capable of holding maximum addressable value |
 | `PTR`, `ptr`   | typedef | Generic pointer type                              |
@@ -2427,11 +2427,11 @@ throw (0); // to completely exit the try block
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/UNUSED.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/UNUSED.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/UNUSED.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/UNUSED.H)**]
 > ### Call With:
 > ```c
 > #define INCL__UNUSED
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | **Name**           | **Type**     | **Description**                                      |
@@ -2472,11 +2472,11 @@ If unused, the compiler ignores this function and continues compiling the progra
 </summary>
 
 > ⚠️ Important
-> ### File at: [**[📜 LIBCMT/KEYWORDS/VA_ARGS.h](https://github.com/TeomanDeniz/LIBCMT/blob/main/KEYWORDS/VA_ARGS.h)**]
+> ### File at: [**[📜 CMT/KEYWORDS/VA_ARGS.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/VA_ARGS.H)**]
 > ### Call With:
 > ```c
 > #define INCL__VA_ARGS
-> #include "LIBCMT/LIBCMT.h"
+> #include "CMT/CMT.H"
 > ```
 
 | Name                   | Type        | Description                                            |

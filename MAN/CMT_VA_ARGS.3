@@ -1,4 +1,4 @@
-.TH CMT_VA_ARGS 3 "LIBCMT" "CMT_VA_ARGS" "Function Attributes"
+.TH CMT_VA_ARGS 3 "CMT" "CMT_VA_ARGS" "Function Attributes"
 
 .SH NAME
 CMT_VA_ARGS \- Variable arguments support for older compilers
@@ -6,7 +6,10 @@ CMT_VA_ARGS \- Variable arguments support for older compilers
 .SH SYNOPSIS
 .B #define INCL__VA_ARGS
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
+
+.SH FILES
+CMT/KEYWORDS/VA_ARGS.H
 
 .SH DESCRIPTION
 This library provides support for variable argument functions on **pre-C89** compilers.     
@@ -62,7 +65,7 @@ test(start)
 
 .SH SEE ALSO
 .B CMT_KNR_STYLE(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

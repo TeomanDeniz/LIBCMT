@@ -1,4 +1,4 @@
-.TH CMT_INLINE 3 "LIBCMT" "CMT_INLINE" "Inline Functions"
+.TH CMT_INLINE 3 "CMT" "CMT_INLINE" "Inline Functions"
 
 .SH NAME
 CMT_INLINE \- Marks functions to be inlined on supported compilers
@@ -6,7 +6,7 @@ CMT_INLINE \- Marks functions to be inlined on supported compilers
 .SH SYNOPSIS
 .B #define INCL__INLINE
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH DESCRIPTION
 Defines a macro to inline functions across supported compilers. Replaces function calls with the function body at compile time to reduce call overhead.
@@ -50,7 +50,7 @@ int main(void) {
 - Use INLINE primarily for performance-critical small functions.
 
 .SH SEE ALSO
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

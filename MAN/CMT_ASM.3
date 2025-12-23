@@ -1,4 +1,4 @@
-.TH CMT_ASM 3 "LIBCMT" "CMT_ASM" "Portable Inline Assembly Macros"
+.TH CMT_ASM 3 "CMT" "CMT_ASM" "Portable Inline Assembly Macros"
 
 .SH NAME
 CMT_ASM \- Portable ASM macro system for C (PUSH/POP)
@@ -9,15 +9,15 @@ It may fail on certain compilers, operating systems, or CPU architectures.
 Use at your own risk.
 
 .SH SYNOPSIS
-.B #include <LIBCMT/ASM/PUSH.h>
+.B #include <CMT/ASM/PUSH.H>
 .br
 ASM CODE
 .br
-.B #include <LIBCMT/ASM/POP.h>
+.B #include <CMT/ASM/POP.H>
 
 .SH FILES
-LIBCMT/ASM/PUSH.h
-LIBCMT/ASM/POP.h
+CMT/ASM/PUSH.H
+CMT/ASM/POP.H
 
 .SH DESCRIPTION
 CMT_ASM provides a portable macro layer for inline assembly.
@@ -193,50 +193,50 @@ It enables cross-platform ASM blocks without rewriting for each compiler.
 .SH EXAMPLES
 Example: basic function
 .nf
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (example_func)
     MOV32 (EAX, EBX)
     ADD32 (EAX, 1)
     RET
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 
 extern int example_func(void); // Connect it with C
 .fi
 
 Byte copy:
 .nf
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (copy_byte)
     MOV8 (MEM8(RDI), AL)
     RET
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 .fi
 
 Indexed arithmetic:
 .nf
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (add_indexed)
     ADD32 (MEM32_INDEX(RAX, RCX), EDX)
     RET
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 .fi
 
 Setting a direct value to a register:
 .nf
-#include "LIBCMT/ASM/PUSH.h"
+#include "CMT/ASM/PUSH.H"
 SECTION (add_indexed)
     MOV64 (RAX, VALUE(42))
     RET
 END
-#include "LIBCMT/ASM/POP.h"
+#include "CMT/ASM/POP.H"
 .fi
 
 .SH SEE ALSO
 .B CMT_INLINE_ASM(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

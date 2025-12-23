@@ -1,4 +1,4 @@
-.TH CMT_STRINGIFICATION 3 "LIBCMT" "CMT_STRINGIFICATION" "Stringification Support Check"
+.TH CMT_STRINGIFICATION 3 "CMT" "CMT_STRINGIFICATION" "Stringification Support Check"
 
 .SH NAME
 CMT_STRINGIFICATION \- Detect compiler support for the stringification operator
@@ -6,10 +6,10 @@ CMT_STRINGIFICATION \- Detect compiler support for the stringification operator
 .SH SYNOPSIS
 .B #define INCL__STRINGIFICATION
 .br
-.B #include <LIBCMT/LIBCMT.h>
+.B #include <CMT/CMT.H>
 
 .SH FILES
-LIBCMT/CHECK_FEATURE/STRINGIFICATION.h
+CMT/CHECK_FEATURE/STRINGIFICATION.H
 
 .SH DESCRIPTION
 This header defines a macro indicating whether the compiler supports the stringification operator (`#`).
@@ -31,7 +31,7 @@ printf( X( i am testing something ) ); // Will return: "i am testing something" 
 
 .SH SEE ALSO
 .B CMT_TOKEN_PASTING(3),
-.B LIBCMT(3)
+.B CMT(3)
 
 .SH AUTHOR
 Teoman Deniz <te.odenizgml@gmail.com>

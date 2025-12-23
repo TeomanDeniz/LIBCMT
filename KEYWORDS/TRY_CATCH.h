@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/04/25 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/07 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -67,7 +67,7 @@
 |*  : BOTTOM OF THIS FILE.                                                    *|
 |*  :                                                                         *|
 |*  : IF THE FILE DOES NOT CONTAIN main(), AND YOU STILL USE THE LIBRARY,     *|
-|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "LIBCMT_SETUP"               *|
+|*  : THEN ONE SOURCE FILE SOMEWHERE MUST DEFINE "CMT_SETUP"                  *|
 |*  :                                                                         *|
 |*  : THIS ENSURES GLOBAL VARIABLES OR FUNCTIONS THAT ARE EXPOSED FOR LINKING *|
 |*  : PROPERLY DEFINED.                                                       *|
@@ -75,8 +75,8 @@
 |*  : AFTER THAT, YOU CAN INCLUDE THIS HEADER ANYWHERE ELSE WITHOUT DEFINING  *|
 |*  : THE MACRO AGAIN; OTHER FILES WILL ONLY SEE EXTERN DECLARATIONS.         *|
 |*  :                                                                         *|
-|* 1| #define LIBCMT_SETUP                                                    *|
-|* 2| #include "LIBCMT/KEYWORDS/TRY_CATCH.h"                                  *|
+|* 1| #define CMT_SETUP                                                       *|
+|* 2| #include "CMT/KEYWORDS/TRY_CATCH.H"                                     *|
 |*  :                                                                         *|
 |*                                                                            *|
 |* O - EXAMPLES                                                               *|
@@ -209,11 +209,11 @@
 /* *********************** [^] TI CGT CCS (PUSH) [^] ************************ */
 
 /* **************************** [v] INCLUDES [v] **************************** */
-#	include "../ENVIRONMENTS/KNR_STYLE.h" /*
+#	include "../ENVIRONMENTS/KNR_STYLE.H" /*
 #	 define KNR_STYLE
 #	        */
 #	ifdef KNR_STYLE
-#		include "../FUNCTIONS/LONGJMP.h" /*
+#		include "../FUNCTIONS/LONGJMP.H" /*
 #		typedef jmp_buf
 #		 define setjmp(env)
 #		 define longjmp(env, val)
@@ -225,10 +225,10 @@
 #		 define longjmp(env, val)
 #		        */
 #	endif /* KNR_STYLE */
-#	include "LOCAL.h" /*
+#	include "LOCAL.H" /*
 #	 define LOCAL
 #	        */
-#	include "../KEYWORDS/STDCALL.h" /*
+#	include "../KEYWORDS/STDCALL.H" /*
 #	 define STDCALL
 #	        */
 /* **************************** [^] INCLUDES [^] **************************** */
@@ -284,27 +284,27 @@ extern LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];
 extern LOCAL unsigned int	__TRY_CATCH_INDEX__;
 extern LOCAL int			__TRY_CATCH_VALUE__;
 /* *************************** [^] PROTOTYPES [^] *************************** */
-#	define LIBCMT_LOCAL__TRY_CATCH \
+#	define CMT_LOCAL__TRY_CATCH \
 		LOCAL jmp_buf		__TRY_CATCH_BUFFER__[__TRY_CATCH_BUFFER_SIZE__];\
 		LOCAL unsigned int	__TRY_CATCH_INDEX__ = 0;\
 		LOCAL int			__TRY_CATCH_VALUE__ = 0
-#	ifdef LIBCMT_SETUP
-LIBCMT_LOCAL__TRY_CATCH;
+#	ifdef CMT_SETUP
+CMT_LOCAL__TRY_CATCH;
 #	else
-#		ifndef LIBCMT_GLOBAL__OBJECT
-#			define LIBCMT_GLOBAL__OBJECT
-#		endif /* !LIBCMT_GLOBAL__OBJECT */
+#		ifndef CMT_GLOBAL__OBJECT
+#			define CMT_GLOBAL__OBJECT
+#		endif /* !CMT_GLOBAL__OBJECT */
 #		undef main
 #		undef WinMain
-#		undef LIBCMT_OTO_LINKER
-#		undef LIBCMT_GLOBAL__TRY_CATCH
-#		define LIBCMT_GLOBAL__TRY_CATCH LIBCMT_LOCAL__TRY_CATCH
-#		define LIBCMT_OTO_LINKER __LIBCMT_JAILBREAK_VARIABLE__;\
-			LIBCMT_GLOBAL__OBJECT;\
-			LIBCMT_GLOBAL__TRY_CATCH;
-#		define main LIBCMT_OTO_LINKER int main
-#		define WinMain LIBCMT_OTO_LINKER int STDCALL WinMain
-#	endif /* LIBCMT_SETUP */
+#		undef CMT_OTO_LINKER
+#		undef CMT_GLOBAL__TRY_CATCH
+#		define CMT_GLOBAL__TRY_CATCH CMT_LOCAL__TRY_CATCH
+#		define CMT_OTO_LINKER __CMT_JAILBREAK_VARIABLE__;\
+			CMT_GLOBAL__OBJECT;\
+			CMT_GLOBAL__TRY_CATCH;
+#		define main CMT_OTO_LINKER int main
+#		define WinMain CMT_OTO_LINKER int STDCALL WinMain
+#	endif /* CMT_SETUP */
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@ [^] OTO-LINKER [^] @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /* *************************** [v] C++ (PUSH) [v] *************************** */
@@ -333,5 +333,5 @@ LIBCMT_LOCAL__TRY_CATCH;
  * *   "//" FOR HANDLING THE BYTE IN MODERN COMPILERS AND #define IS FOR    * *
  * *       HANDLING "//" SYNTAX WHICH IS NOT SUPPORTED ON OLD SYSTEMS       * *
 \* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * * * * */
-#undef __LIBCMT__END_OF_FILE__
-#define __LIBCMT__END_OF_FILE__ //
+#undef __CMT__END_OF_FILE__
+#define __CMT__END_OF_FILE__ //
