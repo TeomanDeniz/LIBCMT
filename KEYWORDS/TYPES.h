@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/11/27 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/24 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -119,18 +119,18 @@
 
 #	ifdef __SYSTEM_8_BIT__
 typedef char			VAR;
-typedef unsigned char	LET;
-typedef char			BIT8;
-typedef short			BIT16;
-typedef long			BIT32;
-typedef unsigned char	BYTE;
-typedef float			FLOAT32;
 typedef VAR				var;
+typedef unsigned char	LET;
 typedef LET				let;
-typedef BIT8			bit8;
-typedef BIT16			bit16;
-typedef BIT32			bit32;
+typedef unsigned char	BYTE;
 typedef BYTE			byte;
+typedef char			BIT8;
+typedef BIT8			bit8;
+typedef short			BIT16;
+typedef BIT16			bit16;
+typedef long			BIT32;
+typedef BIT32			bit32;
+typedef float			FLOAT32;
 typedef FLOAT32			float32;
 #	endif /* __SYSTEM_8_BIT__ */
 
@@ -153,18 +153,18 @@ typedef long			VAR;
 typedef int				VAR;
 #		endif /* LOCALMACRO__INT32 */
 
-typedef unsigned int	LET;
-typedef char			BIT8;
-typedef int				BIT16;
-typedef long			BIT32;
-typedef unsigned char	BYTE;
-typedef float			FLOAT32;
 typedef VAR				var;
+typedef unsigned int	LET;
 typedef LET				let;
-typedef BIT8			bit8;
-typedef BIT16			bit16;
-typedef BIT32			bit32;
+typedef unsigned char	BYTE;
 typedef BYTE			byte;
+typedef char			BIT8;
+typedef BIT8			bit8;
+typedef int				BIT16;
+typedef BIT16			bit16;
+typedef long			BIT32;
+typedef BIT32			bit32;
+typedef float			FLOAT32;
 typedef FLOAT32			float32;
 
 #		ifdef __MSDOS__
@@ -189,19 +189,19 @@ typedef FLOAT64	float64;
 #	endif /* __SYSTEM_16_BIT__ */
 
 #	ifdef __SYSTEM_32_BIT__
-typedef int				VAR;
-typedef unsigned int	LET;
-typedef int				BIT32;
-typedef short			BIT16;
-typedef char			BIT8;
-typedef unsigned char	BYTE;
-typedef float			FLOAT32;
+typedef long			VAR;
 typedef VAR				var;
+typedef unsigned long	LET;
 typedef LET				let;
-typedef BIT32			bit32;
-typedef BIT16			bit16;
-typedef BIT8			bit8;
+typedef unsigned char	BYTE;
 typedef BYTE			byte;
+typedef int				BIT32;
+typedef BIT32			bit32;
+typedef short			BIT16;
+typedef BIT16			bit16;
+typedef char			BIT8;
+typedef BIT8			bit8;
+typedef float			FLOAT32;
 typedef FLOAT32			float32;
 
 #		ifndef __ARM_EABI__
@@ -228,22 +228,22 @@ typedef FLOAT64	float64;
 
 #	ifdef __SYSTEM_64_BIT__
 typedef long long			VAR;
-typedef unsigned long long	LET;
-typedef long long			BIT64;
-typedef int					BIT32;
-typedef short				BIT16;
-typedef char				BIT8;
-typedef unsigned char		BYTE;
-typedef float				FLOAT32;
-typedef double				FLOAT64;
 typedef VAR					var;
+typedef unsigned long long	LET;
 typedef LET					let;
-typedef BIT64				bit64;
-typedef BIT32				bit32;
-typedef BIT16				bit16;
-typedef BIT8				bit8;
+typedef unsigned char		BYTE;
 typedef BYTE				byte;
+typedef char				BIT8;
+typedef BIT8				bit8;
+typedef short				BIT16;
+typedef BIT16				bit16;
+typedef int					BIT32;
+typedef BIT32				bit32;
+typedef long long			BIT64;
+typedef BIT64				bit64;
+typedef float				FLOAT32;
 typedef FLOAT32				float32;
+typedef double				FLOAT64;
 typedef FLOAT64				float64;
 #		define SUPPORTED__BIT64
 #		define SUPPORTED__FLOAT64

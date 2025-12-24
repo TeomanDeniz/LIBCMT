@@ -1503,6 +1503,61 @@ Defines a macro if your compiler is using K&R style syntax or not.
 <details>
 
 <summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/CLEAR_INSTRUCTION_CACHE.gif">
+	<b>CLEAR_INSTRUCTION_CACHE</b> - Ensure freshly written machine code is executed
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 CMT/FUNCTIONS/CLEAR_INSTRUCTION_CACHE.H](https://github.com/TeomanDeniz/CMT/blob/main/FUNCTIONS/CLEAR_INSTRUCTION_CACHE.H)**]
+> ### Call With:
+> ```c
+> #define INCL__CLEAR_INSTRUCTION_CACHE
+> #include "CMT/CMT.H"
+> ```
+
+| **Name**                                             | **Type**  | **Description**                                                        |
+|------------------------------------------------------|-----------|------------------------------------------------------------------------|
+| `CLEAR_INSTRUCTION_CACHE`, `clear_instruction_cache` | `#define` | Ensures machine code written to memory is actually executed by the CPU |
+
+## How To Use
+
+**Example**:
+```c
+memcpy(code_ptr, bytes, size);
+CLEAR_INSTRUCTION_CACHE(code_ptr, code_ptr + size);
+mprotect(page, RX);
+````
+
+## What Does That Do
+
+### Explanation
+
+Modern CPUs often have separate **data** and **instruction** caches.
+
+Writing bytes updates the **data cache**, but the **instruction cache** may still contain old contents for the same address.
+
+Without a flush, the CPU may execute stale or garbage instructions.
+
+### Effect
+
+After calling it:
+
+* Data cache lines covering `[begin, end)` are written back
+* Instruction cache lines covering `[begin, end)` are invalidated
+* Next execution fetches the new instructions from memory
+
+**Architecture notes**:
+
+* **x86**: Usually no visible effect
+* **ARM / RISC-V / MIPS**: Mandatory
+
+---
+
+</details>
+
+<details>
+
+<summary>
 	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/dll.png">
 	<b>DLL</b> - Cross platform dynamic link library functions.
 </summary>
@@ -2155,6 +2210,60 @@ Warns the compiler that the function may terminate the program without returning
 The only way to do that is by using the `exit()` function.
 
 This is used for optimisation purposes.
+
+----
+</details>
+
+<details>
+
+<summary>
+	<img src="https://raw.githubusercontent.com/TeomanDeniz/TeomanDeniz/main/images/repo_projects/libcmt/ROM.gif">
+	<b>ROM</b> - Place constants in read-only / program memory when possible
+</summary>
+
+> ⚠️ Important
+> ### File at: [**[📜 CMT/KEYWORDS/ROM.H](https://github.com/TeomanDeniz/CMT/blob/main/KEYWORDS/ROM.H)**]
+> ### Call With:
+> ```c
+> #define INCL__ROM
+> #include "CMT/CMT.H"
+> ```
+
+| **Name** | **Type**  | **Description**                                                                                                        |
+|----------|-----------|------------------------------------------------------------------------------------------------------------------------|
+| `ROM`    | `#define` | Places variables into read-only memory (ROM / flash) using the best mechanism for the target compiler and architecture |
+
+## How To Use
+
+**For constants and lookup tables**:
+```c
+ROM int table[] = { 1, 2, 3, 4 };
+````
+
+**For strings**:
+
+```c
+ROM char message[] = "Hello";
+```
+
+## What Does It Do
+
+`ROM` abstracts **read-only memory placement** across compilers and architectures.
+
+Depending on the target, it expands to:
+
+* `constexpr` or `const` (C / C++)
+* `PROGMEM` on AVR
+* Compiler-specific section attributes
+* Flash-specific qualifiers on embedded toolchains
+
+The goal is to **ensure data is stored in non-writable memory**, conserving RAM and enforcing immutability.
+
+## Notes
+
+* `ROM` is intended for **data objects**, not functions
+* Do **not** assume runtime access semantics are identical on all platforms
+* On AVR, special access macros may be required for `PROGMEM` data
 
 ----
 </details>

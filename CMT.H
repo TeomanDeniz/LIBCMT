@@ -8,7 +8,7 @@
 # +.....................++.....................+ #   :!:: :!:!1:!:!::1:::!!!:  #
 # : C - Maximum Tension :: Create - 2025/06/22 : #   ::!::!!1001010!:!11!!::   #
 # :---------------------::---------------------: #   :!1!!11000000000011!!:    #
-# : License - GPL-3.0   :: Update - 2025/12/23 : #    ::::!!!1!!1!!!1!!!::     #
+# : License - GPL-3.0   :: Update - 2025/12/25 : #    ::::!!!1!!1!!!1!!!::     #
 # +.....................++.....................+ #       ::::!::!:::!::::      #
 \******************************************************************************/
 
@@ -43,17 +43,21 @@
 #	ifdef LOCALMACRO_DEFINE_ALL_TRY_1
 #		undef LOCALMACRO_DEFINE_ALL_TRY_1
 #		ifndef INCL__KNR_STYLE
-#			ifndef INCL__DLL
-#				ifndef INCL__PREFETCH
-#					ifndef INCL__READ_FILE
-#						ifndef INCL__THREAD
-#							ifndef INCL__STRINGIFICATION
-#								define LOCALMACRO_DEFINE_ALL_TRY_2
-#							endif /* !INCL__STRINGIFICATION */
-#						endif /* !INCL__THREAD */
-#					endif /* !INCL__READ_FILE */
-#				endif /* !INCL__PREFETCH */
-#			endif /* !INCL__DLL */
+#			ifndef INCL__CLEAR_INSTRUCTION_CACHE
+#				ifndef INCL__DLL
+#					ifndef INCL__PREFETCH
+#						ifndef INCL__READ_FILE
+#							ifndef INCL__THREAD
+#								ifndef INCL__STRINGIFICATION
+#									ifndef INCL__ROM
+#										define LOCALMACRO_DEFINE_ALL_TRY_2
+#									ifndef /* !INCL__ROM */
+#								endif /* !INCL__STRINGIFICATION */
+#							endif /* !INCL__THREAD */
+#						endif /* !INCL__READ_FILE */
+#					endif /* !INCL__PREFETCH */
+#				endif /* !INCL__DLL */
+#			endif /* !INCL__CLEAR_INSTRUCTION_CACHE */
 #		endif /* !INCL__KNR_STYLE */
 #	endif /* LOCALMACRO_DEFINE_ALL_TRY_1 */
 /* ****************** [^] LOCALMACRO_DEFINE_ALL_TRY_2 [^] ******************* */
@@ -190,6 +194,9 @@
 /* *************************** [v] FUNCTIONS [v] **************************** */
 #	ifdef INCL__FUNCTIONS
 #		undef INCL__FUNCTIONS
+#		ifndef INCL__CLEAR_INSTRUCTION_CACHE
+#			define INCL__CLEAR_INSTRUCTION_CACHE
+#		endif /* !INCL__CLEAR_INSTRUCTION_CACHE */
 #		ifndef INCL__DLL
 #			define INCL__DLL
 #		endif /* !INCL__DLL */
@@ -232,6 +239,9 @@
 #		ifndef INCL__STDCALL
 #			define INCL__STDCALL
 #		endif /* !INCL__STDCALL */
+#		ifndef INCL__ROM
+#			define INCL__ROM
+#		endif /* !INCL__ROM */
 #	endif /* INCL__KEYWORDS */
 /* **************************** [^] KEYWORDS [^] **************************** */
 
@@ -382,6 +392,13 @@
 /* ************************** [^] ENVIRONMENTS [^] ************************** */
 
 /* *************************** [v] FUNCTIONS [v] **************************** */
+#	ifdef INCL__CLEAR_INSTRUCTION_CACHE
+#		undef INCL__CLEAR_INSTRUCTION_CACHE
+#		include "FUNCTIONS/INCL__CLEAR_INSTRUCTION_CACHE.H" /*
+#		 define CLEAR_INSTRUCTION_CACHE
+#		 define clear_instruction_cache
+#		        */
+#	endif /* INCL__CLEAR_INSTRUCTION_CACHE */
 #	ifdef INCL__DLL
 #		undef INCL__DLL
 #		include "FUNCTIONS/DLL.H" /*
@@ -484,6 +501,12 @@
 #		 define STDCALL
 #		        */
 #	endif /* INCL__STDCALL */
+#	ifdef INCL__ROM
+#		undef INCL__ROM
+#		include "KEYWORDS/ROM.H" /*
+#		 define ROM
+#		        */
+#	endif /* INCL__ROM */
 #	ifdef INCL__TRY_CATCH
 #		undef INCL__TRY_CATCH
 #		include "KEYWORDS/TRY_CATCH.H" /*
@@ -545,8 +568,6 @@
 #		 define VA_COPY
 #		 define va_start(A, B)
 #		 define VA_START
-#		 define va_args
-#		 define VA_ARGS
 #		 define va_end(A)
 #		 define VA_END
 #		typedef va_list;
